@@ -1,0 +1,36 @@
+name: Enviar novidades por e-mail
+
+# Roda quando o arquivo de novidades muda (ou manualmente pela aba Actions)
+on:
+  push:
+    branches: [main]
+    paths: [novidades.json]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: novidades
+  cancel-in-progress: false
+
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Espera o GitHub Pages publicar a página, para o link do e-mail já funcionar
+      - name: Aguardar publicação do site
+        run: sleep 120
+
+      - name: Enviar e-mails
+        run: node scripts/enviar-novidades.mjs
+        env:
+          SUPABASE_URL: https://igpwzidpiypzukmnskdb.supabase.co
+          SITE_URL: https://juninhoohusky-stack.github.io/abano
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}

@@ -26,6 +26,25 @@ Arquivos compartilhados: `site.css` (visual), `site.js` (abas) e `lista.js` (env
 3. Copie a *Project URL* e a chave pública para `lista.js`.
 4. Os cadastros aparecem em **Table Editor → lista_espera**.
 
+## E-mails automáticos
+
+- **Boas-vindas:** enviadas pelo Supabase logo depois de cada cadastro.
+- **Novidades:** cada post novo em `novidades.json` aparece na página `novidades.html` e é enviado uma única vez para todos os inscritos, pela automação `.github/workflows/novidades.yml`.
+- **Cancelar inscrição:** todo e-mail tem o link para `descadastrar.html`.
+
+Envio pelo [Resend](https://resend.com), com remetente no domínio próprio.
+
+### Ativar (uma vez)
+
+1. Rode `supabase/emails.sql` no SQL Editor do Supabase.
+2. No Resend, adicione e verifique o domínio e crie uma chave de API.
+3. Preencha e rode `supabase/ativar_emails.sql` (chave do Resend fica no Vault do Supabase).
+4. No GitHub: Settings → Secrets and variables → Actions → *New repository secret* chamado `SUPABASE_SECRET_KEY`, com a chave secreta do Supabase (`sb_secret_...`).
+
+### Publicar uma novidade
+
+Adicione um item no começo de `novidades.json` com um `id` novo e único, e envie para o GitHub. O e-mail sai sozinho cerca de 2 minutos depois.
+
 ## Publicar
 
 Todo envio (`git push`) para a branch `main` atualiza o site no GitHub Pages em alguns minutos.

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Cancelar inscrição — Abanô</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="site.css">
+<script src="lista.js" defer></script>
+<style>
+  body{min-height:100vh;display:flex;flex-direction:column}
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:72px 24px}
+  .box{max-width:520px;text-align:center}
+  h1{font-size:clamp(32px,5vw,46px);margin:14px 0 14px}
+  .box p{color:var(--suave);font-size:18px}
+  .acoes{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:28px}
+  [hidden]{display:none !important}
+  .rodape{margin-top:0}
+</style>
+</head>
+<body>
+<header class="topo">
+  <div class="topo-in">
+    <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1E4D45"/><g fill="#F6F4EF"><ellipse cx="16" cy="19.6" rx="5" ry="4.2"/><circle cx="9.8" cy="13.6" r="2.3"/><circle cx="13.7" cy="9.6" r="2.3"/><circle cx="18.3" cy="9.6" r="2.3"/><circle cx="22.2" cy="13.6" r="2.3"/></g></svg>
+      Abanô
+    </a>
+  </div>
+</header>
+<main>
+  <div class="box">
+    <div id="pergunta">
+      <span class="eyebrow">E-mails do Abanô</span>
+      <h1>Cancelar inscrição?</h1>
+      <p>Você deixa de receber as novidades do Abanô por e-mail. Pode voltar quando quiser.</p>
+      <div class="acoes">
+        <button type="button" class="btn" id="confirmar">Cancelar inscrição</button>
+        <a class="btn btn-sec" href="index.html">Continuar recebendo</a>
+      </div>
+    </div>
+    <div id="feito" hidden>
+      <span class="eyebrow">Pronto</span>
+      <h1>Inscrição cancelada.</h1>
+      <p>Você não vai mais receber e-mails do Abanô. Se mudar de ideia, é só entrar na lista de novo.</p>
+      <div class="acoes"><a class="btn btn-sec" href="index.html">Voltar ao início</a></div>
+    </div>
+    <div id="erro" hidden>
+      <span class="eyebrow">Algo deu errado</span>
+      <h1>Link inválido ou expirado.</h1>
+      <p>Não encontramos essa inscrição. Use o link do e-mail mais recente ou fale com a gente pelo Instagram @juninhoohusky.</p>
+      <div class="acoes"><a class="btn btn-sec" href="index.html">Voltar ao início</a></div>
+    </div>
+  </div>
+</main>
+<footer class="rodape">
+  <div class="rodape-base"><span>© 2026 Abanô</span><span>Tudo pro seu pet, perto de você.</span></div>
+</footer>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var token = new URLSearchParams(location.search).get("t") || "";
+  var botao = document.getElementById("confirmar");
+  function mostrar(id) {
+    ["pergunta", "feito", "erro"].forEach(function (k) { document.getElementById(k).hidden = k !== id; });
+  }
+  if (!/^[0-9a-f-]{36}$/i.test(token)) { mostrar("erro"); return; }
+  botao.addEventListener("click", function () {
+    botao.disabled = true;
+    botao.textContent = "Cancelando…";
+    fetch(SUPABASE_URL + "/rest/v1/rpc/descadastrar", {
+      method: "POST",
+      headers: { "apikey": SUPABASE_CHAVE, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_token: token })
+    })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (ok) { mostrar(ok === true ? "feito" : "erro"); })
+      .catch(function () { mostrar("erro"); });
+  });
+});
+</script>
+</body>
+</html>
