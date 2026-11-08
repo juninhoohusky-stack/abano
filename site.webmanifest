@@ -1,7 +1,7 @@
 {
   "name": "Abanô",
   "short_name": "Abanô",
-  "description": "Tudo pro seu pet, perto de você.",
+  "description": "Tem pet? Tem no Abanô.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#F2F2F7",
