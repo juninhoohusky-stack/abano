@@ -45,6 +45,15 @@ Envio pelo [Resend](https://resend.com), com remetente no domínio próprio.
 
 Adicione um item no começo de `novidades.json` com um `id` novo e único, e envie para o GitHub. O e-mail sai sozinho cerca de 2 minutos depois.
 
+## LGPD
+
+- **Consentimento:** caixa obrigatória (desmarcada) no formulário. Cada cadastro guarda `consentiu_em`, `versao_politica` e `maior_de_idade`. Ao mudar a política, atualize a data em `privacidade.html` e `VERSAO_POLITICA` em `lista.js`.
+- **Política:** `privacidade.html` (controlador, finalidades e bases legais, operadores, transferência internacional, retenção, direitos, cookies, incidentes).
+- **Pedidos do titular:** `seus-dados.html` grava em `solicitacoes_titular` e avisa `privacidade@abano.com.br`. Prazo de resposta: 15 dias. Marque como `respondida` no Table Editor.
+- **Exclusão em autoatendimento:** o link dos e-mails (`descadastrar.html`) permite cancelar ou apagar tudo na hora.
+- **Retenção:** quem cancela é apagado em 30 dias (job diário `abano-limpar-descadastrados` no pg_cron).
+- **SQL:** `supabase/lgpd.sql` (rode depois de `lista_espera.sql` e `emails.sql`).
+
 ## Publicar
 
 Todo envio (`git push`) para a branch `main` atualiza o site no GitHub Pages em alguns minutos.

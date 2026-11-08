@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Cancelar inscrição — Abanô</title>
+<title>Cancelar inscrição ou excluir dados — Abanô</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
@@ -20,6 +20,8 @@
   .box p{color:var(--suave);font-size:18px}
   .acoes{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:28px}
   [hidden]{display:none !important}
+  .pequeno{margin-top:20px;font-size:15px}
+  .rodape-base a{color:var(--suave)}
   .rodape{margin-top:0}
 </style>
 </head>
@@ -35,50 +37,78 @@
 <main>
   <div class="box">
     <div id="pergunta">
-      <span class="eyebrow">E-mails do Abanô</span>
-      <h1>Cancelar inscrição?</h1>
-      <p>Você deixa de receber as novidades do Abanô por e-mail. Pode voltar quando quiser.</p>
+      <span class="eyebrow">Seus dados no Abanô</span>
+      <h1>O que você prefere?</h1>
+      <p>Você pode só parar de receber e-mails, ou apagar de vez tudo o que o Abanô tem sobre você.</p>
       <div class="acoes">
-        <button type="button" class="btn" id="confirmar">Cancelar inscrição</button>
-        <a class="btn btn-sec" href="index.html">Continuar recebendo</a>
+        <button type="button" class="btn" id="cancelar">Parar de receber e-mails</button>
+        <button type="button" class="btn btn-sec" id="excluir">Excluir todos os meus dados</button>
+      </div>
+      <p class="pequeno"><a href="index.html">Mudei de ideia, quero continuar recebendo</a></p>
+    </div>
+    <div id="confirmar-exclusao" hidden>
+      <span class="eyebrow">Exclusão definitiva</span>
+      <h1>Apagar todos os seus dados?</h1>
+      <p>Seu nome, e-mail, cidade e os dados do seu pet saem da lista de espera do Abanô agora, e não dá para desfazer. Você deixa de receber qualquer e-mail.</p>
+      <div class="acoes">
+        <button type="button" class="btn" id="excluir-sim">Sim, apagar tudo</button>
+        <button type="button" class="btn btn-sec" id="excluir-nao">Voltar</button>
       </div>
     </div>
     <div id="feito" hidden>
       <span class="eyebrow">Pronto</span>
       <h1>Inscrição cancelada.</h1>
-      <p>Você não vai mais receber e-mails do Abanô. Se mudar de ideia, é só entrar na lista de novo.</p>
+      <p>Você não vai mais receber e-mails do Abanô. Seus dados serão apagados automaticamente em 30 dias. Se quiser que isso aconteça agora, use o botão abaixo.</p>
+      <div class="acoes">
+        <button type="button" class="btn btn-sec" id="excluir-agora">Excluir meus dados agora</button>
+        <a class="btn btn-sec" href="index.html">Voltar ao início</a>
+      </div>
+    </div>
+    <div id="excluido" hidden>
+      <span class="eyebrow">Pronto</span>
+      <h1>Seus dados foram apagados.</h1>
+      <p>Não guardamos mais nenhuma informação sua na lista de espera. Se um dia quiser voltar, é só se cadastrar de novo.</p>
       <div class="acoes"><a class="btn btn-sec" href="index.html">Voltar ao início</a></div>
     </div>
     <div id="erro" hidden>
       <span class="eyebrow">Algo deu errado</span>
-      <h1>Link inválido ou expirado.</h1>
-      <p>Não encontramos essa inscrição. Use o link do e-mail mais recente ou fale com a gente pelo Instagram @juninhoohusky.</p>
-      <div class="acoes"><a class="btn btn-sec" href="index.html">Voltar ao início</a></div>
+      <h1>Link inválido ou já usado.</h1>
+      <p>Não encontramos essa inscrição: ela pode já ter sido excluída. Se precisar, faça um pedido pela página <a href="seus-dados.html">Seus dados</a> ou escreva para privacidade@abano.com.br.</p>
+      <div class="acoes"><a class="btn btn-sec" href="seus-dados.html">Ir para Seus dados</a></div>
     </div>
   </div>
 </main>
 <footer class="rodape">
-  <div class="rodape-base"><span>© 2026 Abanô</span><span>Tem pet? Tem no Abanô.</span></div>
+  <div class="rodape-base"><span>© 2026 Abanô</span><span><a href="privacidade.html">Política de privacidade</a> · <a href="seus-dados.html">Seus dados</a></span></div>
 </footer>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   var token = new URLSearchParams(location.search).get("t") || "";
-  var botao = document.getElementById("confirmar");
-  function mostrar(id) {
-    ["pergunta", "feito", "erro"].forEach(function (k) { document.getElementById(k).hidden = k !== id; });
-  }
+  var telas = ["pergunta", "confirmar-exclusao", "feito", "excluido", "erro"];
+  function mostrar(id) { telas.forEach(function (k) { document.getElementById(k).hidden = k !== id; }); }
   if (!/^[0-9a-f-]{36}$/i.test(token)) { mostrar("erro"); return; }
-  botao.addEventListener("click", function () {
+
+  function chamar(funcao, botao, texto, telaOk) {
     botao.disabled = true;
-    botao.textContent = "Cancelando…";
-    fetch(SUPABASE_URL + "/rest/v1/rpc/descadastrar", {
+    botao.textContent = texto;
+    fetch(SUPABASE_URL + "/rest/v1/rpc/" + funcao, {
       method: "POST",
       headers: { "apikey": SUPABASE_CHAVE, "Content-Type": "application/json" },
       body: JSON.stringify({ p_token: token })
     })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (ok) { mostrar(ok === true ? "feito" : "erro"); })
+      .then(function (ok) { mostrar(ok === true ? telaOk : "erro"); })
       .catch(function () { mostrar("erro"); });
+  }
+
+  document.getElementById("cancelar").addEventListener("click", function () {
+    chamar("descadastrar", this, "Cancelando…", "feito");
+  });
+  document.getElementById("excluir").addEventListener("click", function () { mostrar("confirmar-exclusao"); });
+  document.getElementById("excluir-agora").addEventListener("click", function () { mostrar("confirmar-exclusao"); });
+  document.getElementById("excluir-nao").addEventListener("click", function () { mostrar("pergunta"); });
+  document.getElementById("excluir-sim").addEventListener("click", function () {
+    chamar("excluir_meus_dados", this, "Apagando…", "excluido");
   });
 });
 </script>

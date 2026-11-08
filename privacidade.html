@@ -35,6 +35,14 @@
   .texto ul{padding-left:20px;margin-bottom:12px}
   .texto li{margin-bottom:6px}
   .texto li::marker{color:var(--acento)}
+  .indice{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+  .indice a{font-size:14px;font-weight:500;text-decoration:none;color:var(--marca);background:var(--marca-clara);padding:7px 13px;border-radius:999px}
+  .texto h2{scroll-margin-top:96px}
+  .tabela{overflow-x:auto;margin:6px 0 14px;border-radius:12px;box-shadow:0 0 0 1px var(--linha)}
+  .tabela table{width:100%;border-collapse:collapse;font-size:15px;min-width:520px}
+  .tabela th,.tabela td{padding:11px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--linha)}
+  .tabela tr:last-child td{border-bottom:0}
+  .tabela th{background:var(--areia);font-size:13px;font-weight:600;color:var(--suave)}
   @media (max-width:600px){.texto{padding:24px}}
 </style>
 </head>
@@ -62,57 +70,87 @@
   <h1>Política de privacidade</h1>
   <p class="atualizado">Atualizada em 8 de novembro de 2026</p>
 
-  <div class="texto">
-    <h2>Resumo</h2>
-    <p>O Abanô coleta só o que você informa na lista de espera, usa esses dados apenas para falar com você sobre o Abanô, não vende nem compartilha com anunciantes, e você pode sair ou pedir a exclusão quando quiser.</p>
+  <nav class="indice" aria-label="Nesta página">
+    <a href="#resumo">Resumo</a><a href="#controlador">Quem cuida dos dados</a><a href="#dados">Dados</a><a href="#finalidades">Finalidades</a><a href="#compartilhamento">Compartilhamento</a><a href="#retencao">Retenção</a><a href="#direitos">Seus direitos</a><a href="#cookies">Cookies</a><a href="#seguranca">Segurança</a>
+  </nav>
 
-    <h2>Quais dados coletamos</h2>
-    <p>Quando você entra na lista de espera, guardamos:</p>
+  <div class="texto">
+    <h2 id="resumo">Resumo</h2>
+    <ul>
+      <li>Coletamos só o que você informa na lista de espera.</li>
+      <li>Usamos esses dados apenas para falar com você sobre o Abanô.</li>
+      <li>Não vendemos nem compartilhamos com anunciantes.</li>
+      <li>Você pode sair, corrigir ou apagar seus dados quando quiser, inclusive sozinho, pelo link dos e-mails.</li>
+    </ul>
+
+    <h2 id="controlador">Quem cuida dos seus dados</h2>
+    <p><b>Controlador:</b> Abanô, projeto da família do @juninhoohusky, em Maricá (RJ), que decide como os dados da lista de espera são usados.</p>
+    <p><b>Canal de privacidade (encarregado):</b> <a href="mailto:privacidade@abano.com.br">privacidade@abano.com.br</a> ou a página <a href="seus-dados.html">Seus dados</a>. Como agente de tratamento de pequeno porte, o Abanô mantém este canal de comunicação com os titulares, conforme a Resolução CD/ANPD nº 2/2022.</p>
+
+    <h2 id="dados">Quais dados coletamos</h2>
+    <p><b>Na lista de espera</b>, você informa:</p>
     <ul>
       <li>nome e e-mail;</li>
       <li>cidade e estado;</li>
-      <li>se você tem cachorro, gato ou os dois, e o nome do pet (opcional);</li>
-      <li>o que mais te interessa no Abanô;</li>
-      <li>a data do cadastro.</li>
+      <li>se tem cachorro, gato ou os dois, e o nome do pet (opcional);</li>
+      <li>o que mais te interessa no Abanô.</li>
     </ul>
-    <p>A calculadora de custos funciona inteiramente no seu navegador: os números que você digita nela não são enviados nem guardados por nós.</p>
+    <p>Junto com o cadastro, registramos automaticamente a <b>data</b>, a <b>versão desta política</b> que você aceitou e a sua declaração de ter <b>18 anos ou mais</b>. Isso serve como prova do seu consentimento.</p>
+    <p><b>Em pedidos de privacidade</b> (página Seus dados): nome, e-mail e a mensagem que você escrever.</p>
+    <p><b>Não coletamos</b> dados sensíveis, documentos, endereço completo ou dados de pagamento. A calculadora de custos funciona inteiramente no seu navegador: os números que você digita nela não são enviados nem guardados.</p>
+    <p><b>Crianças e adolescentes:</b> a lista de espera é só para maiores de 18 anos. Se soubermos que um cadastro é de menor de idade, ele será apagado.</p>
 
-    <h2>Para que usamos</h2>
+    <h2 id="finalidades">Para que usamos e com qual base legal</h2>
+    <div class="tabela">
+      <table>
+        <thead><tr><th>Finalidade</th><th>Dados</th><th>Base legal (LGPD)</th></tr></thead>
+        <tbody>
+          <tr><td>Enviar o e-mail de boas-vindas e as novidades do Abanô</td><td>nome, e-mail, nome do pet</td><td>Consentimento (art. 7º, I)</td></tr>
+          <tr><td>Decidir o que construir primeiro e onde fazer eventos</td><td>cidade, tipo de pet, interesse</td><td>Consentimento (art. 7º, I)</td></tr>
+          <tr><td>Provar que você consentiu</td><td>data e versão da política aceita</td><td>Cumprimento de obrigação legal (art. 7º, II)</td></tr>
+          <tr><td>Responder pedidos de titulares</td><td>nome, e-mail, mensagem</td><td>Cumprimento de obrigação legal (art. 7º, II)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Não usamos seus dados para decisões automatizadas, perfis de publicidade ou qualquer finalidade diferente das listadas aqui.</p>
+
+    <h2 id="compartilhamento">Com quem os dados são compartilhados</h2>
+    <p>Não vendemos, alugamos nem compartilhamos seus dados com anunciantes. Usamos apenas serviços (operadores) que tratam dados em nosso nome e seguindo nossas instruções:</p>
     <ul>
-      <li>enviar um e-mail de boas-vindas logo após o cadastro;</li>
-      <li>avisar sobre novidades do Abanô (novas ferramentas, guias, eventos);</li>
-      <li>entender de onde vêm os tutores e o que eles mais querem, para decidir o que construir primeiro.</li>
+      <li><b>Supabase</b>: banco de dados onde a lista de espera e os pedidos ficam guardados, com acesso restrito;</li>
+      <li><b>Resend</b>: entrega dos e-mails;</li>
+      <li><b>ImprovMX</b>: encaminhamento das mensagens enviadas a privacidade@abano.com.br;</li>
+      <li><b>GitHub Pages</b>: hospedagem do site, que pode registrar dados técnicos de acesso, como o endereço IP, para segurança.</li>
     </ul>
-    <p>A base legal é o seu <b>consentimento</b> (art. 7º, I, da LGPD), dado ao enviar o formulário. Você pode retirá-lo a qualquer momento.</p>
+    <p><b>Transferência internacional:</b> esses serviços podem processar dados fora do Brasil (por exemplo, nos Estados Unidos). Escolhemos fornecedores que adotam cláusulas contratuais e medidas de segurança compatíveis com a LGPD (art. 33). Também podemos compartilhar dados se uma autoridade exigir por lei.</p>
 
-    <h2>Com quem os dados ficam</h2>
-    <p>Não vendemos, alugamos nem compartilhamos seus dados com anunciantes. Usamos apenas serviços que operam em nosso nome:</p>
+    <h2 id="retencao">Por quanto tempo guardamos</h2>
     <ul>
-      <li><b>Supabase</b>, onde a lista de espera fica guardada com acesso restrito;</li>
-      <li><b>Resend</b>, que entrega os e-mails;</li>
-      <li><b>GitHub Pages</b>, que hospeda o site e pode registrar dados técnicos de acesso, como o endereço IP, para segurança.</li>
+      <li><b>Lista de espera:</b> enquanto você estiver inscrito.</li>
+      <li><b>Se você cancelar a inscrição:</b> paramos de enviar e-mails na hora e apagamos seus dados automaticamente em até 30 dias.</li>
+      <li><b>Se você pedir a exclusão:</b> apagamos na hora, pelo link dos e-mails, ou em até 15 dias, por pedido.</li>
+      <li><b>Pedidos de privacidade:</b> guardamos o registro do pedido e da resposta por 5 anos, como comprovação do atendimento.</li>
     </ul>
-    <p>Alguns desses serviços podem processar dados fora do Brasil, com as garantias previstas na LGPD.</p>
 
-    <h2>Cookies e rastreamento</h2>
-    <p>O site não usa cookies de publicidade nem ferramentas de rastreamento. Ele guarda apenas, no seu próprio navegador, qual aba você abriu por último, para a animação do menu.</p>
-      <p>Os vídeos dos artigos são do <b>YouTube</b>, no modo de privacidade reforçada (youtube-nocookie.com). Ao dar play, o YouTube pode guardar cookies e dados de uso, de acordo com a <a href="https://policies.google.com/privacy?hl=pt-BR" target="_blank" rel="noopener">política de privacidade do Google</a>.</p>
-
-    <h2>Por quanto tempo guardamos</h2>
-    <p>Enquanto você estiver na lista. Se você cancelar a inscrição, deixamos de enviar e-mails na hora; se pedir a exclusão, apagamos seus dados.</p>
-
-    <h2>Seus direitos</h2>
-    <p>Pela LGPD, você pode pedir a qualquer momento: confirmação de que temos seus dados, acesso a eles, correção, exclusão, e a retirada do consentimento.</p>
+    <h2 id="direitos">Seus direitos</h2>
+    <p>Pelo artigo 18 da LGPD, você pode pedir: confirmação de que tratamos seus dados, acesso, correção, anonimização, bloqueio ou eliminação de dados desnecessários, portabilidade, eliminação dos dados tratados com consentimento, informação sobre com quem compartilhamos, informação sobre a possibilidade de não consentir, e revogação do consentimento.</p>
     <ul>
-      <li><b>Parar de receber e-mails:</b> use o link "Cancelar inscrição" no rodapé de qualquer e-mail do Abanô.</li>
-      <li><b>Acesso, correção ou exclusão:</b> mande uma mensagem pelo Instagram <a href="https://www.instagram.com/juninhoohusky/" target="_blank" rel="noopener">@juninhoohusky</a> informando o e-mail cadastrado. Respondemos em até 15 dias.</li>
+      <li><b>Na hora, sozinho:</b> o link "Cancelar inscrição ou excluir meus dados", no rodapé de qualquer e-mail do Abanô.</li>
+      <li><b>Por pedido:</b> pela página <a href="seus-dados.html">Seus dados</a> ou pelo e-mail <a href="mailto:privacidade@abano.com.br">privacidade@abano.com.br</a>. Respondemos em até 15 dias e podemos pedir uma confirmação de que o e-mail é seu.</li>
+      <li><b>Não consentir:</b> se você não quiser dar o consentimento, basta não se cadastrar. A calculadora e os guias continuam abertos para todos.</li>
+      <li><b>ANPD:</b> você também pode apresentar reclamação à Autoridade Nacional de Proteção de Dados, em gov.br/anpd.</li>
     </ul>
 
-    <h2>Segurança</h2>
-    <p>A lista fica num banco de dados com regras de acesso: pelo site, só é possível se cadastrar, nunca ler os cadastros de outras pessoas. A conexão com o site é criptografada (HTTPS).</p>
+    <h2 id="cookies">Cookies e rastreamento</h2>
+    <p>O site não usa cookies de publicidade nem ferramentas de rastreamento ou análise, por isso não exibe aviso de cookies. Ele guarda apenas, no seu próprio navegador (armazenamento da sessão), qual aba do menu você abriu por último, para a animação do menu. Essa informação nunca sai do seu aparelho.</p>
+    <p>Os vídeos dos artigos são do <b>YouTube</b>, no modo de privacidade reforçada (youtube-nocookie.com). Ao dar play, o YouTube pode guardar cookies e dados de uso, de acordo com a <a href="https://policies.google.com/privacy?hl=pt-BR" target="_blank" rel="noopener">política de privacidade do Google</a>.</p>
+
+    <h2 id="seguranca">Segurança e incidentes</h2>
+    <p>A lista fica num banco de dados com regras de acesso: pelo site, só é possível se cadastrar, nunca ler os cadastros de outras pessoas. As chaves de administração ficam guardadas em cofres criptografados, e a conexão com o site é protegida (HTTPS).</p>
+    <p>Se acontecer um incidente de segurança que possa causar risco ou dano relevante a você, avisaremos os titulares afetados e a ANPD, como manda a LGPD (art. 48).</p>
 
     <h2>Mudanças nesta política</h2>
-    <p>Se esta política mudar de forma importante, avisaremos por e-mail quem estiver na lista. A data no topo da página mostra a última atualização.</p>
+    <p>Se esta política mudar de forma importante, avisaremos por e-mail quem estiver na lista. A data no topo mostra a versão atual, e é ela que fica registrada no seu cadastro.</p>
   </div>
 </main>
 

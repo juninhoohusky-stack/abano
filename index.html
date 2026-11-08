@@ -103,6 +103,9 @@
   .duas{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   form .btn{width:100%;margin-top:26px;padding:15px}
   .mini{font-size:13px;color:var(--suave);margin-top:12px;text-align:center}
+  .consentimento{display:flex;gap:12px;align-items:flex-start;margin:22px 0 0;font-weight:400;font-size:14px;line-height:1.5;color:var(--suave);cursor:pointer}
+  .consentimento input{flex:none;width:22px;height:22px;min-height:0;margin-top:1px;padding:0;accent-color:var(--marca);cursor:pointer}
+  .consentimento a{font-weight:600}
   .escondido{display:none}
   .form-aviso{margin-top:18px;padding:12px 14px;border-radius:var(--raio-sm);background:var(--acento-claro);color:var(--acento);font-size:15px;font-weight:500}
   button.btn:disabled{opacity:.6;cursor:progress}
@@ -335,9 +338,14 @@
           <option>Doador de sangue</option>
         </select>
 
+        <label class="consentimento">
+          <input type="checkbox" name="consentimento" required>
+          <span>Li a <a href="privacidade.html" target="_blank" rel="noopener">Política de privacidade</a> e aceito que o Abanô use meus dados para me enviar e-mails sobre o projeto. Tenho 18 anos ou mais.</span>
+        </label>
+
         <p id="form-aviso" class="form-aviso" role="alert" hidden></p>
         <button type="submit" class="btn">Entrar na lista de espera</button>
-        <p class="mini">Ao entrar, você concorda com a <a href="privacidade.html">Política de privacidade</a>. Usamos seus dados só para falar sobre o Abanô. Nada de spam.</p>
+        <p class="mini">Nada de spam. Você pode sair ou <a href="seus-dados.html">pedir a exclusão dos seus dados</a> quando quiser.</p>
       </form>
     </div>
   </section>
@@ -367,6 +375,7 @@
         <li><a href="https://www.instagram.com/juninhoohusky/" target="_blank" rel="noopener">Instagram @juninhoohusky</a></li>
         <li><a href="https://www.youtube.com/@JuninhoOhusky" target="_blank" rel="noopener">YouTube Juninho O Husky</a></li>
         <li><a href="privacidade.html">Política de privacidade</a></li>
+        <li><a href="seus-dados.html">Seus dados (LGPD)</a></li>
       </ul>
     </div>
   </div>

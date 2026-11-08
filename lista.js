@@ -8,6 +8,11 @@
    ========================================================= */
 const SUPABASE_URL = "https://igpwzidpiypzukmnskdb.supabase.co";
 const SUPABASE_CHAVE = "sb_publishable_PRC9f8FexEHaH6ZGNCaGig_EVXz8JcY";
+
+/* Versão da Política de privacidade (a data do topo de privacidade.html).
+   Fica gravada em cada cadastro como registro do consentimento.
+   Atualize as duas juntas quando a política mudar. */
+const VERSAO_POLITICA = "2026-11-08";
 /* ======================= fim da área ===================== */
 
 (function () {
@@ -37,10 +42,17 @@ const SUPABASE_CHAVE = "sb_publishable_PRC9f8FexEHaH6ZGNCaGig_EVXz8JcY";
       return;
     }
 
+    if (!d.get("consentimento")) {
+      mostrarErro("Para entrar na lista, marque a caixa de consentimento.");
+      return;
+    }
+
     botao.disabled = true;
     botao.textContent = "Enviando…";
 
     var dados = {
+      versao_politica: VERSAO_POLITICA,
+      maior_de_idade: true,
       nome: String(d.get("nome") || "").trim(),
       email: String(d.get("email") || "").trim().toLowerCase(),
       nome_pet: String(d.get("nome-do-pet") || "").trim() || null,
@@ -49,14 +61,30 @@ const SUPABASE_CHAVE = "sb_publishable_PRC9f8FexEHaH6ZGNCaGig_EVXz8JcY";
       interesse: String(d.get("interesse") || "")
     };
 
-    fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/lista_espera", {
-      method: "POST",
-      headers: {
-        "apikey": SUPABASE_CHAVE,
-        "Content-Type": "application/json",
-        "Prefer": "return=minimal"
-      },
-      body: JSON.stringify(dados)
+    function enviar(corpo) {
+      return fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/lista_espera", {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_CHAVE,
+          "Content-Type": "application/json",
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify(corpo)
+      });
+    }
+
+    enviar(dados).then(function (r) {
+      // Compatibilidade: se o banco ainda não tem as colunas de consentimento
+      // (supabase/lgpd.sql não rodado), tenta de novo sem elas
+      if (r.status !== 400) return r;
+      return r.clone().json().then(function (erro) {
+        if (erro && erro.code === "PGRST204") {
+          delete dados.versao_politica;
+          delete dados.maior_de_idade;
+          return enviar(dados);
+        }
+        return r;
+      }, function () { return r; });
     }).then(function (r) {
       // 409 = e-mail já cadastrado: para a pessoa, tudo certo
       if (r.ok || r.status === 409) { window.location.href = "obrigado.html"; return; }
