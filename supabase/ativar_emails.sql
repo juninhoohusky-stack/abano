@@ -14,7 +14,7 @@ select vault.create_secret('COLE_AQUI_A_CHAVE_DO_RESEND', 'resend_api_key', 'Cha
 -- 2) Remetente (domínio abano.com.br, verificado no Resend)
 -- 3) Endereço do site (sem barra no final)
 insert into public.config_email (id, remetente, site_url)
-values (1, 'Abanô <novidades@abano.com.br>', 'https://juninhoohusky-stack.github.io/abano')
+values (1, 'Abanô <novidades@abano.com.br>', 'https://abano.com.br')
 on conflict (id) do update set remetente = excluded.remetente, site_url = excluded.site_url;
 
 -- Para trocar a chave depois:

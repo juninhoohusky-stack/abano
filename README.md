@@ -1,6 +1,6 @@
 # Abanô
 
-Tudo pro seu pet, perto de você. Site estático (HTML, CSS e JavaScript puros), publicado no GitHub Pages. A lista de espera é salva no Supabase.
+Tem pet? Tem no Abanô. Tudo pra cães e gatos, num lugar só, perto de você. Site estático (HTML, CSS e JavaScript puros), publicado no GitHub Pages. A lista de espera é salva no Supabase.
 
 ## Páginas
 

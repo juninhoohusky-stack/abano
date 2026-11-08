@@ -19,7 +19,7 @@ create unique index if not exists lista_espera_token_unico on public.lista_esper
 create table if not exists public.config_email (
   id        int primary key default 1 check (id = 1),
   remetente text not null,   -- ex.: Abanô <novidades@abano.com.br>
-  site_url  text not null    -- ex.: https://juninhoohusky-stack.github.io/abano
+  site_url  text not null    -- ex.: https://abano.com.br
 );
 alter table public.config_email enable row level security;   -- ninguém de fora lê
 

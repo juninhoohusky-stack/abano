@@ -32,5 +32,5 @@ jobs:
         run: node scripts/enviar-novidades.mjs
         env:
           SUPABASE_URL: https://igpwzidpiypzukmnskdb.supabase.co
-          SITE_URL: https://juninhoohusky-stack.github.io/abano
+          SITE_URL: https://abano.com.br
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
