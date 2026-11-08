@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /obrigado.html
+Disallow: /descadastrar.html
+Disallow: /supabase/
+Disallow: /scripts/
+
+Sitemap: https://abano.com.br/sitemap.xml
