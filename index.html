@@ -98,8 +98,9 @@
   label{display:block;font-weight:600;font-size:14px;margin:18px 0 7px}
   form > label:first-of-type{margin-top:0}
   .opcional{font-weight:400;color:var(--suave)}
-  input,select{width:100%;min-height:44px;padding:10px 14px;border:1px solid transparent;border-radius:var(--raio-sm);font-size:17px;font-family:inherit;color:var(--tinta);background:var(--areia);transition:border-color .2s,box-shadow .2s,background-color .2s}
-  input:focus,select:focus{outline:none;border-color:var(--marca);background:var(--superficie);box-shadow:0 0 0 4px var(--marca-clara)}
+  input,select,textarea{width:100%;min-height:44px;padding:10px 14px;border:1px solid transparent;border-radius:var(--raio-sm);font-size:17px;font-family:inherit;color:var(--tinta);background:var(--areia);transition:border-color .2s,box-shadow .2s,background-color .2s}
+  textarea{min-height:104px;resize:vertical;line-height:1.45}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--marca);background:var(--superficie);box-shadow:0 0 0 4px var(--marca-clara)}
   .duas{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   form .btn{width:100%;margin-top:26px;padding:15px}
   .mini{font-size:13px;color:var(--suave);margin-top:12px;text-align:center}
@@ -110,6 +111,30 @@
   .form-aviso{margin-top:18px;padding:12px 14px;border-radius:var(--raio-sm);background:var(--acento-claro);color:var(--acento);font-size:15px;font-weight:500}
   button.btn:disabled{opacity:.6;cursor:progress}
 
+  /* Convite para anunciantes (no fim dos cartões) */
+  .convite{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;margin-top:16px;padding:18px 24px;border-radius:var(--raio);background:var(--acento-claro);color:var(--tinta);text-decoration:none;font-size:16px;transition:filter .2s}
+  .convite:hover{filter:brightness(.97)}
+  .convite strong{font-weight:600}
+  .convite span:last-child{display:inline-flex;align-items:center;gap:6px;color:var(--acento);font-weight:600;white-space:nowrap}
+  .convite svg{width:16px;height:16px;transition:transform .3s var(--mola)}
+  .convite:hover svg{transform:translateX(4px)}
+  .convite:focus-visible{outline:2px solid var(--acento);outline-offset:3px}
+
+  /* Divulgue no Abanô */
+  .anuncie{background:var(--superficie);border:1px solid var(--linha);border-radius:24px;padding:56px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+  .anuncie h2{font-size:clamp(30px,3.8vw,44px);margin:14px 0}
+  .anuncie > div > p{color:var(--suave);font-size:17px}
+  .anuncie form{background:var(--fundo);box-shadow:none}
+  .tipos{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+  .tipos li{font-size:14px;font-weight:500;padding:7px 13px;border-radius:999px;background:var(--marca-clara);color:var(--marca)}
+  .anuncie .passos{list-style:none;counter-reset:p;display:grid;gap:14px;margin-top:30px}
+  .anuncie .passos li{counter-increment:p;display:flex;gap:12px;align-items:flex-start;font-size:16px}
+  .anuncie .passos li::before{content:counter(p);flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--acento-claro);color:var(--acento);font-size:14px;font-weight:700}
+  .anuncie-ok{background:var(--fundo);border:1px solid var(--linha);border-radius:20px;padding:36px 32px;text-align:center}
+  .anuncie-ok:focus{outline:none}
+  .anuncie-ok h3{font-size:24px;margin-bottom:8px}
+  .anuncie-ok p{color:var(--suave)}
+
   @media (max-width:900px){
     .hero{grid-template-columns:1fr;gap:48px;padding-top:48px;padding-bottom:64px}
     .cabeca{grid-template-columns:1fr;gap:12px}
@@ -117,6 +142,7 @@
     .cards > :last-child:nth-child(odd){grid-column:1 / -1}
     .historia{grid-template-columns:1fr;gap:20px;padding:44px 28px}
     .espera{grid-template-columns:1fr;gap:36px}
+    .anuncie{grid-template-columns:1fr;gap:32px;padding:40px 28px}
     section{padding:64px 0}
   }
   @media (max-width:600px){
@@ -127,6 +153,8 @@
     .previa-valor{font-size:44px}
     .previa-itens li{grid-template-columns:84px 1fr 56px}
     form{padding:24px}
+    .anuncie{padding:28px 18px;border-radius:20px}
+    .anuncie form{padding:20px 16px}
   }
 </style>
 </head>
@@ -267,6 +295,11 @@
           <p>Encontre um cão ou gato doador quando seu pet precisar, ou cadastre o seu para ajudar.</p>
         </div>
       </div>
+
+      <a class="convite" href="#anuncie">
+        <span><strong>Organiza evento ou tem um negócio pet?</strong> Apareça para os tutores da sua região.</span>
+        <span>Divulgue no Abanô <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
     </div>
   </section>
 
@@ -278,7 +311,7 @@
           <h2>Nasceu numa casa com quatro huskies e dois gatos.</h2>
         </div>
         <div>
-          <p>O Abanô foi criado pela família do Juninho, da Lua, da Pérola e da Tiquinha, e também do Nico e do Noah. A gente cansou de procurar coisa de pet em dez lugares diferentes: um evento aqui, um hotel ali, um veterinário em outro canto. Então resolvemos juntar tudo num lugar só.</p>
+          <p>O Abanô foi criado pela família do Juninho, da Lua, da Pérola e da Tiquinha, e também do Nico e do Noah. Aqui em casa sempre tem programa com os bichos: um encontro de huskies, um hotel pro feriado, um passeio novo pra conhecer. Criamos o Abanô pra você achar tudo isso num lugar só, perto de você.</p>
           <a href="https://www.instagram.com/juninhoohusky/" class="btn" target="_blank" rel="noopener">Conheça o @juninhoohusky</a>
         </div>
       </div>
@@ -349,6 +382,87 @@
       </form>
     </div>
   </section>
+
+  <section id="anuncie" style="padding-top:24px">
+    <div class="wrap">
+      <div class="anuncie">
+        <div>
+          <span class="eyebrow">Para quem organiza e atende</span>
+          <h2>Tem um evento ou negócio pet? Divulgue no Abanô.</h2>
+          <p>Encontro de raça, feira de adoção, hotel, clínica, banho e tosa: o Abanô é onde o tutor vai procurar o que fazer e onde levar o pet. Coloque o seu evento ou serviço na frente de quem está perto de você.</p>
+          <ul class="tipos" aria-label="Quem pode divulgar">
+            <li>Eventos e encontros</li>
+            <li>Hospedagem e creches</li>
+            <li>Veterinários e clínicas</li>
+            <li>Banho e tosa</li>
+            <li>Adestramento</li>
+            <li>Lojas e marcas</li>
+            <li>ONGs e protetores</li>
+          </ul>
+          <ol class="passos">
+            <li><span>Conte o que você quer divulgar e onde.</span></li>
+            <li><span>A gente responde por e-mail ou WhatsApp com as opções.</span></li>
+            <li><span>Seu anúncio entra no Abanô para os tutores da região.</span></li>
+          </ol>
+        </div>
+
+        <div>
+          <form id="form-anuncie" name="anuncie">
+            <p class="escondido" aria-hidden="true"><label>Não preencha: <input name="campo-robo" tabindex="-1" autocomplete="off"></label></p>
+
+            <label for="a-tipo">O que você quer divulgar?</label>
+            <select id="a-tipo" name="tipo" required>
+              <option value="">Escolha uma opção</option>
+              <option value="evento">Evento ou encontro</option>
+              <option value="hospedagem">Hospedagem ou creche</option>
+              <option value="veterinario">Veterinário ou clínica</option>
+              <option value="banho_tosa">Banho e tosa</option>
+              <option value="adestramento">Adestramento</option>
+              <option value="loja">Loja ou marca</option>
+              <option value="ong">ONG ou protetor</option>
+              <option value="outro">Outro</option>
+            </select>
+
+            <label for="a-negocio">Nome do evento ou do negócio</label>
+            <input id="a-negocio" name="negocio" type="text" required maxlength="160" autocomplete="organization">
+
+            <label for="a-cidade">Cidade / Estado</label>
+            <input id="a-cidade" name="cidade" type="text" required maxlength="120" placeholder="Ex.: Belo Horizonte / MG">
+
+            <label for="a-nome">Seu nome</label>
+            <input id="a-nome" name="nome" type="text" required maxlength="120" autocomplete="name">
+
+            <div class="duas">
+              <div>
+                <label for="a-email">Seu e-mail</label>
+                <input id="a-email" name="email" type="email" required maxlength="254" autocomplete="email">
+              </div>
+              <div>
+                <label for="a-whatsapp">WhatsApp <span class="opcional">(opcional)</span></label>
+                <input id="a-whatsapp" name="whatsapp" type="tel" maxlength="30" autocomplete="tel" placeholder="(21) 99999-9999">
+              </div>
+            </div>
+
+            <label for="a-mensagem">Conte um pouco <span class="opcional">(opcional)</span></label>
+            <textarea id="a-mensagem" name="mensagem" maxlength="2000" placeholder="Data do evento, o que você oferece, link do Instagram..."></textarea>
+
+            <label class="consentimento">
+              <input type="checkbox" name="ciente" required>
+              <span>Li a <a href="privacidade.html#finalidades" target="_blank" rel="noopener">Política de privacidade</a> e quero que o Abanô entre em contato sobre a divulgação.</span>
+            </label>
+
+            <p id="anuncie-aviso" class="form-aviso" role="alert" hidden></p>
+            <button type="submit" class="btn">Quero divulgar</button>
+          </form>
+
+          <div id="anuncie-ok" class="anuncie-ok" tabindex="-1" role="status" hidden>
+            <h3>Recebemos! 🐾</h3>
+            <p>Obrigado pelo interesse. A gente responde em breve pelo e-mail ou WhatsApp que você informou.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer class="rodape">
@@ -372,6 +486,7 @@
       <h4>Abanô</h4>
       <ul>
         <li><a href="#lista">Lista de espera</a></li>
+        <li><a href="#anuncie">Divulgue no Abanô</a></li>
         <li><a href="https://www.instagram.com/juninhoohusky/" target="_blank" rel="noopener">Instagram @juninhoohusky</a></li>
         <li><a href="https://www.youtube.com/@JuninhoOhusky" target="_blank" rel="noopener">YouTube Juninho O Husky</a></li>
         <li><a href="privacidade.html">Política de privacidade</a></li>

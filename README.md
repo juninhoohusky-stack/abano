@@ -54,6 +54,14 @@ Adicione um item no começo de `novidades.json` com um `id` novo e único, e env
 - **Retenção:** quem cancela é apagado em 30 dias (job diário `abano-limpar-descadastrados` no pg_cron).
 - **SQL:** `supabase/lgpd.sql` (rode depois de `lista_espera.sql` e `emails.sql`).
 
+## Divulgue no Abanô (anunciantes)
+
+Seção no fim da página inicial (`index.html#anuncie`) para organizadores de eventos e negócios pet pedirem divulgação.
+
+1. Rode `supabase/anunciantes.sql` no SQL Editor (depois de `emails.sql`).
+2. No ImprovMX, encaminhe `contato@abano.com.br` para o seu e-mail. Cada pedido novo chega lá, e é só responder.
+3. Os pedidos ficam em **Table Editor → anunciantes**. Atualize o `status` (`em_conversa`, `fechado` ou `descartado`). Pedidos com mais de 2 anos são apagados sozinhos.
+
 ## Publicar
 
 Todo envio (`git push`) para a branch `main` atualiza o site no GitHub Pages em alguns minutos.

@@ -94,3 +94,68 @@ const VERSAO_POLITICA = "2026-11-08";
     });
   });
 })();
+
+/* ---------- Formulário "Divulgue no Abanô" (anunciantes) ---------- */
+(function () {
+  var form = document.getElementById("form-anuncie");
+  if (!form) return;
+  var botao = form.querySelector("button[type=submit]");
+  var aviso = document.getElementById("anuncie-aviso");
+  var textoBotao = botao.textContent;
+
+  function mostrarErro(msg) {
+    aviso.textContent = msg;
+    aviso.hidden = false;
+    botao.disabled = false;
+    botao.textContent = textoBotao;
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    aviso.hidden = true;
+
+    var d = new FormData(form);
+    var ok = document.getElementById("anuncie-ok");
+    function concluir() {
+      form.hidden = true;
+      ok.hidden = false;
+      ok.focus();
+    }
+    // Campo-armadilha: se um robô preencheu, finge que deu certo
+    if (d.get("campo-robo")) { concluir(); return; }
+
+    if (!d.get("ciente")) {
+      mostrarErro("Para enviar, marque que leu a Política de privacidade.");
+      return;
+    }
+
+    botao.disabled = true;
+    botao.textContent = "Enviando…";
+
+    var corpo = {
+      tipo: String(d.get("tipo") || ""),
+      nome: String(d.get("nome") || "").trim(),
+      email: String(d.get("email") || "").trim().toLowerCase(),
+      whatsapp: String(d.get("whatsapp") || "").trim() || null,
+      negocio: String(d.get("negocio") || "").trim(),
+      cidade: String(d.get("cidade") || "").trim(),
+      mensagem: String(d.get("mensagem") || "").trim() || null,
+      versao_politica: VERSAO_POLITICA
+    };
+
+    fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/anunciantes", {
+      method: "POST",
+      headers: {
+        "apikey": SUPABASE_CHAVE,
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify(corpo)
+    }).then(function (r) {
+      if (r.ok) { concluir(); return; }
+      mostrarErro("Não conseguimos enviar agora. Confira os dados ou escreva para contato@abano.com.br.");
+    }).catch(function () {
+      mostrarErro("Sem conexão no momento. Tente de novo ou escreva para contato@abano.com.br.");
+    });
+  });
+})();
