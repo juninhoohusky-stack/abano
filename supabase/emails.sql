@@ -144,3 +144,11 @@ language sql security definer set search_path = public as $$
 $$;
 revoke all on function public.descadastrar(uuid) from public;
 grant execute on function public.descadastrar(uuid) to anon;
+
+-- Avisa a API do Supabase que existem funções novas
+notify pgrst, 'reload schema';
+
+-- Conferência: deve listar 4 funções
+select proname as funcao_criada from pg_proc
+where proname in ('_boas_vindas', '_resend_lote', 'disparar_novidade', 'descadastrar')
+order by 1;
