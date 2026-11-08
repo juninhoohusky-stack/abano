@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Quanto custa ter um husky (ou qualquer cachorro)? Calculadora 2026 | Abanô</title>
+<meta name="description" content="Calcule quanto custa ter um cachorro por mês e por ano: ração premium ou super premium, antipulgas, vacinas, vermífugo, banho, veterinário e mais. Preços pesquisados em novembro de 2026.">
+<meta property="og:title" content="Quanto custa ter um husky? Calculadora de custos do pet">
+<meta property="og:description" content="Descubra o custo mensal e anual do seu cachorro em 1 minuto.">
+<link rel="stylesheet" href="site.css">
+<script src="site.js" defer></script>
+<style>
+  .intro{padding:56px 0 40px;max-width:760px}
+  .migalha{font-size:14px;color:var(--suave);margin-bottom:22px}
+  .migalha a{text-decoration:none;color:var(--suave)}
+  .migalha a:hover{color:var(--tinta)}
+  .intro h1{font-size:clamp(36px,5vw,56px);margin:16px 0 16px}
+  .sub{font-size:18px;color:var(--suave)}
+
+  .grade{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:start}
+  .painel{background:var(--superficie);border:1px solid var(--linha);border-radius:20px;padding:30px;box-shadow:var(--sombra)}
+  .bloco{border-top:1px solid var(--linha);padding-top:26px;margin-top:26px}
+  .bloco:first-child{border-top:0;padding-top:0;margin-top:0}
+  .bloco h2{display:flex;align-items:baseline;gap:12px;font-size:22px;margin-bottom:4px}
+  .bloco h2 span{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--acento)}
+  label{display:block;font-weight:600;font-size:14px;margin:16px 0 7px}
+  .dica{font-weight:400;color:var(--suave);font-size:13px}
+  input[type=number],select{width:100%;min-height:44px;padding:10px 14px;border:1px solid transparent;border-radius:var(--raio-sm);font-size:17px;font-family:inherit;color:var(--tinta);background:var(--areia);transition:border-color .2s,box-shadow .2s,background-color .2s}
+  input:focus,select:focus{outline:none;border-color:var(--marca);background:var(--superficie);box-shadow:0 0 0 4px var(--marca-clara)}
+  .linha{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .check{display:flex;gap:12px;align-items:flex-start;font-weight:500;font-size:15px;margin-top:16px;cursor:pointer}
+  .check input{margin-top:4px;width:18px;height:18px;accent-color:var(--marca);flex:none}
+  .escondido{display:none}
+
+  .resultado{position:sticky;top:96px}
+  .total{background:var(--faixa);color:var(--sobre-faixa);border-radius:20px;padding:30px;margin-bottom:16px;position:relative;overflow:hidden}
+  .total::after{content:"";position:absolute;right:-80px;bottom:-110px;width:240px;height:240px;border-radius:50%;border:1px solid rgba(255,255,255,.12);box-shadow:0 0 0 40px rgba(255,255,255,.03);pointer-events:none}
+  .total small{display:block;font-size:12.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#E9B8A6}
+  .total .valor{font-family:var(--serif);font-size:58px;font-weight:700;letter-spacing:-.03em;line-height:1.05;margin:10px 0 6px;color:#fff;font-variant-numeric:tabular-nums}
+  .total .ano{font-size:16px}
+  .total .ano b{color:#fff;font-weight:600}
+  .resultado .painel h2{font-size:20px;margin-bottom:8px}
+  .itens{list-style:none}
+  .itens li{padding:11px 0;border-bottom:1px solid var(--linha)}
+  .itens li:last-child{border-bottom:0}
+  .item-topo{display:flex;justify-content:space-between;gap:10px;font-size:15px}
+  .item-topo b{white-space:nowrap;font-weight:600;font-variant-numeric:tabular-nums}
+  .barra{height:5px;background:var(--areia);border-radius:99px;margin-top:8px;overflow:hidden}
+  .barra span{display:block;height:100%;background:var(--marca);border-radius:99px}
+  .itens li:first-child .barra span{background:var(--acento)}
+  .racao-info{background:var(--marca-clara);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:14px}
+  .primeiro-ano{background:var(--acento-claro);border-radius:12px;padding:14px 16px;margin-top:12px;font-size:14px}
+  .aviso{font-size:12.5px;color:var(--suave);margin-top:16px}
+
+  .conteudo{margin:88px auto 0;max-width:760px}
+  .conteudo h2{font-size:clamp(26px,3.4vw,34px);margin:44px 0 14px}
+  .conteudo h2:first-child{margin-top:0}
+  .conteudo p,.conteudo li{font-size:17px;margin-bottom:12px}
+  .conteudo ul{padding-left:20px}
+  .conteudo li::marker{color:var(--acento)}
+  .tabela{border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden;margin:16px 0 18px;background:var(--superficie)}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th,td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--linha)}
+  tr:last-child td{border-bottom:0}
+  th{background:var(--areia);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--suave)}
+  td:last-child{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .dica-box{border-left:2px solid var(--acento);padding:4px 0 4px 18px;margin-top:24px}
+
+  .proximo{display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;background:var(--superficie);border:1px solid var(--linha);border-radius:20px;padding:40px;margin:88px 0 0}
+  .proximo h2{font-size:clamp(24px,3vw,32px);margin:12px 0 8px}
+  .proximo p{color:var(--suave);max-width:560px}
+
+  @media (max-width:860px){
+    .grade{grid-template-columns:1fr}
+    .resultado{position:static}
+    .proximo{grid-template-columns:1fr;padding:28px}
+  }
+  @media (max-width:520px){
+    .painel{padding:22px}
+    .total{padding:24px}
+    .total .valor{font-size:48px}
+    th:nth-child(2),td:nth-child(2){display:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-in">
+    <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1E4D45"/><g fill="#F6F4EF"><ellipse cx="16" cy="19.6" rx="5" ry="4.2"/><circle cx="9.8" cy="13.6" r="2.3"/><circle cx="13.7" cy="9.6" r="2.3"/><circle cx="18.3" cy="9.6" r="2.3"/><circle cx="22.2" cy="13.6" r="2.3"/></g></svg>
+      Abanô
+    </a>
+    <nav class="abas" aria-label="Seções do site">
+      <span class="aba-pilula" aria-hidden="true"></span>
+      <a href="index.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.4 12 4l8 6.4V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.4 10 12 3.1 20.6 10a1 1 0 0 1 .4.8V19a1.8 1.8 0 0 1-1.8 1.8H15V15H9v5.8H4.8A1.8 1.8 0 0 1 3 19v-8.2a1 1 0 0 1 .4-.8z"/></svg><span>Início</span></a>
+      <a href="calculadora.html" class="aba" aria-current="page"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.2" y="2.2" width="15.6" height="19.6" rx="3.6" fill="currentColor"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01" fill="none" stroke-width="2" stroke-linecap="round" style="stroke:var(--superficie)"/></svg><span>Calculadora</span></a>
+      <a href="husky-solta-muito-pelo.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.3 5.6A3.3 3.3 0 0 1 6.6 2.3h14.1v16.3H6.6a1.6 1.6 0 1 0 0 3.2h14.1v1.4H6.6a3.3 3.3 0 0 1-3.3-3.3z"/></svg><span>Guia do Husky</span></a>
+    </nav>
+    <a href="index.html#lista" class="topo-cta">Lista de espera</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="intro">
+    <p class="migalha surge" style="--i:0"><a href="index.html">Início</a> / Calculadora de custos</p>
+    <span class="eyebrow surge" style="--i:0">Ferramenta gratuita · preços de nov/2026</span>
+    <h1 class="surge" style="--i:1">Quanto custa ter um husky?</h1>
+    <p class="sub surge" style="--i:2">Ou qualquer outro cachorro. Informe o peso, a ração e a rotina do seu pet e veja o custo estimado por mês e por ano.</p>
+  </div>
+
+  <div class="grade surge" style="--i:3">
+    <!-- ================= ENTRADAS ================= -->
+    <div class="painel">
+      <div class="bloco">
+        <h2><span>01</span>Seu cachorro</h2>
+        <div class="linha">
+          <div>
+            <label for="peso">Peso (kg)</label>
+            <input id="peso" type="number" min="1" max="90" step="0.5" value="25">
+          </div>
+          <div>
+            <label for="fase">Fase da vida</label>
+            <select id="fase">
+              <option value="filhote">Filhote (até 1 ano)</option>
+              <option value="adulto" selected>Adulto</option>
+              <option value="idoso">Idoso (7+ anos)</option>
+            </select>
+          </div>
+        </div>
+        <label for="energia">Nível de energia</label>
+        <select id="energia">
+          <option value="calmo">Calmo, mais caseiro</option>
+          <option value="normal" selected>Normal, passeia todo dia</option>
+          <option value="ativo">Muito ativo (corre, puxa, não para)</option>
+        </select>
+      </div>
+
+      <div class="bloco">
+        <h2><span>02</span>Ração</h2>
+        <label for="racao">Tipo de ração</label>
+        <select id="racao">
+          <option value="premium">Premium (~R$ 12/kg)</option>
+          <option value="super" selected>Super premium (~R$ 19/kg)</option>
+          <option value="supertop">Super premium linha top (~R$ 28/kg)</option>
+          <option value="grainfree">Super premium sem grãos (~R$ 41/kg)</option>
+          <option value="propria">Quero usar o preço da minha ração</option>
+        </select>
+        <div id="racao-propria" class="linha escondido">
+          <div>
+            <label for="saco-preco">Preço do saco (R$)</label>
+            <input id="saco-preco" type="number" min="1" step="1" value="300">
+          </div>
+          <div>
+            <label for="saco-kg">Peso do saco (kg)</label>
+            <input id="saco-kg" type="number" min="1" step="0.1" value="15">
+          </div>
+        </div>
+      </div>
+
+      <div class="bloco">
+        <h2><span>03</span>Banho</h2>
+        <div class="linha">
+          <div>
+            <label for="banho-onde">Onde</label>
+            <select id="banho-onde">
+              <option value="petshop" selected>Pet shop</option>
+              <option value="casa">Em casa</option>
+            </select>
+          </div>
+          <div>
+            <label for="banho-freq">Frequência</label>
+            <select id="banho-freq">
+              <option value="2">A cada 15 dias</option>
+              <option value="1">1x por mês</option>
+              <option value="0.5" selected>A cada 2 meses</option>
+            </select>
+          </div>
+        </div>
+        <div id="banho-preco-box">
+          <label for="banho-preco">Preço do banho no seu pet shop (R$) <span class="dica">· média preenchida pelo peso</span></label>
+          <input id="banho-preco" type="number" min="0" step="5">
+        </div>
+      </div>
+
+      <div class="bloco">
+        <h2><span>04</span>Extras</h2>
+        <label for="petiscos">Petiscos e brinquedos por mês (R$)</label>
+        <input id="petiscos" type="number" min="0" step="10" value="60">
+        <label class="check"><input type="checkbox" id="reserva" checked> Guardar uma reserva para imprevistos (ou pagar um plano de saúde pet)</label>
+        <label class="check"><input type="checkbox" id="castrado" checked> Meu cachorro já é castrado</label>
+      </div>
+    </div>
+
+    <!-- ================= RESULTADO ================= -->
+    <div class="resultado">
+      <div class="total" aria-live="polite">
+        <small>Custo estimado por mês</small>
+        <div class="valor" id="total-mes">R$ 0</div>
+        <div class="ano">ou <b id="total-ano">R$ 0</b> por ano</div>
+      </div>
+      <div class="painel">
+        <h2>Para onde vai o dinheiro</h2>
+        <ul class="itens" id="itens"></ul>
+        <div class="racao-info" id="racao-info"></div>
+        <div class="primeiro-ano escondido" id="primeiro-ano"></div>
+        <p class="aviso">Estimativa com preços médios de grandes lojas online e guias de preço (nov/2026). Os valores mudam por cidade, loja e promoção. A quantidade de ração é uma média: siga a tabela da embalagem e a orientação do seu veterinário.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= CONTEÚDO (SEO) ================= -->
+  <section class="conteudo">
+    <h2>Quanto custa ter um husky por mês?</h2>
+    <p>Um husky adulto de uns 25 kg, comendo ração super premium, com antipulgas, vacinas em dia e banho a cada dois meses no pet shop, costuma custar algo entre <b>R$ 500 e R$ 600 por mês</b>, contando uma reserva para imprevistos. A maior parte vai para a ração e para o antipulgas. Use a calculadora acima para ver o valor exato da rotina do seu pet.</p>
+
+    <h2>Ração premium x super premium: quanto custa o quilo?</h2>
+    <p>Pesquisamos sacos de 10 a 15 kg para cães adultos de porte médio e grande em lojas como Cobasi, Petz, Petlove e Magalu. Valores médios aproximados:</p>
+    <div class="tabela">
+      <table>
+        <thead><tr><th>Tipo</th><th>Exemplos de marcas</th><th>Preço do kg</th></tr></thead>
+        <tbody id="tabela-racoes">
+          <tr><td>Premium</td><td>Gran Plus, Quatree Life, Special Dog</td><td>R$ 12</td></tr>
+          <tr><td>Super premium</td><td>Fórmula Natural Life, Guabi Natural, N&amp;D Ancestral Grain</td><td>R$ 19</td></tr>
+          <tr><td>Super premium (linha top)</td><td>Biofresh, Royal Canin</td><td>R$ 28</td></tr>
+          <tr><td>Super premium sem grãos (grain free)</td><td>N&amp;D Prime</td><td>R$ 41</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>As super premium costumam render mais: como são mais nutritivas, o cachorro come uma quantidade menor por dia. Por isso a diferença no bolso é menor do que parece no preço do saco.</p>
+
+    <h2>O que entra na conta</h2>
+    <ul>
+      <li><b>Antipulgas e carrapatos:</b> comprimidos como Bravecto (dura cerca de 3 meses), Simparic e NexGard (mensais). Para um cão de 20 a 40 kg, sai na faixa de R$ 70 a R$ 115 por mês.</li>
+      <li><b>Vacinas:</b> reforço anual da V10 (em média R$ 100 a R$ 180 por dose) e antirrábica (R$ 50 a R$ 100 em clínicas, ou grátis nas campanhas públicas).</li>
+      <li><b>Vermífugo:</b> em geral a cada 3 ou 4 meses, conforme orientação do veterinário.</li>
+      <li><b>Veterinário:</b> pelo menos um check-up por ano. A consulta clínica costuma custar de R$ 100 a R$ 300 nas capitais.</li>
+      <li><b>Reserva para imprevistos:</b> uma consulta de emergência ou um exame podem pesar. Guardar um valor por mês, ou ter um plano de saúde pet, evita sustos.</li>
+    </ul>
+    <p class="dica-box"><b>Dica de quem tem husky:</b> husky não precisa de banho frequente. Escovação regular faz muito mais diferença do que banho. <a href="husky-solta-muito-pelo.html">Veja como cuidar da pelagem →</a></p>
+  </section>
+
+  <div class="proximo">
+    <div>
+      <span class="eyebrow">Vem mais por aí</span>
+      <h2>Perdidos e encontrados, encontros, serviços perto de você</h2>
+      <p>Entre na lista de espera para ser avisado primeiro e colocar seu pet no Mural dos Fundadores.</p>
+    </div>
+    <a href="index.html#lista" class="btn">Quero ser avisado <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+</main>
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <div class="rodape-marca">
+      <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1E4D45"/><g fill="#F6F4EF"><ellipse cx="16" cy="19.6" rx="5" ry="4.2"/><circle cx="9.8" cy="13.6" r="2.3"/><circle cx="13.7" cy="9.6" r="2.3"/><circle cx="18.3" cy="9.6" r="2.3"/><circle cx="22.2" cy="13.6" r="2.3"/></g></svg>
+        Abanô
+      </a>
+      <p>A plataforma dos tutores de cães e gatos: cuidados, serviços e comunidade, perto de você.</p>
+    </div>
+    <div>
+      <h4>Conteúdo</h4>
+      <ul>
+        <li><a href="husky-solta-muito-pelo.html">Guia do Husky</a></li>
+        <li><a href="calculadora.html">Calculadora de custos</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Abanô</h4>
+      <ul>
+        <li><a href="index.html#lista">Lista de espera</a></li>
+        <li><a href="https://www.instagram.com/juninhoohusky/" target="_blank" rel="noopener">Instagram @juninhoohusky</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="rodape-base"><span>© 2026 Abanô</span><span>Estimativas informativas, que não substituem a orientação de um veterinário.</span></div>
+</footer>
+
+<script>
+/* =============================================================
+   ✏️ ÁREA PARA ATUALIZAR OS PREÇOS (pesquisa de nov/2026)
+   Mude os números quando os preços mudarem. Não mexa no resto.
+   ============================================================= */
+const PRECOS = {
+  racoes: [
+    { id: "premium",   nome: "Premium",                 exemplos: "Gran Plus, Quatree Life, Special Dog",                     precoKg: 12, kcalPorGrama: 3.5 },
+    { id: "super",     nome: "Super premium",           exemplos: "Fórmula Natural Life, Guabi Natural, N&D Ancestral Grain", precoKg: 19, kcalPorGrama: 3.8 },
+    { id: "supertop",  nome: "Super premium linha top", exemplos: "Biofresh, Royal Canin",                                    precoKg: 28, kcalPorGrama: 3.9 },
+    { id: "grainfree", nome: "Super premium sem grãos", exemplos: "N&D Prime",                                                precoKg: 41, kcalPorGrama: 4.0 }
+  ],
+  // custo por mês conforme o peso: [até 10 kg, 10 a 20 kg, 20 a 40 kg, acima de 40 kg]
+  antipulgasMes: [55, 65, 85, 95],
+  vermifugoMes:  [5, 6, 8, 12],
+  banhoPetshop:  [50, 65, 85, 110],   // preço de 1 banho (estimativa, varia muito por cidade)
+  banhoCasaMes:  15,                  // shampoo, toalha etc.
+  vacinasAno:    200,                 // V10 + antirrábica
+  consultaAno:   150,                 // 1 check-up por ano
+  reservaMes:    100,                 // imprevistos ou plano de saúde pet
+  // gastos extras só no primeiro ano de um filhote
+  filhoteVacinasIniciais: 450,
+  castracao: 350,
+  enxoval: 300
+};
+/* ======================= fim da área ========================= */
+
+const $ = id => document.getElementById(id);
+const brl = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+const faixa = kg => kg <= 10 ? 0 : kg <= 20 ? 1 : kg <= 40 ? 2 : 3;
+
+// atualiza os textos do seletor e da tabela com os preços da área acima
+const tabela = $("tabela-racoes");
+tabela.innerHTML = "";
+PRECOS.racoes.forEach(r => {
+  const o = $("racao").querySelector('option[value="' + r.id + '"]');
+  if (o) o.textContent = r.nome + " (~" + brl(r.precoKg) + "/kg)";
+  const tr = document.createElement("tr");
+  tr.innerHTML = "<td>" + r.nome + "</td><td>" + r.exemplos + "</td><td>" + brl(r.precoKg) + "</td>";
+  tabela.appendChild(tr);
+});
+
+// O total "conta" até o novo valor, sempre partindo do número que está na tela
+const poucoMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let totalNaTela = 0, quadro = 0;
+function animarTotal(alvo) {
+  cancelAnimationFrame(quadro);
+  const inicio = totalNaTela, t0 = performance.now(), dur = poucoMovimento ? 0 : 420;
+  const passo = t => {
+    const k = dur ? Math.min(1, (t - t0) / dur) : 1;
+    totalNaTela = inicio + (alvo - inicio) * (1 - Math.pow(1 - k, 3));
+    $("total-mes").textContent = brl(totalNaTela);
+    $("total-ano").textContent = brl(totalNaTela * 12);
+    if (k < 1) quadro = requestAnimationFrame(passo);
+  };
+  quadro = requestAnimationFrame(passo);
+}
+
+let banhoEditado = false;
+$("banho-preco").addEventListener("input", () => { banhoEditado = true; });
+
+function calcular() {
+  const peso = Math.max(1, parseFloat($("peso").value) || 1);
+  const fase = $("fase").value;
+  const energia = $("energia").value;
+  const f = faixa(peso);
+
+  // energia diária (kcal) = 70 x peso^0,75 x fator
+  let fator = { calmo: 1.4, normal: 1.6, ativo: 2.0 }[energia];
+  if (fase === "filhote") fator = 2.0;
+  if (fase === "idoso") fator = Math.min(fator, 1.4);
+  const kcalDia = 70 * Math.pow(peso, 0.75) * fator;
+
+  // ração
+  let precoKg, kcalG, nomeRacao;
+  if ($("racao").value === "propria") {
+    $("racao-propria").classList.remove("escondido");
+    const preco = parseFloat($("saco-preco").value) || 0;
+    const kg = parseFloat($("saco-kg").value) || 1;
+    precoKg = preco / kg; kcalG = 3.7; nomeRacao = "sua ração";
+  } else {
+    $("racao-propria").classList.add("escondido");
+    const r = PRECOS.racoes.find(x => x.id === $("racao").value);
+    precoKg = r.precoKg; kcalG = r.kcalPorGrama; nomeRacao = r.nome.toLowerCase();
+  }
+  const gramasDia = kcalDia / kcalG;
+  const kgMes = gramasDia * 30.4 / 1000;
+  const racaoMes = kgMes * precoKg;
+
+  // banho
+  const onde = $("banho-onde").value;
+  const freq = parseFloat($("banho-freq").value);
+  if (!banhoEditado) $("banho-preco").value = PRECOS.banhoPetshop[f];
+  $("banho-preco-box").style.display = onde === "petshop" ? "" : "none";
+  const banhoMes = onde === "petshop" ? (parseFloat($("banho-preco").value) || 0) * freq : PRECOS.banhoCasaMes;
+
+  const itens = [
+    { nome: "Ração (" + nomeRacao + ")", valor: racaoMes },
+    { nome: "Antipulgas e carrapatos",    valor: PRECOS.antipulgasMes[f] },
+    { nome: "Banho",                      valor: banhoMes },
+    { nome: "Petiscos e brinquedos",      valor: parseFloat($("petiscos").value) || 0 },
+    { nome: "Vacinas (por mês)",          valor: PRECOS.vacinasAno / 12 },
+    { nome: "Veterinário (check-up)",     valor: PRECOS.consultaAno / 12 },
+    { nome: "Vermífugo",                  valor: PRECOS.vermifugoMes[f] }
+  ];
+  if ($("reserva").checked) itens.push({ nome: "Reserva para imprevistos", valor: PRECOS.reservaMes });
+
+  const totalMes = itens.reduce((s, i) => s + i.valor, 0);
+  const maior = Math.max(...itens.map(i => i.valor));
+  animarTotal(totalMes);
+
+  $("itens").innerHTML = itens
+    .sort((a, b) => b.valor - a.valor)
+    .map(i => '<li><div class="item-topo"><span>' + i.nome + '</span><b>' + brl(i.valor) + '</b></div>' +
+              '<div class="barra"><span style="width:' + (i.valor / maior * 100).toFixed(0) + '%"></span></div></li>')
+    .join("");
+
+  const sacos15 = kgMes / 15;
+  $("racao-info").innerHTML = "Seu cachorro come cerca de <b>" + Math.round(gramasDia / 10) * 10 + " g por dia</b>, ou <b>" +
+    kgMes.toFixed(1).replace(".", ",") + " kg por mês</b>. Um saco de 15 kg dura uns <b>" +
+    Math.max(1, Math.round(30.4 / sacos15)) + " dias</b>.";
+
+  // primeiro ano
+  const box = $("primeiro-ano");
+  let extras = 0, partes = [];
+  if (fase === "filhote") { extras += PRECOS.filhoteVacinasIniciais + PRECOS.enxoval; partes.push("vacinas iniciais", "enxoval com cama, comedouro e guia"); }
+  if (!$("castrado").checked) { extras += PRECOS.castracao; partes.push("castração"); }
+  if (extras > 0) {
+    box.classList.remove("escondido");
+    box.innerHTML = "<b>No primeiro ano</b>, some cerca de <b>" + brl(extras) + "</b> de gastos únicos (" + partes.join(", ") +
+      "). Total do primeiro ano: <b>" + brl(totalMes * 12 + extras) + "</b>.";
+  } else {
+    box.classList.add("escondido");
+  }
+}
+
+$("peso").addEventListener("input", () => { banhoEditado = false; });
+["peso","fase","energia","racao","saco-preco","saco-kg","banho-onde","banho-freq","banho-preco","petiscos","reserva","castrado"]
+  .forEach(id => { $(id).addEventListener("input", calcular); $(id).addEventListener("change", calcular); });
+calcular();
+</script>
+</body>
+</html>
