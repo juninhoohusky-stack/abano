@@ -62,6 +62,15 @@ Seção no fim da página inicial (`index.html#anuncie`) para organizadores de e
 2. No ImprovMX, encaminhe `contato@abano.com.br` para o seu e-mail. Cada pedido novo chega lá, e é só responder.
 3. Os pedidos ficam em **Table Editor → anunciantes**. Atualize o `status` (`em_conversa`, `fechado` ou `descartado`). Pedidos com mais de 2 anos são apagados sozinhos.
 
+## Cadastro com conta Google
+
+Botão "Continuar com o Google" no formulário da lista (`google.js`). Usa o login do Supabase com o provedor Google; a sessão fica só na memória da página e serve para preencher e confirmar nome e e-mail. O banco só aceita cadastro via Google com o e-mail da própria conta.
+
+1. Google Cloud: tela de consentimento OAuth e um *OAuth client ID* (Web) com a URI de redirecionamento `https://igpwzidpiypzukmnskdb.supabase.co/auth/v1/callback`.
+2. Supabase: Authentication → Providers → Google (Client ID e Client Secret) e URL Configuration (Site URL `https://abano.com.br`, Redirect URL `https://abano.com.br/**`).
+3. Rode `supabase/google.sql`.
+4. Em `lista.js`, troque `LOGIN_GOOGLE_ATIVO` para `true`.
+
 ## Publicar
 
 Todo envio (`git push`) para a branch `main` atualiza o site no GitHub Pages em alguns minutos.

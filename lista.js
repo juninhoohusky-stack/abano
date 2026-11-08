@@ -13,6 +13,10 @@ const SUPABASE_CHAVE = "sb_publishable_PRC9f8FexEHaH6ZGNCaGig_EVXz8JcY";
    Fica gravada em cada cadastro como registro do consentimento.
    Atualize as duas juntas quando a política mudar. */
 const VERSAO_POLITICA = "2026-11-08";
+
+/* Botão "Continuar com o Google" na lista de espera.
+   Deixe false até configurar o Google no Supabase (veja o README). */
+const LOGIN_GOOGLE_ATIVO = false;
 /* ======================= fim da área ===================== */
 
 (function () {
@@ -61,27 +65,39 @@ const VERSAO_POLITICA = "2026-11-08";
       interesse: String(d.get("interesse") || "")
     };
 
-    function enviar(corpo) {
+    // Conectado com o Google (google.js)? Envia com a sessão, e o banco
+    // confere que o e-mail é mesmo da pessoa
+    var google = window.abanoGoogle;
+    var token = google && google.token && dados.email === google.email ? google.token : null;
+    if (token) dados.origem = "google";
+
+    function enviar(corpo, comToken) {
+      var headers = {
+        "apikey": SUPABASE_CHAVE,
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal"
+      };
+      if (comToken) headers.Authorization = "Bearer " + comToken;
       return fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/lista_espera", {
         method: "POST",
-        headers: {
-          "apikey": SUPABASE_CHAVE,
-          "Content-Type": "application/json",
-          "Prefer": "return=minimal"
-        },
+        headers: headers,
         body: JSON.stringify(corpo)
       });
     }
 
-    enviar(dados).then(function (r) {
-      // Compatibilidade: se o banco ainda não tem as colunas de consentimento
-      // (supabase/lgpd.sql não rodado), tenta de novo sem elas
+    function semGoogle() { delete dados.origem; return enviar(dados, null); }
+
+    enviar(dados, token).then(function (r) {
+      // Sessão do Google expirada ou recusada: cadastra pelo jeito comum
+      if (token && (r.status === 401 || r.status === 403)) return semGoogle();
+      // Compatibilidade: se o banco ainda não tem colunas novas
+      // (lgpd.sql ou google.sql não rodados), tenta de novo sem elas
       if (r.status !== 400) return r;
       return r.clone().json().then(function (erro) {
         if (erro && erro.code === "PGRST204") {
           delete dados.versao_politica;
           delete dados.maior_de_idade;
-          return enviar(dados);
+          return semGoogle();
         }
         return r;
       }, function () { return r; });

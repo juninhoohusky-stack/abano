@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="site.css">
 <script src="site.js" defer></script>
 <script src="lista.js" defer></script>
+<script src="google.js" defer></script>
 <style>
   /* ---------- Abertura ---------- */
   .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center;padding-top:76px;padding-bottom:96px}
@@ -104,6 +105,19 @@
   .duas{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   form .btn{width:100%;margin-top:26px;padding:15px}
   .mini{font-size:13px;color:var(--suave);margin-top:12px;text-align:center}
+  .google-bloco{margin-bottom:6px}
+  .google-bloco[hidden],.google-conectado[hidden]{display:none}
+  .btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;padding:0 18px;border-radius:999px;border:1px solid var(--linha);background:var(--superficie);color:var(--tinta);font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;transition:background-color .2s,transform .1s ease-out;-webkit-tap-highlight-color:transparent}
+  .btn-google:hover{background:var(--hover)}
+  .btn-google:active{transform:scale(.98)}
+  .btn-google:disabled{opacity:.6;cursor:progress}
+  .btn-google svg{width:20px;height:20px;flex:none}
+  .ou{display:flex;align-items:center;gap:12px;margin:18px 0 4px;color:var(--suave);font-size:13px}
+  .ou::before,.ou::after{content:"";flex:1;height:1px;background:var(--linha)}
+  .google-conectado{display:flex;gap:10px;align-items:flex-start;margin-bottom:6px;padding:12px 14px;border-radius:var(--raio-sm);background:var(--marca-clara);color:var(--tinta);font-size:14px;line-height:1.5}
+  .google-conectado svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--marca)}
+  .link-botao{background:none;border:0;padding:0;font:inherit;font-weight:600;color:var(--marca);text-decoration:underline;cursor:pointer}
+  #email[readonly]{color:var(--suave)}
   .consentimento{display:flex;gap:12px;align-items:flex-start;margin:22px 0 0;font-weight:400;font-size:14px;line-height:1.5;color:var(--suave);cursor:pointer}
   .consentimento input{flex:none;width:22px;height:22px;min-height:0;margin-top:1px;padding:0;accent-color:var(--marca);cursor:pointer}
   .consentimento a{font-weight:600}
@@ -333,6 +347,18 @@
 
       <form id="form-lista" name="lista-espera">
         <p class="escondido" aria-hidden="true"><label>Não preencha: <input name="campo-robo" tabindex="-1" autocomplete="off"></label></p>
+
+        <div class="google-bloco" id="google-bloco" hidden>
+          <button type="button" class="btn-google" id="btn-google">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+            Continuar com o Google
+          </button>
+          <div class="ou"><span>ou preencha abaixo</span></div>
+        </div>
+        <p class="google-conectado" id="google-conectado" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+          <span>Conectado com o Google como <b id="google-email"></b>. Complete os dados abaixo. <button type="button" id="google-sair" class="link-botao">Usar outro e-mail</button></span>
+        </p>
 
         <label for="nome">Seu nome</label>
         <input id="nome" name="nome" type="text" required autocomplete="name">
