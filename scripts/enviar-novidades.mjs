@@ -20,6 +20,11 @@ const novidades = JSON.parse(await readFile("novidades.json", "utf8"));
 let falhou = false;
 
 for (const n of novidades) {
+  // "enviar_email": false no post = aparece no site, mas não vai por e-mail
+  if (n.enviar_email === false) {
+    console.log(`"${n.titulo}": marcado para não enviar por e-mail.`);
+    continue;
+  }
   const resposta = await fetch(`${SUPABASE_URL}/rest/v1/rpc/disparar_novidade`, {
     method: "POST",
     headers,
