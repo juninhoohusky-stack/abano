@@ -200,13 +200,44 @@ img,svg{display:block}
 @keyframes surgir{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}
 .surge{animation:surgir .6s var(--mola) both;animation-delay:calc(var(--i,0) * 70ms + 30ms)}
 
-/* ---------- Revelação ao rolar (páginas internas, marcada pelo site.js) ----------
-   .ra = bloco que aparece ao entrar na tela; .ra-f = item de lista dentro dele,
-   que entra logo depois, em sequência. Só mexe em opacidade e posição. */
-.ra{opacity:0;translate:0 26px;transition:opacity .7s var(--mola),translate .9s var(--mola-salto);transition-delay:calc(var(--d,0) * 80ms)}
-.ra.visivel{opacity:1;translate:0 0}
-.ra-f{opacity:0;translate:0 12px;transition:opacity .6s var(--mola),translate .75s var(--mola-salto);transition-delay:calc(var(--d,0) * 80ms + var(--f,0) * 65ms + 160ms)}
-.ra.visivel .ra-f{opacity:1;translate:0 0}
+/* ---------- Neurodesign nas páginas internas ----------
+   O site.js liga isto (classes .aura, .luz, .brilha, .palavra) junto com as
+   entradas feitas pelo Motion. A página inicial tem os seus próprios efeitos. */
+
+/* Aura: dois brilhos suaves que "respiram" atrás do topo — atrai o olhar para o título */
+.aura{position:absolute;top:0;left:0;right:0;height:680px;z-index:-1;pointer-events:none;overflow:hidden}
+.aura::before,.aura::after{content:"";position:absolute;border-radius:50%;filter:blur(10px)}
+.aura::before{top:-200px;right:-140px;width:640px;height:640px;background:radial-gradient(closest-side,color-mix(in srgb,var(--marca) 20%,transparent),transparent 70%);animation:respirar 9s ease-in-out infinite}
+.aura::after{top:140px;left:-220px;width:500px;height:500px;background:radial-gradient(closest-side,color-mix(in srgb,var(--acento) 14%,transparent),transparent 70%);animation:respirar 11s ease-in-out infinite reverse}
+@keyframes respirar{50%{transform:scale(1.12) translate(-20px,10px)}}
+
+/* Título palavra por palavra */
+.palavra{display:inline-block}
+
+/* Selo "Em breve": ponto que pulsa (sinal de "vivo, chegando") */
+.tag::before{animation:pisca-ponto 2s ease-in-out infinite}
+@keyframes pisca-ponto{50%{opacity:.35;transform:scale(.7)}}
+
+/* Ícone do serviço: onda que sai de tempos em tempos */
+.cabeca-servico .ico{position:relative}
+.cabeca-servico .ico::after{content:"";position:absolute;inset:0;border-radius:inherit;border:2px solid color-mix(in srgb,var(--marca) 55%,transparent);opacity:0;pointer-events:none;animation:onda-ico 3.6s var(--mola) infinite 1.4s}
+@keyframes onda-ico{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.7);opacity:0}}
+
+/* Botão principal: reflexo que passa de tempos em tempos */
+.brilha{position:relative;overflow:hidden;box-shadow:0 14px 32px -14px color-mix(in srgb,var(--marca) 80%,transparent)}
+.brilha::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);transform:translateX(-120%);pointer-events:none;animation:reflexo 4.5s var(--mola) infinite 1.5s}
+@keyframes reflexo{0%,60%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+
+/* Cartões: sobem ao passar o mouse e uma luz segue o cursor */
+.luz{position:relative;isolation:isolate}
+@media (hover:hover){
+  .luz{transition:transform .5s var(--mola-salto),box-shadow .4s}
+  .luz::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;opacity:0;pointer-events:none;transition:opacity .3s;
+    background:radial-gradient(380px circle at var(--x,50%) var(--y,50%),color-mix(in srgb,var(--marca) 13%,transparent),transparent 60%)}
+  .luz.avise::before,.luz.faixa-cta::before{background:radial-gradient(380px circle at var(--x,50%) var(--y,50%),rgba(255,255,255,.10),transparent 60%)}
+  .luz:hover{transform:translateY(-4px);box-shadow:0 30px 60px -28px rgba(0,0,0,.3),0 0 0 .5px var(--linha)}
+  .luz:hover::before{opacity:1}
+}
 
 /* ---------- Barra de leitura (artigos) ---------- */
 .progresso{display:none}
@@ -219,7 +250,9 @@ img,svg{display:block}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-delay:0s !important;transition-duration:.01ms !important}
   .progresso{display:none}
-  .ra,.ra-f{opacity:1;translate:none}
+  .aura::before,.aura::after,.tag::before,.cabeca-servico .ico::after,.brilha::after{animation:none}
+  .brilha::after{display:none}
+  .luz:hover{transform:none}
 }
 @media (prefers-contrast:more){
   :root{--linha:rgba(60,60,67,.45);--suave:#3A3A3C}
