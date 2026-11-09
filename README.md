@@ -6,7 +6,10 @@ Tem pet? Tem no Abanô. Tudo pra cães e gatos, num lugar só, perto de você. S
 
 | Arquivo | O que é |
 | --- | --- |
-| `index.html` | Página inicial e formulário da lista de espera |
+| `index.html` | Página inicial: apresentação, serviços e história |
+| `cadastro.html` | Cadastre-se (lista de espera, com login Google) |
+| `anuncie.html` | Divulgue no Abanô (pedidos de anunciantes) |
+| `eventos.html`, `hospedagem.html`, `veterinarios.html`, `adocao.html`, `perdidos.html`, `perfil-qr.html`, `doador-de-sangue.html` | Serviços "Em breve" (estrutura inicial, para completar) |
 | `calculadora.html` | Calculadora de custos do pet |
 | `husky-solta-muito-pelo.html` | Artigo do Guia do Husky |
 | `obrigado.html` | Página exibida depois do cadastro |
@@ -56,7 +59,7 @@ Adicione um item no começo de `novidades.json` com um `id` novo e único, e env
 
 ## Divulgue no Abanô (anunciantes)
 
-Seção no fim da página inicial (`index.html#anuncie`) para organizadores de eventos e negócios pet pedirem divulgação.
+Página própria (`anuncie.html`) para organizadores de eventos e negócios pet pedirem divulgação.
 
 1. Rode `supabase/anunciantes.sql` no SQL Editor (depois de `emails.sql`).
 2. No ImprovMX, encaminhe `contato@abano.com.br` para o seu e-mail. Cada pedido novo chega lá, e é só responder.

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Abanô — Tem pet? Tem no Abanô.</title>
-<meta name="description" content="Tem pet? Tem no Abanô. Eventos, hospedagem, veterinários, adoção, pets perdidos e guias de cuidado para cães e gatos, tudo num lugar só e perto de você. Entre na lista de espera!">
+<meta name="description" content="Tem pet? Tem no Abanô. Eventos, hospedagem, veterinários, adoção, pets perdidos e guias de cuidado para cães e gatos, tudo num lugar só e perto de você. Cadastre-se!">
 <meta property="og:title" content="Tem pet? Tem no Abanô.">
 <meta property="og:description" content="Eventos, hospedagem, veterinários, adoção e pets perdidos perto de você. Tudo pra cães e gatos, num lugar só.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -23,8 +23,6 @@
 <meta property="og:type" content="website">
 <link rel="stylesheet" href="site.css">
 <script src="site.js" defer></script>
-<script src="lista.js?v=20261109" defer></script>
-<script src="google.js?v=20261109" defer></script>
 <style>
   /* ---------- Abertura ---------- */
   .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center;padding-top:76px;padding-bottom:96px}
@@ -78,6 +76,9 @@
   .card .ler svg{width:16px;height:16px;transition:transform .3s cubic-bezier(.32,.72,0,1)}
   .card-link:hover .ler svg{transform:translateX(4px)}
   .card-topo{display:flex;justify-content:space-between;align-items:flex-start}
+  .card-breve .ico{background:var(--areia);color:var(--suave)}
+  .card-breve .ler{color:var(--suave)}
+  .card-breve:hover .ler{color:var(--marca)}
 
   /* História */
   .historia{background:var(--faixa);color:var(--sobre-faixa);border-radius:24px;padding:64px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;position:relative;overflow:hidden}
@@ -88,42 +89,6 @@
   .historia .btn{background:#fff;color:#1E4D45;border-color:#fff}
   .historia .btn:hover{background:#EEF3F1;border-color:#EEF3F1}
 
-  /* Lista de espera */
-  .espera{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
-  .espera h2{font-size:clamp(32px,4vw,46px);margin:14px 0 14px}
-  .espera > div > p{color:var(--suave);font-size:17px}
-  .beneficios{list-style:none;margin-top:28px;display:grid;gap:14px}
-  .beneficios li{display:flex;gap:12px;align-items:flex-start}
-  .beneficios svg{width:20px;height:20px;flex:none;margin-top:3px;color:var(--marca)}
-  form{background:var(--superficie);border:1px solid var(--linha);border-radius:20px;padding:32px;box-shadow:var(--sombra)}
-  label{display:block;font-weight:600;font-size:14px;margin:18px 0 7px}
-  form > label:first-of-type{margin-top:0}
-  .opcional{font-weight:400;color:var(--suave)}
-  input,select,textarea{width:100%;min-height:44px;padding:10px 14px;border:1px solid transparent;border-radius:var(--raio-sm);font-size:17px;font-family:inherit;color:var(--tinta);background:var(--areia);transition:border-color .2s,box-shadow .2s,background-color .2s}
-  textarea{min-height:104px;resize:vertical;line-height:1.45}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--marca);background:var(--superficie);box-shadow:0 0 0 4px var(--marca-clara)}
-  .duas{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  form .btn{width:100%;margin-top:26px;padding:15px}
-  .mini{font-size:13px;color:var(--suave);margin-top:12px;text-align:center}
-  .google-bloco{margin-bottom:6px}
-  .google-bloco[hidden],.google-conectado[hidden]{display:none}
-  .btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;padding:0 18px;border-radius:999px;border:1px solid var(--linha);background:var(--superficie);color:var(--tinta);font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;transition:background-color .2s,transform .1s ease-out;-webkit-tap-highlight-color:transparent}
-  .btn-google:hover{background:var(--hover)}
-  .btn-google:active{transform:scale(.98)}
-  .btn-google:disabled{opacity:.6;cursor:progress}
-  .btn-google svg{width:20px;height:20px;flex:none}
-  .ou{display:flex;align-items:center;gap:12px;margin:18px 0 4px;color:var(--suave);font-size:13px}
-  .ou::before,.ou::after{content:"";flex:1;height:1px;background:var(--linha)}
-  .google-conectado{display:flex;gap:10px;align-items:flex-start;margin-bottom:6px;padding:12px 14px;border-radius:var(--raio-sm);background:var(--marca-clara);color:var(--tinta);font-size:14px;line-height:1.5}
-  .google-conectado svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--marca)}
-  .link-botao{background:none;border:0;padding:0;font:inherit;font-weight:600;color:var(--marca);text-decoration:underline;cursor:pointer}
-  #email[readonly]{color:var(--suave)}
-  .consentimento{display:flex;gap:12px;align-items:flex-start;margin:22px 0 0;font-weight:400;font-size:14px;line-height:1.5;color:var(--suave);cursor:pointer}
-  .consentimento input{flex:none;width:22px;height:22px;min-height:0;margin-top:1px;padding:0;accent-color:var(--marca);cursor:pointer}
-  .consentimento a{font-weight:600}
-  .escondido{display:none}
-  .form-aviso{margin-top:18px;padding:12px 14px;border-radius:var(--raio-sm);background:var(--acento-claro);color:var(--acento);font-size:15px;font-weight:500}
-  button.btn:disabled{opacity:.6;cursor:progress}
 
   /* Convite para anunciantes (no fim dos cartões) */
   .convite{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;margin-top:16px;padding:18px 24px;border-radius:var(--raio);background:var(--acento-claro);color:var(--tinta);text-decoration:none;font-size:16px;transition:filter .2s}
@@ -134,20 +99,6 @@
   .convite:hover svg{transform:translateX(4px)}
   .convite:focus-visible{outline:2px solid var(--acento);outline-offset:3px}
 
-  /* Divulgue no Abanô */
-  .anuncie{background:var(--superficie);border:1px solid var(--linha);border-radius:24px;padding:56px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
-  .anuncie h2{font-size:clamp(30px,3.8vw,44px);margin:14px 0}
-  .anuncie > div > p{color:var(--suave);font-size:17px}
-  .anuncie form{background:var(--fundo);box-shadow:none}
-  .tipos{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
-  .tipos li{font-size:14px;font-weight:500;padding:7px 13px;border-radius:999px;background:var(--marca-clara);color:var(--marca)}
-  .anuncie .passos{list-style:none;counter-reset:p;display:grid;gap:14px;margin-top:30px}
-  .anuncie .passos li{counter-increment:p;display:flex;gap:12px;align-items:flex-start;font-size:16px}
-  .anuncie .passos li::before{content:counter(p);flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--acento-claro);color:var(--acento);font-size:14px;font-weight:700}
-  .anuncie-ok{background:var(--fundo);border:1px solid var(--linha);border-radius:20px;padding:36px 32px;text-align:center}
-  .anuncie-ok:focus{outline:none}
-  .anuncie-ok h3{font-size:24px;margin-bottom:8px}
-  .anuncie-ok p{color:var(--suave)}
 
   @media (max-width:900px){
     .hero{grid-template-columns:1fr;gap:48px;padding-top:48px;padding-bottom:64px}
@@ -186,8 +137,9 @@
       <a href="calculadora.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.2" y="2.2" width="15.6" height="19.6" rx="3.6" fill="currentColor"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01" fill="none" stroke-width="2" stroke-linecap="round" style="stroke:var(--superficie)"/></svg><span>Calculadora</span></a>
       <a href="husky-solta-muito-pelo.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.3 5.6A3.3 3.3 0 0 1 6.6 2.3h14.1v16.3H6.6a1.6 1.6 0 1 0 0 3.2h14.1v1.4H6.6a3.3 3.3 0 0 1-3.3-3.3z"/></svg><span>Guia do Husky</span></a>
       <a href="novidades.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.6 2.4H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8a6.6 6.6 0 0 0-6.6 6.6v5.9l-1.8 2.9a.8.8 0 0 0 .7 1.2h15.4a.8.8 0 0 0 .7-1.2l-1.8-2.9V9.4A6.6 6.6 0 0 0 12 2.8z"/><path d="M9.5 20.6a2.6 2.6 0 0 0 5 0z"/></svg><span>Novidades</span></a>
+      <a href="anuncie.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.2v3.6a1 1 0 0 0 1 1H7l7 4.4V4.8L7 9.2H4.5a1 1 0 0 0-1 1z"/><path d="M17.6 9.3a3.9 3.9 0 0 1 0 5.4M20.1 7a7.1 7.1 0 0 1 0 10"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 10c0-.6.4-1.1 1-1.1h2.8L14 4.4c.7-.4 1.5.1 1.5.9v13.4c0 .8-.8 1.3-1.5.9l-7.2-4.5H4c-.6 0-1-.5-1-1.1z"/><path d="M18 9.3a3.9 3.9 0 0 1 0 5.4M20.4 7a7.1 7.1 0 0 1 0 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Divulgue</span></a>
     </nav>
-    <a href="#lista" class="topo-cta">Lista de espera</a>
+    <a href="cadastro.html" class="topo-cta">Cadastre-se</a>
   </div>
 </header>
 
@@ -198,7 +150,7 @@
       <h1 class="surge" style="--i:1">Tem pet? <em>Tem no Abanô.</em></h1>
       <p class="lead surge" style="--i:2">Eventos, hospedagem, veterinários, adoção e pets perdidos, tudo pra cães e gatos num lugar só. Já no ar: calculadora de custos e Guia do Husky.</p>
       <div class="acoes surge" style="--i:3">
-        <a href="#lista" class="btn">Entrar na lista de espera</a>
+        <a href="cadastro.html" class="btn">Cadastre-se</a>
         <a href="husky-solta-muito-pelo.html" class="btn btn-sec">Ler o Guia do Husky</a>
       </div>
       <div class="assinatura surge" style="--i:4">
@@ -230,7 +182,7 @@
           <span class="eyebrow">No Abanô você encontra</span>
           <h2>Tudo do seu pet, num lugar só</h2>
         </div>
-        <p>Eventos, hospedagem, serviços e muito mais pra cães e gatos, perto de você. Duas ferramentas já estão no ar, e as próximas chegam com a ajuda de quem entra na lista de espera.</p>
+        <p>Eventos, hospedagem, serviços e muito mais pra cães e gatos, perto de você. Duas ferramentas já estão no ar, e as próximas chegam com a ajuda de quem se cadastra.</p>
       </div>
 
       <div class="cards">
@@ -252,65 +204,72 @@
           <p>Calcule o custo mensal e anual do seu cachorro, da ração ao veterinário, com preços atualizados.</p>
           <span class="ler">Calcular agora <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
         </a>
-        <div class="card">
+        <a class="card card-link card-breve" href="eventos.html">
           <div class="card-topo">
             <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2a4.5 4.5 0 0 1 5 4.8"/></svg></span>
             <span class="tag breve">Em breve</span>
           </div>
           <h3>Eventos pet</h3>
           <p>Encontros, feiras e passeios pet perto de você, a começar pelo Encontro de Huskies de Maricá.</p>
-        </div>
-        <div class="card">
+          <span class="ler">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="card card-link card-breve" href="hospedagem.html">
           <div class="card-topo">
             <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/></svg></span>
             <span class="tag breve">Em breve</span>
           </div>
           <h3>Hospedagem</h3>
           <p>Hotéis, creches e anfitriões para cães e gatos perto de você, para viajar tranquilo.</p>
-        </div>
-        <div class="card">
+          <span class="ler">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="card card-link card-breve" href="veterinarios.html">
           <div class="card-topo">
             <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.2a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.5"/></svg></span>
             <span class="tag breve">Em breve</span>
           </div>
           <h3>Veterinários e serviços</h3>
           <p>Veterinários, clínicas 24h, banho e tosa, adestradores e lugares pet friendly avaliados por tutores.</p>
-        </div>
-        <div class="card">
+          <span class="ler">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="card card-link card-breve" href="adocao.html">
           <div class="card-topo">
             <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></span>
             <span class="tag breve">Em breve</span>
           </div>
           <h3>Adoção</h3>
           <p>Cães e gatos esperando um lar, de ONGs e protetores da sua região.</p>
-        </div>
-        <div class="card">
+          <span class="ler">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="card card-link card-breve" href="perdidos.html">
           <div class="card-topo">
             <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></span>
             <span class="tag breve">Em breve</span>
           </div>
           <h3>Perdidos e encontrados</h3>
           <p>Cadastre um pet perdido ou encontrado, gere um cartaz pronto e avise quem está por perto.</p>
-        </div>
-        <div class="card">
+          <span class="ler">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="card card-link card-breve" href="perfil-qr.html">
           <div class="card-topo">
             <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2M20 14v.01M14 20h.01M18 18h2v2h-2z"/></svg></span>
             <span class="tag breve">Em breve</span>
           </div>
           <h3>Perfil do pet com QR</h3>
           <p>Um QR code na coleira: quem encontrar seu pet fala com você na hora.</p>
-        </div>
-        <div class="card">
+          <span class="ler">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="card card-link card-breve" href="doador-de-sangue.html">
           <div class="card-topo">
             <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5s6 6.4 6 10.7a6 6 0 0 1-12 0C6 9.9 12 3.5 12 3.5z"/><path d="M12 11v5M9.5 13.5h5"/></svg></span>
             <span class="tag breve">Em breve</span>
           </div>
           <h3>Doador de sangue</h3>
           <p>Encontre um cão ou gato doador quando seu pet precisar, ou cadastre o seu para ajudar.</p>
-        </div>
+          <span class="ler">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
       </div>
 
-      <a class="convite" href="#anuncie">
+      <a class="convite" href="anuncie.html">
         <span><strong>Organiza evento ou tem um negócio pet?</strong> Apareça para os tutores da sua região.</span>
         <span>Divulgue no Abanô <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
@@ -332,163 +291,6 @@
     </div>
   </section>
 
-  <section id="lista" style="padding-top:24px">
-    <div class="wrap espera">
-      <div>
-        <span class="eyebrow">Lista de espera</span>
-        <h2>Seja um tutor fundador</h2>
-        <p>Receba as novidades do Abanô em primeira mão e ajude a decidir o que construir.</p>
-        <ul class="beneficios">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Seu pet no <b>Mural dos Fundadores</b> do site</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Prioridade nos primeiros encontros</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Voto no que construir primeiro</span></li>
-        </ul>
-      </div>
-
-      <form id="form-lista" name="lista-espera">
-        <p class="escondido" aria-hidden="true"><label>Não preencha: <input name="campo-robo" tabindex="-1" autocomplete="off"></label></p>
-
-        <div class="google-bloco" id="google-bloco" hidden>
-          <button type="button" class="btn-google" id="btn-google">
-            <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
-            Continuar com o Google
-          </button>
-          <div class="ou"><span>ou preencha abaixo</span></div>
-        </div>
-        <p class="google-conectado" id="google-conectado" hidden>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
-          <span>Conectado com o Google como <b id="google-email"></b>. Complete os dados abaixo. <button type="button" id="google-sair" class="link-botao">Usar outro e-mail</button></span>
-        </p>
-
-        <label for="nome">Seu nome</label>
-        <input id="nome" name="nome" type="text" required autocomplete="name">
-
-        <label for="email">Seu e-mail</label>
-        <input id="email" name="email" type="email" required autocomplete="email">
-
-        <div class="duas">
-          <div>
-            <label for="nomepet">Nome do seu pet <span class="opcional">(opcional)</span></label>
-            <input id="nomepet" name="nome-do-pet" type="text" placeholder="Ex.: Juninho">
-          </div>
-          <div>
-            <label for="cidade">Cidade / Estado</label>
-            <input id="cidade" name="cidade" type="text" placeholder="Ex.: Maricá / RJ" required>
-          </div>
-        </div>
-
-        <label for="pet">Seu(s) pet(s)</label>
-        <select id="pet" name="pet" required>
-          <option value="">Escolha uma opção</option>
-          <option>Cachorro</option>
-          <option>Gato</option>
-          <option>Cachorro e gato</option>
-          <option>Ainda não tenho, quero ter</option>
-        </select>
-
-        <label for="interesse">O que você mais quer no Abanô?</label>
-        <select id="interesse" name="interesse">
-          <option>Guia e dicas de cuidados</option>
-          <option>Perdidos e encontrados</option>
-          <option>Eventos pet</option>
-          <option>Hospedagem</option>
-          <option>Veterinários e serviços perto de mim</option>
-          <option>Adoção</option>
-          <option>Doador de sangue</option>
-        </select>
-
-        <label class="consentimento">
-          <input type="checkbox" name="consentimento" required>
-          <span>Li a <a href="privacidade.html" target="_blank" rel="noopener">Política de privacidade</a> e aceito que o Abanô use meus dados para me enviar e-mails sobre o projeto. Tenho 18 anos ou mais.</span>
-        </label>
-
-        <p id="form-aviso" class="form-aviso" role="alert" hidden></p>
-        <button type="submit" class="btn">Entrar na lista de espera</button>
-        <p class="mini">Nada de spam. Você pode sair ou <a href="seus-dados.html">pedir a exclusão dos seus dados</a> quando quiser.</p>
-      </form>
-    </div>
-  </section>
-
-  <section id="anuncie" style="padding-top:24px">
-    <div class="wrap">
-      <div class="anuncie">
-        <div>
-          <span class="eyebrow">Para quem organiza e atende</span>
-          <h2>Tem um evento ou negócio pet? Divulgue no Abanô.</h2>
-          <p>Encontro de raça, feira de adoção, hotel, clínica, banho e tosa: o Abanô é onde o tutor vai procurar o que fazer e onde levar o pet. Coloque o seu evento ou serviço na frente de quem está perto de você.</p>
-          <ul class="tipos" aria-label="Quem pode divulgar">
-            <li>Eventos e encontros</li>
-            <li>Hospedagem e creches</li>
-            <li>Veterinários e clínicas</li>
-            <li>Banho e tosa</li>
-            <li>Adestramento</li>
-            <li>Lojas e marcas</li>
-            <li>ONGs e protetores</li>
-          </ul>
-          <ol class="passos">
-            <li><span>Conte o que você quer divulgar e onde.</span></li>
-            <li><span>A gente responde por e-mail ou WhatsApp com as opções.</span></li>
-            <li><span>Seu anúncio entra no Abanô para os tutores da região.</span></li>
-          </ol>
-        </div>
-
-        <div>
-          <form id="form-anuncie" name="anuncie">
-            <p class="escondido" aria-hidden="true"><label>Não preencha: <input name="campo-robo" tabindex="-1" autocomplete="off"></label></p>
-
-            <label for="a-tipo">O que você quer divulgar?</label>
-            <select id="a-tipo" name="tipo" required>
-              <option value="">Escolha uma opção</option>
-              <option value="evento">Evento ou encontro</option>
-              <option value="hospedagem">Hospedagem ou creche</option>
-              <option value="veterinario">Veterinário ou clínica</option>
-              <option value="banho_tosa">Banho e tosa</option>
-              <option value="adestramento">Adestramento</option>
-              <option value="loja">Loja ou marca</option>
-              <option value="ong">ONG ou protetor</option>
-              <option value="outro">Outro</option>
-            </select>
-
-            <label for="a-negocio">Nome do evento ou do negócio</label>
-            <input id="a-negocio" name="negocio" type="text" required maxlength="160" autocomplete="organization">
-
-            <label for="a-cidade">Cidade / Estado</label>
-            <input id="a-cidade" name="cidade" type="text" required maxlength="120" placeholder="Ex.: Belo Horizonte / MG">
-
-            <label for="a-nome">Seu nome</label>
-            <input id="a-nome" name="nome" type="text" required maxlength="120" autocomplete="name">
-
-            <div class="duas">
-              <div>
-                <label for="a-email">Seu e-mail</label>
-                <input id="a-email" name="email" type="email" required maxlength="254" autocomplete="email">
-              </div>
-              <div>
-                <label for="a-whatsapp">WhatsApp <span class="opcional">(opcional)</span></label>
-                <input id="a-whatsapp" name="whatsapp" type="tel" maxlength="30" autocomplete="tel" placeholder="(21) 99999-9999">
-              </div>
-            </div>
-
-            <label for="a-mensagem">Conte um pouco <span class="opcional">(opcional)</span></label>
-            <textarea id="a-mensagem" name="mensagem" maxlength="2000" placeholder="Data do evento, o que você oferece, link do Instagram..."></textarea>
-
-            <label class="consentimento">
-              <input type="checkbox" name="ciente" required>
-              <span>Li a <a href="privacidade.html#finalidades" target="_blank" rel="noopener">Política de privacidade</a> e quero que o Abanô entre em contato sobre a divulgação.</span>
-            </label>
-
-            <p id="anuncie-aviso" class="form-aviso" role="alert" hidden></p>
-            <button type="submit" class="btn">Quero divulgar</button>
-          </form>
-
-          <div id="anuncie-ok" class="anuncie-ok" tabindex="-1" role="status" hidden>
-            <h3>Recebemos! 🐾</h3>
-            <p>Obrigado pelo interesse. A gente responde em breve pelo e-mail ou WhatsApp que você informou.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 </main>
 
 <footer class="rodape">
@@ -511,8 +313,8 @@
     <div>
       <h4>Abanô</h4>
       <ul>
-        <li><a href="#lista">Lista de espera</a></li>
-        <li><a href="#anuncie">Divulgue no Abanô</a></li>
+        <li><a href="cadastro.html">Cadastre-se</a></li>
+        <li><a href="anuncie.html">Divulgue no Abanô</a></li>
         <li><a href="https://www.instagram.com/juninhoohusky/" target="_blank" rel="noopener">Instagram @juninhoohusky</a></li>
         <li><a href="https://www.youtube.com/@JuninhoOhusky" target="_blank" rel="noopener">YouTube Juninho O Husky</a></li>
         <li><a href="privacidade.html">Política de privacidade</a></li>
