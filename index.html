@@ -66,8 +66,8 @@
   .rotativo > span{grid-area:1/1;justify-self:start;white-space:nowrap;padding-right:.1em;translate:0 110%;opacity:0;transition:translate .75s var(--mola-salto),opacity .45s var(--mola)}
   .rotativo > span.ativa{translate:0 0;opacity:1}
   .rotativo > span.saindo{translate:0 -110%;opacity:0}
-  .rotativo > span.final{color:var(--tinta)}
-  .rotativo > span.final em{font-style:normal;color:var(--marca)}
+  .rotativo > span.fim{color:var(--tinta)}   /* não usar "final": é o nome da seção de chamada lá embaixo */
+  .rotativo > span.fim em{font-style:normal;color:var(--marca)}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
   .lead{font-size:clamp(18px,2vw,21px);line-height:1.5;color:var(--suave);max-width:540px}
@@ -329,7 +329,7 @@
       <span class="selo-topo surge" style="--i:0"><b>No ar</b> Calculadora de custos e Guia do Husky</span>
       <h1 class="titulo-hero surge" style="--i:1">
         <span class="linha">Tem pet?</span>
-        <span class="linha" aria-hidden="true">Tem <span class="rotativo" id="rotativo"><span class="ativa">eventos.</span><span>hospedagem.</span><span>veterinário.</span><span>adoção.</span><span>doador.</span><span class="final"><em>no Abanô.</em></span></span></span>
+        <span class="linha" aria-hidden="true">Tem <span class="rotativo" id="rotativo"><span class="ativa">eventos.</span><span>hospedagem.</span><span>veterinário.</span><span>adoção.</span><span>doador.</span><span class="fim"><em>no Abanô.</em></span></span></span>
         <span class="sr">Tem no Abanô.</span>
       </h1>
       <p class="lead surge" style="--i:2">Tudo pra cães e gatos num lugar só, perto de você. Pare de procurar em dez sites e cuide do seu pet com tranquilidade.</p>
