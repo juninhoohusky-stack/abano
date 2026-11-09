@@ -16,7 +16,7 @@ const VERSAO_POLITICA = "2026-11-08";
 
 /* Botão "Continuar com o Google" na lista de espera.
    Deixe false até configurar o Google no Supabase (veja o README). */
-const LOGIN_GOOGLE_ATIVO = false;
+const LOGIN_GOOGLE_ATIVO = true;
 /* ======================= fim da área ===================== */
 
 (function () {
