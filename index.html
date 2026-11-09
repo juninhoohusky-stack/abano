@@ -41,8 +41,10 @@
   .titulo-secao p{font-size:19px;color:var(--suave)}
 
   /* ---------- Revelação na rolagem ---------- */
-  [data-revelar]{opacity:0;translate:0 28px;filter:blur(6px);transition:opacity .8s var(--mola),translate .9s var(--mola-salto),filter .8s var(--mola);transition-delay:calc(var(--d,0) * 90ms)}
-  [data-revelar].visivel{opacity:1;translate:0 0;filter:none}
+  /* Só posição e transparência: desfoque animado faz o Chrome às vezes
+     desenhar um retângulo sólido atrás do texto */
+  [data-revelar]{opacity:0;translate:0 28px;transition:opacity .8s var(--mola),translate .9s var(--mola-salto);transition-delay:calc(var(--d,0) * 90ms)}
+  [data-revelar].visivel{opacity:1;translate:0 0}
 
   /* ---------- 1. Abertura ---------- */
   .hero{position:relative;display:grid;grid-template-columns:1.18fr .82fr;gap:32px;align-items:center;min-height:min(760px,calc(100svh - 64px));padding-top:48px;padding-bottom:72px}
@@ -60,9 +62,10 @@
   .titulo-hero{font-size:clamp(42px,5.2vw,70px);line-height:1;letter-spacing:-.04em;word-spacing:.08em;margin:26px 0 24px}
   .titulo-hero .linha{display:block}
   .rotativo{display:inline-grid;vertical-align:bottom;position:relative;height:1.08em;overflow:hidden;color:var(--marca);transition:width .6s var(--mola);padding-bottom:.06em}
-  .rotativo > span{grid-area:1/1;justify-self:start;white-space:nowrap;padding-right:.1em;translate:0 110%;opacity:0;filter:blur(8px);transition:translate .75s var(--mola-salto),opacity .5s var(--mola),filter .6s var(--mola)}
-  .rotativo > span.ativa{translate:0 0;opacity:1;filter:none}
-  .rotativo > span.saindo{translate:0 -110%;opacity:0;filter:blur(8px)}
+  /* Palavra que gira: entra de baixo e sai por cima (sem desfoque, ver acima) */
+  .rotativo > span{grid-area:1/1;justify-self:start;white-space:nowrap;padding-right:.1em;translate:0 110%;opacity:0;transition:translate .75s var(--mola-salto),opacity .45s var(--mola)}
+  .rotativo > span.ativa{translate:0 0;opacity:1}
+  .rotativo > span.saindo{translate:0 -110%;opacity:0}
   .rotativo > span.final{color:var(--tinta)}
   .rotativo > span.final em{font-style:normal;color:var(--marca)}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
