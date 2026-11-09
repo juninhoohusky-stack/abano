@@ -4,8 +4,8 @@
   "description": "Tem pet? Tem no Abanô.",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#F2F2F7",
-  "theme_color": "#1F5A4F",
+  "background_color": "#FFF7F5",
+  "theme_color": "#D10F5E",
   "lang": "pt-BR",
   "icons": [
     { "src": "icone-192.png", "sizes": "192x192", "type": "image/png" },

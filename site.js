@@ -81,27 +81,30 @@
   window.addEventListener('resize', function () { colocar(atual, true); });
 })();
 
-/* ---------- Páginas internas: movimento com Motion + neurodesign ----------
-   Usa o Motion (window.Motion, carregado antes deste arquivo). Os blocos do <main>
-   entram com mola quando aparecem na tela; o título entra palavra por palavra;
-   listas e ícones entram em sequência. Também liga a aura, a luz nos cartões e o
-   brilho no botão principal.
-   Fica de fora: a página inicial (tem a própria animação), páginas sem Motion
+/* ---------- Páginas internas: movimento com GSAP + neurodesign ----------
+   Usa o GSAP (window.gsap, com ScrollTrigger e SplitText, carregados antes deste
+   arquivo). Os blocos do <main> entram com mola quando aparecem na tela; o título
+   entra palavra por palavra; listas e ícones entram em sequência. Também liga a
+   aura, a luz nos cartões e o brilho no botão principal.
+   Fica de fora: a página inicial (tem a própria animação), páginas sem GSAP
    e quem pediu menos movimento no aparelho. */
 (function () {
   var main = document.querySelector('main');
-  var M = window.Motion;
-  if (!main || !M || !M.animate || document.querySelector('[data-revelar]')) return;
-  if (!('IntersectionObserver' in window)) return;
+  var G = window.gsap;
+  if (!main || !G || document.querySelector('[data-revelar]')) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var ST = window.ScrollTrigger, Split = window.SplitText;
+  if (ST) G.registerPlugin(ST);
+  if (Split) G.registerPlugin(Split);
+
+  // Tempos e curvas num lugar só (o movimento do site inteiro fala a mesma língua)
+  var DURACAO = 0.8, MOLA = 'back.out(1.4)', SALTO = 'back.out(2.2)', SUAVE = 'power3.out';
+  var PASSO_PALAVRA = 0.06, PASSO_ITEM = 0.07, PASSO_BLOCO = 0.08;
 
   var alturaTela = window.innerHeight || 800;
   // Se a página já foi desenhada, o que está na tela fica como está (sem piscar)
   var jaPintou = performance.getEntriesByType && performance.getEntriesByType('paint').length > 0;
   var lista = function (x) { return Array.prototype.slice.call(x); };
-  var mola = { type: 'spring', bounce: 0.32, duration: 0.9 };
-  var molaSalto = { type: 'spring', bounce: 0.55, duration: 0.7 };
-  function com(base, extra) { var o = {}, k; for (k in base) o[k] = base[k]; for (k in extra) o[k] = extra[k]; return o; }
 
   // ---------- Neurodesign ----------
   // Aura: brilhos que "respiram" atrás do topo
@@ -125,7 +128,7 @@
   lista(main.querySelectorAll('.btn:not(.btn-sec)')).forEach(function (b) { b.classList.add('brilha'); });
 
   // ---------- Quais blocos animar ----------
-  // Antes do primeiro desenho, as entradas antigas (.surge) passam para o Motion
+  // Antes do primeiro desenho, as entradas antigas (.surge) passam para o GSAP
   if (!jaPintou) lista(main.querySelectorAll('.surge')).forEach(function (el) { el.classList.remove('surge'); });
 
   var blocos = [];
@@ -148,121 +151,75 @@
   juntar(main, 0);
   if (!blocos.length) return;
 
-  // Título: cada palavra vira um <span> para entrar em sequência
-  function quebrarPalavras(h) {
-    var palavras = [];
-    h.setAttribute('aria-label', h.textContent.replace(/\s+/g, ' ').trim());
-    (function andar(no) {
-      lista(no.childNodes).forEach(function (n) {
-        if (n.nodeType === 3) {
-          if (!n.textContent.trim()) return;
-          var frag = document.createDocumentFragment();
-          n.textContent.split(/(\s+)/).forEach(function (p) {
-            if (!p) return;
-            if (!p.trim()) { frag.appendChild(document.createTextNode(p)); return; }
-            var s = document.createElement('span');
-            s.className = 'palavra';
-            s.setAttribute('aria-hidden', 'true');
-            s.textContent = p;
-            frag.appendChild(s);
-            palavras.push(s);
-          });
-          no.replaceChild(frag, n);
-        } else if (n.nodeType === 1 && !/^(BR|SVG|IMG)$/i.test(n.tagName)) {
-          andar(n);
-        }
-      });
-    })(h);
-    return palavras;
-  }
-
-  function esconder(nos, transform) {
-    nos.forEach(function (n) {
-      n.style.transition = 'none';
-      n.style.opacity = '0';
-      n.style.transform = transform;
-    });
-  }
-  function limpar(nos) {
-    nos.forEach(function (n) { n.style.opacity = ''; n.style.transform = ''; n.style.transition = ''; });
-  }
-
   // ---------- Estado inicial (escondido) ----------
   var pendentes = [];
   blocos.forEach(function (el) {
     if (jaPintou && el.getBoundingClientRect().top < alturaTela) return;
-    var info = { el: el, palavras: null, itens: [], icones: [], pop: [] };
-    if (el.tagName === 'H1') {
-      info.palavras = quebrarPalavras(el);
-      esconder(info.palavras, 'translateY(24px)');
+    var info = { el: el, split: null, palavras: null, itens: [], icones: [], pop: [] };
+    if (el.tagName === 'H1' && Split) {
+      // Título palavra por palavra; o texto original volta inteiro no fim (leitor de tela e Google)
+      info.split = new Split(el, { type: 'words', wordsClass: 'palavra' });
+      info.palavras = info.split.words;
+      G.set(info.palavras, { opacity: 0, y: 24 });
     } else {
-      esconder([el], 'translateY(28px)');
+      G.set(el, { opacity: 0, y: 28 });
     }
     // Itens de lista e cartões lado a lado entram em sequência
     var itens = el.matches('.familia, .atalhos') ? el.children
       : el.querySelectorAll(':scope > li, :scope ul > li, :scope .familia > *, :scope .atalhos > *');
     // Listas com animação própria (ex.: resultado da calculadora) ficam de fora
     info.itens = lista(itens).filter(function (it) { return !it.closest('[data-motion-proprio]'); });
-    esconder(info.itens, 'translateY(14px)');
+    if (info.itens.length) G.set(info.itens, { opacity: 0, y: 14 });
     // O "check" de cada item aparece com um pulinho (sensação de conquista)
     info.icones = info.itens.map(function (li) { return li.querySelector(':scope > svg'); }).filter(Boolean);
-    esconder(info.icones, 'scale(0)');
+    if (info.icones.length) G.set(info.icones, { opacity: 0, scale: 0 });
     // Ícone do serviço entra girando de leve
     info.pop = lista(el.querySelectorAll('.ico'));
-    esconder(info.pop, 'scale(.4) rotate(-14deg)');
+    if (info.pop.length) G.set(info.pop, { opacity: 0, scale: 0.4, rotation: -14 });
     el.__neuro = info;
     pendentes.push(info);
   });
   if (!pendentes.length) return;
 
-  // ---------- Entrada com Motion ----------
+  // ---------- Entrada ----------
+  function terminar(info) {
+    var todos = (info.palavras || [info.el]).concat(info.itens, info.icones, info.pop);
+    G.set(todos, { clearProps: 'opacity,transform' });
+    if (info.split) { info.split.revert(); info.split = null; }
+  }
+
   function mostrar(info, ordem, semAnimar) {
     var k = pendentes.indexOf(info);
     if (k < 0) return;
     pendentes.splice(k, 1);
-    obs.unobserve(info.el);
+    if (semAnimar) { terminar(info); return; }
 
-    var alvo = info.palavras || [info.el];
-    var todos = alvo.concat(info.itens, info.icones, info.pop);
-    if (semAnimar) { limpar(todos); return; }
-
-    var base = ordem * 0.08;
-    var anims = [
-      M.animate(alvo, { opacity: [0, 1], y: [info.palavras ? 24 : 28, 0] },
-        com(mola, { delay: info.palavras ? M.stagger(0.06, { startDelay: base }) : base }))
-    ];
-    if (info.itens.length) anims.push(M.animate(info.itens, { opacity: [0, 1], y: [14, 0] },
-      com(mola, { delay: M.stagger(0.07, { startDelay: base + 0.18 }) })));
-    if (info.icones.length) anims.push(M.animate(info.icones, { opacity: [0, 1], scale: [0, 1], rotate: [-25, 0] },
-      com(molaSalto, { delay: M.stagger(0.07, { startDelay: base + 0.32 }) })));
-    if (info.pop.length) anims.push(M.animate(info.pop, { opacity: [0, 1], scale: [0.4, 1], rotate: [-14, 0] },
-      com(molaSalto, { delay: base + 0.12 })));
-
-    Promise.all(anims.map(function (a) { return a.finished; })).then(function () { limpar(todos); }, function () { limpar(todos); });
+    var tl = G.timeline({ delay: ordem * PASSO_BLOCO, defaults: { duration: DURACAO, ease: MOLA }, onComplete: function () { terminar(info); } });
+    tl.to(info.palavras || info.el, { opacity: 1, y: 0, stagger: info.palavras ? PASSO_PALAVRA : 0, ease: info.palavras ? SUAVE : MOLA });
+    if (info.pop.length) tl.to(info.pop, { opacity: 1, scale: 1, rotation: 0, ease: SALTO, duration: 0.7 }, 0.12);
+    if (info.itens.length) tl.to(info.itens, { opacity: 1, y: 0, stagger: PASSO_ITEM }, 0.18);
+    if (info.icones.length) tl.to(info.icones, { opacity: 1, scale: 1, ease: SALTO, duration: 0.6, stagger: PASSO_ITEM }, 0.32);
   }
 
-  var obs = new IntersectionObserver(function (entradas) {
-    var ordem = 0;
-    entradas.forEach(function (en) {
-      var info = en.target.__neuro;
-      if (!info) return;
-      if (en.isIntersecting) mostrar(info, ordem++);
-      else if (en.boundingClientRect.top < 0) mostrar(info, 0, true);   // já ficou para trás
+  // Garantia: se a animação não rodar (aba aberta em segundo plano, conexão lenta),
+  // o que está na tela aparece mesmo assim — o texto nunca fica invisível
+  setTimeout(function () {
+    pendentes.slice().forEach(function (info) {
+      if (info.el.getBoundingClientRect().top < window.innerHeight) mostrar(info, 0, true);
     });
-  }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
-  pendentes.forEach(function (info) { obs.observe(info.el); });
+  }, 2500);
 
-  // Pulos na página (link para uma seção, vídeo que carrega e empurra o texto)
-  // podem levar um bloco de baixo para cima da tela sem ele passar por ela.
-  var conferindo = false;
-  window.addEventListener('scroll', function () {
-    if (conferindo || !pendentes.length) return;
-    conferindo = true;
-    requestAnimationFrame(function () {
-      conferindo = false;
-      pendentes.slice().forEach(function (info) {
-        if (info.el.getBoundingClientRect().bottom < 0) mostrar(info, 0, true);
-      });
+  // Revela em grupos quando entram na tela; ao pular a página (link, vídeo que
+  // empurra o texto), os blocos que ficaram para trás aparecem sem animar
+  if (ST) {
+    ST.batch(pendentes.map(function (i) { return i.el; }), {
+      start: 'top 92%',
+      once: true,
+      onEnter: function (els) { els.forEach(function (el, i) { mostrar(el.__neuro, i); }); },
+      onEnterBack: function (els) { els.forEach(function (el) { mostrar(el.__neuro, 0, true); }); }
     });
-  }, { passive: true });
+    window.addEventListener('load', function () { ST.refresh(); });
+  } else {
+    pendentes.slice().forEach(function (info, i) { mostrar(info, i); });
+  }
 })();

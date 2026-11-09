@@ -11,7 +11,7 @@
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" content="#1F5A4F">
+<meta name="theme-color" content="#D10F5E">
 <link rel="canonical" href="https://abano.com.br/">
 <meta property="og:site_name" content="Abanô">
 <meta property="og:locale" content="pt_BR">
@@ -21,10 +21,12 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
-<link rel="preload" href="fontes/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261109e">
-<script src="https://cdn.jsdelivr.net/npm/motion@12.23.12/dist/motion.js" defer></script>
-<script src="site.js?v=20261109e" defer></script>
+<link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261110a">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
+<script src="site.js?v=20261110a" defer></script>
 <style>
   /* =========================================================
      Página inicial — neurodesign + motion
@@ -81,8 +83,8 @@
   .avatares{display:flex}
   .avatares span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;margin-left:-9px;border:2.5px solid var(--fundo);font-size:13px;font-weight:700;color:#fff;background:var(--marca)}
   .avatares span:first-child{margin-left:0}
-  .avatares span:nth-child(2){background:#4E7A71}.avatares span:nth-child(3){background:#2F6E62}
-  .avatares span:nth-child(4){background:#6E9B90}.avatares span:nth-child(5){background:var(--acento)}.avatares span:nth-child(6){background:#C98A6A}
+  .avatares span:nth-child(2){background:#F43F7F}.avatares span:nth-child(3){background:#FF5B3D}
+  .avatares span:nth-child(4){background:#FF8A1E}.avatares span:nth-child(5){background:var(--acento)}.avatares span:nth-child(6){background:#B7E12F}
   .prova b{color:var(--tinta)}
 
   /* ---------- Palco: o Juninho (3D) passeia pelo lado direito do banner ----------
@@ -179,13 +181,13 @@
   .barrinhas i:nth-child(6){animation-delay:-.45s;animation-duration:1.2s}.barrinhas i:nth-child(7){animation-delay:-.9s}
   @keyframes barra{0%{transform:scaleY(.25)}100%{transform:scaleY(1)}}
 
-  /* Entrada do palco. Sem Motion, o Juninho fica parado no meio do chão e as etiquetas esmaecem (reserva). */
-  .palco:not(.com-motion) .cao{left:21%}
+  /* Entrada do palco. Sem GSAP, o Juninho fica parado no meio do chão e as etiquetas esmaecem (reserva). */
+  .palco:not(.com-animacao) .cao{left:21%}
   @media (prefers-reduced-motion:no-preference){
     .palco .flutua{animation:boia var(--t,6s) ease-in-out infinite,chegar .7s var(--mola) calc(1.2s + var(--k,0) * .12s) both}
-    .palco.com-motion .flutua{animation:boia var(--t,6s) ease-in-out infinite}
+    .palco.com-animacao .flutua{animation:boia var(--t,6s) ease-in-out infinite}
     .palco .cao{animation:chegar .6s var(--mola) 1.1s both}
-    .palco.com-motion .cao{animation:none}
+    .palco.com-animacao .cao{animation:none}
     @keyframes chegar{from{opacity:0}}
   }
 
@@ -271,12 +273,12 @@
   /* ---------- 6. Família (prova social) ---------- */
   .familia{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;padding:56px;border-radius:32px;background:var(--faixa);color:var(--sobre-faixa);position:relative;overflow:hidden}
   .familia::after{content:"";position:absolute;right:-140px;top:-140px;width:420px;height:420px;border-radius:50%;border:1px solid rgba(255,255,255,.12);box-shadow:0 0 0 70px rgba(255,255,255,.03),0 0 0 140px rgba(255,255,255,.02);pointer-events:none;animation:respira 12s ease-in-out infinite}
-  .familia .eyebrow{color:#F2B9A2}
+  .familia .eyebrow{color:#E4FF8F}
   .familia h2{color:#fff;font-size:clamp(30px,3.8vw,46px);margin:12px 0 16px}
   .familia p{font-size:17px;opacity:.9;margin-bottom:26px}
   .familia .acoes{margin-top:0}
-  .familia .btn{background:#fff;color:#1E4D45}
-  .familia .btn:hover{background:#EEF3F1}
+  .familia .btn{background:#fff;color:#C40E58}
+  .familia .btn:hover{background:#FFE9F1}
   .familia .btn-sec{background:rgba(255,255,255,.14);color:#fff}
   .familia .btn-sec:hover{background:rgba(255,255,255,.22)}
   .bichos{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:relative;z-index:1}
@@ -356,12 +358,10 @@
 
 <header class="topo">
   <div class="topo-in">
-    <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1E4D45"/><g fill="#F6F4EF"><ellipse cx="16" cy="19.6" rx="5" ry="4.2"/><circle cx="9.8" cy="13.6" r="2.3"/><circle cx="13.7" cy="9.6" r="2.3"/><circle cx="18.3" cy="9.6" r="2.3"/><circle cx="22.2" cy="13.6" r="2.3"/></g></svg>
-      Abanô
-    </a>
+    <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial"><img src="logo-pata.svg" alt="" width="38" height="38"><span class="logo-nome" aria-hidden="true">aban<span class="logo-o">o<svg viewBox="0 0 26 13" aria-hidden="true"><ellipse cx="4.6" cy="8.2" rx="3.6" ry="3.9"/><ellipse cx="13" cy="4.4" rx="3.7" ry="4.1"/><ellipse cx="21.4" cy="8.2" rx="3.6" ry="3.9"/></svg></span></span></a>
     <nav class="abas" aria-label="Seções do site">
       <span class="aba-pilula" aria-hidden="true"></span>
+      <a href="comunidade/" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-3.5 3v-3H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/><path d="M17 9.5h3a2 2 0 0 1 2 2v5.5a2 2 0 0 1-2 2h-1v2.5L16 19h-3.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 5h11a2.5 2.5 0 0 1 2.5 2.5v6A2.5 2.5 0 0 1 15 16H9.3l-3.6 3.1a.6.6 0 0 1-1-.45V16H4a2.5 2.5 0 0 1-2.5-2.5v-6A2.5 2.5 0 0 1 4 5z"/><path d="M19 9a2.5 2.5 0 0 1 2.5 2.5V17a2.5 2.5 0 0 1-2.5 2.5h-.6v2a.6.6 0 0 1-1 .45L14.6 19.5H12a2.5 2.5 0 0 1-2-1h5a3.5 3.5 0 0 0 3.5-3.5V9z"/></svg><span>Comunidade</span></a>
       <div class="grupo-menu">
         <button type="button" class="aba aba-menu" aria-expanded="false" aria-controls="menu-servicos"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="3.5" y="12.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="12.5" width="8" height="8" rx="2.2"/></svg><span>Serviços</span><svg class="seta" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></button>
         <div class="submenu" id="menu-servicos">
@@ -377,12 +377,13 @@
       </div>
       <a href="calculadora.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.2" y="2.2" width="15.6" height="19.6" rx="3.6" fill="currentColor"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01" fill="none" stroke-width="2" stroke-linecap="round" style="stroke:var(--superficie)"/></svg><span>Calculadora</span></a>
       <a href="husky-solta-muito-pelo.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.3 5.6A3.3 3.3 0 0 1 6.6 2.3h14.1v16.3H6.6a1.6 1.6 0 1 0 0 3.2h14.1v1.4H6.6a3.3 3.3 0 0 1-3.3-3.3z"/></svg><span>Guia do Husky</span></a>
-      <a href="novidades.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.6 2.4H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8a6.6 6.6 0 0 0-6.6 6.6v5.9l-1.8 2.9a.8.8 0 0 0 .7 1.2h15.4a.8.8 0 0 0 .7-1.2l-1.8-2.9V9.4A6.6 6.6 0 0 0 12 2.8z"/><path d="M9.5 20.6a2.6 2.6 0 0 0 5 0z"/></svg><span>Novidades</span></a>
-      <a href="sobre.html" class="aba so-desktop"><span>Nossa história</span></a>
-      <a href="anuncie.html" class="aba so-desktop"><span>Divulgue</span></a>
+      <a href="novidades.html" class="aba so-desktop"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.6 2.4H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8a6.6 6.6 0 0 0-6.6 6.6v5.9l-1.8 2.9a.8.8 0 0 0 .7 1.2h15.4a.8.8 0 0 0 .7-1.2l-1.8-2.9V9.4A6.6 6.6 0 0 0 12 2.8z"/><path d="M9.5 20.6a2.6 2.6 0 0 0 5 0z"/></svg><span>Novidades</span></a>
+      <a href="sobre.html" class="aba so-desktop aba-extra"><span>Nossa história</span></a>
+      <a href="anuncie.html" class="aba so-desktop aba-extra"><span>Divulgue</span></a>
       <div class="grupo-menu so-celular">
         <button type="button" class="aba aba-menu" aria-expanded="false" aria-controls="menu-mais"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="7.8" cy="12" r=".6" fill="currentColor"/><circle cx="12" cy="12" r=".6" fill="currentColor"/><circle cx="16.2" cy="12" r=".6" fill="currentColor"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.6" fill="currentColor"/><circle cx="7.8" cy="12" r="1.3" style="fill:var(--superficie)"/><circle cx="12" cy="12" r="1.3" style="fill:var(--superficie)"/><circle cx="16.2" cy="12" r="1.3" style="fill:var(--superficie)"/></svg><span>Mais</span></button>
         <div class="submenu" id="menu-mais">
+          <a href="novidades.html" class="so-celular-item"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.6 2.4H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg></span>Novidades</a>
           <a href="sobre.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/><path d="M9.5 11.5h5"/></svg></span>Nossa história</a>
           <a href="anuncie.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.2v3.6a1 1 0 0 0 1 1H7l7 4.4V4.8L7 9.2H4.5a1 1 0 0 0-1 1z"/><path d="M17.6 9.3a3.9 3.9 0 0 1 0 5.4"/></svg></span>Divulgue no Abanô</a>
           <a href="cadastro.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>Cadastre-se</a>
@@ -670,10 +671,7 @@
 <footer class="rodape">
   <div class="rodape-in">
     <div class="rodape-marca">
-      <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial">
-        <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1E4D45"/><g fill="#F6F4EF"><ellipse cx="16" cy="19.6" rx="5" ry="4.2"/><circle cx="9.8" cy="13.6" r="2.3"/><circle cx="13.7" cy="9.6" r="2.3"/><circle cx="18.3" cy="9.6" r="2.3"/><circle cx="22.2" cy="13.6" r="2.3"/></g></svg>
-        Abanô
-      </a>
+      <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial"><img src="logo-pata.svg" alt="" width="38" height="38"><span class="logo-nome" aria-hidden="true">aban<span class="logo-o">o<svg viewBox="0 0 26 13" aria-hidden="true"><ellipse cx="4.6" cy="8.2" rx="3.6" ry="3.9"/><ellipse cx="13" cy="4.4" rx="3.7" ry="4.1"/><ellipse cx="21.4" cy="8.2" rx="3.6" ry="3.9"/></svg></span></span></a>
       <p>Tudo pra cães e gatos, num lugar só: eventos, hospedagem, veterinários, adoção e cuidados perto de você.</p>
     </div>
     <div>
@@ -798,11 +796,12 @@
     }, { passive: true });
   }
 
-  // 7) Juninho passeia pelo palco (Motion). Ele só anda dentro do palco, que fica
+  // 7) Juninho passeia pelo palco (GSAP). Ele só anda dentro do palco, que fica
   //    ao lado do texto (no celular, abaixo dele): nunca passa por cima do título.
   document.addEventListener("DOMContentLoaded", function () {
-    var M = window.Motion, palco = document.getElementById("palco");
-    if (!M || !M.animate || !palco || calmo) return;
+    var G = window.gsap, palco = document.getElementById("palco");
+    if (!G || !palco || calmo) return;
+    if (window.ScrollTrigger) G.registerPlugin(window.ScrollTrigger);
     var hero = palco.closest(".hero");
     var colunaTexto = hero.firstElementChild;
     var cao = document.getElementById("cao");
@@ -821,12 +820,12 @@
     var espera = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
     var sorteio = function (a, b) { return a + Math.random() * (b - a); };
 
-    palco.classList.add("com-motion");
+    palco.classList.add("com-animacao");
 
     // ---------- Posição e direção ----------
     var x = 0, olhandoEsquerda = true, andando = false;
     function limites() { return { min: 0, max: Math.max(0, palco.clientWidth - cao.offsetWidth) }; }
-    function colocar(px) { x = px; cao.style.transform = "translateX(" + px.toFixed(1) + "px)"; }
+    function colocar(px) { x = px; G.set(cao, { x: px }); }
     function virar(paraEsquerda) {
       olhandoEsquerda = paraEsquerda;
       cao.style.setProperty("--vira", paraEsquerda ? 1 : -1);   // a imagem olha para a esquerda
@@ -845,8 +844,9 @@
       p.style.top = (chao.clientHeight * 0.62 + (lado % 2 ? 4 : -4)) + "px";
       p.style.rotate = (olhandoEsquerda ? -90 : 90) + "deg";
       chao.appendChild(p);
-      M.animate(p, { opacity: [0, 0.38, 0], scale: [0.6, 1, 1] }, { duration: 2.6, times: [0, 0.08, 1], ease: "easeOut" })
-        .finished.then(function () { p.remove(); });
+      G.timeline({ onComplete: function () { p.remove(); } })
+        .fromTo(p, { opacity: 0, scale: 0.6 }, { opacity: 0.38, scale: 1, duration: 0.21, ease: "power2.out" })
+        .to(p, { opacity: 0, duration: 2.39, ease: "power1.in" });
     }
 
     // ---------- Andar até um ponto ----------
@@ -861,7 +861,9 @@
       var velocidade = passoPx / (ciclo / 2);     // px por segundo
       var de = x, dur = Math.abs(dist) / velocidade;
       var passos = setInterval(soltarPegada, ciclo * 500);   // uma pegada a cada meio ciclo (cada pisada)
-      return M.animate(cao, { x: [de, alvo] }, { duration: dur, ease: "linear" }).finished.then(function () {
+      return new Promise(function (pronto) {
+        G.fromTo(cao, { x: de }, { x: alvo, duration: dur, ease: "none", onComplete: pronto });
+      }).then(function () {
         clearInterval(passos);
         colocar(alvo);
         andando = false;
@@ -900,8 +902,9 @@
       cao._feliz = setTimeout(function () { cao.classList.remove("feliz"); }, ms || 1600);
     }
     function pulinho() {
-      M.animate(corpo, { y: [0, -26, 0] }, { duration: 0.6, ease: [0.34, 1.3, 0.64, 1] })
-        .finished.then(function () { corpo.style.transform = ""; });
+      G.timeline({ onComplete: function () { G.set(corpo, { clearProps: "transform" }); } })
+        .to(corpo, { y: -26, duration: 0.26, ease: "power2.out" })
+        .to(corpo, { y: 0, duration: 0.34, ease: "back.in(1.2)" });
     }
     function soltarCoracoes() {
       for (var i = 0; i < 4; i++) (function (i) {
@@ -910,14 +913,19 @@
         h.innerHTML = coracao;
         h.style.left = (olhandoEsquerda ? 20 : 80) + "%";
         cao.appendChild(h);
-        M.animate(h, { opacity: [0, 1, 0], y: [0, -70 - Math.random() * 40], x: [0, (Math.random() - 0.5) * 80], scale: [0.4, 1.05, 0.8], rotate: [0, (Math.random() - 0.5) * 40] },
-          { duration: 1.3, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }).finished.then(function () { h.remove(); });
+        G.timeline({ delay: i * 0.12, onComplete: function () { h.remove(); } })
+          .fromTo(h, { opacity: 0, x: 0, y: 0, scale: 0.4, rotation: 0 },
+            { y: -70 - Math.random() * 40, x: (Math.random() - 0.5) * 80, rotation: (Math.random() - 0.5) * 40, duration: 1.3, ease: "expo.out" })
+          .to(h, { opacity: 1, scale: 1.05, duration: 0.35, ease: "power2.out" }, 0)
+          .to(h, { opacity: 0, scale: 0.8, duration: 0.95, ease: "power1.in" }, 0.35);
       })(i);
     }
     function latir() {
       balao.style.left = olhandoEsquerda ? "-4%" : "62%";
       balao.style.borderRadius = olhandoEsquerda ? "14px 14px 14px 4px" : "14px 14px 4px 14px";
-      M.animate(balao, { opacity: [0, 1, 1, 0], y: [8, 0, 0, -6], scale: [0.7, 1, 1, 0.95] }, { duration: 1.4, times: [0, 0.12, 0.8, 1] });
+      G.timeline()
+        .fromTo(balao, { opacity: 0, y: 8, scale: 0.7 }, { opacity: 1, y: 0, scale: 1, duration: 0.17, ease: "back.out(2)" })
+        .to(balao, { opacity: 0, y: -6, scale: 0.95, duration: 0.28, ease: "power1.in" }, "+=0.95");
       pulinho();
       feliz(1200);
     }
@@ -944,7 +952,7 @@
         // entra andando pela direita do palco
         colocar(L.max + cao.offsetWidth * 0.6);
         cao.style.opacity = "0";
-        M.animate(cao, { opacity: [0, 1] }, { duration: 0.6, delay: 0.5 }).finished.then(function () { cao.style.opacity = ""; });
+        G.to(cao, { opacity: 1, duration: 0.6, delay: 0.5, onComplete: function () { cao.style.opacity = ""; } });
         await espera(500);
         await andarAte(L.max * 0.45);
       } else {
@@ -976,41 +984,45 @@
       cartoes.forEach(function (c, i) {
         c.style.opacity = "0";
         c.style.transition = "none";
-        M.animate(c, { opacity: [0, 1], y: [24, 0], scale: [0.7, 1] }, { type: "spring", bounce: 0.35, duration: 0.9, delay: 0.9 + i * 0.15 })
-          .finished.then(function () { c.style.transform = ""; c.style.opacity = ""; c.style.transition = ""; });
+        G.fromTo(c, { opacity: 0, y: 24, scale: 0.7 }, { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "back.out(1.6)", delay: 0.9 + i * 0.15,
+          onComplete: function () { G.set(c, { clearProps: "opacity,transform" }); c.style.transition = ""; } });
       });
     }
     // Avatares da família entram um por um (a linha deles aparece aos ~0,3 s)
     if (avataresCedo) {
       var avatares = Array.prototype.slice.call(document.querySelectorAll(".avatares span"));
       avatares.forEach(function (a) { a.style.opacity = "0"; a.style.transition = "none"; });
-      M.animate(avatares, { opacity: [0, 1], scale: [0.2, 1] }, { type: "spring", bounce: 0.55, duration: 0.6, delay: M.stagger(0.07, { startDelay: 0.55 }) })
-        .finished.then(function () { avatares.forEach(function (a) { a.style.transform = ""; a.style.opacity = ""; a.style.transition = ""; }); });
+      G.fromTo(avatares, { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(2.4)", stagger: 0.07, delay: 0.55,
+        onComplete: function () { G.set(avatares, { clearProps: "opacity,transform" }); avatares.forEach(function (a) { a.style.transition = ""; }); } });
     }
 
     // Ao rolar (só no computador): etiquetas se afastam, texto sobe e esmaece
-    var telaLarga = window.matchMedia("(min-width: 1001px)");
-    if (M.scroll) {
-      M.scroll(function (progresso) {
-        var k = telaLarga.matches ? Math.max(0, Math.min(1, progresso)) : 0;
-        palco.style.setProperty("--sp", k.toFixed(3));
-        if (k < 0.001) { colunaTexto.style.transform = colunaTexto.style.opacity = ""; return; }
-        colunaTexto.style.transform = "translateY(" + (-k * 56).toFixed(1) + "px)";
-        colunaTexto.style.opacity = (1 - k * 0.55).toFixed(3);
-      }, { target: hero, offset: ["start start", "end start"] });
+    if (window.ScrollTrigger) {
+      G.matchMedia().add("(min-width: 1001px)", function () {
+        G.to(colunaTexto, {
+          y: -56, opacity: 0.45, ease: "none",
+          scrollTrigger: {
+            trigger: hero, start: "top top", end: "bottom top", scrub: 1, fastScrollEnd: true,
+            onUpdate: function (self) { palco.style.setProperty("--sp", self.progress.toFixed(3)); }
+          }
+        });
+        return function () { palco.style.setProperty("--sp", "0"); };
+      });
     }
 
     // Botão principal "magnético": puxa levemente na direção do cursor
     if (cta && mouseFino) {
       cta.addEventListener("pointerenter", function () { cta.style.transition = "background-color .2s"; });
+      var puxaX = G.quickTo(cta, "x", { duration: 0.5, ease: "elastic.out(1, 0.45)" });
+      var puxaY = G.quickTo(cta, "y", { duration: 0.5, ease: "elastic.out(1, 0.45)" });
       cta.addEventListener("pointermove", function (e) {
         var r = cta.getBoundingClientRect();
-        M.animate(cta, { x: (e.clientX - (r.left + r.width / 2)) * 0.18, y: (e.clientY - (r.top + r.height / 2)) * 0.32 },
-          { type: "spring", stiffness: 260, damping: 16 });
+        puxaX((e.clientX - (r.left + r.width / 2)) * 0.18);
+        puxaY((e.clientY - (r.top + r.height / 2)) * 0.32);
       });
       cta.addEventListener("pointerleave", function () {
-        M.animate(cta, { x: 0, y: 0 }, { type: "spring", stiffness: 260, damping: 13 })
-          .finished.then(function () { cta.style.transform = ""; cta.style.transition = ""; });
+        puxaX(0); puxaY(0);
+        cta.style.transition = "";
       });
     }
   });

@@ -1,56 +1,64 @@
 /* =========================================================
-   Abanô — base visual compartilhada (padrão Apple HIG)
-   Fonte Plus Jakarta Sans (hospedada no site), cores semânticas
-   com modo escuro, grade de 8px, botões em cápsula e toque de 44px.
+   Abanô — base visual compartilhada
+   Identidade 2026: magenta (marca), laranja (calor) e verde-limão
+   (energia) sobre fundos claros; fonte arredondada Nunito; botões
+   em cápsula, cartões arredondados com sombra suave, toque de 44px.
    ========================================================= */
 
-/* Plus Jakarta Sans — fonte variável (400 a 800), licença OFL (fontes/OFL.txt).
+/* Nunito — fonte variável arredondada (400 a 900), licença OFL (fontes/OFL.txt).
    Hospedada aqui: carrega mais rápido e não envia o IP do visitante ao Google. */
 @font-face{
-  font-family:'Plus Jakarta Sans';font-style:normal;font-weight:400 800;font-display:swap;
-  src:url(fontes/plus-jakarta-sans-latin.woff2) format('woff2');
+  font-family:'Nunito';font-style:normal;font-weight:400 900;font-display:swap;
+  src:url(fontes/nunito-latin.woff2) format('woff2');
   unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
 }
 @font-face{
-  font-family:'Plus Jakarta Sans';font-style:normal;font-weight:400 800;font-display:swap;
-  src:url(fontes/plus-jakarta-sans-latin-ext.woff2) format('woff2');
+  font-family:'Nunito';font-style:normal;font-weight:400 900;font-display:swap;
+  src:url(fontes/nunito-latin-ext.woff2) format('woff2');
   unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF;
 }
 
 :root{
   color-scheme:light dark;
 
-  /* Fundos (estilo "grouped" do iOS) */
-  --fundo:#F2F2F7;                 /* fundo da página */
+  /* Fundos claros com um toque rosado */
+  --fundo:#FFF7F5;                 /* fundo da página */
   --superficie:#FFFFFF;            /* cartões e painéis */
-  --hover:#FAFAFC;
-  --areia:rgba(118,118,128,.12);   /* preenchimentos: trilhos, campos, ícones */
-  --linha:rgba(60,60,67,.16);      /* separadores */
+  --hover:#FFF1F5;
+  --areia:rgba(176,40,96,.07);     /* preenchimentos: trilhos, campos, ícones */
+  --linha:rgba(120,30,70,.13);     /* separadores */
 
-  /* Texto */
-  --tinta:#1D1D1F;
-  --suave:#5C5C63;                 /* cinza de apoio: contraste ~6:1, cansa menos */
+  /* Texto (ameixa escuro, mais quente que preto) */
+  --tinta:#2B1622;
+  --suave:#6B5462;                 /* contraste ~6:1 sobre branco */
 
-  /* Cor da marca (tint) */
-  --marca:#1F5A4F;
-  --marca-esc:#17463E;
-  --marca-clara:rgba(31,90,79,.11);
-  --sobre-marca:#FFFFFF;           /* texto em cima da cor da marca */
-  --segmento:#FFFFFF;              /* item selecionado do controle segmentado */
+  /* Cor da marca: magenta Abanô (texto branco por cima: contraste 5:1) */
+  --marca:#D10F5E;
+  --marca-esc:#AE0C4E;
+  --marca-clara:rgba(209,15,94,.10);
+  --sobre-marca:#FFFFFF;
+  --segmento:#FFFFFF;
 
-  /* Destaque secundário */
-  --acento:#B4532F;
-  --acento-claro:rgba(180,83,47,.10);
+  /* Laranja: calor e destaque (texto usa o tom escuro, para ter contraste) */
+  --acento:#B84A00;
+  --acento-claro:rgba(255,138,30,.14);
+  --laranja:#FF8A1E;               /* decorativo: ícones, formas, logo */
 
-  /* Faixas escuras de destaque */
-  --faixa:#1E4D45;
-  --sobre-faixa:#E6EFEC;
+  /* Verde-limão: energia (só em formas e selos, nunca como cor de texto) */
+  --lima:#B7E12F;
+  --lima-clara:rgba(183,225,47,.24);
+  --sobre-lima:#253300;
 
-  --raio:16px;
-  --raio-sm:12px;
-  --sombra:0 1px 2px rgba(0,0,0,.04),0 6px 20px -8px rgba(0,0,0,.10);
+  /* Faixas de destaque (cor sólida + degradê da marca) */
+  --faixa:#C40E58;
+  --sobre-faixa:#FFE9F1;
+  --degrade:linear-gradient(120deg,#E5157A 0%,#F43F7F 48%,#FF8A1E 100%);
 
-  --sistema:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --raio:22px;
+  --raio-sm:14px;
+  --sombra:0 1px 2px rgba(120,20,60,.04),0 12px 30px -14px rgba(120,20,60,.20);
+
+  --sistema:'Nunito',ui-rounded,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
   --serif:var(--sistema);          /* títulos: mesma família, pesos maiores */
   --sans:var(--sistema);
 
@@ -64,23 +72,28 @@
 
 @media (prefers-color-scheme:dark){
   :root{
-    --fundo:#000000;
-    --superficie:#1C1C1E;
-    --hover:#242426;
-    --areia:rgba(118,118,128,.24);
-    --linha:rgba(84,84,88,.6);
-    --tinta:#F5F5F7;
-    --suave:#A1A1A6;
-    --marca:#5CC2A8;
-    --marca-esc:#7AD3BC;
-    --marca-clara:rgba(92,194,168,.16);
-    --sobre-marca:#06201A;
-    --segmento:#636366;
-    --acento:#F08A63;
-    --acento-claro:rgba(240,138,99,.14);
-    --faixa:#12302A;
-    --sobre-faixa:#D9E7E2;
-    --sombra:0 0 0 1px rgba(255,255,255,.04);
+    --fundo:#14090F;
+    --superficie:#22131B;
+    --hover:#2C1923;
+    --areia:rgba(255,170,205,.10);
+    --linha:rgba(255,190,215,.16);
+    --tinta:#FFF1F6;
+    --suave:#CDB0BF;
+    --marca:#FF5C97;
+    --marca-esc:#FF85B0;
+    --marca-clara:rgba(255,92,151,.18);
+    --sobre-marca:#2A0716;
+    --segmento:#3A2230;
+    --acento:#FFA54F;
+    --acento-claro:rgba(255,165,79,.16);
+    --laranja:#FF9A3C;
+    --lima:#C9F04B;
+    --lima-clara:rgba(201,240,75,.18);
+    --sobre-lima:#1E2A00;
+    --faixa:#8A0B40;
+    --sobre-faixa:#FFE3EE;
+    --degrade:linear-gradient(120deg,#B8125F 0%,#D6336E 48%,#E0731A 100%);
+    --sombra:0 0 0 1px rgba(255,255,255,.05),0 14px 30px -16px rgba(0,0,0,.6);
   }
 }
 
@@ -92,9 +105,9 @@ html{-webkit-text-size-adjust:100%}
 body{font-family:var(--sistema);font-size:17px;line-height:1.65;letter-spacing:-.006em;background:var(--fundo);color:var(--tinta);
   font-kerning:normal;font-variant-ligatures:common-ligatures;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 h1,h2,h3,h4{font-family:var(--serif);line-height:1.12;color:var(--tinta);text-wrap:balance}
-h1{font-weight:800;letter-spacing:-.034em;line-height:1.06}
-h2{font-weight:750;letter-spacing:-.026em}
-h3{font-weight:700;letter-spacing:-.014em;line-height:1.25}
+h1{font-weight:900;letter-spacing:-.025em;line-height:1.06}
+h2{font-weight:850;letter-spacing:-.018em}
+h3{font-weight:800;letter-spacing:-.008em;line-height:1.25}
 p,li,dd,blockquote{text-wrap:pretty}
 b,strong{font-weight:700}
 small{font-size:.85em}
@@ -109,10 +122,11 @@ img,svg{display:block}
 .eyebrow{display:inline-block;font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--acento)}
 
 /* ---------- Botões (cápsula, 44px) ---------- */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 22px;background:var(--marca);color:var(--sobre-marca);font-family:var(--sistema);font-weight:600;font-size:17px;letter-spacing:-.01em;text-decoration:none;border-radius:999px;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background-color .2s var(--ease),transform .1s ease-out}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:0 24px;background:var(--marca);color:var(--sobre-marca);font-family:var(--sistema);font-weight:800;font-size:17px;letter-spacing:-.005em;text-decoration:none;border-radius:999px;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  box-shadow:0 10px 22px -12px color-mix(in srgb,var(--marca) 85%,transparent);transition:background-color .2s var(--ease),box-shadow .2s var(--ease),transform .1s ease-out}
 .btn:hover{background:var(--marca-esc)}
-.btn-sec{background:var(--marca-clara);color:var(--marca)}
-.btn-sec:hover{background:var(--marca-clara);filter:brightness(.97)}
+.btn-sec{background:var(--superficie);color:var(--marca);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--marca) 55%,transparent)}
+.btn-sec:hover{background:var(--hover);box-shadow:inset 0 0 0 2px var(--marca)}
 .btn svg{width:17px;height:17px;transition:transform .25s var(--mola)}
 .btn:hover svg{transform:translateX(3px)}
 
@@ -120,12 +134,17 @@ img,svg{display:block}
 .topo{position:sticky;top:0;z-index:50;background:var(--superficie);box-shadow:0 .5px 0 var(--linha);transition:box-shadow .3s}
 .topo-in{max-width:1120px;margin:0 auto;padding:0 24px;min-height:64px;display:flex;align-items:center;gap:24px}
 
-.topo-logo{display:flex;align-items:center;gap:10px;min-height:44px;font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:-.025em;color:var(--tinta);text-decoration:none}
-.topo-logo svg{width:30px;height:30px;flex:none}
+/* Logo: patinha (logo-pata.svg) + nome "abanô" com o "ô" de dedinhos de pata */
+.topo-logo{display:flex;align-items:center;gap:8px;min-height:44px;text-decoration:none;flex:none}
+.topo-logo img{width:38px;height:38px;flex:none;transition:transform .5s var(--mola-salto)}
+.topo-logo:hover img{transform:rotate(-10deg) scale(1.06)}
+.logo-nome{font-family:var(--sistema);font-weight:900;font-size:29px;line-height:1;letter-spacing:-.035em;color:var(--marca);padding-top:.12em}
+.logo-o{position:relative;display:inline-block;color:var(--laranja)}
+.logo-o svg{position:absolute;left:50%;bottom:74%;width:.66em;height:.34em;transform:translateX(-50%);fill:currentColor;overflow:visible}
 
 /* Controle segmentado (computador) */
 .abas{position:relative;display:flex;gap:2px;margin-left:auto;padding:3px;background:var(--areia);border-radius:999px}
-.aba{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;min-height:34px;padding:0 18px;border-radius:999px;text-decoration:none;color:var(--tinta);font-weight:500;font-size:15px;letter-spacing:-.01em;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:color .2s,transform .1s ease-out}
+.aba{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;min-height:34px;padding:0 15px;border-radius:999px;text-decoration:none;color:var(--tinta);font-weight:500;font-size:15px;letter-spacing:-.01em;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:color .2s,transform .1s ease-out}
 .aba[aria-current="page"]{font-weight:600;background:var(--segmento);box-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04)}
 .aba svg{display:none}
 
@@ -158,6 +177,13 @@ img,svg{display:block}
 
 @media (min-width:901px){
   [id]{scroll-margin-top:88px}
+  .submenu .so-celular-item{display:none}            /* "Novidades" já é aba no computador */
+  #menu-mais{left:auto;right:-3px;width:280px}
+}
+/* Telas médias: "Nossa história" e "Divulgue" vão para o "Mais" do menu de cima */
+@media (min-width:901px) and (max-width:1199px){
+  .abas .aba-extra{display:none}
+  .grupo-menu.so-celular{display:flex}
 }
 @media (hover:hover) and (min-width:901px){
   .grupo-menu:hover .submenu{display:block}
@@ -171,8 +197,8 @@ img,svg{display:block}
 /* Celular e tablet: barra de abas fixa embaixo, como no iOS */
 @media (max-width:900px){
   .topo-in{min-height:52px;padding:0 16px}
-  .topo-logo{font-size:20px}
-  .topo-logo svg{width:28px;height:28px}
+  .logo-nome{font-size:25px}
+  .topo-logo img{width:33px;height:33px}
   .topo-cta{margin-left:auto;min-height:36px;padding:0 14px;font-size:14px;position:relative}
   .topo-cta::after{content:"";position:absolute;inset:-4px -2px}   /* amplia a área de toque para 44px */
   [id]{scroll-margin-top:68px}
@@ -208,7 +234,8 @@ img,svg{display:block}
 /* ---------- Rodapé ---------- */
 .rodape{margin-top:40px;background:var(--superficie);box-shadow:0 -.5px 0 var(--linha);color:var(--suave);font-size:14px}
 .rodape-in{max-width:1120px;margin:0 auto;padding:40px 24px 24px;display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:32px}
-.rodape .topo-logo{font-size:20px;margin-bottom:6px}
+.rodape .topo-logo{margin-bottom:8px}
+.rodape .logo-nome{font-size:26px}
 .rodape p{max-width:340px;font-size:15px;line-height:1.6}
 .rodape h4{font-size:14px;font-weight:700;color:var(--tinta);margin-bottom:10px}
 .rodape ul{list-style:none;display:grid;gap:4px}
