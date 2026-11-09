@@ -74,3 +74,5 @@ Botão "Continuar com o Google" no formulário da lista (`google.js`). Usa o log
 ## Publicar
 
 Todo envio (`git push`) para a branch `main` atualiza o site no GitHub Pages em alguns minutos.
+
+O GitHub Pages deixa os navegadores guardarem arquivos por 10 minutos. Ao mudar `lista.js` ou `google.js`, troque o número em `?v=` nas tags `<script>` das páginas (ex.: `lista.js?v=20261109` → `?v=20261110`) para todos baixarem a versão nova na hora.
