@@ -113,8 +113,34 @@ img,svg{display:block}
 
 .aba:focus-visible,.topo-cta:focus-visible,.topo-logo:focus-visible,.btn:focus-visible{outline:none;box-shadow:0 0 0 4px var(--marca-clara),0 0 0 2px var(--marca)}
 
+/* Submenus "Serviços" (todas as telas) e "Mais" (só celular) */
+.grupo-menu{position:relative;display:flex}
+.aba-menu{font-family:inherit;border:0;background:none;cursor:pointer}
+.aba .seta{display:inline-block;width:12px;height:12px;margin-left:5px;transition:transform .25s var(--mola)}
+.grupo-menu.aberto .seta{transform:rotate(180deg)}
+.so-celular{display:none}
+.submenu{display:none;position:absolute;top:calc(100% + 10px);left:-3px;z-index:70;width:320px;padding:8px;background:var(--superficie);border-radius:18px;box-shadow:0 18px 44px -14px rgba(0,0,0,.28),0 0 0 .5px var(--linha)}
+.submenu::before{content:"";position:absolute;left:0;right:0;top:-14px;height:14px}
+.grupo-menu.aberto .submenu{display:block;animation:abrir-menu .22s var(--mola)}
+@keyframes abrir-menu{from{opacity:0;translate:0 -6px}to{opacity:1;translate:0 0}}
+.submenu-titulo{font-size:12px;font-weight:600;color:var(--suave);padding:8px 12px 6px;letter-spacing:.03em;text-transform:uppercase}
+.submenu a{display:flex;align-items:center;gap:12px;min-height:44px;padding:6px 10px;border-radius:12px;text-decoration:none;color:var(--tinta);font-size:15px;font-weight:500}
+.submenu a:hover,.submenu a:focus-visible{background:var(--areia);outline:none}
+.submenu a[aria-current="page"]{background:var(--marca-clara);color:var(--marca);font-weight:600}
+.submenu .si{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--marca-clara);color:var(--marca);flex:none}
+.submenu .si svg{display:block;width:18px;height:18px}
+.submenu small{margin-left:auto;font-size:12px;font-weight:500;color:var(--suave)}
+
 @media (min-width:901px){
   [id]{scroll-margin-top:88px}
+}
+@media (hover:hover) and (min-width:901px){
+  .grupo-menu:hover .submenu{display:block}
+  .grupo-menu:hover .seta{transform:rotate(180deg)}
+}
+@media (min-width:901px) and (max-width:1120px){
+  .topo-in{gap:14px}
+  .aba{padding:0 12px;font-size:14px}
 }
 
 /* Celular e tablet: barra de abas fixa embaixo, como no iOS */
@@ -135,6 +161,19 @@ img,svg{display:block}
   .aba[aria-current="page"] .ico-off{display:none}
   .aba[aria-current="page"] .ico-on{display:block}
   .aba-pilula{display:none}
+
+  /* Submenus viram uma folha que sobe sobre a barra de abas */
+  .so-desktop{display:none !important}
+  .so-celular{display:flex}
+  .grupo-menu{flex:1}
+  .grupo-menu > .aba{width:100%}
+  .aba .seta{display:none !important}
+  .aba-menu.atual,.grupo-menu.aberto > .aba{color:var(--marca);font-weight:600}
+  .aba-menu.atual .ico-off{display:none}
+  .aba-menu.atual .ico-on{display:block}
+  .submenu{position:fixed;top:auto;left:8px;right:8px;bottom:calc(58px + env(safe-area-inset-bottom));width:auto;max-height:70vh;overflow:auto;border-radius:20px}
+  .submenu::before{display:none}
+  .submenu a{min-height:48px;font-size:16px}
 }
 
 /* ---------- Toque: resposta imediata ---------- */
