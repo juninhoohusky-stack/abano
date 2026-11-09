@@ -85,72 +85,68 @@
   .avatares span:nth-child(4){background:#6E9B90}.avatares span:nth-child(5){background:var(--acento)}.avatares span:nth-child(6){background:#C98A6A}
   .prova b{color:var(--tinta)}
 
-  /* ---------- Palco: janela do app Abanô com o Juninho ----------
-     Mesma estrutura da referência: janela do app, pet em destaque numa
-     plataforma de luz e etiquetas flutuando para fora da janela. */
-  .palco{position:relative;aspect-ratio:1;width:100%;max-width:560px;margin-left:auto;--mx:0;--my:0}
-  .janela{position:absolute;inset:7% 2% 9% 5%;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;
-    background:var(--superficie);box-shadow:0 40px 80px -36px rgba(15,40,35,.45),0 0 0 .5px var(--linha)}
-  .janela-topo{display:flex;align-items:center;gap:7px;height:40px;padding:0 14px;flex:none;font-size:12px;font-weight:600;color:var(--suave);white-space:nowrap}
-  .janela-topo i{width:10px;height:10px;border-radius:50%;background:#FF5F57;flex:none}
-  .janela-topo i:nth-child(2){background:#FEBC2E}.janela-topo i:nth-child(3){background:#28C840}
-  .janela-topo span{margin-left:8px;overflow:hidden;text-overflow:ellipsis}
-  .janela-corpo{flex:1;display:flex;gap:10px;padding:0 12px 12px 10px;min-height:0}
-  .janela-lado{display:flex;flex-direction:column;gap:8px;padding-top:2px}
-  .janela-lado span{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--areia);color:var(--suave)}
-  .janela-lado span.on{background:var(--marca-clara);color:var(--marca)}
-  .janela-lado svg{width:16px;height:16px}
+  /* ---------- Palco: o Juninho (3D) passeia pelo lado direito do banner ----------
+     Ele anda só dentro do palco (coluna da direita; no celular, abaixo do texto),
+     então nunca passa por cima nem por trás do título e do parágrafo. */
+  .palco{position:relative;aspect-ratio:4/3;width:100%;max-width:560px;margin-left:auto;--mx:0;--my:0}
+  .chao{position:absolute;left:0;right:0;bottom:0;height:12%;pointer-events:none}
+  .chao::before{content:"";position:absolute;left:4%;right:4%;bottom:3%;height:40%;border-radius:50%;
+    background:radial-gradient(closest-side,color-mix(in srgb,var(--marca) 12%,transparent),transparent)}
+  .pegada{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;color:var(--marca);opacity:0;pointer-events:none}
+  .pegada svg{display:block;width:100%;height:100%}
 
-  /* Cena escura com a plataforma de luz (igual nos dois temas) */
-  .cena{position:relative;flex:1;border-radius:16px;overflow:hidden;isolation:isolate;
-    background:radial-gradient(120% 85% at 50% 100%,#2B6B5E 0%,#163F37 45%,#0D2723 100%)}
-  .cena::before{content:"";position:absolute;left:10%;right:10%;top:-30%;height:70%;pointer-events:none;
-    background:radial-gradient(closest-side,rgba(130,230,200,.22),transparent)}
-  .cena-titulo{position:absolute;left:14px;top:12px;z-index:2;color:#EAF6F2;font-size:14px;font-weight:700;line-height:1.25}
-  .cena-titulo small{display:block;font-size:11.5px;font-weight:500;opacity:.72}
-  .chip-ok{position:absolute;left:14px;top:52px;z-index:2;display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;
-    background:rgba(92,194,168,.2);color:#A8F0DA;font-size:11.5px;font-weight:700;box-shadow:inset 0 0 0 1px rgba(92,194,168,.4)}
-  .chip-ok svg{width:12px;height:12px}
+  /* O cachorro: .cao anda (x), .cao-corpo vira de lado e pula, o SVG tem as peças */
+  .cao{position:absolute;left:0;bottom:2%;width:60%;max-width:340px;z-index:1;--vira:1;--ciclo:.7s}
+  .cao-corpo{position:relative;transform-origin:50% 100%;scale:var(--vira) 1;transition:scale .35s cubic-bezier(.34,1.4,.64,1)}
+  .sombra-cao{position:absolute;left:8%;right:6%;bottom:-2%;height:8%;border-radius:50%;pointer-events:none;
+    background:radial-gradient(closest-side,rgba(20,30,28,.26),transparent)}
+  .cao-img{position:relative;cursor:pointer}
+  .cao-img svg{display:block;width:100%;height:auto;overflow:visible}
+  .cao-img svg *{transform-box:view-box}
 
-  .plataforma{position:absolute;left:50%;bottom:8%;width:76%;aspect-ratio:3.4;translate:-50% 0}
-  .plataforma b{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(120,235,205,.75);
-    box-shadow:0 0 18px rgba(92,194,168,.55),inset 0 0 18px rgba(92,194,168,.35)}
-  .plataforma b:nth-of-type(2){inset:16% 14%;border-color:rgba(120,235,205,.5)}
-  .plataforma b:nth-of-type(3){inset:32% 30%;border-color:rgba(120,235,205,.35);background:radial-gradient(closest-side,rgba(120,235,205,.35),transparent)}
-  .plataforma i{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(120,235,205,.6);opacity:0;animation:onda-luz 3.6s var(--mola) infinite}
-  .plataforma i:nth-of-type(2){animation-delay:1.2s}.plataforma i:nth-of-type(3){animation-delay:2.4s}
-  @keyframes onda-luz{0%{transform:scale(.4);opacity:.9}100%{transform:scale(1.25);opacity:0}}
-  .plataforma .pulso{position:absolute;inset:0;border-radius:50%;border:3px solid rgba(160,245,220,.95);box-shadow:0 0 26px rgba(92,194,168,.85);pointer-events:none}
-  .feixe{position:absolute;left:50%;bottom:11%;width:50%;height:66%;translate:-50% 0;pointer-events:none;
-    background:linear-gradient(to top,rgba(120,235,205,.2),transparent);clip-path:polygon(16% 100%,84% 100%,100% 0,0 0)}
+  /* Pontos de giro de cada peça (em unidades do desenho) */
+  .perna.perto-frente{transform-origin:95px 104px}
+  .perna.fundo-frente{transform-origin:114px 104px}
+  .perna.perto-tras{transform-origin:172px 106px}
+  .perna.fundo-tras{transform-origin:160px 104px}
+  .rabo{transform-origin:186px 90px}
+  .cabeca{transform-origin:78px 84px;transition:rotate .6s cubic-bezier(.22,1,.36,1)}
+  .orelha{transform-origin:75px 38px}
+  .cao-img svg .olho{transform-box:fill-box;transform-origin:50% 50%}
 
-  /* Patinhas de luz subindo da plataforma */
-  .brilhos i{position:absolute;bottom:16%;width:10px;height:10px;color:#A8F0DA;opacity:0;animation:subir 4.6s linear infinite}
-  .brilhos i svg{display:block;width:100%;height:100%;filter:drop-shadow(0 0 4px #5CC2A8)}
-  .brilhos i:nth-child(1){left:24%;animation-delay:.2s}.brilhos i:nth-child(2){left:38%;animation-delay:1.7s;scale:.8}
-  .brilhos i:nth-child(3){left:62%;animation-delay:.9s}.brilhos i:nth-child(4){left:74%;animation-delay:2.6s;scale:.7}
-  .brilhos i:nth-child(5){left:31%;animation-delay:3.4s;scale:.9}.brilhos i:nth-child(6){left:68%;animation-delay:4s;scale:.8}
-  @keyframes subir{0%{transform:translateY(0) rotate(-10deg);opacity:0}15%{opacity:.85}100%{transform:translateY(-150px) rotate(14deg);opacity:0}}
+  /* Parado: respira, pisca, mexe a orelha e abana o rabo em rajadas (Abanô = abanar) */
+  .tronco{transform-origin:140px 124px;animation:respirar-cao 3.2s ease-in-out infinite}
+  @keyframes respirar-cao{50%{scale:1.008 1.018}}
+  .olho{animation:piscar-cao 5.2s ease-in-out infinite 1.5s}
+  @keyframes piscar-cao{0%,94%,100%{scale:1 1}96.5%{scale:1 .1}}
+  .orelha{animation:orelha-cao 7s ease-in-out infinite 3s}
+  @keyframes orelha-cao{0%,90%,100%{rotate:0deg}93%{rotate:-9deg}96%{rotate:3deg}}
+  .rabo{animation:abanar 2.6s ease-in-out infinite}
+  @keyframes abanar{0%,50%,100%{rotate:0deg}6%{rotate:-16deg}12%{rotate:10deg}18%{rotate:-16deg}24%{rotate:10deg}30%{rotate:-13deg}38%{rotate:6deg}44%{rotate:-3deg}}
+  .cao.feliz .rabo{animation:abanar-rapido .26s ease-in-out infinite}
+  @keyframes abanar-rapido{0%,100%{rotate:-15deg}50%{rotate:11deg}}
 
-  /* Juninho: flutua sobre a plataforma, pisca, abana o rabo e olha para o cursor */
-  .pet{position:absolute;left:50%;bottom:12%;width:58%;max-width:240px;translate:-50% 0;cursor:pointer;animation:flutuar 4.2s ease-in-out infinite}
-  .pet svg{display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 12px 18px rgba(0,0,0,.35))}
-  @keyframes flutuar{50%{translate:-50% -9px}}
-  .sombra-pet{position:absolute;left:50%;bottom:11%;width:34%;height:6%;translate:-50% 0;border-radius:50%;background:rgba(0,0,0,.42);filter:blur(6px);animation:sombra 4.2s ease-in-out infinite}
-  @keyframes sombra{50%{scale:.8;opacity:.55}}
-  .pet .rabo{transform-box:fill-box;transform-origin:12% 92%;animation:abana 3s ease-in-out infinite 1.8s}
-  .pet.feliz .rabo{animation:abana-rapido .32s ease-in-out infinite}
-  @keyframes abana{0%,46%,100%{rotate:0deg}6%{rotate:-22deg}12%{rotate:10deg}18%{rotate:-22deg}24%{rotate:10deg}30%{rotate:-18deg}38%{rotate:4deg}}
-  @keyframes abana-rapido{0%,100%{rotate:-22deg}50%{rotate:12deg}}
-  .pet .olhos{transform-box:fill-box;transform-origin:50% 50%;animation:piscar 5.5s infinite 2.5s}
-  @keyframes piscar{0%,45%,51%,100%{transform:scaleY(1)}48%{transform:scaleY(.08)}}
-  .pet .pupilas{transition:transform .35s cubic-bezier(.25,1,.5,1)}
-  .pet .orelha{transform-box:fill-box;transform-origin:50% 100%}
-  .pet.feliz .orelha{animation:orelha .5s ease-in-out 2}
-  @keyframes orelha{50%{transform:rotate(var(--o,-8deg))}}
+  /* Andando: trote — patas em pares diagonais; cada pata empurra o chão
+     (fase de apoio, linear) e depois levanta e volta para a frente (fase aérea) */
+  .cao.andando .perna{animation:passo-pata var(--ciclo) linear infinite}
+  .cao.andando .perna.fundo-frente,.cao.andando .perna.perto-tras{animation-delay:calc(var(--ciclo) * -.5)}
+  @keyframes passo-pata{
+    0%{rotate:14deg;translate:0 0}
+    50%{rotate:-14deg;translate:0 0}
+    62%{rotate:-8deg;translate:0 -6px}
+    80%{rotate:6deg;translate:0 -8px}
+    100%{rotate:14deg;translate:0 0}
+  }
+  .cao.andando .tronco{animation:balanco calc(var(--ciclo) / 2) ease-in-out infinite}
+  @keyframes balanco{0%,100%{translate:0 0}50%{translate:0 -2.6px}}
+  .cao.andando .rabo{animation:abanar-rapido .42s ease-in-out infinite}
 
-  /* Carinho no Juninho: coraçõezinhos sobem */
-  .coracao{position:absolute;left:50%;top:52%;width:20px;height:20px;margin:-10px 0 0 -10px;color:#F08A63;pointer-events:none;z-index:3}
+  /* Balão de latido */
+  .balao{position:absolute;left:-2%;top:-6%;padding:6px 12px;border-radius:14px 14px 14px 4px;background:var(--superficie);color:var(--tinta);
+    font-size:14px;font-weight:800;letter-spacing:-.01em;box-shadow:0 10px 24px -10px rgba(0,0,0,.35),0 0 0 .5px var(--linha);opacity:0;pointer-events:none;white-space:nowrap}
+
+  /* Carinho: coraçõezinhos sobem */
+  .coracao{position:absolute;left:24%;top:8%;width:22px;height:22px;margin:-11px 0 0 -11px;color:#F08A63;pointer-events:none;z-index:3}
   .coracao svg{display:block;width:100%;height:100%}
 
   .flutua{position:absolute;display:flex;align-items:center;gap:12px;padding:12px 16px 12px 12px;border-radius:18px;background:color-mix(in srgb,var(--superficie) 82%,transparent);
@@ -165,19 +161,17 @@
   .flutua .fi svg{width:21px;height:21px}
   .flutua b{display:block;font-size:15px}
   .flutua small{color:var(--suave);font-size:12.5px}
-  /* Etiquetas saindo para fora da janela, como na referência */
-  /* Etiquetas compactas, nos cantos: o Juninho fica livre no centro */
-  .palco .flutua{gap:10px;padding:8px 13px 8px 8px;border-radius:15px;font-size:13px}
+  /* Etiquetas compactas na faixa de cima do palco: a parte de baixo é o "chão" do Juninho */
+  .palco .flutua{gap:10px;padding:8px 13px 8px 8px;border-radius:15px;font-size:13px;z-index:2}
   .palco .flutua .fi{width:32px;height:32px;border-radius:10px}
   .palco .flutua .fi svg{width:17px;height:17px}
   .palco .flutua b{font-size:13.5px}
   .palco .flutua small{font-size:11.5px}
   .palco .flutua .valor{font-size:18px}
-  .flutua.f1{top:-3%;left:-9%;--p:22;--t:6.5s;--sx:-1;--sy:-1;--k:0}
-  .flutua.f2{top:19%;right:-15%;--p:-16;--t:7.2s;--sx:1;--sy:-.5;--k:1}
-  .flutua.f3{bottom:29%;left:-21%;--p:14;--t:5.8s;--sx:-1;--sy:.5;--k:2}
-  .flutua.f4{bottom:-4%;right:1%;--p:-24;--t:6.9s;--sx:1;--sy:1;--k:3}
-  /* "Passeio de hoje": barrinhas de atividade (o equivalente à onda de áudio da referência) */
+  .flutua.f1{top:-1%;left:0;--p:22;--t:6.5s;--sx:-1;--sy:-1;--k:0}
+  .flutua.f2{top:4%;right:-4%;--p:-16;--t:7.2s;--sx:1;--sy:-.5;--k:1}
+  .flutua.f4{top:12%;left:24%;--p:-24;--t:6.9s;--sx:-.4;--sy:-1;--k:2}
+  /* "Passeio de hoje": barrinhas de atividade */
   .barrinhas{display:flex;align-items:flex-end;gap:3px;height:24px;margin-left:6px}
   .barrinhas i{width:4px;height:100%;border-radius:2px;background:var(--marca);transform-origin:50% 100%;animation:barra 1.1s ease-in-out infinite alternate}
   .barrinhas i:nth-child(2){animation-delay:-.3s;animation-duration:.9s}.barrinhas i:nth-child(3){animation-delay:-.6s}
@@ -185,13 +179,13 @@
   .barrinhas i:nth-child(6){animation-delay:-.45s;animation-duration:1.2s}.barrinhas i:nth-child(7){animation-delay:-.9s}
   @keyframes barra{0%{transform:scaleY(.25)}100%{transform:scaleY(1)}}
 
-  /* Entrada do palco: com o Motion, a janela sobe, o Juninho "pousa" na plataforma e as
-     etiquetas saem de dentro da janela. Sem Motion, tudo só aparece com um esmaecer (reserva). */
+  /* Entrada do palco. Sem Motion, o Juninho fica parado no meio do chão e as etiquetas esmaecem (reserva). */
+  .palco:not(.com-motion) .cao{left:21%}
   @media (prefers-reduced-motion:no-preference){
-    .palco .janela{animation:chegar .7s var(--mola) .5s both}
     .palco .flutua{animation:boia var(--t,6s) ease-in-out infinite,chegar .7s var(--mola) calc(1.2s + var(--k,0) * .12s) both}
-    .palco.com-motion .janela{animation:none}
     .palco.com-motion .flutua{animation:boia var(--t,6s) ease-in-out infinite}
+    .palco .cao{animation:chegar .6s var(--mola) 1.1s both}
+    .palco.com-motion .cao{animation:none}
     @keyframes chegar{from{opacity:0}}
   }
 
@@ -321,22 +315,13 @@
     .flutua .fi svg{width:17px;height:17px}
     .flutua b{font-size:13px}
     .flutua .valor{font-size:18px}
-    .flutua.f1{left:-2%}.flutua.f2{right:-3%;top:16%}.flutua.f3{left:-3%;bottom:30%}.flutua.f4{right:0}
+    .flutua.f1{left:0}.flutua.f2{right:0}.flutua.f4{left:12%}
     .palco .flutua .fi{width:28px;height:28px;border-radius:9px}
     .palco .flutua .fi svg{width:15px;height:15px}
     .palco .flutua b{font-size:12.5px}
     .palco .flutua small{font-size:10.5px}
     .palco .flutua .valor{font-size:16px}
-    .janela{inset:11% 4% 13% 6%;border-radius:18px}
-    .janela-topo{height:32px;font-size:11px}
-    .janela-lado span{width:26px;height:26px;border-radius:8px}
-    .janela-lado svg{width:14px;height:14px}
-    .cena-titulo{font-size:12.5px;left:11px;top:10px}
-    .chip-ok{font-size:10.5px;left:11px;top:44px;padding:3px 8px}
     .barrinhas{height:18px}
-    .pet{width:50%;bottom:10%}
-    .plataforma{bottom:6%}
-    .sombra-pet{bottom:8.5%}
   }
   @media (max-width:560px){
     .titulo-hero{font-size:10vw;margin:20px 0 18px}
@@ -348,8 +333,10 @@
     .selo-topo{font-size:13px}
     .final{padding:52px 22px}
     /* celular: só duas etiquetas, em cantos opostos, para o Juninho ficar livre */
-    .flutua.f2,.flutua.f3{display:none}
-    .flutua.f1{top:-1%;left:-2%}.flutua.f4{bottom:-1%;right:-2%}
+    .flutua.f2{display:none}
+    .flutua.f1{top:1%;left:0}.flutua.f4{top:15%;left:auto;right:0}
+    .palco{aspect-ratio:1.55}
+    .cao{width:66%}
   }
 
   /* ---------- Menos movimento ---------- */
@@ -359,7 +346,8 @@
     .trilho .dup{display:none}
     .barras i::after,.passos .trilha::after{scale:1 1}
     /* palco parado: sem pisca-pisca de animações infinitas */
-    .pet,.sombra-pet,.pet .rabo,.pet .olhos,.plataforma i,.brilhos i,.barrinhas i,.flutua{animation:none !important}
+    .cao-img *,.barrinhas i,.flutua{animation:none !important}
+    .palco .cao{left:21%}
     .barrinhas i{transform:scaleY(.7)}
   }
 </style>
@@ -427,66 +415,63 @@
     </div>
 
     <div class="palco surge" style="--i:3" id="palco" aria-hidden="true">
-      <!-- Janela do app Abanô com o Juninho em destaque -->
-      <div class="janela">
-        <div class="janela-topo"><i></i><i></i><i></i><span>Abanô · Perfil do pet</span></div>
-        <div class="janela-corpo">
-          <div class="janela-lado">
-            <span class="on"><svg viewBox="0 0 32 32" fill="currentColor"><ellipse cx="16" cy="19.6" rx="5" ry="4.2"/><circle cx="9.8" cy="13.6" r="2.3"/><circle cx="13.7" cy="9.6" r="2.3"/><circle cx="18.3" cy="9.6" r="2.3"/><circle cx="22.2" cy="13.6" r="2.3"/></svg></span>
-            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></span>
-            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.2a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
-            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></span>
-          </div>
-          <div class="cena">
-            <div class="cena-titulo">Juninho<small>Husky siberiano · 4 anos</small></div>
-            <span class="chip-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Vacinas em dia</span>
-            <div class="feixe"></div>
-            <div class="plataforma"><b></b><b></b><b></b><i></i><i></i><i></i></div>
-            <div class="brilhos"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-            <div class="sombra-pet"></div>
-            <div class="pet" id="pet">
-              <!-- Ilustração do Juninho (husky sentado, de frente) -->
-              <svg viewBox="0 0 200 210">
+      <!-- Chão do palco: as pegadas do Juninho aparecem aqui -->
+      <div class="chao" id="chao"></div>
+      <!-- Juninho em 3D (gerado por IA a partir de um reel dele), separado em partes para se mexer -->
+      <div class="cao" id="cao">
+        <div class="cao-corpo">
+          <span class="sombra-cao"></span>
+          <div class="cao-img" id="cao-img">
+            <!-- Juninho 2D, de perfil (olhando para a esquerda). Cada pata é uma peça
+                 separada, com o próprio ponto de giro, para o ciclo de caminhada. -->
+            <svg viewBox="0 0 240 190" role="img" aria-label="Juninho, husky siberiano, em desenho">
+              <!-- patas do lado de lá (mais claras, atrás do corpo) -->
+              <g class="perna fundo-frente"><path d="M107 104h15l-2 70q0 6-6 6h-3q-6 0-5-6z" fill="#C9C7BF"/><ellipse cx="111" cy="180" rx="9" ry="4.5" fill="#C9C7BF"/></g>
+              <g class="perna fundo-tras"><path d="M152 104h17l-3 34-2 36q0 6-6 6h-3q-6 0-5-6l1-36z" fill="#C9C7BF"/><ellipse cx="157" cy="180" rx="9" ry="4.5" fill="#C9C7BF"/></g>
+              <g class="tronco">
+                <!-- rabo enrolado sobre as costas -->
                 <g class="rabo">
-                  <path d="M126 188C158 194 186 174 189 144C192 120 179 103 161 103C147 103 142 117 151 124C164 133 168 149 158 161C148 172 136 174 124 172Z" fill="#4A525C"/>
-                  <path d="M161 103C147 103 142 117 151 124C155 127 158 130 160 134C163 124 167 113 172 106C169 104 165 103 161 103Z" fill="#F5F4F0"/>
+                  <path d="M186 94C214 92 230 62 220 38 213 21 193 17 184 29c11 2 20 13 16 28-4 14-14 21-24 25z" fill="#3E4651"/>
+                  <path d="M184 29c9-12 29-8 36 9-7-6-18-8-27-4-3 1-6 0-9-5z" fill="#F6F5F1"/>
+                  <path d="M188 92c14-2 25-12 30-26-1 13-12 26-30 30z" fill="#F6F5F1" opacity=".9"/>
                 </g>
-                <ellipse cx="62" cy="192" rx="17" ry="10" fill="#3A4149"/>
-                <ellipse cx="138" cy="192" rx="17" ry="10" fill="#3A4149"/>
-                <path d="M56 198C50 160 62 128 80 112H120C138 128 150 160 144 198Z" fill="#4A525C"/>
-                <path d="M74 198C70 166 80 136 100 122C120 136 130 166 126 198Z" fill="#F5F4F0"/>
-                <rect x="77" y="148" width="19" height="50" rx="9.5" fill="#F5F4F0"/>
-                <rect x="104" y="148" width="19" height="50" rx="9.5" fill="#F5F4F0"/>
-                <path d="M84 196v-5M89 196v-5M111 196v-5M116 196v-5" stroke="#C9C7C0" stroke-width="1.6" stroke-linecap="round"/>
-                <path d="M68 116Q100 133 132 116L134 125Q100 143 66 125Z" fill="#5CC2A8"/>
-                <circle cx="100" cy="138" r="6.5" fill="#F2C14E"/><circle cx="100" cy="138" r="2.2" fill="#C99A2E"/>
-                <g class="orelha" style="--o:-9deg"><path d="M58 60L69 10L96 44Z" fill="#4A525C"/><path d="M67 49L71 24L87 43Z" fill="#E9A79A"/></g>
-                <g class="orelha" style="--o:9deg"><path d="M142 60L131 10L104 44Z" fill="#4A525C"/><path d="M133 49L129 24L113 43Z" fill="#E9A79A"/></g>
-                <ellipse cx="100" cy="80" rx="47" ry="43" fill="#4A525C"/>
-                <path d="M57 86C59 65 73 56 86 58C92 60 96 66 100 75C104 66 108 60 114 58C127 56 141 65 143 86C145 110 125 126 100 126C75 126 55 110 57 86Z" fill="#F5F4F0"/>
-                <circle cx="82" cy="55" r="4.5" fill="#F5F4F0"/><circle cx="118" cy="55" r="4.5" fill="#F5F4F0"/>
-                <g class="olhos">
-                  <ellipse cx="83" cy="78" rx="9.5" ry="8.5" fill="#2B3036"/><ellipse cx="117" cy="78" rx="9.5" ry="8.5" fill="#2B3036"/>
-                  <ellipse cx="83" cy="78" rx="7.4" ry="6.8" fill="#7CC4E8"/><ellipse cx="117" cy="78" rx="7.4" ry="6.8" fill="#7CC4E8"/>
-                  <g class="pupilas">
-                    <circle cx="83" cy="78" r="3.6" fill="#1B1F24"/><circle cx="117" cy="78" r="3.6" fill="#1B1F24"/>
-                    <circle cx="85" cy="75.8" r="1.7" fill="#fff"/><circle cx="119" cy="75.8" r="1.7" fill="#fff"/>
+                <!-- corpo: costas escuras, barriga branca -->
+                <path d="M72 92c6-22 36-28 68-27 32 0 58 9 60 31 2 17-12 27-34 28H104C84 124 68 110 72 92z" fill="#3E4651"/>
+                <path d="M84 108c18 14 74 16 104 2-2 9-16 16-36 16h-46c-14 0-22-8-22-18z" fill="#F6F5F1"/>
+                <path d="M120 70c18-3 44-1 60 8-16-3-40-4-60-2z" fill="#4C5561" opacity=".7"/>
+              </g>
+              <!-- patas do lado de cá -->
+              <g class="perna perto-tras"><ellipse cx="172" cy="108" rx="17" ry="15" fill="#3E4651"/><path d="M164 112h18l-3 62q0 6-6 6h-4q-6 0-5-6z" fill="#F6F5F1"/><ellipse cx="172" cy="181" rx="10" ry="5" fill="#F6F5F1"/></g>
+              <g class="perna perto-frente"><ellipse cx="95" cy="104" rx="14" ry="13" fill="#3E4651"/><path d="M87 106h16l-1 68q0 6-6 6h-3q-6 0-6-6z" fill="#F6F5F1"/><ellipse cx="95" cy="181" rx="10" ry="5" fill="#F6F5F1"/></g>
+              <!-- peito, coleira e cabeça -->
+              <g class="tronco">
+                <path d="M66 82c12-8 30-4 32 10 2 14-12 22-26 18-10-3-14-20-6-28z" fill="#F6F5F1"/>
+                <path d="M70 80q14-4 26 6l-4 7q-10-8-22-6z" fill="#5CC2A8"/>
+                <circle cx="90" cy="96" r="4.2" fill="#F2C14E"/>
+                <g class="cabeca">
+                  <path d="M50 42l4-30 16 27z" fill="#2F353D"/>
+                  <ellipse cx="62" cy="58" rx="28" ry="25" fill="#3E4651"/>
+                  <g class="orelha"><path d="M62 38l11-32 16 32z" fill="#3E4651"/><path d="M68 34l5-17 9 17z" fill="#E9A79A"/></g>
+                  <path d="M88 62c-1 15-14 25-32 25H32c-11 0-16-7-12-14 5-6 14-7 21-10 5-8 11-11 15-4 4-7 13-9 18-2 6-3 14 0 14 5z" fill="#F6F5F1"/>
+                  <ellipse cx="38" cy="74" rx="21" ry="12" fill="#F6F5F1"/>
+                  <circle cx="61" cy="47" r="4" fill="#F6F5F1"/>
+                  <g class="olho">
+                    <ellipse cx="58" cy="58" rx="7" ry="5.4" fill="#2B3036"/>
+                    <circle cx="57" cy="58" r="4.2" fill="#7CC4E8"/>
+                    <circle cx="56.4" cy="58.2" r="2.1" fill="#1B1F24"/>
+                    <circle cx="55.4" cy="56.6" r="1.2" fill="#fff"/>
                   </g>
+                  <ellipse cx="19" cy="70" rx="6" ry="4.8" fill="#1F2328"/>
+                  <ellipse cx="17.5" cy="68.6" rx="2" ry="1.1" fill="#fff" opacity=".4"/>
+                  <path d="M34 81q5 1 10 0 1 11-5 12-6-1-5-12z" fill="#EF8E8E"/>
+                  <path d="M22 77q12 9 28 3" fill="none" stroke="#2B3036" stroke-width="2.4" stroke-linecap="round"/>
                 </g>
-                <path d="M91 94Q100 89 109 94Q109 102 100 104Q91 102 91 94Z" fill="#23272D"/>
-                <ellipse cx="97" cy="93.5" rx="3" ry="1.6" fill="#fff" opacity=".35"/>
-                <path d="M94 110Q100 107 106 110Q107 122 100 123Q93 122 94 110Z" fill="#EF8E8E"/>
-                <path d="M100 111v8" stroke="#D86F6F" stroke-width="1.4" stroke-linecap="round"/>
-                <path d="M100 104v4M100 108Q93 114 86 109M100 108Q107 114 114 109" fill="none" stroke="#2B3036" stroke-width="2.4" stroke-linecap="round"/>
-              </svg>
-            </div>
+              </g>
+            </svg>
           </div>
         </div>
+        <span class="balao" id="balao">Au au!</span>
       </div>
-      <div class="flutua f1"><span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/></svg></span><div><small>Husky adulto · 25 kg</small><span class="valor">R$ 515/mês</span></div></div>
-      <div class="flutua f2"><span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2a4.5 4.5 0 0 1 5 4.8"/></svg></span><div><b>Encontro de Huskies</b><small>Maricá (RJ)<span class="tag-mini">em breve</span></small></div></div>
-      <div class="flutua f3"><span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></span><div><b>Pet desaparecido</b><small>Alerta para quem está perto<span class="tag-mini">em breve</span></small></div></div>
-      <div class="flutua f4"><span class="fi"><svg viewBox="0 0 32 32" fill="currentColor"><ellipse cx="16" cy="19.6" rx="5" ry="4.2"/><circle cx="9.8" cy="13.6" r="2.3"/><circle cx="13.7" cy="9.6" r="2.3"/><circle cx="18.3" cy="9.6" r="2.3"/><circle cx="22.2" cy="13.6" r="2.3"/></svg></span><div><b>Passeio de hoje</b><small>3,2 km com o Juninho</small></div><span class="barrinhas"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
     </div>
   </div>
 
@@ -813,65 +798,186 @@
     }, { passive: true });
   }
 
-  // 7) Patinhas de luz que sobem da plataforma (só visual)
-  var pata = '<svg viewBox="0 0 32 32" fill="currentColor"><ellipse cx="16" cy="19.6" rx="5" ry="4.2"/><circle cx="9.8" cy="13.6" r="2.3"/><circle cx="13.7" cy="9.6" r="2.3"/><circle cx="18.3" cy="9.6" r="2.3"/><circle cx="22.2" cy="13.6" r="2.3"/></svg>';
-  Array.prototype.forEach.call(document.querySelectorAll(".brilhos i"), function (i) { i.innerHTML = pata; });
-
-  // 8) Abertura e interação com Motion (o motion.js chega antes do DOMContentLoaded)
+  // 7) Juninho passeia pelo palco (Motion). Ele só anda dentro do palco, que fica
+  //    ao lado do texto (no celular, abaixo dele): nunca passa por cima do título.
   document.addEventListener("DOMContentLoaded", function () {
     var M = window.Motion, palco = document.getElementById("palco");
     if (!M || !M.animate || !palco || calmo) return;
     var hero = palco.closest(".hero");
     var colunaTexto = hero.firstElementChild;
-    var janela = palco.querySelector(".janela");
-    var cena = palco.querySelector(".cena");
-    var pet = document.getElementById("pet");
-    var sombra = palco.querySelector(".sombra-pet");
-    var plataforma = palco.querySelector(".plataforma");
-    var pupilas = pet.querySelector(".pupilas");
+    var cao = document.getElementById("cao");
+    var corpo = cao.querySelector(".cao-corpo");
+    var img = document.getElementById("cao-img");
+    var cabeca = cao.querySelector(".cabeca");
+    var chao = document.getElementById("chao");
+    var balao = document.getElementById("balao");
     var cta = hero.querySelector(".btn-brilho");
     var cartoes = Array.prototype.slice.call(palco.querySelectorAll(".flutua"));
     var mouseFino = window.matchMedia("(hover: hover)").matches;
-    // Só refaz a entrada se a reserva em CSS ainda não mostrou nada (evita piscar)
-    var cedo = performance.now() < 850;
+    var cedo = performance.now() < 850;          // a reserva em CSS ainda não mostrou o cachorro
     var avataresCedo = performance.now() < 300;
-    var mola = function (bounce, duracao, atraso) { return { type: "spring", bounce: bounce, duration: duracao, delay: atraso || 0 }; };
-    var limpar = function (el) { el.style.transform = ""; el.style.opacity = ""; el.style.transition = ""; };
+    var pata = '<svg viewBox="0 0 32 32" fill="currentColor"><ellipse cx="16" cy="19.6" rx="5" ry="4.2"/><circle cx="9.8" cy="13.6" r="2.3"/><circle cx="13.7" cy="9.6" r="2.3"/><circle cx="18.3" cy="9.6" r="2.3"/><circle cx="22.2" cy="13.6" r="2.3"/></svg>';
+    var coracao = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5-8-11.2A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.8C20 16 12 21 12 21z"/></svg>';
+    var espera = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+    var sorteio = function (a, b) { return a + Math.random() * (b - a); };
 
-    // Juninho fica feliz: rabo acelera e as orelhas mexem
-    function feliz(ms) {
-      pet.classList.add("feliz");
-      clearTimeout(pet._feliz);
-      pet._feliz = setTimeout(function () { pet.classList.remove("feliz"); }, ms || 1500);
-    }
-    // Onda de luz quando ele pousa na plataforma
-    function ondaDeLuz() {
-      var anel = document.createElement("span");
-      anel.className = "pulso";
-      plataforma.appendChild(anel);
-      M.animate(anel, { opacity: [0.95, 0], scale: [0.5, 1.6] }, { duration: 1.1, ease: [0.16, 1, 0.3, 1] })
-        .finished.then(function () { anel.remove(); });
-    }
-
-    // 8a) Entrada: janela sobe, Juninho pousa, etiquetas saem da janela
     palco.classList.add("com-motion");
+
+    // ---------- Posição e direção ----------
+    var x = 0, olhandoEsquerda = true, andando = false;
+    function limites() { return { min: 0, max: Math.max(0, palco.clientWidth - cao.offsetWidth) }; }
+    function colocar(px) { x = px; cao.style.transform = "translateX(" + px.toFixed(1) + "px)"; }
+    function virar(paraEsquerda) {
+      olhandoEsquerda = paraEsquerda;
+      cao.style.setProperty("--vira", paraEsquerda ? 1 : -1);   // a imagem olha para a esquerda
+    }
+
+    // ---------- Pegadas no chão ----------
+    var lado = 0;
+    function soltarPegada() {
+      var w = cao.offsetWidth;
+      var u = (lado++ % 2) ? 0.42 : 0.73;   // patas da frente e de trás no desenho
+      if (!olhandoEsquerda) u = 1 - u;
+      var p = document.createElement("span");
+      p.className = "pegada";
+      p.innerHTML = pata;
+      p.style.left = (x + u * w).toFixed(1) + "px";
+      p.style.top = (chao.clientHeight * 0.62 + (lado % 2 ? 4 : -4)) + "px";
+      p.style.rotate = (olhandoEsquerda ? -90 : 90) + "deg";
+      chao.appendChild(p);
+      M.animate(p, { opacity: [0, 0.38, 0], scale: [0.6, 1, 1] }, { duration: 2.6, times: [0, 0.08, 1], ease: "easeOut" })
+        .finished.then(function () { p.remove(); });
+    }
+
+    // ---------- Andar até um ponto ----------
+    function andarAte(alvo) {
+      var dist = alvo - x;
+      if (Math.abs(dist) < 6) return Promise.resolve();
+      virar(dist < 0);
+      andando = true;
+      cao.classList.add("andando");
+      // velocidade casada com o passo (pata de 77 unidades, ±14°, meio ciclo apoiada): os pés não escorregam
+      var ciclo = 0.7, passoPx = 2 * 77 * Math.sin(14 * Math.PI / 180) * cao.offsetWidth / 240;
+      var velocidade = passoPx / (ciclo / 2);     // px por segundo
+      var de = x, dur = Math.abs(dist) / velocidade;
+      var passos = setInterval(soltarPegada, ciclo * 500);   // uma pegada a cada meio ciclo (cada pisada)
+      return M.animate(cao, { x: [de, alvo] }, { duration: dur, ease: "linear" }).finished.then(function () {
+        clearInterval(passos);
+        colocar(alvo);
+        andando = false;
+        cao.classList.remove("andando");
+      });
+    }
+
+    // ---------- Cabeça curiosa: inclina na direção do cursor ----------
+    var ultimoMouse = 0, mouse = null;
+    function inclinarCabeca() {
+      if (!mouse || performance.now() - ultimoMouse > 2500) { cabeca.style.rotate = ""; return; }
+      var r = img.getBoundingClientRect();
+      var hx = r.left + r.width * (olhandoEsquerda ? 0.22 : 0.78), hy = r.top + r.height * 0.3;
+      var dx = (mouse.x - hx) * (olhandoEsquerda ? 1 : -1), dy = mouse.y - hy;
+      var ang = Math.max(-10, Math.min(10, dy / 30 - dx / 60));
+      cabeca.style.rotate = ang.toFixed(1) + "deg";
+    }
+    if (mouseFino) {
+      window.addEventListener("pointermove", function (e) {
+        mouse = { x: e.clientX, y: e.clientY };
+        ultimoMouse = performance.now();
+        if (!andando) {
+          // parado: vira para o lado do cursor e inclina a cabeça
+          var r = img.getBoundingClientRect(), meio = r.left + r.width / 2;
+          // só vira quando o cursor está bem para um lado (evita ficar virando à toa)
+          if (Math.abs(e.clientX - meio) > r.width * 0.35) virar(e.clientX < meio);
+        }
+        inclinarCabeca();
+      }, { passive: true });
+    }
+
+    // ---------- Carinho e latido ----------
+    function feliz(ms) {
+      cao.classList.add("feliz");
+      clearTimeout(cao._feliz);
+      cao._feliz = setTimeout(function () { cao.classList.remove("feliz"); }, ms || 1600);
+    }
+    function pulinho() {
+      M.animate(corpo, { y: [0, -26, 0] }, { duration: 0.6, ease: [0.34, 1.3, 0.64, 1] })
+        .finished.then(function () { corpo.style.transform = ""; });
+    }
+    function soltarCoracoes() {
+      for (var i = 0; i < 4; i++) (function (i) {
+        var h = document.createElement("span");
+        h.className = "coracao";
+        h.innerHTML = coracao;
+        h.style.left = (olhandoEsquerda ? 20 : 80) + "%";
+        cao.appendChild(h);
+        M.animate(h, { opacity: [0, 1, 0], y: [0, -70 - Math.random() * 40], x: [0, (Math.random() - 0.5) * 80], scale: [0.4, 1.05, 0.8], rotate: [0, (Math.random() - 0.5) * 40] },
+          { duration: 1.3, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }).finished.then(function () { h.remove(); });
+      })(i);
+    }
+    function latir() {
+      balao.style.left = olhandoEsquerda ? "-4%" : "62%";
+      balao.style.borderRadius = olhandoEsquerda ? "14px 14px 14px 4px" : "14px 14px 4px 14px";
+      M.animate(balao, { opacity: [0, 1, 1, 0], y: [8, 0, 0, -6], scale: [0.7, 1, 1, 0.95] }, { duration: 1.4, times: [0, 0.12, 0.8, 1] });
+      pulinho();
+      feliz(1200);
+    }
+    var ultimoCarinho = 0;
+    function carinho() {
+      var agora = performance.now();
+      if (agora - ultimoCarinho < 900) return;
+      ultimoCarinho = agora;
+      feliz(1600);
+      pulinho();
+      soltarCoracoes();
+    }
+    img.addEventListener("pointerenter", carinho);
+    img.addEventListener("click", latir);
+
+    // ---------- O passeio ----------
+    var visivel = true;
+    new IntersectionObserver(function (en) { visivel = en[0].isIntersecting; }).observe(palco);
+    function olharParaOTexto() { if (performance.now() - ultimoMouse > 2500) virar(true); }
+
+    async function passear() {
+      var L = limites();
+      if (cedo) {
+        // entra andando pela direita do palco
+        colocar(L.max + cao.offsetWidth * 0.6);
+        cao.style.opacity = "0";
+        M.animate(cao, { opacity: [0, 1] }, { duration: 0.6, delay: 0.5 }).finished.then(function () { cao.style.opacity = ""; });
+        await espera(500);
+        await andarAte(L.max * 0.45);
+      } else {
+        colocar(palco.clientWidth * 0.21);
+      }
+      olharParaOTexto();
+      pulinho(); feliz(1400);   // chegou: pulinho e rabo acelerado (o balão "Au au!" só aparece no clique)
+      while (true) {
+        // parado: abana o rabo, respira, olha para o título (ou para o cursor)
+        await espera(sorteio(3200, 5600));
+        while (!visivel || document.hidden) await espera(600);
+        if (Math.random() < 0.35) { pulinho(); feliz(1400); await espera(900); }
+        L = limites();
+        // escolhe outro ponto do chão, longe do atual
+        var alvo, tentativas = 0;
+        do { alvo = sorteio(L.min, L.max); } while (Math.abs(alvo - x) < L.max * 0.3 && ++tentativas < 8);
+        await andarAte(alvo);
+        olharParaOTexto();
+      }
+    }
+    passear();
+    window.addEventListener("resize", function () {
+      var L = limites();
+      if (!andando && x > L.max) colocar(L.max);
+    });
+
+    // Etiquetas aparecem uma a uma
     if (cedo) {
-      janela.style.opacity = "0";
-      M.animate(janela, { opacity: [0, 1], y: [46, 0], scale: [0.92, 1], rotateX: [14, 0], transformPerspective: 1200 }, mola(0.28, 1, 0.35))
-        .finished.then(function () { limpar(janela); });
-      pet.style.opacity = "0";
-      sombra.style.opacity = "0";
-      M.animate(sombra, { opacity: [0, 1], scale: [0.3, 1] }, mola(0.4, 0.9, 0.9)).finished.then(function () { limpar(sombra); });
-      M.animate(pet, { opacity: [0, 1], y: [-120, 0], scale: [0.7, 1] }, mola(0.45, 0.9, 0.85))
-        .finished.then(function () { limpar(pet); ondaDeLuz(); feliz(1400); });
-      var j = janela.getBoundingClientRect(), cx = j.left + j.width / 2, cy = j.top + j.height / 2;
       cartoes.forEach(function (c, i) {
-        var r = c.getBoundingClientRect();
         c.style.opacity = "0";
         c.style.transition = "none";
-        M.animate(c, { opacity: [0, 1], x: [(cx - (r.left + r.width / 2)) * 0.7, 0], y: [(cy - (r.top + r.height / 2)) * 0.7, 0], scale: [0.4, 1] },
-          mola(0.3, 1.1, 1.3 + i * 0.14))
-          .finished.then(function () { limpar(c); });
+        M.animate(c, { opacity: [0, 1], y: [24, 0], scale: [0.7, 1] }, { type: "spring", bounce: 0.35, duration: 0.9, delay: 0.9 + i * 0.15 })
+          .finished.then(function () { c.style.transform = ""; c.style.opacity = ""; c.style.transition = ""; });
       });
     }
     // Avatares da família entram um por um (a linha deles aparece aos ~0,3 s)
@@ -879,102 +985,22 @@
       var avatares = Array.prototype.slice.call(document.querySelectorAll(".avatares span"));
       avatares.forEach(function (a) { a.style.opacity = "0"; a.style.transition = "none"; });
       M.animate(avatares, { opacity: [0, 1], scale: [0.2, 1] }, { type: "spring", bounce: 0.55, duration: 0.6, delay: M.stagger(0.07, { startDelay: 0.55 }) })
-        .finished.then(function () { avatares.forEach(limpar); });
+        .finished.then(function () { avatares.forEach(function (a) { a.style.transform = ""; a.style.opacity = ""; a.style.transition = ""; }); });
     }
 
-    // 8b) Olhar: os olhos seguem o cursor; parado, ele olha para o título e o botão
-    //     (neurodesign: o olhar de um rosto guia o olhar de quem visita)
-    function olhar(x, y) { pupilas.style.transform = "translate(" + x.toFixed(2) + "px," + y.toFixed(2) + "px)"; }
-    function olharPara(px, py) {
-      var r = pet.getBoundingClientRect();
-      var dx = px - (r.left + r.width / 2), dy = py - (r.top + r.height * 0.37);
-      var dist = Math.sqrt(dx * dx + dy * dy) || 1, forca = Math.min(1, dist / 260);
-      olhar(dx / dist * 3 * forca, dy / dist * 2.4 * forca);
-    }
-    function olharOBotao() {
-      if (!cta) return;
-      var c = cta.getBoundingClientRect();
-      olharPara(c.left + c.width / 2, c.top + c.height / 2);
-    }
-    setTimeout(olharOBotao, cedo ? 1900 : 0);
-    var ocioso = 0, pedidoOlhar = 0, ultimoOlhar = null;
-    if (mouseFino) {
-      window.addEventListener("pointermove", function (e) {
-        ultimoOlhar = e;
-        if (pedidoOlhar) return;
-        pedidoOlhar = requestAnimationFrame(function () {
-          pedidoOlhar = 0;
-          olharPara(ultimoOlhar.clientX, ultimoOlhar.clientY);
-          clearTimeout(ocioso);
-          ocioso = setTimeout(olharOBotao, 2500);
-        });
-      }, { passive: true });
-    }
-
-    // 8c) Carinho: passar o mouse (ou tocar) no Juninho faz subir coraçõezinhos
-    var coracao = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5-8-11.2A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.8C20 16 12 21 12 21z"/></svg>';
-    var ultimoCarinho = 0;
-    function soltarCoracao(i) {
-      var h = document.createElement("span");
-      h.className = "coracao";
-      h.innerHTML = coracao;
-      cena.appendChild(h);
-      M.animate(h, { opacity: [0, 1, 0], y: [0, -80 - Math.random() * 50], x: [0, (Math.random() - 0.5) * 90], scale: [0.4, 1.05, 0.8], rotate: [0, (Math.random() - 0.5) * 40] },
-        { duration: 1.3, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] })
-        .finished.then(function () { h.remove(); });
-    }
-    function carinho() {
-      var agora = performance.now();
-      if (agora - ultimoCarinho < 900) return;
-      ultimoCarinho = agora;
-      feliz(1600);
-      M.animate(pet.querySelector("svg"), { scale: [1, 1.06, 1], rotate: [0, -3, 0] }, { duration: 0.5 });
-      for (var i = 0; i < 4; i++) soltarCoracao(i);
-    }
-    pet.addEventListener("pointerenter", carinho);
-    pet.addEventListener("click", carinho);
-
-    // 8d) O palco inclina em 3D seguindo o mouse
-    if (mouseFino) {
-      var pedido = 0, ultimo = null;
-      var inclinar = function (rx, ry) {
-        // perspectiva só no palco (não afeta o título ao lado)
-        M.animate(palco, { transformPerspective: 1300, rotateX: rx, rotateY: ry }, { type: "spring", stiffness: 90, damping: 16 });
-      };
-      window.addEventListener("pointermove", function (e) {
-        ultimo = e;
-        if (pedido) return;
-        pedido = requestAnimationFrame(function () {
-          pedido = 0;
-          var r = palco.getBoundingClientRect();
-          var x = Math.max(-1, Math.min(1, (ultimo.clientX - (r.left + r.width / 2)) / r.width));
-          var y = Math.max(-1, Math.min(1, (ultimo.clientY - (r.top + r.height / 2)) / r.height));
-          inclinar(-y * 7, x * 9);
-        });
-      }, { passive: true });
-      document.documentElement.addEventListener("pointerleave", function () { inclinar(0, 0); olharOBotao(); });
-    }
-
-    // 8e) Ao rolar: etiquetas se afastam, a janela recua, o texto sobe e esmaece
-    // (só no computador: no celular o palco fica abaixo do texto e as etiquetas sairiam da tela)
+    // Ao rolar (só no computador): etiquetas se afastam, texto sobe e esmaece
     var telaLarga = window.matchMedia("(min-width: 1001px)");
     if (M.scroll) {
       M.scroll(function (progresso) {
         var k = telaLarga.matches ? Math.max(0, Math.min(1, progresso)) : 0;
         palco.style.setProperty("--sp", k.toFixed(3));
-        if (k < 0.001) {
-          // no topo: sem estilos extras (evita camadas desnecessárias no título)
-          if (!janela.style.opacity) janela.style.transform = "";
-          colunaTexto.style.transform = colunaTexto.style.opacity = "";
-          return;
-        }
-        janela.style.transform = "translateY(" + (-k * 24).toFixed(1) + "px) scale(" + (1 - k * 0.06).toFixed(3) + ")";
+        if (k < 0.001) { colunaTexto.style.transform = colunaTexto.style.opacity = ""; return; }
         colunaTexto.style.transform = "translateY(" + (-k * 56).toFixed(1) + "px)";
         colunaTexto.style.opacity = (1 - k * 0.55).toFixed(3);
       }, { target: hero, offset: ["start start", "end start"] });
     }
 
-    // 8f) Botão principal "magnético": puxa levemente na direção do cursor
+    // Botão principal "magnético": puxa levemente na direção do cursor
     if (cta && mouseFino) {
       cta.addEventListener("pointerenter", function () { cta.style.transition = "background-color .2s"; });
       cta.addEventListener("pointermove", function (e) {
