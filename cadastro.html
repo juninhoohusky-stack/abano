@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Cadastre-se | Abanô</title>
-<meta name="description" content="Cadastre-se no Abanô, de graça: seja tutor fundador, receba as novidades primeiro e ajude a decidir o que construir. Dá pra entrar com a conta Google.">
-<meta property="og:title" content="Cadastre-se no Abanô">
-<meta property="og:description" content="Seja tutor fundador do Abanô e receba as novidades primeiro.">
+<title>Criar conta | Abanô</title>
+<meta name="description" content="Crie sua conta grátis no Abanô para participar da Comunidade, montar o perfil dos seus pets e, se quiser, receber as novidades por e-mail.">
+<meta property="og:title" content="Criar conta">
+<meta property="og:description" content="Crie sua conta grátis no Abanô para participar da Comunidade, montar o perfil dos seus pets e, se quiser, receber as novidades por e-mail.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -22,75 +22,35 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261110b">
+<link rel="stylesheet" href="site.css?v=20261110c">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261110b" defer></script>
-<script src="lista.js?v=20261109" defer></script>
-<script src="google.js?v=20261109" defer></script>
+<script src="site.js?v=20261110c" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
+<script src="lista.js?v=20261110c" defer></script>
+<script src="conta.js?v=20261110c" defer></script>
 <style>
-  /* Cadastro */
-  .pagina{padding:56px 0 24px}
-  .espera h1{font-size:clamp(36px,5vw,52px);margin:12px 0 14px}
-  .espera{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
-  .espera h2{font-size:clamp(32px,4vw,46px);margin:14px 0 14px}
-  .espera > div > p{color:var(--suave);font-size:17px}
-  .beneficios{list-style:none;margin-top:28px;display:grid;gap:14px}
-  .beneficios li{display:flex;gap:12px;align-items:flex-start}
-  .beneficios svg{width:20px;height:20px;flex:none;margin-top:3px;color:var(--marca)}
-  form{background:var(--superficie);border:1px solid var(--linha);border-radius:20px;padding:32px;box-shadow:var(--sombra)}
-  label{display:block;font-weight:600;font-size:14px;margin:18px 0 7px}
-  form > label:first-of-type{margin-top:0}
-  .opcional{font-weight:400;color:var(--suave)}
-  input,select,textarea{width:100%;min-height:44px;padding:10px 14px;border:1px solid transparent;border-radius:var(--raio-sm);font-size:17px;font-family:inherit;color:var(--tinta);background:var(--areia);transition:border-color .2s,box-shadow .2s,background-color .2s}
-  textarea{min-height:104px;resize:vertical;line-height:1.45}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--marca);background:var(--superficie);box-shadow:0 0 0 4px var(--marca-clara)}
-  .duas{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  form .btn{width:100%;margin-top:26px;padding:15px}
-  .mini{font-size:13px;color:var(--suave);margin-top:12px;text-align:center}
-  .google-bloco{margin-bottom:6px}
-  .google-bloco[hidden],.google-conectado[hidden]{display:none}
-  .btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;padding:0 18px;border-radius:999px;border:1px solid var(--linha);background:var(--superficie);color:var(--tinta);font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;transition:background-color .2s,transform .1s ease-out;-webkit-tap-highlight-color:transparent}
-  .btn-google:hover{background:var(--hover)}
-  .btn-google:active{transform:scale(.98)}
-  .btn-google:disabled{opacity:.6;cursor:progress}
-  .btn-google svg{width:20px;height:20px;flex:none}
-  .ou{display:flex;align-items:center;gap:12px;margin:18px 0 4px;color:var(--suave);font-size:13px}
-  .ou::before,.ou::after{content:"";flex:1;height:1px;background:var(--linha)}
-  .google-conectado{display:flex;gap:10px;align-items:flex-start;margin-bottom:6px;padding:12px 14px;border-radius:var(--raio-sm);background:var(--marca-clara);color:var(--tinta);font-size:14px;line-height:1.5}
-  .google-conectado svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--marca)}
-  .link-botao{background:none;border:0;padding:0;font:inherit;font-weight:600;color:var(--marca);text-decoration:underline;cursor:pointer}
-  #email[readonly]{color:var(--suave)}
-  .consentimento{display:flex;gap:12px;align-items:flex-start;margin:22px 0 0;font-weight:400;font-size:14px;line-height:1.5;color:var(--suave);cursor:pointer}
-  .consentimento input{flex:none;width:22px;height:22px;min-height:0;margin-top:1px;padding:0;accent-color:var(--marca);cursor:pointer}
-  .consentimento a{font-weight:600}
+  .pagina-conta{padding:48px 0 56px}
+  .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:64px;align-items:start}
+  .conta-grade.so{grid-template-columns:minmax(0,480px);justify-content:center}
+  .conta-intro h1{font-size:clamp(34px,5vw,50px);line-height:1.05;margin:12px 0 14px}
+  .conta-intro > p{color:var(--suave);font-size:18px;max-width:520px}
+  .beneficios{list-style:none;margin-top:26px;display:grid;gap:14px;padding:0}
+  .beneficios li{display:flex;gap:12px;align-items:flex-start;font-size:17px}
+  .beneficios .b-ico{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--marca-clara);color:var(--marca)}
+  .beneficios .b-ico svg{width:20px;height:20px}
+  .beneficios li:nth-child(2) .b-ico{background:var(--acento-claro);color:var(--acento)}
+  .beneficios li:nth-child(3) .b-ico{background:var(--lima-clara);color:var(--sobre-lima)}
   .escondido{display:none}
-  .form-aviso{margin-top:18px;padding:12px 14px;border-radius:var(--raio-sm);background:var(--acento-claro);color:var(--acento);font-size:15px;font-weight:500}
-  button.btn:disabled{opacity:.6;cursor:progress}
+  .conta-ok{text-align:center}
+  .conta-ok .selo{width:68px;height:68px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:var(--lima);color:var(--sobre-lima)}
+  .conta-ok .selo svg{width:32px;height:32px}
+  .conta-ok b{color:var(--tinta)}
+  .conta-ok:focus{outline:none}
+  @media (max-width:900px){.conta-grade{grid-template-columns:1fr;gap:32px}.pagina-conta{padding:32px 0 40px}}
+  @media (prefers-color-scheme:dark){:root:not([data-theme=light]) .beneficios li:nth-child(3) .b-ico{color:var(--lima)}}
 
-
-  @media (max-width:900px){
-    .hero{grid-template-columns:1fr;gap:48px;padding-top:48px;padding-bottom:64px}
-    .cabeca{grid-template-columns:1fr;gap:12px}
-    .cards{grid-template-columns:1fr 1fr}
-    .cards > :last-child:nth-child(odd){grid-column:1 / -1}
-    .historia{grid-template-columns:1fr;gap:20px;padding:44px 28px}
-    .espera{grid-template-columns:1fr;gap:36px}
-    .anuncie{grid-template-columns:1fr;gap:32px;padding:40px 28px}
-    section{padding:64px 0}
-  }
-  @media (max-width:600px){
-    .cards{grid-template-columns:1fr}
-    .cards > :last-child:nth-child(odd){grid-column:auto}
-    .duas{grid-template-columns:1fr;gap:0}
-    .previa{padding:22px}
-    .previa-valor{font-size:44px}
-    .previa-itens li{grid-template-columns:84px 1fr 56px}
-    form{padding:24px}
-    .anuncie{padding:28px 18px;border-radius:20px}
-    .anuncie form{padding:20px 16px}
-  }
 </style>
 </head>
 <body>
@@ -134,85 +94,59 @@
 </header>
 
 <main>
-
-  <section id="lista" class="pagina">
-    <div class="wrap espera">
-      <div>
-        <span class="eyebrow">Cadastro gratuito</span>
-        <h1>Cadastre-se e seja um tutor fundador</h1>
-        <p>Receba as novidades do Abanô em primeira mão e ajude a decidir o que construir.</p>
+  <section class="pagina-conta">
+    <div class="wrap conta-grade">
+      <div class="conta-intro">
+        <span class="eyebrow">Conta gratuita</span>
+        <h1>Crie sua conta no Abanô</h1>
+        <p>Só nome, e-mail e senha. O perfil e os pets você completa depois, quando quiser.</p>
         <ul class="beneficios">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Seu pet no <b>Mural dos Fundadores</b> do site</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Prioridade nos primeiros encontros</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Voto no que construir primeiro</span></li>
+          <li><span class="b-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-3.5 3v-3H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/><path d="M17 9.5h3a2 2 0 0 1 2 2v5.5a2 2 0 0 1-2 2h-1v2.5L16 19h-3.5"/></svg></span><span>Participe da <b>Comunidade</b>: publique, comente e entre nos clubes</span></li>
+          <li><span class="b-ico"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="12" cy="15.5" rx="4.6" ry="3.8"/><ellipse cx="6.4" cy="10.4" rx="2" ry="2.5"/><ellipse cx="10" cy="6.8" rx="2" ry="2.6"/><ellipse cx="14" cy="6.8" rx="2" ry="2.6"/><ellipse cx="17.6" cy="10.4" rx="2" ry="2.5"/></svg></span><span>Um perfil para você e <b>um para cada pet</b>, com fotos</span></li>
+          <li><span class="b-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg></span><span>Novidades por e-mail, <b>só se você quiser</b></span></li>
         </ul>
       </div>
 
-      <form id="form-lista" name="lista-espera">
-        <p class="escondido" aria-hidden="true"><label>Não preencha: <input name="campo-robo" tabindex="-1" autocomplete="off"></label></p>
+      <div>
+        <p class="aviso-conta ok" id="ja-conectado" hidden>Você já está conectado. <a href="conta.html">Ir para minha conta</a>.</p>
+        <form class="fc" id="form-criar" novalidate>
+          <h2>Criar conta</h2>
+          <p class="escondido" aria-hidden="true"><label>Não preencha: <input name="campo-robo" tabindex="-1" autocomplete="off"></label></p>
+          <button type="button" class="btn-google" id="btn-google"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg> Continuar com o Google</button>
+          <div class="ou"><span>ou use seu e-mail</span></div>
 
-        <div class="google-bloco" id="google-bloco" hidden>
-          <button type="button" class="btn-google" id="btn-google">
-            <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
-            Continuar com o Google
-          </button>
-          <div class="ou"><span>ou preencha abaixo</span></div>
-        </div>
-        <p class="google-conectado" id="google-conectado" hidden>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
-          <span>Conectado com o Google como <b id="google-email"></b>. Complete os dados abaixo. <button type="button" id="google-sair" class="link-botao">Usar outro e-mail</button></span>
-        </p>
+          <label class="rot" for="c-nome">Seu nome</label>
+          <input id="c-nome" name="nome" type="text" autocomplete="name" autocapitalize="words" maxlength="60" required>
 
-        <label for="nome">Seu nome</label>
-        <input id="nome" name="nome" type="text" required autocomplete="name">
+          <label class="rot" for="c-email">E-mail</label>
+          <input id="c-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required>
 
-        <label for="email">Seu e-mail</label>
-        <input id="email" name="email" type="email" required autocomplete="email">
-
-        <div class="duas">
-          <div>
-            <label for="nomepet">Nome do seu pet <span class="opcional">(opcional)</span></label>
-            <input id="nomepet" name="nome-do-pet" type="text" placeholder="Ex.: Juninho">
+          <label class="rot" for="c-senha">Senha</label>
+          <div class="campo-senha">
+            <input id="c-senha" name="senha" type="password" autocomplete="new-password" minlength="8" required aria-describedby="c-senha-ajuda">
+            <button type="button" aria-pressed="false" aria-controls="c-senha">Mostrar</button>
           </div>
-          <div>
-            <label for="cidade">Cidade / Estado</label>
-            <input id="cidade" name="cidade" type="text" placeholder="Ex.: Maricá / RJ" required>
-          </div>
+          <span class="ajuda" id="c-senha-ajuda">Pelo menos 8 caracteres, com letras e números.</span>
+
+          <label class="consente-conta"><input type="checkbox" name="novidades"><span>Quero receber as novidades do Abanô por e-mail <span class="opcional">(opcional)</span></span></label>
+          <label class="consente-conta"><input type="checkbox" name="aceite" required><span>Li a <a href="privacidade.html" target="_blank" rel="noopener">Política de privacidade</a> e tenho 18 anos ou mais.</span></label>
+
+          <p class="aviso-conta" id="aviso-criar" role="alert" hidden></p>
+          <button type="submit" class="btn">Criar minha conta</button>
+          <p class="mini">Já tem conta? <a href="entrar.html" id="link-entrar">Entrar</a></p>
+        </form>
+
+        <div class="fc conta-ok" id="criar-ok" tabindex="-1" hidden>
+          <div class="selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg></div>
+          <h2>Confira seu e-mail</h2>
+          <p class="sub">Enviamos um link para <b id="criar-confirme-email"></b>. Abra o link para ativar sua conta. Se não aparecer em alguns minutos, confira o spam.</p>
+          <p class="mini">Se esse e-mail já tinha conta, é só <a href="entrar.html">entrar</a> ou recuperar a senha.</p>
         </div>
-
-        <label for="pet">Seu(s) pet(s)</label>
-        <select id="pet" name="pet" required>
-          <option value="">Escolha uma opção</option>
-          <option>Cachorro</option>
-          <option>Gato</option>
-          <option>Cachorro e gato</option>
-          <option>Ainda não tenho, quero ter</option>
-        </select>
-
-        <label for="interesse">O que você mais quer no Abanô?</label>
-        <select id="interesse" name="interesse">
-          <option>Guia e dicas de cuidados</option>
-          <option>Pet desaparecido</option>
-          <option>Eventos pet</option>
-          <option>Hospedagem</option>
-          <option>Veterinários e serviços perto de mim</option>
-          <option>Adoção</option>
-          <option>Doador de sangue</option>
-        </select>
-
-        <label class="consentimento">
-          <input type="checkbox" name="consentimento" required>
-          <span>Li a <a href="privacidade.html" target="_blank" rel="noopener">Política de privacidade</a> e aceito que o Abanô use meus dados para me enviar e-mails sobre o projeto. Tenho 18 anos ou mais.</span>
-        </label>
-
-        <p id="form-aviso" class="form-aviso" role="alert" hidden></p>
-        <button type="submit" class="btn">Cadastrar</button>
-        <p class="mini">Nada de spam. Você pode sair ou <a href="seus-dados.html">pedir a exclusão dos seus dados</a> quando quiser.</p>
-      </form>
+      </div>
     </div>
   </section>
-
 </main>
+
 
 <footer class="rodape">
   <div class="rodape-in">

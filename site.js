@@ -223,3 +223,25 @@
     pendentes.slice().forEach(function (info, i) { mostrar(info, i); });
   }
 })();
+
+/* ---------- Conta no topo: "Entrar" para visitantes, "Minha conta" para quem está conectado ----------
+   Só olha se há sessão salva neste navegador; não carrega o login em todas as páginas. */
+(function () {
+  var cta = document.querySelector(".topo-cta");
+  if (!cta) return;
+  var conectado = false;
+  try { conectado = !!localStorage.getItem("sb-igpwzidpiypzukmnskdb-auth-token"); } catch (e) {}
+  var pagina = location.pathname.split("/").pop();
+  if (conectado) {
+    cta.textContent = "Minha conta";
+    cta.href = "conta.html";
+    if (pagina === "conta.html") cta.setAttribute("aria-current", "page"); else cta.removeAttribute("aria-current");
+    return;
+  }
+  if (pagina === "entrar.html") return;
+  var entrar = document.createElement("a");
+  entrar.href = "entrar.html";
+  entrar.className = "topo-entrar";
+  entrar.textContent = "Entrar";
+  cta.parentNode.insertBefore(entrar, cta);
+})();

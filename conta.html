@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Minha conta | Abanô</title>
+<meta name="description" content="Seu perfil de tutor e os perfis dos seus pets no Abanô.">
+<meta property="og:title" content="Minha conta">
+<meta property="og:description" content="Seu perfil de tutor e os perfis dos seus pets no Abanô.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#D10F5E">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://abano.com.br/conta.html">
+<meta property="og:site_name" content="Abanô">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://abano.com.br/conta.html">
+<meta property="og:image" content="https://abano.com.br/compartilhar.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="website">
+<link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261110c">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
+<script src="site.js?v=20261110c" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
+<script src="lista.js?v=20261110c" defer></script>
+<script src="conta.js?v=20261110c" defer></script>
+<style>
+  .pagina-conta{padding:48px 0 56px}
+  .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:64px;align-items:start}
+  .conta-grade.so{grid-template-columns:minmax(0,480px);justify-content:center}
+  .conta-intro h1{font-size:clamp(34px,5vw,50px);line-height:1.05;margin:12px 0 14px}
+  .conta-intro > p{color:var(--suave);font-size:18px;max-width:520px}
+  .beneficios{list-style:none;margin-top:26px;display:grid;gap:14px;padding:0}
+  .beneficios li{display:flex;gap:12px;align-items:flex-start;font-size:17px}
+  .beneficios .b-ico{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--marca-clara);color:var(--marca)}
+  .beneficios .b-ico svg{width:20px;height:20px}
+  .beneficios li:nth-child(2) .b-ico{background:var(--acento-claro);color:var(--acento)}
+  .beneficios li:nth-child(3) .b-ico{background:var(--lima-clara);color:var(--sobre-lima)}
+  .escondido{display:none}
+  .conta-ok{text-align:center}
+  .conta-ok .selo{width:68px;height:68px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:var(--lima);color:var(--sobre-lima)}
+  .conta-ok .selo svg{width:32px;height:32px}
+  .conta-ok b{color:var(--tinta)}
+  .conta-ok:focus{outline:none}
+  @media (max-width:900px){.conta-grade{grid-template-columns:1fr;gap:32px}.pagina-conta{padding:32px 0 40px}}
+  @media (prefers-color-scheme:dark){:root:not([data-theme=light]) .beneficios li:nth-child(3) .b-ico{color:var(--lima)}}
+
+  .minha-conta .aceite{max-width:520px;margin:0 auto}
+  .minha-conta > .aviso-conta{margin-bottom:18px}
+  #conta-boasvindas{margin:0 0 20px}
+  .conta-topo{display:flex;align-items:center;gap:18px;margin-bottom:24px}
+  .conta-topo h1{font-size:clamp(26px,3.6vw,36px);line-height:1.1;margin:0 0 4px}
+  .conta-topo p{color:var(--suave);font-size:15px;word-break:break-word}
+  .conta-topo > div{flex:1;min-width:0}
+  .avatar{flex:none;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:var(--degrade);color:#fff;font-weight:900;font-size:26px}
+  .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+  .avatar.grande{width:84px;height:84px;font-size:34px;box-shadow:0 0 0 4px var(--superficie),0 10px 24px -12px rgba(209,15,94,.6)}
+  .conta-colunas{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+  .conta-lado{display:grid;gap:20px}
+  .titulo-linha{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+  .titulo-linha h2{margin:0}
+  .titulo-linha .btn{width:auto;margin:0;min-height:44px;padding:0 18px;font-size:15px}
+  .foto-linha{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px}
+  .fc .arquivo{position:relative;width:auto;margin:0;min-height:44px;padding:0 18px;font-size:15px;cursor:pointer;overflow:hidden}
+  .arquivo input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+  .arquivo:focus-within{box-shadow:0 0 0 4px var(--marca-clara),inset 0 0 0 2px var(--marca)}
+  .lista-pets{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:12px}
+  .pet-card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:14px;border-radius:18px;background:var(--fundo)}
+  .pet-card .pet-foto{width:56px;height:56px;border-radius:16px;font-size:22px}
+  .pet-card .pet-foto{flex:none;display:grid;place-items:center;overflow:hidden;background:var(--degrade);color:#fff;font-weight:900}
+  .pet-card .pet-foto img{width:100%;height:100%;object-fit:cover}
+  .pet-card h3{font-size:17px;margin:0 0 2px}
+  .pet-card p{font-size:14px;color:var(--suave);margin:0}
+  .pet-card .pet-perso{color:var(--tinta);margin-top:2px}
+  .pet-acoes{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+  .fc .pet-acoes .btn{width:auto;margin:0;min-height:38px;padding:0 14px;font-size:14px}
+  .pet-acoes .link-botao{font-size:14px;color:var(--suave)}
+  .zona-perigo{margin-top:26px;padding-top:20px;border-top:1px solid var(--linha)}
+  .zona-perigo h3{font-size:16px;margin:0 0 4px}
+  .zona-perigo p{font-size:14px;color:var(--suave);margin:0 0 8px}
+  #form-trocar-senha .btn{margin-top:14px}
+  .btn-perigo{background:#B3123E}
+  .btn-perigo:hover{background:#8F0E31}
+  .dialogo{margin:auto;border:0;padding:0;background:transparent;width:min(620px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;border-radius:24px}
+  .dialogo::backdrop{background:rgba(43,22,34,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+  .dialogo[open]{animation:dialogo-entra .22s var(--mola)}
+  @keyframes dialogo-entra{from{opacity:0;transform:translateY(12px) scale(.98)}}
+  .fechar{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:var(--areia);color:var(--tinta);font-size:26px;line-height:1;cursor:pointer}
+  .fechar:hover{background:var(--hover)}
+  .dialogo .avatar{border-radius:18px}
+  @media (prefers-reduced-motion:reduce){.dialogo[open]{animation:none}}
+  @media (max-width:900px){.conta-colunas{grid-template-columns:1fr}}
+  @media (max-width:600px){
+    .conta-topo{flex-wrap:wrap;gap:14px}
+    .conta-topo .btn{width:100%}
+    .pet-card{grid-template-columns:auto 1fr}
+    .pet-acoes{grid-column:1 / -1;flex-direction:row;justify-content:flex-end;align-items:center;gap:16px}
+    .titulo-linha{flex-wrap:wrap}
+  }
+
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-in">
+    <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial"><img src="logo-pata.svg" alt="" width="38" height="38"><span class="logo-nome" aria-hidden="true">aban<span class="logo-o">o<svg viewBox="0 0 26 13" aria-hidden="true"><ellipse cx="4.6" cy="8.2" rx="3.6" ry="3.9"/><ellipse cx="13" cy="4.4" rx="3.7" ry="4.1"/><ellipse cx="21.4" cy="8.2" rx="3.6" ry="3.9"/></svg></span></span></a>
+    <nav class="abas" aria-label="Seções do site">
+      <span class="aba-pilula" aria-hidden="true"></span>
+      <a href="comunidade/" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-3.5 3v-3H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/><path d="M17 9.5h3a2 2 0 0 1 2 2v5.5a2 2 0 0 1-2 2h-1v2.5L16 19h-3.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 5h11a2.5 2.5 0 0 1 2.5 2.5v6A2.5 2.5 0 0 1 15 16H9.3l-3.6 3.1a.6.6 0 0 1-1-.45V16H4a2.5 2.5 0 0 1-2.5-2.5v-6A2.5 2.5 0 0 1 4 5z"/><path d="M19 9a2.5 2.5 0 0 1 2.5 2.5V17a2.5 2.5 0 0 1-2.5 2.5h-.6v2a.6.6 0 0 1-1 .45L14.6 19.5H12a2.5 2.5 0 0 1-2-1h5a3.5 3.5 0 0 0 3.5-3.5V9z"/></svg><span>Comunidade</span></a>
+      <div class="grupo-menu">
+        <button type="button" class="aba aba-menu" aria-expanded="false" aria-controls="menu-servicos"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="3.5" y="12.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="12.5" width="8" height="8" rx="2.2"/></svg><span>Serviços</span><svg class="seta" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></button>
+        <div class="submenu" id="menu-servicos">
+          <p class="submenu-titulo">Serviços</p>
+          <a href="eventos.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2a4.5 4.5 0 0 1 5 4.8"/></svg></span>Eventos pet<small>Em breve</small></a>
+          <a href="hospedagem.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/></svg></span>Hospedagem<small>Em breve</small></a>
+          <a href="veterinarios.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.2a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.5"/></svg></span>Veterinários e serviços<small>Em breve</small></a>
+          <a href="adocao.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></span>Adoção<small>Em breve</small></a>
+          <a href="perdidos.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></span>Pet desaparecido<small>Em breve</small></a>
+          <a href="perfil-qr.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2M20 14v.01M14 20h.01M18 18h2v2h-2z"/></svg></span>Perfil do pet com QR<small>Em breve</small></a>
+          <a href="doador-de-sangue.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5s6 6.4 6 10.7a6 6 0 0 1-12 0C6 9.9 12 3.5 12 3.5z"/><path d="M12 11v5M9.5 13.5h5"/></svg></span>Doador de sangue<small>Em breve</small></a>
+        </div>
+      </div>
+      <a href="calculadora.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.2" y="2.2" width="15.6" height="19.6" rx="3.6" fill="currentColor"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01" fill="none" stroke-width="2" stroke-linecap="round" style="stroke:var(--superficie)"/></svg><span>Calculadora</span></a>
+      <a href="husky-solta-muito-pelo.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.3 5.6A3.3 3.3 0 0 1 6.6 2.3h14.1v16.3H6.6a1.6 1.6 0 1 0 0 3.2h14.1v1.4H6.6a3.3 3.3 0 0 1-3.3-3.3z"/></svg><span>Guia do Husky</span></a>
+      <a href="novidades.html" class="aba so-desktop"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.6 2.4H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8a6.6 6.6 0 0 0-6.6 6.6v5.9l-1.8 2.9a.8.8 0 0 0 .7 1.2h15.4a.8.8 0 0 0 .7-1.2l-1.8-2.9V9.4A6.6 6.6 0 0 0 12 2.8z"/><path d="M9.5 20.6a2.6 2.6 0 0 0 5 0z"/></svg><span>Novidades</span></a>
+      <a href="sobre.html" class="aba so-desktop aba-extra"><span>Nossa história</span></a>
+      <a href="anuncie.html" class="aba so-desktop aba-extra"><span>Divulgue</span></a>
+      <div class="grupo-menu so-celular">
+        <button type="button" class="aba aba-menu" aria-expanded="false" aria-controls="menu-mais"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="7.8" cy="12" r=".6" fill="currentColor"/><circle cx="12" cy="12" r=".6" fill="currentColor"/><circle cx="16.2" cy="12" r=".6" fill="currentColor"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.6" fill="currentColor"/><circle cx="7.8" cy="12" r="1.3" style="fill:var(--superficie)"/><circle cx="12" cy="12" r="1.3" style="fill:var(--superficie)"/><circle cx="16.2" cy="12" r="1.3" style="fill:var(--superficie)"/></svg><span>Mais</span></button>
+        <div class="submenu" id="menu-mais">
+          <a href="novidades.html" class="so-celular-item"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.6 2.4H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg></span>Novidades</a>
+          <a href="sobre.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/><path d="M9.5 11.5h5"/></svg></span>Nossa história</a>
+          <a href="anuncie.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.2v3.6a1 1 0 0 0 1 1H7l7 4.4V4.8L7 9.2H4.5a1 1 0 0 0-1 1z"/><path d="M17.6 9.3a3.9 3.9 0 0 1 0 5.4"/></svg></span>Divulgue no Abanô</a>
+          <a href="cadastro.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>Cadastre-se</a>
+        </div>
+      </div>
+    </nav>
+    <a href="cadastro.html" class="topo-cta">Cadastre-se</a>
+  </div>
+</header>
+
+<main>
+  <section class="pagina-conta">
+    <div class="wrap minha-conta">
+      <p class="sub" id="conta-carregando">Carregando sua conta…</p>
+      <p class="aviso-conta" id="aviso-geral" role="alert" hidden></p>
+
+      <!-- Primeira vez: aceite da política (quem entrou pelo Google) -->
+      <div id="conta-aceite" hidden>
+        <form class="fc aceite" id="form-aceite" novalidate>
+          <h2>Boas-vindas, <span id="aceite-nome"></span>!</h2>
+          <p class="sub">Falta só um passo para usar sua conta do Abanô.</p>
+          <label class="consente-conta"><input type="checkbox" name="aceite" required><span>Li a <a href="privacidade.html" target="_blank" rel="noopener">Política de privacidade</a> e tenho 18 anos ou mais.</span></label>
+          <label class="consente-conta"><input type="checkbox" name="novidades"><span>Quero receber as novidades do Abanô por e-mail <span class="opcional">(opcional)</span></span></label>
+          <p class="aviso-conta" id="aviso-aceite" role="alert" hidden></p>
+          <button type="submit" class="btn">Continuar</button>
+        </form>
+      </div>
+
+      <div id="conta-painel" hidden>
+        <p class="aviso-conta ok" id="conta-boasvindas" hidden>Conta pronta! Complete seu perfil e cadastre seus pets quando quiser. Tudo aqui é opcional.</p>
+
+        <header class="conta-topo">
+          <span class="avatar grande" id="conta-avatar" aria-hidden="true"></span>
+          <div>
+            <h1 id="conta-nome"></h1>
+            <p><span id="conta-usuario"></span> · <span id="conta-email"></span></p>
+          </div>
+          <button type="button" class="btn btn-sec" id="btn-sair">Sair</button>
+        </header>
+
+        <div class="conta-colunas">
+          <form class="fc" id="form-perfil" novalidate>
+            <h2>Meu perfil</h2>
+            <p class="sub">Aparece para quem visitar seu perfil na Comunidade.</p>
+            <div class="foto-linha">
+              <label class="btn btn-sec arquivo">Trocar foto<input type="file" id="foto-perfil" accept="image/jpeg,image/png,image/webp,image/heic"></label>
+              <button type="button" class="link-botao" id="tirar-foto-perfil">Remover foto</button>
+            </div>
+
+            <label class="rot" for="p-nome">Nome de exibição</label>
+            <input id="p-nome" name="nome" type="text" autocomplete="name" maxlength="60" required>
+
+            <label class="rot" for="p-usuario">Nome de usuário</label>
+            <input id="p-usuario" name="usuario" type="text" autocapitalize="none" spellcheck="false" maxlength="30" required aria-describedby="p-usuario-ajuda">
+            <span class="ajuda" id="p-usuario-ajuda">Usado no endereço do seu perfil. Letras minúsculas, números ou _.</span>
+
+            <label class="rot" for="p-bio">Sobre você <span class="opcional">(opcional)</span></label>
+            <textarea id="p-bio" name="bio" maxlength="300" aria-describedby="bio-conta"></textarea>
+            <span class="ajuda" id="bio-conta"></span>
+
+            <div class="duas">
+              <div>
+                <label class="rot" for="p-cidade">Cidade <span class="opcional">(opcional)</span></label>
+                <input id="p-cidade" name="cidade" type="text" autocomplete="address-level2" maxlength="80">
+              </div>
+              <div>
+                <label class="rot" for="p-estado">Estado <span class="opcional">(opcional)</span></label>
+                <select id="p-estado" name="estado" autocomplete="address-level1">
+                  <option value="">Não informar</option>
+                  <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option>
+                </select>
+              </div>
+            </div>
+            <p class="aviso-conta" id="aviso-perfil" role="status" hidden></p>
+            <button type="submit" class="btn">Salvar perfil</button>
+          </form>
+
+          <div class="conta-lado">
+            <section class="fc">
+              <div class="titulo-linha">
+                <h2>Meus pets</h2>
+                <button type="button" class="btn" id="btn-add-pet">Adicionar pet</button>
+              </div>
+              <p class="sub" id="pets-vazio" hidden>Você ainda não cadastrou nenhum pet. Adicione quando quiser: cachorro, gato ou outro bichinho.</p>
+              <ul class="lista-pets" id="lista-pets"></ul>
+              <p class="aviso-conta" id="aviso-pets" role="alert" hidden></p>
+            </section>
+
+            <section class="fc">
+              <h2>Preferências</h2>
+              <label class="consente-conta"><input type="checkbox" id="pref-novidades"><span>Receber as novidades do Abanô por e-mail</span></label>
+              <p class="aviso-conta" id="aviso-pref" role="status" hidden></p>
+
+              <form id="form-trocar-senha" novalidate>
+                <div id="bloco-senha">
+                  <label class="rot" for="t-senha">Nova senha</label>
+                  <div class="campo-senha">
+                    <input id="t-senha" name="senha" type="password" autocomplete="new-password" minlength="8">
+                    <button type="button" aria-pressed="false" aria-controls="t-senha">Mostrar</button>
+                  </div>
+                  <span class="ajuda">Pelo menos 8 caracteres, com letras e números.</span>
+                  <p class="aviso-conta" id="aviso-trocar" role="status" hidden></p>
+                  <button type="submit" class="btn btn-sec">Alterar senha</button>
+                </div>
+              </form>
+
+              <div class="zona-perigo">
+                <h3>Excluir conta</h3>
+                <p>Apaga seu perfil, seus pets, suas fotos e a inscrição nas novidades. Não dá para desfazer.</p>
+                <button type="button" class="link-botao" id="btn-excluir">Excluir minha conta</button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <dialog class="dialogo" id="dialogo-pet" aria-labelledby="titulo-pet">
+    <form class="fc" id="form-pet" novalidate>
+      <div class="titulo-linha">
+        <h2 id="titulo-pet">Adicionar pet</h2>
+        <button type="button" class="fechar" id="fechar-pet" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="foto-linha">
+        <span class="avatar" id="pet-previa" aria-hidden="true"></span>
+        <label class="btn btn-sec arquivo">Escolher foto<input type="file" id="foto-pet" accept="image/jpeg,image/png,image/webp,image/heic"></label>
+      </div>
+      <div class="duas">
+        <div>
+          <label class="rot" for="pet-nome">Nome</label>
+          <input id="pet-nome" name="nome" type="text" maxlength="40" required>
+        </div>
+        <div>
+          <label class="rot" for="pet-especie">Espécie</label>
+          <select id="pet-especie" name="especie" required>
+            <option value="">Escolha</option>
+            <option value="cachorro">Cachorro</option>
+            <option value="gato">Gato</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div>
+          <label class="rot" for="pet-raca">Raça <span class="opcional">(opcional)</span></label>
+          <input id="pet-raca" name="raca" type="text" maxlength="60" placeholder="Ex.: Husky Siberiano, SRD">
+        </div>
+        <div>
+          <label class="rot" for="pet-idade">Idade <span class="opcional">(opcional)</span></label>
+          <input id="pet-idade" name="idade" type="text" maxlength="30" placeholder="Ex.: 3 anos">
+        </div>
+        <div>
+          <label class="rot" for="pet-sexo">Sexo <span class="opcional">(opcional)</span></label>
+          <select id="pet-sexo" name="sexo">
+            <option value="">Não informar</option>
+            <option value="macho">Macho</option>
+            <option value="femea">Fêmea</option>
+          </select>
+        </div>
+        <div>
+          <label class="rot" for="pet-perso">Personalidade <span class="opcional">(opcional)</span></label>
+          <input id="pet-perso" name="personalidade" type="text" maxlength="120" placeholder="Ex.: brincalhão, falante">
+        </div>
+      </div>
+      <label class="rot" for="pet-desc">Sobre o pet <span class="opcional">(opcional)</span></label>
+      <textarea id="pet-desc" name="descricao" maxlength="500"></textarea>
+      <p class="aviso-conta" id="aviso-pet" role="alert" hidden></p>
+      <button type="submit" class="btn">Salvar pet</button>
+    </form>
+  </dialog>
+
+  <dialog class="dialogo" id="dialogo-excluir" aria-labelledby="titulo-excluir">
+    <form class="fc" id="form-excluir" novalidate>
+      <div class="titulo-linha">
+        <h2 id="titulo-excluir">Excluir conta</h2>
+        <button type="button" class="fechar" id="fechar-excluir" aria-label="Fechar">&times;</button>
+      </div>
+      <p class="sub">Isso apaga para sempre seu perfil, seus pets, suas fotos e a inscrição nas novidades. Para confirmar, digite <b>EXCLUIR</b>.</p>
+      <label class="rot" for="x-confirmar">Confirmação</label>
+      <input id="x-confirmar" name="confirmar" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false">
+      <p class="aviso-conta" id="aviso-excluir" role="alert" hidden></p>
+      <button type="submit" class="btn btn-perigo">Excluir minha conta</button>
+    </form>
+  </dialog>
+</main>
+
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <div class="rodape-marca">
+      <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial"><img src="logo-pata.svg" alt="" width="38" height="38"><span class="logo-nome" aria-hidden="true">aban<span class="logo-o">o<svg viewBox="0 0 26 13" aria-hidden="true"><ellipse cx="4.6" cy="8.2" rx="3.6" ry="3.9"/><ellipse cx="13" cy="4.4" rx="3.7" ry="4.1"/><ellipse cx="21.4" cy="8.2" rx="3.6" ry="3.9"/></svg></span></span></a>
+      <p>Tudo pra cães e gatos, num lugar só: eventos, hospedagem, veterinários, adoção e cuidados perto de você.</p>
+    </div>
+    <div>
+      <h4>Conteúdo</h4>
+      <ul>
+        <li><a href="husky-solta-muito-pelo.html">Guia do Husky</a></li>
+        <li><a href="calculadora.html">Calculadora de custos</a></li>
+        <li><a href="novidades.html">Novidades</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Abanô</h4>
+      <ul>
+        <li><a href="cadastro.html">Cadastre-se</a></li>
+        <li><a href="anuncie.html">Divulgue no Abanô</a></li>
+        <li><a href="sobre.html">Nossa história</a></li>
+        <li><a href="https://www.instagram.com/juninhoohusky/" target="_blank" rel="noopener">Instagram @juninhoohusky</a></li>
+        <li><a href="https://www.youtube.com/@JuninhoOhusky" target="_blank" rel="noopener">YouTube Juninho O Husky</a></li>
+        <li><a href="privacidade.html">Política de privacidade</a></li>
+        <li><a href="seus-dados.html">Seus dados (LGPD)</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="rodape-base"><span>© 2026 Abanô</span><span>Feito em Maricá (RJ), com quatro huskies supervisionando.</span></div>
+</footer>
+
+</body>
+</html>

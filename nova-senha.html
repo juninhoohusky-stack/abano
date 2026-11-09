@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nova senha | Abanô</title>
+<meta name="description" content="Crie uma nova senha para a sua conta do Abanô.">
+<meta property="og:title" content="Nova senha">
+<meta property="og:description" content="Crie uma nova senha para a sua conta do Abanô.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#D10F5E">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://abano.com.br/nova-senha.html">
+<meta property="og:site_name" content="Abanô">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://abano.com.br/nova-senha.html">
+<meta property="og:image" content="https://abano.com.br/compartilhar.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="website">
+<link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261110c">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
+<script src="site.js?v=20261110c" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
+<script src="lista.js?v=20261110c" defer></script>
+<script src="conta.js?v=20261110c" defer></script>
+<style>
+  .pagina-conta{padding:48px 0 56px}
+  .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:64px;align-items:start}
+  .conta-grade.so{grid-template-columns:minmax(0,480px);justify-content:center}
+  .conta-intro h1{font-size:clamp(34px,5vw,50px);line-height:1.05;margin:12px 0 14px}
+  .conta-intro > p{color:var(--suave);font-size:18px;max-width:520px}
+  .beneficios{list-style:none;margin-top:26px;display:grid;gap:14px;padding:0}
+  .beneficios li{display:flex;gap:12px;align-items:flex-start;font-size:17px}
+  .beneficios .b-ico{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--marca-clara);color:var(--marca)}
+  .beneficios .b-ico svg{width:20px;height:20px}
+  .beneficios li:nth-child(2) .b-ico{background:var(--acento-claro);color:var(--acento)}
+  .beneficios li:nth-child(3) .b-ico{background:var(--lima-clara);color:var(--sobre-lima)}
+  .escondido{display:none}
+  .conta-ok{text-align:center}
+  .conta-ok .selo{width:68px;height:68px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:var(--lima);color:var(--sobre-lima)}
+  .conta-ok .selo svg{width:32px;height:32px}
+  .conta-ok b{color:var(--tinta)}
+  .conta-ok:focus{outline:none}
+  @media (max-width:900px){.conta-grade{grid-template-columns:1fr;gap:32px}.pagina-conta{padding:32px 0 40px}}
+  @media (prefers-color-scheme:dark){:root:not([data-theme=light]) .beneficios li:nth-child(3) .b-ico{color:var(--lima)}}
+
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-in">
+    <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial"><img src="logo-pata.svg" alt="" width="38" height="38"><span class="logo-nome" aria-hidden="true">aban<span class="logo-o">o<svg viewBox="0 0 26 13" aria-hidden="true"><ellipse cx="4.6" cy="8.2" rx="3.6" ry="3.9"/><ellipse cx="13" cy="4.4" rx="3.7" ry="4.1"/><ellipse cx="21.4" cy="8.2" rx="3.6" ry="3.9"/></svg></span></span></a>
+    <nav class="abas" aria-label="Seções do site">
+      <span class="aba-pilula" aria-hidden="true"></span>
+      <a href="comunidade/" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-3.5 3v-3H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/><path d="M17 9.5h3a2 2 0 0 1 2 2v5.5a2 2 0 0 1-2 2h-1v2.5L16 19h-3.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 5h11a2.5 2.5 0 0 1 2.5 2.5v6A2.5 2.5 0 0 1 15 16H9.3l-3.6 3.1a.6.6 0 0 1-1-.45V16H4a2.5 2.5 0 0 1-2.5-2.5v-6A2.5 2.5 0 0 1 4 5z"/><path d="M19 9a2.5 2.5 0 0 1 2.5 2.5V17a2.5 2.5 0 0 1-2.5 2.5h-.6v2a.6.6 0 0 1-1 .45L14.6 19.5H12a2.5 2.5 0 0 1-2-1h5a3.5 3.5 0 0 0 3.5-3.5V9z"/></svg><span>Comunidade</span></a>
+      <div class="grupo-menu">
+        <button type="button" class="aba aba-menu" aria-expanded="false" aria-controls="menu-servicos"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="3.5" y="12.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="12.5" width="8" height="8" rx="2.2"/></svg><span>Serviços</span><svg class="seta" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></button>
+        <div class="submenu" id="menu-servicos">
+          <p class="submenu-titulo">Serviços</p>
+          <a href="eventos.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2a4.5 4.5 0 0 1 5 4.8"/></svg></span>Eventos pet<small>Em breve</small></a>
+          <a href="hospedagem.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/></svg></span>Hospedagem<small>Em breve</small></a>
+          <a href="veterinarios.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.2a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.5"/></svg></span>Veterinários e serviços<small>Em breve</small></a>
+          <a href="adocao.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></span>Adoção<small>Em breve</small></a>
+          <a href="perdidos.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></span>Pet desaparecido<small>Em breve</small></a>
+          <a href="perfil-qr.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2M20 14v.01M14 20h.01M18 18h2v2h-2z"/></svg></span>Perfil do pet com QR<small>Em breve</small></a>
+          <a href="doador-de-sangue.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5s6 6.4 6 10.7a6 6 0 0 1-12 0C6 9.9 12 3.5 12 3.5z"/><path d="M12 11v5M9.5 13.5h5"/></svg></span>Doador de sangue<small>Em breve</small></a>
+        </div>
+      </div>
+      <a href="calculadora.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.2" y="2.2" width="15.6" height="19.6" rx="3.6" fill="currentColor"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01" fill="none" stroke-width="2" stroke-linecap="round" style="stroke:var(--superficie)"/></svg><span>Calculadora</span></a>
+      <a href="husky-solta-muito-pelo.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.3 5.6A3.3 3.3 0 0 1 6.6 2.3h14.1v16.3H6.6a1.6 1.6 0 1 0 0 3.2h14.1v1.4H6.6a3.3 3.3 0 0 1-3.3-3.3z"/></svg><span>Guia do Husky</span></a>
+      <a href="novidades.html" class="aba so-desktop"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.6 2.4H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8a6.6 6.6 0 0 0-6.6 6.6v5.9l-1.8 2.9a.8.8 0 0 0 .7 1.2h15.4a.8.8 0 0 0 .7-1.2l-1.8-2.9V9.4A6.6 6.6 0 0 0 12 2.8z"/><path d="M9.5 20.6a2.6 2.6 0 0 0 5 0z"/></svg><span>Novidades</span></a>
+      <a href="sobre.html" class="aba so-desktop aba-extra"><span>Nossa história</span></a>
+      <a href="anuncie.html" class="aba so-desktop aba-extra"><span>Divulgue</span></a>
+      <div class="grupo-menu so-celular">
+        <button type="button" class="aba aba-menu" aria-expanded="false" aria-controls="menu-mais"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="7.8" cy="12" r=".6" fill="currentColor"/><circle cx="12" cy="12" r=".6" fill="currentColor"/><circle cx="16.2" cy="12" r=".6" fill="currentColor"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.6" fill="currentColor"/><circle cx="7.8" cy="12" r="1.3" style="fill:var(--superficie)"/><circle cx="12" cy="12" r="1.3" style="fill:var(--superficie)"/><circle cx="16.2" cy="12" r="1.3" style="fill:var(--superficie)"/></svg><span>Mais</span></button>
+        <div class="submenu" id="menu-mais">
+          <a href="novidades.html" class="so-celular-item"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.6 2.4H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg></span>Novidades</a>
+          <a href="sobre.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/><path d="M9.5 11.5h5"/></svg></span>Nossa história</a>
+          <a href="anuncie.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.2v3.6a1 1 0 0 0 1 1H7l7 4.4V4.8L7 9.2H4.5a1 1 0 0 0-1 1z"/><path d="M17.6 9.3a3.9 3.9 0 0 1 0 5.4"/></svg></span>Divulgue no Abanô</a>
+          <a href="cadastro.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>Cadastre-se</a>
+        </div>
+      </div>
+    </nav>
+    <a href="cadastro.html" class="topo-cta">Cadastre-se</a>
+  </div>
+</header>
+
+<main>
+  <section class="pagina-conta">
+    <div class="wrap conta-grade so">
+      <div class="fc">
+        <h2>Criar nova senha</h2>
+        <p class="sub" id="senha-carregando">Conferindo o link…</p>
+        <form id="form-nova-senha" novalidate hidden>
+          <label class="rot" for="n-senha">Nova senha</label>
+          <div class="campo-senha">
+            <input id="n-senha" name="senha" type="password" autocomplete="new-password" minlength="8" required aria-describedby="n-ajuda">
+            <button type="button" aria-pressed="false" aria-controls="n-senha">Mostrar</button>
+          </div>
+          <span class="ajuda" id="n-ajuda">Pelo menos 8 caracteres, com letras e números.</span>
+          <label class="rot" for="n-senha2">Repita a nova senha</label>
+          <div class="campo-senha">
+            <input id="n-senha2" name="senha2" type="password" autocomplete="new-password" required>
+            <button type="button" aria-pressed="false" aria-controls="n-senha2">Mostrar</button>
+          </div>
+          <button type="submit" class="btn">Salvar nova senha</button>
+        </form>
+        <p class="aviso-conta" id="aviso-senha" role="alert" hidden></p>
+        <p class="mini" id="senha-pedir-novo" hidden><a href="entrar.html">Ir para a página Entrar</a></p>
+        <p class="mini" id="senha-ir-conta" hidden><a href="conta.html" class="btn">Ir para minha conta</a></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <div class="rodape-marca">
+      <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial"><img src="logo-pata.svg" alt="" width="38" height="38"><span class="logo-nome" aria-hidden="true">aban<span class="logo-o">o<svg viewBox="0 0 26 13" aria-hidden="true"><ellipse cx="4.6" cy="8.2" rx="3.6" ry="3.9"/><ellipse cx="13" cy="4.4" rx="3.7" ry="4.1"/><ellipse cx="21.4" cy="8.2" rx="3.6" ry="3.9"/></svg></span></span></a>
+      <p>Tudo pra cães e gatos, num lugar só: eventos, hospedagem, veterinários, adoção e cuidados perto de você.</p>
+    </div>
+    <div>
+      <h4>Conteúdo</h4>
+      <ul>
+        <li><a href="husky-solta-muito-pelo.html">Guia do Husky</a></li>
+        <li><a href="calculadora.html">Calculadora de custos</a></li>
+        <li><a href="novidades.html">Novidades</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Abanô</h4>
+      <ul>
+        <li><a href="cadastro.html">Cadastre-se</a></li>
+        <li><a href="anuncie.html">Divulgue no Abanô</a></li>
+        <li><a href="sobre.html">Nossa história</a></li>
+        <li><a href="https://www.instagram.com/juninhoohusky/" target="_blank" rel="noopener">Instagram @juninhoohusky</a></li>
+        <li><a href="https://www.youtube.com/@JuninhoOhusky" target="_blank" rel="noopener">YouTube Juninho O Husky</a></li>
+        <li><a href="privacidade.html">Política de privacidade</a></li>
+        <li><a href="seus-dados.html">Seus dados (LGPD)</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="rodape-base"><span>© 2026 Abanô</span><span>Feito em Maricá (RJ), com quatro huskies supervisionando.</span></div>
+</footer>
+
+</body>
+</html>
