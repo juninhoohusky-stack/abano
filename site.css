@@ -42,7 +42,11 @@
   --sans:var(--sistema);
 
   --mola:cubic-bezier(.32,.72,0,1);
+  --mola-salto:cubic-bezier(.34,1.4,.64,1);   /* mola com leve "quique" */
   --ease:cubic-bezier(.25,.1,.25,1);
+}
+@supports (transition-timing-function: linear(0, 1)){
+  :root{--mola-salto:linear(0,.009,.035 2.1%,.141 4.4%,.723 12.9%,.938 16.7%,1.017 20.5%,1.043 24.5%,1.035 28.4%,1.007 36%,.997 41.8%,1.001 66.2%,1)}
 }
 
 @media (prefers-color-scheme:dark){
@@ -196,6 +200,14 @@ img,svg{display:block}
 @keyframes surgir{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}
 .surge{animation:surgir .6s var(--mola) both;animation-delay:calc(var(--i,0) * 70ms + 30ms)}
 
+/* ---------- Revelação ao rolar (páginas internas, marcada pelo site.js) ----------
+   .ra = bloco que aparece ao entrar na tela; .ra-f = item de lista dentro dele,
+   que entra logo depois, em sequência. Só mexe em opacidade e posição. */
+.ra{opacity:0;translate:0 26px;transition:opacity .7s var(--mola),translate .9s var(--mola-salto);transition-delay:calc(var(--d,0) * 80ms)}
+.ra.visivel{opacity:1;translate:0 0}
+.ra-f{opacity:0;translate:0 12px;transition:opacity .6s var(--mola),translate .75s var(--mola-salto);transition-delay:calc(var(--d,0) * 80ms + var(--f,0) * 65ms + 160ms)}
+.ra.visivel .ra-f{opacity:1;translate:0 0}
+
 /* ---------- Barra de leitura (artigos) ---------- */
 .progresso{display:none}
 @supports (animation-timeline: scroll()){
@@ -207,6 +219,7 @@ img,svg{display:block}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-delay:0s !important;transition-duration:.01ms !important}
   .progresso{display:none}
+  .ra,.ra-f{opacity:1;translate:none}
 }
 @media (prefers-contrast:more){
   :root{--linha:rgba(60,60,67,.45);--suave:#3A3A3C}
