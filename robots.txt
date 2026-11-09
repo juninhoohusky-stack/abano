@@ -4,5 +4,6 @@ Disallow: /obrigado.html
 Disallow: /descadastrar.html
 Disallow: /supabase/
 Disallow: /scripts/
+Disallow: /admin/
 
 Sitemap: https://abano.com.br/sitemap.xml

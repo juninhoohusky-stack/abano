@@ -305,3 +305,18 @@ img,svg{display:block}
 @media (prefers-contrast:more){
   :root{--linha:rgba(60,60,67,.45);--suave:#3A3A3C}
 }
+
+/* ---------- Convite para a pesquisa dos Huskies ---------- */
+.convite-pesquisa{position:relative;overflow:hidden;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:22px;padding:26px 30px;border-radius:28px;background:var(--degrade);color:#fff;text-decoration:none;box-shadow:0 24px 50px -28px rgba(209,15,94,.6)}
+.convite-pesquisa::after{content:"";position:absolute;right:-50px;bottom:-60px;width:160px;height:160px;border-radius:50%;background:var(--lima);opacity:.9}
+.convite-pesquisa > *{position:relative;z-index:1}
+.convite-pesquisa .selo-mapa{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:rgba(255,255,255,.2)}
+.convite-pesquisa .selo-mapa svg{width:34px;height:34px}
+.convite-pesquisa h2{color:#fff;font-size:clamp(22px,2.6vw,28px);line-height:1.15;margin:0 0 6px}
+.convite-pesquisa p{margin:0;font-size:16px;line-height:1.5;opacity:.95;max-width:560px}
+.convite-pesquisa .btn{background:#fff;color:var(--marca);box-shadow:0 10px 24px -12px rgba(0,0,0,.35);white-space:nowrap}
+.convite-pesquisa .btn:hover{background:#fff;color:var(--marca-esc)}
+@media (max-width:760px){
+  .convite-pesquisa{grid-template-columns:1fr;gap:14px;padding:24px 22px}
+  .convite-pesquisa .btn{justify-self:start}
+}

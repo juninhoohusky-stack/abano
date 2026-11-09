@@ -12,7 +12,7 @@ const SUPABASE_CHAVE = "sb_publishable_PRC9f8FexEHaH6ZGNCaGig_EVXz8JcY";
 /* Versão da Política de privacidade (a data do topo de privacidade.html).
    Fica gravada em cada cadastro como registro do consentimento.
    Atualize as duas juntas quando a política mudar. */
-const VERSAO_POLITICA = "2026-11-08";
+const VERSAO_POLITICA = "2026-11-09";
 
 /* Botão "Continuar com o Google" na lista de espera.
    Deixe false até configurar o Google no Supabase (veja o README). */

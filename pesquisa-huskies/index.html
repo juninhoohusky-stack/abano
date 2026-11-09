@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<base href="/">
+<title>Onde estão os Huskies do Brasil? | Pesquisa nacional Abanô</title>
+<meta name="description" content="Estamos mapeando os tutores de Huskies de todo o Brasil para conectar pessoas, fortalecer a comunidade e planejar experiências presenciais. Responda em 2 minutos.">
+<link rel="canonical" href="https://abano.com.br/pesquisa-huskies/">
+<meta property="og:site_name" content="Abanô">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://abano.com.br/pesquisa-huskies/">
+<meta property="og:image" content="https://abano.com.br/compartilhar.png">
+<meta property="og:title" content="Onde estão os Huskies do Brasil?">
+<meta property="og:description" content="Pesquisa nacional para mapear os tutores de Huskies e planejar a HUSKY EXPERIENCE. Responda em 2 minutos.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#D10F5E">
+<link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261110b">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
+<script src="site.js?v=20261110b" defer></script>
+<script src="lista.js?v=20261110b" defer></script>
+<style>
+  .pesquisa{max-width:800px;margin:0 auto;padding:32px 24px 0}
+  .pq-capa{position:relative;overflow:hidden;padding:48px 44px 44px;border-radius:32px;background:var(--degrade);color:#fff;box-shadow:0 30px 60px -30px rgba(209,15,94,.55)}
+  .pq-capa::after{content:"";position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;background:var(--lima);opacity:.95}
+  .pq-capa > *{position:relative;z-index:1}
+  .pq-selo{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.18);font-weight:800;font-size:14px}
+  .pq-capa h1{color:#fff;font-size:clamp(34px,5.4vw,56px);line-height:1.02;margin:16px 0 14px;max-width:620px}
+  .pq-capa p{font-size:clamp(17px,2vw,20px);line-height:1.5;max-width:600px;opacity:.96}
+  .pq-meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:20px;font-weight:700;font-size:15px}
+  .pq-meta span{display:inline-flex;align-items:center;gap:6px}
+  .pq-meta svg{width:18px;height:18px}
+
+  .pq-porque{margin:28px 0;padding:22px 24px;border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra);font-size:16px}
+  .pq-porque h2{font-size:20px;margin-bottom:6px}
+  .pq-porque p{color:var(--suave)}
+
+  .pq-progresso{position:sticky;top:64px;z-index:5;margin:0 -8px 18px;padding:10px 8px;background:color-mix(in srgb,var(--fundo) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+  .pq-progresso .trilho{height:8px;border-radius:99px;background:var(--areia);overflow:hidden}
+  .pq-progresso .barra{height:100%;width:100%;border-radius:99px;background:var(--degrade);transform-origin:left;transform:scaleX(0);transition:transform .5s var(--mola)}
+  .pq-progresso small{display:block;margin-top:6px;font-size:13px;font-weight:700;color:var(--suave)}
+
+  form.pq{display:grid;gap:16px}
+  .pq fieldset,.pq .campo{border:0;padding:24px;border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra)}
+  .pq legend,.pq .rotulo{float:left;width:100%;display:flex;gap:12px;align-items:baseline;font-weight:800;font-size:18px;line-height:1.35;margin-bottom:14px;color:var(--tinta)}
+  .pq legend + *{clear:both}
+  .pq .num{flex:none;display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--marca-clara);color:var(--marca);font-size:14px;font-weight:900}
+  .pq .ajuda{display:block;clear:both;margin:-8px 0 12px 42px;font-size:14px;color:var(--suave);font-weight:500}
+  .pq .opcional{font-weight:600;color:var(--suave);font-size:14px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;clear:both}
+  .chip{position:relative}
+  .chip input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+  .chip span{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:10px 18px;border-radius:999px;background:var(--fundo);box-shadow:inset 0 0 0 1.5px var(--linha);font-weight:700;font-size:16px;color:var(--tinta);transition:background-color .2s,box-shadow .2s,color .2s,transform .1s ease-out;cursor:pointer;user-select:none}
+  .chip input:checked + span{background:var(--marca);color:var(--sobre-marca);box-shadow:0 8px 18px -10px color-mix(in srgb,var(--marca) 80%,transparent)}
+  .chip input:focus-visible + span{box-shadow:0 0 0 4px var(--marca-clara),inset 0 0 0 2px var(--marca)}
+  .chip input:active + span{transform:scale(.96)}
+  @media (hover:hover){.chip:hover input:not(:checked) + span{box-shadow:inset 0 0 0 1.5px var(--marca)}}
+  .chips.coluna{flex-direction:column;align-items:stretch}
+  .chips.coluna .chip span{width:100%;justify-content:flex-start;border-radius:16px}
+  .pq input[type=text],.pq input[type=email],.pq input[type=number],.pq select,.pq textarea{width:100%;min-height:48px;padding:11px 14px;border:1.5px solid transparent;border-radius:var(--raio-sm);font-size:17px;font-family:inherit;color:var(--tinta);background:var(--areia);transition:border-color .2s,box-shadow .2s,background-color .2s}
+  .pq textarea{min-height:96px;resize:vertical}
+  .pq input:focus,.pq select:focus,.pq textarea:focus{outline:none;border-color:var(--marca);background:var(--superficie);box-shadow:0 0 0 4px var(--marca-clara)}
+  .pq .duas{display:grid;grid-template-columns:1fr 1.4fr;gap:14px;clear:both}
+  .pq label.mini{display:block;font-weight:700;font-size:14px;margin:0 0 6px}
+  .pq .extra-texto{margin-top:12px}
+  .pq [hidden]{display:none !important}
+  .pq .erro{display:none;clear:both;margin-top:10px;font-size:14px;font-weight:700;color:var(--marca)}
+  .pq .invalido .erro{display:block}
+  .pq .invalido{box-shadow:0 0 0 2px var(--marca),var(--sombra)}
+  .consentimentos{display:grid;gap:14px}
+  .consente{display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.5;color:var(--suave);cursor:pointer}
+  .consente input{flex:none;width:22px;height:22px;margin-top:1px;accent-color:var(--marca);cursor:pointer}
+  .consente b{color:var(--tinta)}
+  .pq-enviar{display:flex;flex-direction:column;align-items:center;gap:12px;padding:10px 0 4px;text-align:center}
+  .pq-enviar .btn{min-height:56px;padding:0 34px;font-size:18px}
+  .pq-enviar small{color:var(--suave);font-size:14px}
+  .pq-aviso{padding:12px 16px;border-radius:var(--raio-sm);background:var(--marca-clara);color:var(--marca);font-weight:700}
+  .pq-ok{padding:44px 28px;border-radius:28px;background:var(--superficie);box-shadow:var(--sombra);text-align:center}
+  .pq-ok .selo{width:76px;height:76px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;background:var(--lima);color:var(--sobre-lima)}
+  .pq-ok .selo svg{width:38px;height:38px}
+  .pq-ok h2{font-size:clamp(28px,4vw,38px);margin-bottom:10px}
+  .pq-ok p{color:var(--suave);max-width:520px;margin:0 auto 22px}
+  .pq-ok .acoes{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+  .escondido{display:none}
+  @media (max-width:600px){
+    .pq-capa{padding:34px 24px;border-radius:26px}
+    .pq fieldset,.pq .campo{padding:20px 18px}
+    .pq .duas{grid-template-columns:1fr}
+    .pq .ajuda{margin-left:0}
+    .pq-progresso{top:52px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-in">
+    <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial"><img src="logo-pata.svg" alt="" width="38" height="38"><span class="logo-nome" aria-hidden="true">aban<span class="logo-o">o<svg viewBox="0 0 26 13" aria-hidden="true"><ellipse cx="4.6" cy="8.2" rx="3.6" ry="3.9"/><ellipse cx="13" cy="4.4" rx="3.7" ry="4.1"/><ellipse cx="21.4" cy="8.2" rx="3.6" ry="3.9"/></svg></span></span></a>
+    <nav class="abas" aria-label="Seções do site">
+      <span class="aba-pilula" aria-hidden="true"></span>
+      <a href="comunidade/" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-3.5 3v-3H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/><path d="M17 9.5h3a2 2 0 0 1 2 2v5.5a2 2 0 0 1-2 2h-1v2.5L16 19h-3.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 5h11a2.5 2.5 0 0 1 2.5 2.5v6A2.5 2.5 0 0 1 15 16H9.3l-3.6 3.1a.6.6 0 0 1-1-.45V16H4a2.5 2.5 0 0 1-2.5-2.5v-6A2.5 2.5 0 0 1 4 5z"/><path d="M19 9a2.5 2.5 0 0 1 2.5 2.5V17a2.5 2.5 0 0 1-2.5 2.5h-.6v2a.6.6 0 0 1-1 .45L14.6 19.5H12a2.5 2.5 0 0 1-2-1h5a3.5 3.5 0 0 0 3.5-3.5V9z"/></svg><span>Comunidade</span></a>
+      <div class="grupo-menu">
+        <button type="button" class="aba aba-menu" aria-expanded="false" aria-controls="menu-servicos"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="3.5" y="12.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="12.5" width="8" height="8" rx="2.2"/></svg><span>Serviços</span><svg class="seta" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></button>
+        <div class="submenu" id="menu-servicos">
+          <p class="submenu-titulo">Serviços</p>
+          <a href="eventos.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2a4.5 4.5 0 0 1 5 4.8"/></svg></span>Eventos pet<small>Em breve</small></a>
+          <a href="hospedagem.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/></svg></span>Hospedagem<small>Em breve</small></a>
+          <a href="veterinarios.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.2a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.5"/></svg></span>Veterinários e serviços<small>Em breve</small></a>
+          <a href="adocao.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></span>Adoção<small>Em breve</small></a>
+          <a href="perdidos.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></span>Pet desaparecido<small>Em breve</small></a>
+          <a href="perfil-qr.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2M20 14v.01M14 20h.01M18 18h2v2h-2z"/></svg></span>Perfil do pet com QR<small>Em breve</small></a>
+          <a href="doador-de-sangue.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5s6 6.4 6 10.7a6 6 0 0 1-12 0C6 9.9 12 3.5 12 3.5z"/><path d="M12 11v5M9.5 13.5h5"/></svg></span>Doador de sangue<small>Em breve</small></a>
+        </div>
+      </div>
+      <a href="calculadora.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.2" y="2.2" width="15.6" height="19.6" rx="3.6" fill="currentColor"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01" fill="none" stroke-width="2" stroke-linecap="round" style="stroke:var(--superficie)"/></svg><span>Calculadora</span></a>
+      <a href="husky-solta-muito-pelo.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.3 5.6A3.3 3.3 0 0 1 6.6 2.3h14.1v16.3H6.6a1.6 1.6 0 1 0 0 3.2h14.1v1.4H6.6a3.3 3.3 0 0 1-3.3-3.3z"/></svg><span>Guia do Husky</span></a>
+      <a href="novidades.html" class="aba so-desktop"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.6 2.4H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8a6.6 6.6 0 0 0-6.6 6.6v5.9l-1.8 2.9a.8.8 0 0 0 .7 1.2h15.4a.8.8 0 0 0 .7-1.2l-1.8-2.9V9.4A6.6 6.6 0 0 0 12 2.8z"/><path d="M9.5 20.6a2.6 2.6 0 0 0 5 0z"/></svg><span>Novidades</span></a>
+      <a href="sobre.html" class="aba so-desktop aba-extra"><span>Nossa história</span></a>
+      <a href="anuncie.html" class="aba so-desktop aba-extra"><span>Divulgue</span></a>
+      <div class="grupo-menu so-celular">
+        <button type="button" class="aba aba-menu" aria-expanded="false" aria-controls="menu-mais"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="7.8" cy="12" r=".6" fill="currentColor"/><circle cx="12" cy="12" r=".6" fill="currentColor"/><circle cx="16.2" cy="12" r=".6" fill="currentColor"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.6" fill="currentColor"/><circle cx="7.8" cy="12" r="1.3" style="fill:var(--superficie)"/><circle cx="12" cy="12" r="1.3" style="fill:var(--superficie)"/><circle cx="16.2" cy="12" r="1.3" style="fill:var(--superficie)"/></svg><span>Mais</span></button>
+        <div class="submenu" id="menu-mais">
+          <a href="novidades.html" class="so-celular-item"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.6 2.4H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg></span>Novidades</a>
+          <a href="sobre.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/><path d="M9.5 11.5h5"/></svg></span>Nossa história</a>
+          <a href="anuncie.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.2v3.6a1 1 0 0 0 1 1H7l7 4.4V4.8L7 9.2H4.5a1 1 0 0 0-1 1z"/><path d="M17.6 9.3a3.9 3.9 0 0 1 0 5.4"/></svg></span>Divulgue no Abanô</a>
+          <a href="cadastro.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>Cadastre-se</a>
+        </div>
+      </div>
+    </nav>
+    <a href="cadastro.html" class="topo-cta">Cadastre-se</a>
+  </div>
+</header>
+
+<main class="pesquisa">
+  <section class="pq-capa">
+    <span class="pq-selo">Pesquisa nacional · HUSKY EXPERIENCE</span>
+    <h1>ONDE ESTÃO OS HUSKIES DO BRASIL?</h1>
+    <p>Estamos mapeando os tutores de Huskies de todo o Brasil para conectar pessoas, fortalecer a comunidade e planejar experiências presenciais.</p>
+    <div class="pq-meta">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>cerca de 2 minutos</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6z"/></svg>não precisa de cadastro</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg>quem ainda não tem Husky também pode responder</span>
+    </div>
+  </section>
+
+  <div class="pq-porque">
+    <h2>Para que serve esta pesquisa</h2>
+    <p>Com as respostas, o Abanô descobre em quais cidades e estados estão os tutores de Huskies, onde vale a pena organizar encontros locais e quantas pessoas teriam interesse em uma grande HUSKY EXPERIENCE no Rio de Janeiro. Os resultados são usados só de forma agregada (totais por região): nenhum nome, e-mail ou Instagram é publicado. <a href="privacidade.html#pesquisa">Aviso de privacidade da pesquisa</a>.</p>
+  </div>
+
+  <div id="pq-formulario">
+    <div class="pq-progresso" aria-hidden="true"><div class="trilho"><div class="barra" id="pq-barra"></div></div><small id="pq-conta">0 de 10 perguntas</small></div>
+
+    <form class="pq" id="form-pesquisa" novalidate>
+      <p class="escondido" aria-hidden="true"><label>Não preencha: <input name="campo-robo" tabindex="-1" autocomplete="off"></label></p>
+
+      <fieldset data-pergunta="situacao">
+        <legend><span class="num">1</span>Você tem Husky?</legend>
+        <div class="chips coluna">
+          <label class="chip"><input type="radio" name="situacao" value="tenho" required><span>Sim, tenho Husky (ou mais de um)</span></label>
+          <label class="chip"><input type="radio" name="situacao" value="quero_ter"><span>Ainda não, mas quero ter</span></label>
+          <label class="chip"><input type="radio" name="situacao" value="admiro"><span>Não tenho, mas acompanho e gosto da raça</span></label>
+        </div>
+        <p class="erro">Escolha uma opção.</p>
+      </fieldset>
+
+      <div class="campo" data-pergunta="local">
+        <p class="rotulo"><span class="num">1</span>Onde você mora?</p>
+        <div class="duas">
+          <div>
+            <label class="mini" for="pq-estado">Estado</label>
+            <select id="pq-estado" name="estado" required>
+              <option value="">Escolha</option>
+              <option value="AC">Acre</option><option value="AL">Alagoas</option><option value="AP">Amapá</option><option value="AM">Amazonas</option><option value="BA">Bahia</option><option value="CE">Ceará</option><option value="DF">Distrito Federal</option><option value="ES">Espírito Santo</option><option value="GO">Goiás</option><option value="MA">Maranhão</option><option value="MT">Mato Grosso</option><option value="MS">Mato Grosso do Sul</option><option value="MG">Minas Gerais</option><option value="PA">Pará</option><option value="PB">Paraíba</option><option value="PR">Paraná</option><option value="PE">Pernambuco</option><option value="PI">Piauí</option><option value="RJ">Rio de Janeiro</option><option value="RN">Rio Grande do Norte</option><option value="RS">Rio Grande do Sul</option><option value="RO">Rondônia</option><option value="RR">Roraima</option><option value="SC">Santa Catarina</option><option value="SP">São Paulo</option><option value="SE">Sergipe</option><option value="TO">Tocantins</option>
+            </select>
+          </div>
+          <div>
+            <label class="mini" for="pq-cidade">Cidade</label>
+            <input id="pq-cidade" name="cidade" type="text" required maxlength="80" autocomplete="address-level2" placeholder="Ex.: Maricá">
+          </div>
+        </div>
+        <p class="erro">Informe o estado e a cidade.</p>
+      </div>
+
+      <fieldset data-pergunta="qtd" class="so-tutor">
+        <legend><span class="num">3</span>Quantos Huskies você tem?</legend>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="qtd" value="1"><span>1</span></label>
+          <label class="chip"><input type="radio" name="qtd" value="2"><span>2</span></label>
+          <label class="chip"><input type="radio" name="qtd" value="3"><span>3</span></label>
+          <label class="chip"><input type="radio" name="qtd" value="4"><span>4</span></label>
+          <label class="chip"><input type="radio" name="qtd" value="mais"><span>5 ou mais</span></label>
+        </div>
+        <div class="extra-texto" hidden id="pq-qtd-mais"><label class="mini" for="pq-qtd-num">Quantos?</label><input id="pq-qtd-num" type="number" min="5" max="50" inputmode="numeric" value="5"></div>
+        <p class="erro">Escolha quantos Huskies você tem.</p>
+      </fieldset>
+
+      <fieldset data-pergunta="idades" class="so-tutor">
+        <legend><span class="num">4</span>Qual a idade dos seus Huskies?</legend>
+        <span class="ajuda">Pode marcar mais de uma.</span>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="idades" value="filhote"><span>Filhote (até 1 ano)</span></label>
+          <label class="chip"><input type="checkbox" name="idades" value="1a3"><span>1 a 3 anos</span></label>
+          <label class="chip"><input type="checkbox" name="idades" value="4a7"><span>4 a 7 anos</span></label>
+          <label class="chip"><input type="checkbox" name="idades" value="8mais"><span>8 anos ou mais</span></label>
+        </div>
+        <p class="erro">Marque pelo menos uma faixa de idade.</p>
+      </fieldset>
+
+      <fieldset data-pergunta="outros">
+        <legend><span class="num">5</span>Você tem outros animais? Quais?</legend>
+        <span class="ajuda">Pode marcar mais de uma.</span>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="outros" value="nenhum"><span>Não tenho outros</span></label>
+          <label class="chip"><input type="checkbox" name="outros" value="caes"><span>Cães de outras raças</span></label>
+          <label class="chip"><input type="checkbox" name="outros" value="gatos"><span>Gatos</span></label>
+          <label class="chip"><input type="checkbox" name="outros" value="aves"><span>Aves</span></label>
+          <label class="chip"><input type="checkbox" name="outros" value="outros"><span>Outros</span></label>
+        </div>
+        <div class="extra-texto"><label class="mini" for="pq-outros-texto">Quer contar quais? <span class="opcional">(opcional)</span></label><input id="pq-outros-texto" name="outros_texto" type="text" maxlength="200" placeholder="Ex.: 2 gatos e uma calopsita"></div>
+        <p class="erro">Marque uma opção.</p>
+      </fieldset>
+
+      <fieldset data-pergunta="encontros">
+        <legend><span class="num">6</span>Você participaria de encontros de Huskies na sua região?</legend>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="encontros" value="sim"><span>Sim</span></label>
+          <label class="chip"><input type="radio" name="encontros" value="talvez"><span>Talvez</span></label>
+          <label class="chip"><input type="radio" name="encontros" value="nao"><span>Não</span></label>
+        </div>
+        <p class="erro">Escolha uma opção.</p>
+      </fieldset>
+
+      <fieldset data-pergunta="experience">
+        <legend><span class="num">7</span>Você teria interesse em participar de uma grande HUSKY EXPERIENCE no Rio de Janeiro?</legend>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="experience" value="sim"><span>Sim</span></label>
+          <label class="chip"><input type="radio" name="experience" value="talvez"><span>Talvez</span></label>
+          <label class="chip"><input type="radio" name="experience" value="nao"><span>Não</span></label>
+        </div>
+        <p class="erro">Escolha uma opção.</p>
+      </fieldset>
+
+      <fieldset data-pergunta="viajaria">
+        <legend><span class="num">8</span>Você viajaria para outro estado para participar do evento?</legend>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="viajaria" value="sim"><span>Sim</span></label>
+          <label class="chip"><input type="radio" name="viajaria" value="talvez"><span>Talvez</span></label>
+          <label class="chip"><input type="radio" name="viajaria" value="nao"><span>Não</span></label>
+          <label class="chip"><input type="radio" name="viajaria" value="moro_rj"><span>Já moro no RJ</span></label>
+        </div>
+        <p class="erro">Escolha uma opção.</p>
+      </fieldset>
+
+      <fieldset data-pergunta="acompanhantes">
+        <legend><span class="num">9</span>Quantas pessoas provavelmente acompanhariam você?</legend>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="acompanhantes" value="0"><span>Só eu</span></label>
+          <label class="chip"><input type="radio" name="acompanhantes" value="1"><span>+1</span></label>
+          <label class="chip"><input type="radio" name="acompanhantes" value="2"><span>+2</span></label>
+          <label class="chip"><input type="radio" name="acompanhantes" value="3"><span>+3</span></label>
+          <label class="chip"><input type="radio" name="acompanhantes" value="4"><span>+4</span></label>
+          <label class="chip"><input type="radio" name="acompanhantes" value="5"><span>5 ou mais</span></label>
+        </div>
+        <p class="erro">Escolha uma opção.</p>
+      </fieldset>
+
+      <fieldset data-pergunta="expectativas">
+        <legend><span class="num">10</span>O que você gostaria de encontrar em um evento como esse?</legend>
+        <span class="ajuda">Pode marcar mais de uma.</span>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="expectativas" value="encontro"><span>Encontro e fotos com outros Huskies</span></label>
+          <label class="chip"><input type="checkbox" name="expectativas" value="atividades"><span>Atividades e brincadeiras para os cães</span></label>
+          <label class="chip"><input type="checkbox" name="expectativas" value="veterinarios"><span>Conversas com veterinários e adestradores</span></label>
+          <label class="chip"><input type="checkbox" name="expectativas" value="feira"><span>Feira de produtos e serviços pet</span></label>
+          <label class="chip"><input type="checkbox" name="expectativas" value="concursos"><span>Concursos e premiações</span></label>
+          <label class="chip"><input type="checkbox" name="expectativas" value="descanso"><span>Área de sombra, água e descanso</span></label>
+        </div>
+        <div class="extra-texto"><label class="mini" for="pq-exp-texto">Algo mais? <span class="opcional">(opcional)</span></label><textarea id="pq-exp-texto" name="expectativa_texto" maxlength="600" placeholder="Conte o que faria você ir ao evento"></textarea></div>
+        <p class="erro">Marque pelo menos uma opção ou escreva o que gostaria.</p>
+      </fieldset>
+
+      <div class="campo">
+        <p class="rotulo">Seus contatos <span class="opcional">(opcional)</span></p>
+        <span class="ajuda" style="margin-left:0">Só se você quiser. Nunca publicamos nome, e-mail ou Instagram.</span>
+        <div class="duas">
+          <div><label class="mini" for="pq-nome">Nome</label><input id="pq-nome" name="nome" type="text" maxlength="120" autocomplete="name"></div>
+          <div><label class="mini" for="pq-insta">Instagram</label><input id="pq-insta" name="instagram" type="text" maxlength="60" autocomplete="off" placeholder="@seuhusky" autocapitalize="none" spellcheck="false"></div>
+        </div>
+        <div style="margin-top:14px"><label class="mini" for="pq-email">E-mail para receber novidades</label><input id="pq-email" name="email" type="email" maxlength="254" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"></div>
+      </div>
+
+      <div class="campo consentimentos" data-pergunta="consentimento">
+        <label class="consente"><input type="checkbox" name="consente_estudo" required><span><b>Autorizo o uso das minhas respostas de forma agregada</b> (totais por região, sem identificação) em estudos de distribuição geográfica e no planejamento de eventos. <a href="privacidade.html#pesquisa" target="_blank" rel="noopener">Ler o aviso de privacidade</a>.</span></label>
+        <label class="consente"><input type="checkbox" name="consente_novidades"><span><b>Quero receber novidades sobre a HUSKY EXPERIENCE</b> no e-mail que informei. <span class="opcional">(opcional, não é preciso para responder)</span></span></label>
+        <p class="erro" id="pq-erro-consente">Para enviar, autorize o uso agregado das respostas.</p>
+      </div>
+
+      <p class="pq-aviso" id="pq-aviso" role="alert" hidden></p>
+      <div class="pq-enviar">
+        <button type="submit" class="btn" id="pq-enviar">Enviar minhas respostas</button>
+        <small>Não precisa de cadastro no Abanô. Responder é independente da comunidade.</small>
+      </div>
+    </form>
+  </div>
+
+  <div class="pq-ok" id="pq-ok" hidden tabindex="-1">
+    <div class="selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
+    <h2>Seu Husky entrou no mapa!</h2>
+    <p>Obrigado por responder. Assim que tivermos os resultados por região e novidades da HUSKY EXPERIENCE, avisamos no Instagram e, se você autorizou, no seu e-mail.</p>
+    <div class="acoes">
+      <a class="btn" href="https://api.whatsapp.com/send?text=Responde%20a%20pesquisa%20%22Onde%20est%C3%A3o%20os%20Huskies%20do%20Brasil%3F%22%3A%20https%3A%2F%2Fabano.com.br%2Fpesquisa-huskies%2F" target="_blank" rel="noopener">Compartilhar no WhatsApp</a>
+      <a class="btn btn-sec" href="comunidade/">Conhecer a Comunidade Abanô</a>
+    </div>
+  </div>
+</main>
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <div class="rodape-marca">
+      <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial"><img src="logo-pata.svg" alt="" width="38" height="38"><span class="logo-nome" aria-hidden="true">aban<span class="logo-o">o<svg viewBox="0 0 26 13" aria-hidden="true"><ellipse cx="4.6" cy="8.2" rx="3.6" ry="3.9"/><ellipse cx="13" cy="4.4" rx="3.7" ry="4.1"/><ellipse cx="21.4" cy="8.2" rx="3.6" ry="3.9"/></svg></span></span></a>
+      <p>Tudo pra cães e gatos, num lugar só: eventos, hospedagem, veterinários, adoção e cuidados perto de você.</p>
+    </div>
+    <div>
+      <h4>Conteúdo</h4>
+      <ul>
+        <li><a href="husky-solta-muito-pelo.html">Guia do Husky</a></li>
+        <li><a href="calculadora.html">Calculadora de custos</a></li>
+        <li><a href="novidades.html">Novidades</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Abanô</h4>
+      <ul>
+        <li><a href="cadastro.html">Cadastre-se</a></li>
+        <li><a href="anuncie.html">Divulgue no Abanô</a></li>
+        <li><a href="sobre.html">Nossa história</a></li>
+        <li><a href="https://www.instagram.com/juninhoohusky/" target="_blank" rel="noopener">Instagram @juninhoohusky</a></li>
+        <li><a href="https://www.youtube.com/@JuninhoOhusky" target="_blank" rel="noopener">YouTube Juninho O Husky</a></li>
+        <li><a href="privacidade.html">Política de privacidade</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="rodape-base"><span>© 2026 Abanô</span><span>Tem pet? Tem no Abanô.</span></div>
+</footer>
+<script>
+/* Pesquisa "Onde estão os Huskies do Brasil?" — envia direto para o Supabase.
+   Independente das contas da comunidade: não usa login. */
+document.addEventListener("DOMContentLoaded", function () {
+  var VERSAO_AVISO = "2026-11-09";
+  var form = document.getElementById("form-pesquisa");
+  var aviso = document.getElementById("pq-aviso");
+  var botao = document.getElementById("pq-enviar");
+  var barra = document.getElementById("pq-barra");
+  var conta = document.getElementById("pq-conta");
+  var abriuEm = Date.now();
+  var $$ = function (s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); };
+  var marcados = function (nome) { return $$('input[name="' + nome + '"]:checked', form).map(function (i) { return i.value; }); };
+  var valor = function (nome) { var m = marcados(nome); return m.length ? m[0] : ""; };
+
+  // ---------- Perguntas visíveis, numeração e progresso ----------
+  function ehTutor() { return valor("situacao") === "tenho"; }
+  function perguntas() { return $$("[data-pergunta]", form).filter(function (el) { return !el.hidden; }); }
+  function respondida(el) {
+    switch (el.dataset.pergunta) {
+      case "situacao": return !!valor("situacao");
+      case "local": return !!form.estado.value && form.cidade.value.trim().length >= 2;
+      case "qtd": return !!valor("qtd");
+      case "idades": return marcados("idades").length > 0;
+      case "outros": return marcados("outros").length > 0;
+      case "encontros": return !!valor("encontros");
+      case "experience": return !!valor("experience");
+      case "viajaria": return !!valor("viajaria");
+      case "acompanhantes": return valor("acompanhantes") !== "";
+      case "expectativas": return marcados("expectativas").length > 0 || form.expectativa_texto.value.trim().length > 0;
+      case "consentimento": return form.consente_estudo.checked;
+    }
+    return true;
+  }
+  function atualizar() {
+    $$(".so-tutor", form).forEach(function (el) { el.hidden = !ehTutor(); });
+    var lista = perguntas().filter(function (el) { return el.dataset.pergunta !== "consentimento"; });
+    lista.forEach(function (el, i) { var n = el.querySelector(".num"); if (n) n.textContent = i + 1; });
+    var feitas = lista.filter(respondida).length;
+    barra.style.transform = "scaleX(" + (lista.length ? feitas / lista.length : 0) + ")";
+    conta.textContent = feitas + " de " + lista.length + " perguntas";
+    $$(".invalido", form).forEach(function (el) { if (respondida(el)) el.classList.remove("invalido"); });
+  }
+
+  // "5 ou mais" pede o número; "Não tenho outros" desmarca os demais (e vice-versa)
+  form.addEventListener("change", function (e) {
+    var t = e.target;
+    if (t.name === "qtd") document.getElementById("pq-qtd-mais").hidden = t.value !== "mais";
+    if (t.name === "outros" && t.checked) {
+      $$('input[name="outros"]', form).forEach(function (i) {
+        if (t.value === "nenhum" ? i.value !== "nenhum" : i.value === "nenhum") i.checked = false;
+      });
+    }
+    atualizar();
+  });
+  form.addEventListener("input", atualizar);
+  atualizar();
+
+  // ---------- Envio ----------
+  function erro(msg) {
+    aviso.textContent = msg; aviso.hidden = false;
+    botao.disabled = false; botao.textContent = "Enviar minhas respostas";
+  }
+  function concluir() {
+    document.getElementById("pq-formulario").hidden = true;
+    var ok = document.getElementById("pq-ok");
+    ok.hidden = false;
+    ok.scrollIntoView({ block: "center" });
+    ok.focus({ preventScroll: true });
+    var G = window.gsap;
+    if (G && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      G.timeline({ defaults: { ease: "back.out(1.8)" } })
+        .from(ok, { y: 24, opacity: 0, duration: 0.6 })
+        .from(ok.querySelector(".selo"), { scale: 0, rotation: -40, duration: 0.7 }, 0.15)
+        .from(ok.querySelectorAll("h2, p, .acoes"), { y: 14, opacity: 0, stagger: 0.08, duration: 0.5, ease: "power3.out" }, 0.25);
+    }
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    aviso.hidden = true;
+
+    // Robôs: campo-armadilha preenchido ou envio instantâneo → finge que deu certo
+    if (form["campo-robo"].value || Date.now() - abriuEm < 4000) { concluir(); return; }
+
+    // Validação: marca a pergunta que falta, com a mensagem ao lado
+    var faltando = perguntas().filter(function (el) { return !respondida(el); });
+    faltando.forEach(function (el) { el.classList.add("invalido"); });
+    var email = form.email.value.trim().toLowerCase();
+    if (form.consente_novidades.checked && !email) {
+      erro("Para receber novidades, informe seu e-mail (ou desmarque essa opção).");
+      form.email.focus();
+      return;
+    }
+    if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { erro("Confira o e-mail: parece que falta alguma parte."); form.email.focus(); return; }
+    if (faltando.length) {
+      faltando[0].scrollIntoView({ behavior: "smooth", block: "center" });
+      var foco = faltando[0].querySelector("input, select, textarea");
+      if (foco) setTimeout(function () { foco.focus({ preventScroll: true }); }, 350);
+      erro(faltando.length === 1 ? "Falta responder 1 pergunta, marcada em destaque." : "Faltam " + faltando.length + " perguntas, marcadas em destaque.");
+      return;
+    }
+
+    var qtd = null;
+    if (ehTutor()) qtd = valor("qtd") === "mais" ? Math.max(5, Math.min(50, parseInt(document.getElementById("pq-qtd-num").value, 10) || 5)) : parseInt(valor("qtd"), 10);
+    var insta = form.instagram.value.trim().replace(/\s+/g, "");
+    var dados = {
+      situacao: valor("situacao"),
+      estado: form.estado.value,
+      cidade: form.cidade.value.trim().replace(/\s+/g, " "),
+      qtd_huskies: qtd,
+      idades: ehTutor() ? marcados("idades") : null,
+      outros_animais: marcados("outros"),
+      outros_animais_texto: form.outros_texto.value.trim() || null,
+      encontros_regiao: valor("encontros"),
+      interesse_experience: valor("experience"),
+      viajaria: valor("viajaria"),
+      acompanhantes: parseInt(valor("acompanhantes"), 10),
+      expectativas: marcados("expectativas"),
+      expectativa_texto: form.expectativa_texto.value.trim() || null,
+      nome: form.nome.value.trim() || null,
+      instagram: insta ? (insta.charAt(0) === "@" ? insta : "@" + insta) : null,
+      email: email || null,
+      consente_estudo: true,
+      consente_novidades: form.consente_novidades.checked,
+      versao_aviso: VERSAO_AVISO
+    };
+
+    botao.disabled = true;
+    botao.textContent = "Enviando…";
+    fetch(SUPABASE_URL + "/rest/v1/pesquisa_huskies", {
+      method: "POST",
+      headers: { "apikey": SUPABASE_CHAVE, "Content-Type": "application/json", "Prefer": "return=minimal" },
+      body: JSON.stringify(dados)
+    }).then(function (r) {
+      if (r.ok) { concluir(); return; }
+      if (r.status === 409) { concluir(); return; }                 // este e-mail já respondeu
+      return r.json().then(function (j) {
+        if (j && j.code === "P0001") erro("Muitas respostas ao mesmo tempo. Espere alguns segundos e envie de novo.");
+        else erro("Não conseguimos salvar agora. Confira as respostas e tente de novo.");
+      }, function () { erro("Não conseguimos salvar agora. Tente de novo em instantes."); });
+    }).catch(function () {
+      erro("Sem conexão com o servidor. Verifique sua internet e tente de novo.");
+    });
+  });
+});
+</script>
+</body>
+</html>

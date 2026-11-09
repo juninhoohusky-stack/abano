@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<base href="/">
+<title>Painel da pesquisa | Abanô</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="site.css?v=20261110b">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
+<script src="lista.js?v=20261110b" defer></script>
+<style>
+  .painel{max-width:1120px;margin:0 auto;padding:32px 24px 40px}
+  .topo-admin{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1120px;margin:0 auto;padding:12px 24px}
+  .topo-admin .quem{font-size:14px;color:var(--suave);display:flex;align-items:center;gap:12px}
+  h1{font-size:clamp(30px,4vw,44px);margin:6px 0 8px}
+  .sub{color:var(--suave);margin-bottom:28px}
+  .caixa{padding:40px 28px;border-radius:24px;background:var(--superficie);box-shadow:var(--sombra);text-align:center;max-width:520px;margin:40px auto}
+  .caixa p{color:var(--suave);margin:10px 0 22px}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,40vw),1fr));gap:14px;margin-bottom:22px}
+  .kpi{padding:20px;border-radius:20px;background:var(--superficie);box-shadow:var(--sombra)}
+  .kpi b{display:block;font-size:34px;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--tinta)}
+  .kpi span{display:block;margin-top:4px;font-size:14px;line-height:1.35;color:var(--suave);font-weight:600}
+  .grade{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{padding:22px;border-radius:20px;background:var(--superficie);box-shadow:var(--sombra)}
+  .card h2{font-size:19px;margin-bottom:14px}
+  .linhas{display:grid;gap:10px;max-height:420px;overflow:auto}
+  .linha{display:grid;grid-template-columns:minmax(90px,1.3fr) 2fr auto;align-items:center;gap:10px;font-size:14.5px}
+  .linha i{height:10px;border-radius:99px;background:var(--areia);overflow:hidden;display:block}
+  .linha i::after{content:"";display:block;height:100%;width:var(--w);border-radius:99px;background:var(--marca)}
+  .linha b{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+  .linha small{color:var(--suave)}
+  .vazio{color:var(--suave);font-size:15px}
+  .acoes{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 26px}
+  .nota{font-size:13px;color:var(--suave);margin-top:18px}
+  [hidden]{display:none !important}
+  @media (max-width:800px){.grade{grid-template-columns:1fr}.kpi{padding:16px}.kpi b{font-size:28px}.painel{padding:24px 16px 32px}.topo-admin{padding:12px 16px}}
+</style>
+</head>
+<body>
+<header class="topo">
+  <div class="topo-admin">
+    <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial"><img src="logo-pata.svg" alt="" width="38" height="38"><span class="logo-nome" aria-hidden="true">aban<span class="logo-o">o<svg viewBox="0 0 26 13" aria-hidden="true"><ellipse cx="4.6" cy="8.2" rx="3.6" ry="3.9"/><ellipse cx="13" cy="4.4" rx="3.7" ry="4.1"/><ellipse cx="21.4" cy="8.2" rx="3.6" ry="3.9"/></svg></span></span></a>
+    <div class="quem" id="quem" hidden><span id="quem-email"></span><button class="btn btn-sec" id="sair" type="button">Sair</button></div>
+  </div>
+</header>
+
+<main class="painel">
+  <span class="eyebrow">Área administrativa</span>
+  <h1>Pesquisa: Onde estão os Huskies do Brasil?</h1>
+  <p class="sub">Resultados reais da página <a href="pesquisa-huskies/">/pesquisa-huskies/</a>. Nada aqui é estimado ou simulado.</p>
+
+  <div class="caixa" id="tela-entrar" hidden>
+    <h2>Entre para ver os resultados</h2>
+    <p>Só administradores do Abanô têm acesso.</p>
+    <button class="btn" id="entrar" type="button">Entrar com o Google</button>
+  </div>
+  <div class="caixa" id="tela-negado" hidden>
+    <h2>Acesso restrito</h2>
+    <p>Esta conta não está na lista de administradores. Peça para incluir o seu e-mail na tabela <code>admins</code> do Supabase.</p>
+  </div>
+  <div class="caixa" id="tela-erro" hidden><h2>Não deu para carregar</h2><p id="erro-msg"></p></div>
+
+  <section id="tela-dados" hidden>
+    <div class="acoes">
+      <button class="btn" id="csv-respostas" type="button">Exportar respostas (CSV, sem dados pessoais)</button>
+      <button class="btn btn-sec" id="csv-contatos" type="button">Exportar contatos que pediram novidades (CSV)</button>
+      <button class="btn btn-sec" id="atualizar" type="button">Atualizar</button>
+    </div>
+    <div class="kpis" id="kpis"></div>
+    <div class="grade">
+      <div class="card"><h2>Respostas por estado</h2><div class="linhas" id="g-estado"></div></div>
+      <div class="card"><h2>Huskies informados por estado</h2><div class="linhas" id="g-huskies"></div></div>
+      <div class="card"><h2>Cidades com mais respostas</h2><div class="linhas" id="g-cidade"></div></div>
+      <div class="card"><h2>Quem respondeu</h2><div class="linhas" id="g-situacao"></div></div>
+      <div class="card"><h2>Participaria de encontros na região?</h2><div class="linhas" id="g-encontros"></div></div>
+      <div class="card"><h2>Interesse na HUSKY EXPERIENCE (RJ)</h2><div class="linhas" id="g-experience"></div></div>
+      <div class="card"><h2>Viajaria para outro estado?</h2><div class="linhas" id="g-viajaria"></div></div>
+      <div class="card"><h2>O que gostariam de encontrar</h2><div class="linhas" id="g-expectativas"></div></div>
+    </div>
+    <p class="nota">Contatos (nome, e-mail, Instagram) aparecem só na exportação de quem autorizou receber novidades. Não publique esses dados.</p>
+  </section>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_CHAVE, { auth: { flowType: "pkce", persistSession: true, detectSessionInUrl: true } });
+  var $ = function (id) { return document.getElementById(id); };
+  var telas = ["tela-entrar", "tela-negado", "tela-erro", "tela-dados"];
+  function mostrar(id) { telas.forEach(function (t) { $(t).hidden = t !== id; }); }
+  var ROTULOS = {
+    tenho: "Têm Husky", quero_ter: "Querem ter", admiro: "Acompanham a raça",
+    sim: "Sim", talvez: "Talvez", nao: "Não", moro_rj: "Já moram no RJ",
+    encontro: "Encontro e fotos", atividades: "Atividades para os cães", veterinarios: "Veterinários e adestradores",
+    feira: "Feira pet", concursos: "Concursos", descanso: "Sombra, água e descanso"
+  };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var num = function (n) { return Number(n || 0).toLocaleString("pt-BR"); };
+
+  function barras(id, itens) {
+    var el = $(id);
+    if (!itens.length) { el.innerHTML = '<p class="vazio">Ainda sem respostas.</p>'; return; }
+    var max = Math.max.apply(null, itens.map(function (i) { return i.n; })) || 1;
+    el.innerHTML = itens.map(function (i) {
+      return '<div class="linha"><span>' + esc(i.rotulo) + (i.extra ? ' <small>' + esc(i.extra) + '</small>' : '') + '</span><i style="--w:' + (i.n / max * 100).toFixed(1) + '%"></i><b>' + num(i.n) + '</b></div>';
+    }).join("");
+  }
+  function deObjeto(o) { return Object.keys(o || {}).map(function (k) { return { rotulo: ROTULOS[k] || k, n: o[k] }; }).sort(function (a, b) { return b.n - a.n; }); }
+
+  function desenhar(r) {
+    var kpis = [
+      [r.total, "respostas"], [r.total_huskies, "Huskies informados"],
+      [(r.encontros_regiao || {}).sim, "participariam de encontros locais"],
+      [(r.experience || {}).sim, "querem a HUSKY EXPERIENCE"],
+      [(r.viajaria || {}).sim, "viajariam de outro estado"],
+      [r.pessoas_estimadas_experience, "pessoas estimadas (quem disse sim + acompanhantes)"],
+      [r.acompanhantes_interessados, "acompanhantes de quem disse sim ou talvez"],
+      [r.aceitam_novidades, "pediram novidades por e-mail"]
+    ];
+    $("kpis").innerHTML = kpis.map(function (k) { return '<div class="kpi"><b>' + num(k[0]) + '</b><span>' + esc(k[1]) + '</span></div>'; }).join("");
+    barras("g-estado", (r.por_estado || []).map(function (e) { return { rotulo: e.estado, n: e.respostas }; }));
+    barras("g-huskies", (r.por_estado || []).filter(function (e) { return e.huskies > 0; }).sort(function (a, b) { return b.huskies - a.huskies; }).map(function (e) { return { rotulo: e.estado, n: e.huskies }; }));
+    barras("g-cidade", (r.por_cidade || []).map(function (c) { return { rotulo: c.cidade, extra: c.estado + (c.huskies ? " · " + c.huskies + " huskies" : ""), n: c.respostas }; }));
+    barras("g-situacao", deObjeto(r.por_situacao));
+    barras("g-encontros", deObjeto(r.encontros_regiao));
+    barras("g-experience", deObjeto(r.experience));
+    barras("g-viajaria", deObjeto(r.viajaria));
+    barras("g-expectativas", deObjeto(r.expectativas));
+  }
+
+  function carregar() {
+    sb.rpc("pesquisa_resumo").then(function (res) {
+      if (res.error) {
+        if (res.error.code === "42501") { mostrar("tela-negado"); return; }
+        $("erro-msg").textContent = res.error.message; mostrar("tela-erro"); return;
+      }
+      desenhar(res.data); mostrar("tela-dados");
+    });
+  }
+
+  function csv(nomeArquivo, linhas) {
+    if (!linhas.length) { alert("Ainda não há dados para exportar."); return; }
+    var colunas = Object.keys(linhas[0]);
+    var celula = function (v) { v = v == null ? "" : String(v); return /[";\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    var texto = "﻿" + [colunas.join(";")].concat(linhas.map(function (l) { return colunas.map(function (c) { return celula(l[c]); }).join(";"); })).join("\n");
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([texto], { type: "text/csv;charset=utf-8" }));
+    a.download = nomeArquivo;
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+  }
+  function exportar(comContatos) {
+    sb.rpc("pesquisa_exportar", { com_contatos: comContatos }).then(function (res) {
+      if (res.error) { alert(res.error.message); return; }
+      var hoje = new Date().toISOString().slice(0, 10);
+      csv((comContatos ? "pesquisa-huskies-contatos-" : "pesquisa-huskies-respostas-") + hoje + ".csv", res.data || []);
+    });
+  }
+
+  $("entrar").addEventListener("click", function () {
+    sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + "/admin/pesquisa.html" } });
+  });
+  $("sair").addEventListener("click", function () { sb.auth.signOut().then(function () { location.reload(); }); });
+  $("atualizar").addEventListener("click", carregar);
+  $("csv-respostas").addEventListener("click", function () { exportar(false); });
+  $("csv-contatos").addEventListener("click", function () { exportar(true); });
+
+  sb.auth.getSession().then(function (r) {
+    var s = r.data.session;
+    if (!s) { mostrar("tela-entrar"); return; }
+    $("quem").hidden = false;
+    $("quem-email").textContent = s.user.email;
+    carregar();
+  });
+});
+</script>
+</body>
+</html>
