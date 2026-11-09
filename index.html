@@ -21,8 +21,10 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
-<link rel="stylesheet" href="site.css?v=20261109d">
-<script src="site.js?v=20261109d" defer></script>
+<link rel="preload" href="fontes/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261109e">
+<script src="https://cdn.jsdelivr.net/npm/motion@12.23.12/dist/motion.js" defer></script>
+<script src="site.js?v=20261109e" defer></script>
 <style>
   /* =========================================================
      Página inicial — neurodesign + motion
@@ -55,10 +57,10 @@
   .selo-topo b::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;animation:pisca 2s ease-in-out infinite}
   @keyframes pisca{50%{opacity:.35;transform:scale(.7)}}
 
-  .titulo-hero{font-size:clamp(46px,5.7vw,78px);line-height:.98;letter-spacing:-.045em;margin:26px 0 24px}
+  .titulo-hero{font-size:clamp(42px,5.2vw,70px);line-height:1;letter-spacing:-.04em;word-spacing:.08em;margin:26px 0 24px}
   .titulo-hero .linha{display:block}
   .rotativo{display:inline-grid;vertical-align:bottom;position:relative;height:1.08em;overflow:hidden;color:var(--marca);transition:width .6s var(--mola);padding-bottom:.06em}
-  .rotativo > span{grid-area:1/1;white-space:nowrap;translate:0 110%;opacity:0;filter:blur(8px);transition:translate .75s var(--mola-salto),opacity .5s var(--mola),filter .6s var(--mola)}
+  .rotativo > span{grid-area:1/1;justify-self:start;white-space:nowrap;padding-right:.1em;translate:0 110%;opacity:0;filter:blur(8px);transition:translate .75s var(--mola-salto),opacity .5s var(--mola),filter .6s var(--mola)}
   .rotativo > span.ativa{translate:0 0;opacity:1;filter:none}
   .rotativo > span.saindo{translate:0 -110%;opacity:0;filter:blur(8px)}
   .rotativo > span.final{color:var(--tinta)}
@@ -101,7 +103,8 @@
   .flutua{position:absolute;display:flex;align-items:center;gap:12px;padding:12px 16px 12px 12px;border-radius:18px;background:color-mix(in srgb,var(--superficie) 82%,transparent);
     -webkit-backdrop-filter:blur(18px) saturate(170%);backdrop-filter:blur(18px) saturate(170%);box-shadow:0 18px 40px -16px rgba(0,0,0,.28),0 0 0 .5px var(--linha);
     font-size:14px;line-height:1.3;white-space:nowrap;
-    transform:translate(calc(var(--mx) * var(--p) * 1px),calc(var(--my) * var(--p) * 1px));transition:transform .9s var(--mola)}
+    /* --mx/--my: mouse (profundidade); --sp: rolagem afasta os cartões do centro na direção --sx/--sy */
+    transform:translate(calc(var(--mx) * var(--p) * 1px + var(--sx,0) * var(--sp,0) * 64px),calc(var(--my) * var(--p) * 1px + var(--sy,0) * var(--sp,0) * 64px));transition:transform .9s var(--mola)}
   .flutua{animation:boia var(--t,6s) ease-in-out infinite}
   @keyframes boia{50%{translate:0 -10px}}
   .flutua > div{display:flex;flex-direction:column}
@@ -109,10 +112,31 @@
   .flutua .fi svg{width:21px;height:21px}
   .flutua b{display:block;font-size:15px}
   .flutua small{color:var(--suave);font-size:12.5px}
-  .flutua.f1{top:4%;left:-2%;--p:22;--t:6.5s}
-  .flutua.f2{top:22%;right:-4%;--p:-16;--t:7.2s}
-  .flutua.f3{bottom:20%;left:-6%;--p:14;--t:5.8s}
-  .flutua.f4{bottom:3%;right:4%;--p:-24;--t:6.9s}
+  .flutua.f1{top:4%;left:-2%;--p:22;--t:6.5s;--sx:-1;--sy:-1;--k:0}
+  .flutua.f2{top:22%;right:-4%;--p:-16;--t:7.2s;--sx:1;--sy:-.6;--k:1}
+  .flutua.f3{bottom:20%;left:-6%;--p:14;--t:5.8s;--sx:-1;--sy:.6;--k:2}
+  .flutua.f4{bottom:3%;right:4%;--p:-24;--t:6.9s;--sx:1;--sy:1;--k:3}
+
+  /* Entrada do palco: o Motion faz os cartões saírem do centro do radar.
+     Sem Motion, os cartões e o centro só aparecem com um esmaecer (reserva em CSS). */
+  @media (prefers-reduced-motion:no-preference){
+    .palco .flutua{animation:boia var(--t,6s) ease-in-out infinite,chegar .7s var(--mola) calc(1.2s + var(--k,0) * .12s) both}
+    .palco .centro{animation:bate 2.4s var(--mola) infinite,chegar .6s var(--mola) .9s both}
+    .palco.com-motion .flutua{animation:boia var(--t,6s) ease-in-out infinite}
+    .palco.com-motion .centro{animation:none}
+    .palco.com-motion.pronto .centro{animation:bate 2.4s var(--mola) infinite}
+    @keyframes chegar{from{opacity:0}}
+  }
+
+  /* Avatares da família se abrem ao passar o mouse */
+  .avatares span{transition:transform .45s var(--mola-salto)}
+  @media (hover:hover){
+    .prova:hover .avatares span:nth-child(2){transform:translateX(4px)}
+    .prova:hover .avatares span:nth-child(3){transform:translateX(8px)}
+    .prova:hover .avatares span:nth-child(4){transform:translateX(12px)}
+    .prova:hover .avatares span:nth-child(5){transform:translateX(16px)}
+    .prova:hover .avatares span:nth-child(6){transform:translateX(20px)}
+  }
   .flutua .valor{font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--marca)}
   .tag-mini{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;background:var(--areia);color:var(--suave);font-size:10.5px;font-weight:600;vertical-align:1px}
 
@@ -235,7 +259,7 @@
     .radar .centro svg{width:42px;height:42px}
   }
   @media (max-width:560px){
-    .titulo-hero{font-size:10.6vw;margin:20px 0 18px}
+    .titulo-hero{font-size:10vw;margin:20px 0 18px}
     .mosaico{grid-template-columns:1fr}
     .tile.grande,.tile.larga{grid-column:auto;grid-row:auto}
     .bichos{grid-template-columns:repeat(2,1fr)}
@@ -652,6 +676,99 @@
       t.style.setProperty("--y", (e.clientY - r.top) + "px");
     }, { passive: true });
   }
+
+  // 7) Abertura com Motion (o motion.js chega antes do DOMContentLoaded)
+  document.addEventListener("DOMContentLoaded", function () {
+    var M = window.Motion, palco = document.getElementById("palco");
+    if (!M || !M.animate || !palco || calmo) return;
+    var hero = palco.closest(".hero");
+    var colunaTexto = hero.firstElementChild;
+    var radar = palco.querySelector(".radar");
+    var centro = palco.querySelector(".centro");
+    var cartoes = Array.prototype.slice.call(palco.querySelectorAll(".flutua"));
+    var mouseFino = window.matchMedia("(hover: hover)").matches;
+    // Só refaz a entrada se a reserva em CSS ainda não mostrou nada (evita piscar)
+    var cedo = performance.now() < 850;
+    var avataresCedo = performance.now() < 300;
+
+    // 7a) Centro do radar dá um pulinho; os cartões saem de dentro dele
+    palco.classList.add("com-motion");
+    if (cedo) {
+      var p = palco.getBoundingClientRect(), cx = p.left + p.width / 2, cy = p.top + p.height / 2;
+      centro.style.opacity = "0";
+      M.animate(centro, { opacity: [0, 1], scale: [0, 1], rotate: [-24, 0] }, { type: "spring", bounce: 0.5, duration: 0.9, delay: 0.5 })
+        .finished.then(function () { centro.style.transform = ""; palco.classList.add("pronto"); });
+      cartoes.forEach(function (c, i) {
+        var r = c.getBoundingClientRect();
+        c.style.opacity = "0";
+        c.style.transition = "none";
+        M.animate(c, { opacity: [0, 1], x: [(cx - (r.left + r.width / 2)) * 0.85, 0], y: [(cy - (r.top + r.height / 2)) * 0.85, 0], scale: [0.3, 1] },
+          { type: "spring", bounce: 0.3, duration: 1.1, delay: 0.8 + i * 0.14 })
+          .finished.then(function () { c.style.transform = ""; c.style.transition = ""; c.style.opacity = ""; });
+      });
+    } else {
+      palco.classList.add("pronto");
+    }
+    // Avatares da família entram um por um (a linha deles aparece aos ~0,3 s)
+    if (avataresCedo) {
+      var avatares = Array.prototype.slice.call(document.querySelectorAll(".avatares span"));
+      avatares.forEach(function (a) { a.style.opacity = "0"; a.style.transition = "none"; });
+      M.animate(avatares, { opacity: [0, 1], scale: [0.2, 1] }, { type: "spring", bounce: 0.55, duration: 0.6, delay: M.stagger(0.07, { startDelay: 0.55 }) })
+        .finished.then(function () { avatares.forEach(function (a) { a.style.transform = ""; a.style.opacity = ""; a.style.transition = ""; }); });
+    }
+
+    // 7b) O palco inclina em 3D seguindo o mouse
+    if (mouseFino) {
+      var pedido = 0, ultimo = null;
+      var inclinar = function (rx, ry) {
+        // perspectiva só no palco (não afeta o título ao lado)
+        M.animate(palco, { transformPerspective: 1300, rotateX: rx, rotateY: ry }, { type: "spring", stiffness: 90, damping: 16 });
+      };
+      window.addEventListener("pointermove", function (e) {
+        ultimo = e;
+        if (pedido) return;
+        pedido = requestAnimationFrame(function () {
+          pedido = 0;
+          var r = palco.getBoundingClientRect();
+          var x = Math.max(-1, Math.min(1, (ultimo.clientX - (r.left + r.width / 2)) / r.width));
+          var y = Math.max(-1, Math.min(1, (ultimo.clientY - (r.top + r.height / 2)) / r.height));
+          inclinar(-y * 7, x * 9);
+        });
+      }, { passive: true });
+      document.documentElement.addEventListener("pointerleave", function () { inclinar(0, 0); });
+    }
+
+    // 7c) Ao rolar: cartões se afastam, radar gira devagar, texto sobe e esmaece
+    if (M.scroll) {
+      M.scroll(function (progresso) {
+        var k = Math.max(0, Math.min(1, progresso));
+        palco.style.setProperty("--sp", k.toFixed(3));
+        if (k < 0.001) {
+          // no topo: sem estilos extras (evita camadas desnecessárias no título)
+          radar.style.transform = colunaTexto.style.transform = colunaTexto.style.opacity = "";
+          return;
+        }
+        radar.style.transform = "rotate(" + (k * 40).toFixed(2) + "deg) scale(" + (1 - k * 0.12).toFixed(3) + ")";
+        colunaTexto.style.transform = "translateY(" + (-k * 56).toFixed(1) + "px)";
+        colunaTexto.style.opacity = (1 - k * 0.55).toFixed(3);
+      }, { target: hero, offset: ["start start", "end start"] });
+    }
+
+    // 7d) Botão principal "magnético": puxa levemente na direção do cursor
+    var cta = hero.querySelector(".btn-brilho");
+    if (cta && mouseFino) {
+      cta.addEventListener("pointerenter", function () { cta.style.transition = "background-color .2s"; });
+      cta.addEventListener("pointermove", function (e) {
+        var r = cta.getBoundingClientRect();
+        M.animate(cta, { x: (e.clientX - (r.left + r.width / 2)) * 0.18, y: (e.clientY - (r.top + r.height / 2)) * 0.32 },
+          { type: "spring", stiffness: 260, damping: 16 });
+      });
+      cta.addEventListener("pointerleave", function () {
+        M.animate(cta, { x: 0, y: 0 }, { type: "spring", stiffness: 260, damping: 13 })
+          .finished.then(function () { cta.style.transform = ""; cta.style.transition = ""; });
+      });
+    }
+  });
 })();
 </script>
 </body>

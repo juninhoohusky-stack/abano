@@ -111,7 +111,8 @@
   document.body.insertBefore(aura, document.body.firstChild);
 
   // Cartões com luz que segue o cursor
-  lista(main.querySelectorAll('.bloco, .avise, .faixa-cta, .pet, .atalhos > *')).forEach(function (c) { c.classList.add('luz'); });
+  // Só cartões soltos na página (na calculadora, ".bloco" é parte do formulário)
+  lista(main.querySelectorAll('main > .bloco, main > .avise, main > .faixa-cta, .pet, .atalhos > *')).forEach(function (c) { c.classList.add('luz'); });
   document.addEventListener('pointermove', function (e) {
     var c = e.target.closest && e.target.closest('.luz');
     if (!c) return;
@@ -200,7 +201,8 @@
     // Itens de lista e cartões lado a lado entram em sequência
     var itens = el.matches('.familia, .atalhos') ? el.children
       : el.querySelectorAll(':scope > li, :scope ul > li, :scope .familia > *, :scope .atalhos > *');
-    info.itens = lista(itens);
+    // Listas com animação própria (ex.: resultado da calculadora) ficam de fora
+    info.itens = lista(itens).filter(function (it) { return !it.closest('[data-motion-proprio]'); });
     esconder(info.itens, 'translateY(14px)');
     // O "check" de cada item aparece com um pulinho (sensação de conquista)
     info.icones = info.itens.map(function (li) { return li.querySelector(':scope > svg'); }).filter(Boolean);

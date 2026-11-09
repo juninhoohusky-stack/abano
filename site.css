@@ -1,8 +1,21 @@
 /* =========================================================
    Abanô — base visual compartilhada (padrão Apple HIG)
-   Fonte do sistema, cores semânticas com modo escuro,
-   grade de 8px, botões em cápsula e alvos de toque de 44px.
+   Fonte Plus Jakarta Sans (hospedada no site), cores semânticas
+   com modo escuro, grade de 8px, botões em cápsula e toque de 44px.
    ========================================================= */
+
+/* Plus Jakarta Sans — fonte variável (400 a 800), licença OFL (fontes/OFL.txt).
+   Hospedada aqui: carrega mais rápido e não envia o IP do visitante ao Google. */
+@font-face{
+  font-family:'Plus Jakarta Sans';font-style:normal;font-weight:400 800;font-display:swap;
+  src:url(fontes/plus-jakarta-sans-latin.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Plus Jakarta Sans';font-style:normal;font-weight:400 800;font-display:swap;
+  src:url(fontes/plus-jakarta-sans-latin-ext.woff2) format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
 
 :root{
   color-scheme:light dark;
@@ -16,7 +29,7 @@
 
   /* Texto */
   --tinta:#1D1D1F;
-  --suave:#6E6E73;
+  --suave:#5C5C63;                 /* cinza de apoio: contraste ~6:1, cansa menos */
 
   /* Cor da marca (tint) */
   --marca:#1F5A4F;
@@ -37,8 +50,8 @@
   --raio-sm:12px;
   --sombra:0 1px 2px rgba(0,0,0,.04),0 6px 20px -8px rgba(0,0,0,.10);
 
-  --sistema:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Segoe UI Variable Text','Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
-  --serif:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI Variable Display','Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --sistema:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --serif:var(--sistema);          /* títulos: mesma família, pesos maiores */
   --sans:var(--sistema);
 
   --mola:cubic-bezier(.32,.72,0,1);
@@ -73,11 +86,19 @@
 
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{font-family:var(--sistema);font-size:17px;line-height:1.5;background:var(--fundo);color:var(--tinta);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-h1,h2,h3{font-family:var(--serif);line-height:1.1;color:var(--tinta)}
-h1{font-weight:700;letter-spacing:-.03em}
-h2{font-weight:700;letter-spacing:-.022em}
-h3{font-weight:600;letter-spacing:-.012em}
+/* ---------- Tipografia: confortável para ler ----------
+   Corpo 17px com entrelinha 1.65; títulos mais justos e com quebra equilibrada;
+   parágrafos sem palavra sozinha na última linha (onde o navegador permite). */
+body{font-family:var(--sistema);font-size:17px;line-height:1.65;letter-spacing:-.006em;background:var(--fundo);color:var(--tinta);
+  font-kerning:normal;font-variant-ligatures:common-ligatures;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+h1,h2,h3,h4{font-family:var(--serif);line-height:1.12;color:var(--tinta);text-wrap:balance}
+h1{font-weight:800;letter-spacing:-.034em;line-height:1.06}
+h2{font-weight:750;letter-spacing:-.026em}
+h3{font-weight:700;letter-spacing:-.014em;line-height:1.25}
+p,li,dd,blockquote{text-wrap:pretty}
+b,strong{font-weight:700}
+small{font-size:.85em}
+input,select,textarea,button{font-family:inherit}
 a{color:var(--marca)}
 img,svg{display:block}
 ::selection{background:var(--marca-clara)}
@@ -185,13 +206,13 @@ img,svg{display:block}
 .aba:active{transform:scale(.95);transition-duration:60ms}
 
 /* ---------- Rodapé ---------- */
-.rodape{margin-top:40px;background:var(--superficie);box-shadow:0 -.5px 0 var(--linha);color:var(--suave);font-size:13px}
+.rodape{margin-top:40px;background:var(--superficie);box-shadow:0 -.5px 0 var(--linha);color:var(--suave);font-size:14px}
 .rodape-in{max-width:1120px;margin:0 auto;padding:40px 24px 24px;display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:32px}
 .rodape .topo-logo{font-size:20px;margin-bottom:6px}
-.rodape p{max-width:340px;font-size:14px}
-.rodape h4{font-size:13px;font-weight:600;color:var(--tinta);margin-bottom:10px}
+.rodape p{max-width:340px;font-size:15px;line-height:1.6}
+.rodape h4{font-size:14px;font-weight:700;color:var(--tinta);margin-bottom:10px}
 .rodape ul{list-style:none;display:grid;gap:4px}
-.rodape li a{display:inline-flex;align-items:center;min-height:32px;color:var(--suave);text-decoration:none;font-size:14px}
+.rodape li a{display:inline-flex;align-items:center;min-height:32px;color:var(--suave);text-decoration:none;font-size:15px}
 .rodape a:hover{color:var(--tinta)}
 .rodape-base{max-width:1120px;margin:0 auto;padding:16px 24px 28px;box-shadow:inset 0 .5px 0 var(--linha);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
 @media (max-width:700px){.rodape-in{grid-template-columns:1fr 1fr}.rodape-marca{grid-column:1/-1}}

@@ -21,9 +21,10 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
-<link rel="stylesheet" href="site.css?v=20261109d">
+<link rel="preload" href="fontes/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261109e">
 <script src="https://cdn.jsdelivr.net/npm/motion@12.23.12/dist/motion.js" defer></script>
-<script src="site.js?v=20261109d" defer></script>
+<script src="site.js?v=20261109e" defer></script>
 <style>
   .intro{padding:56px 0 40px;max-width:760px}
   .migalha{font-size:14px;color:var(--suave);margin-bottom:22px}
@@ -61,7 +62,15 @@
   .item-topo{display:flex;justify-content:space-between;gap:10px;font-size:15px}
   .item-topo b{white-space:nowrap;font-weight:600;font-variant-numeric:tabular-nums}
   .barra{height:5px;background:var(--areia);border-radius:99px;margin-top:8px;overflow:hidden}
-  .barra span{display:block;height:100%;background:var(--marca);border-radius:99px}
+  /* A barra cresce com scaleX (animação leve, sem recalcular o layout) */
+  .barra span{display:block;height:100%;width:100%;background:var(--marca);border-radius:99px;transform-origin:left center}
+  .itens li{position:relative}
+  .total .valor{transform-origin:left center;display:inline-block}
+  /* Selo "+R$ 30" que sobe e some quando o total muda */
+  .delta{position:absolute;right:24px;top:24px;z-index:1;font-size:15px;font-weight:700;letter-spacing:-.01em;padding:3px 10px;border-radius:999px;pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .delta.sobe{background:rgba(240,138,99,.22);color:#FFD2C0}
+  .delta.desce{background:rgba(92,194,168,.22);color:#BFF0E1}
+  .bloco h2 span{display:inline-block;transform-origin:center}
   .itens li:first-child .barra span{background:var(--acento)}
   .racao-info{background:var(--marca-clara);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:14px}
   .primeiro-ano{background:var(--acento-claro);border-radius:12px;padding:14px 16px;margin-top:12px;font-size:14px}
@@ -70,7 +79,7 @@
   .conteudo{margin:88px auto 0;max-width:760px}
   .conteudo h2{font-size:clamp(26px,3.4vw,34px);margin:44px 0 14px}
   .conteudo h2:first-child{margin-top:0}
-  .conteudo p,.conteudo li{font-size:17px;margin-bottom:12px}
+  .conteudo p,.conteudo li{font-size:18px;line-height:1.75;margin-bottom:14px}
   .conteudo ul{padding-left:20px}
   .conteudo li::marker{color:var(--acento)}
   .tabela{border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden;margin:16px 0 18px;background:var(--superficie)}
@@ -239,7 +248,7 @@
       </div>
       <div class="painel">
         <h2>Para onde vai o dinheiro</h2>
-        <ul class="itens" id="itens"></ul>
+        <ul class="itens" id="itens" data-motion-proprio></ul>
         <div class="racao-info" id="racao-info"></div>
         <div class="primeiro-ano escondido" id="primeiro-ano"></div>
         <p class="aviso">Estimativa com preços médios de grandes lojas online e guias de preço (nov/2026). Os valores mudam por cidade, loja e promoção. A quantidade de ração é uma média: siga a tabela da embalagem e a orientação do seu veterinário.</p>
@@ -365,8 +374,25 @@ PRECOS.racoes.forEach(r => {
 
 // O total "conta" até o novo valor, sempre partindo do número que está na tela
 const poucoMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-let totalNaTela = 0, quadro = 0;
+// Motion (carregado com defer) — só existe depois do carregamento da página
+const motion = () => (!poucoMovimento && window.Motion && window.Motion.animate) ? window.Motion : null;
+let totalNaTela = 0, quadro = 0, totalAnterior = null, seloAtual = null;
 function animarTotal(alvo) {
+  const M = motion();
+  // Feedback imediato: o número dá um pulinho e um selo mostra quanto mudou
+  if (M && totalAnterior !== null && Math.round(alvo) !== Math.round(totalAnterior)) {
+    const dif = Math.round(alvo - totalAnterior);
+    M.animate($("total-mes"), { scale: [1, 1.07, 1] }, { duration: 0.45, ease: [0.34, 1.4, 0.64, 1] });
+    if (seloAtual) seloAtual.remove();          // digitando rápido: só um selo por vez
+    const selo = seloAtual = document.createElement("span");
+    selo.className = "delta " + (dif > 0 ? "sobe" : "desce");
+    selo.textContent = (dif > 0 ? "+" : "−") + brl(Math.abs(dif)) + "/mês";
+    selo.setAttribute("aria-hidden", "true");
+    document.querySelector(".total").appendChild(selo);
+    M.animate(selo, { opacity: [0, 1, 1, 0], y: [10, 0, -6, -22], scale: [0.8, 1, 1, 0.96] }, { duration: 1.5, times: [0, 0.18, 0.7, 1] })
+      .finished.then(() => selo.remove());
+  }
+  totalAnterior = alvo;
   cancelAnimationFrame(quadro);
   const inicio = totalNaTela, t0 = performance.now(), dur = poucoMovimento ? 0 : 420;
   const passo = t => {
@@ -378,6 +404,103 @@ function animarTotal(alvo) {
   };
   quadro = requestAnimationFrame(passo);
 }
+
+// Lista "Para onde vai o dinheiro": atualiza no lugar em vez de refazer tudo.
+// As barras crescem/encolhem com mola e, se a ordem muda, os itens deslizam
+// até a nova posição (técnica FLIP: mede antes, reordena, anima a diferença).
+let barrasJaCresceram = false;
+function desenharItens(itens, maior) {
+  const M = motion();
+  const lista = $("itens");
+  const antes = new Map();
+  Array.from(lista.children).forEach(li => antes.set(li.dataset.k, li.getBoundingClientRect().top));
+  const existentes = new Map(Array.from(lista.children).map(li => [li.dataset.k, li]));
+  const usados = new Set();
+
+  itens.forEach(it => {
+    const k = it.chave || it.nome;
+    let li = existentes.get(k);
+    const novo = !li;
+    if (novo) {
+      li = document.createElement("li");
+      li.dataset.k = k;
+      li.innerHTML = '<div class="item-topo"><span></span><b></b></div><div class="barra"><span></span></div>';
+    }
+    li.querySelector(".item-topo span").textContent = it.nome;
+    li.querySelector(".item-topo b").textContent = brl(it.valor);
+    const barra = li.querySelector(".barra span");
+    const fim = maior > 0 ? it.valor / maior : 0;
+    const inicio = barra.dataset.p !== undefined ? parseFloat(barra.dataset.p) : 0;
+    barra.dataset.p = fim;
+    lista.appendChild(li);                       // coloca na ordem nova
+    usados.add(k);
+
+    if (M && barrasJaCresceram) {
+      M.animate(barra, { scaleX: [inicio, fim] }, { type: "spring", bounce: 0.25, duration: 0.8 });
+      if (novo) M.animate(li, { opacity: [0, 1], x: [-12, 0] }, { type: "spring", bounce: 0.3, duration: 0.6 });
+    } else {
+      barra.style.transform = "scaleX(" + fim + ")";   // a primeira entrada é animada em barrasCrescem()
+    }
+  });
+  existentes.forEach((li, k) => { if (!usados.has(k)) li.remove(); });
+
+  // FLIP: quem mudou de lugar desliza da posição antiga até a nova
+  if (M && barrasJaCresceram) {
+    Array.from(lista.children).forEach(li => {
+      const de = antes.get(li.dataset.k);
+      if (de === undefined) return;
+      const d = de - li.getBoundingClientRect().top;
+      if (Math.abs(d) > 1) M.animate(li, { y: [d, 0] }, { type: "spring", bounce: 0.2, duration: 0.6 });
+    });
+  }
+}
+
+// Primeira vez que o resultado aparece na tela: barras crescem uma a uma
+// e o total conta a partir do zero.
+function barrasCrescem() {
+  const M = motion();
+  barrasJaCresceram = true;
+  if (!M) return;
+  document.querySelectorAll("#itens .barra span").forEach((b, i) => {
+    M.animate(b, { scaleX: [0, parseFloat(b.dataset.p) || 0] }, { type: "spring", bounce: 0.25, duration: 0.9, delay: 0.15 + i * 0.07 });
+  });
+  // recomeça a contagem do zero para o número "subir" junto com as barras
+  const alvo = totalAnterior;
+  totalNaTela = 0; totalAnterior = null;
+  animarTotal(alvo);
+}
+
+// Caixas que aparecem/somem (preço da sua ração, primeiro ano) entram deslizando
+function mostrarCaixa(el, visivel) {
+  const estava = !el.classList.contains("escondido");
+  el.classList.toggle("escondido", !visivel);
+  const M = motion();
+  if (M && visivel && !estava && barrasJaCresceram) {
+    M.animate(el, { opacity: [0, 1], y: [-10, 0] }, { type: "spring", bounce: 0.3, duration: 0.6 });
+  }
+}
+
+// O número da etapa (01, 02...) que você está mexendo pulsa
+document.querySelector(".painel").addEventListener("input", e => {
+  const M = motion();
+  const num = e.target.closest(".bloco")?.querySelector("h2 span");
+  if (!M || !num || num.dataset.pulsando) return;
+  num.dataset.pulsando = "1";
+  M.animate(num, { scale: [1, 1.45, 1] }, { duration: 0.5, ease: [0.34, 1.4, 0.64, 1] })
+    .finished.then(() => { delete num.dataset.pulsando; num.style.transform = ""; });
+});
+
+// Liga as entradas quando o Motion chegar e o resultado aparecer na tela
+document.addEventListener("DOMContentLoaded", () => {
+  if (!motion() || !("IntersectionObserver" in window)) { barrasJaCresceram = true; return; }
+  const alvo = document.querySelector(".resultado");
+  const obs = new IntersectionObserver(entradas => {
+    if (!entradas.some(en => en.isIntersecting)) return;
+    obs.disconnect();
+    barrasCrescem();
+  }, { rootMargin: "0px 0px -15% 0px" });
+  obs.observe(alvo);
+});
 
 let banhoEditado = false;
 $("banho-preco").addEventListener("input", () => { banhoEditado = true; });
@@ -397,12 +520,12 @@ function calcular() {
   // ração
   let precoKg, kcalG, nomeRacao;
   if ($("racao").value === "propria") {
-    $("racao-propria").classList.remove("escondido");
+    mostrarCaixa($("racao-propria"), true);
     const preco = parseFloat($("saco-preco").value) || 0;
     const kg = parseFloat($("saco-kg").value) || 1;
     precoKg = preco / kg; kcalG = 3.7; nomeRacao = "sua ração";
   } else {
-    $("racao-propria").classList.add("escondido");
+    mostrarCaixa($("racao-propria"), false);
     const r = PRECOS.racoes.find(x => x.id === $("racao").value);
     precoKg = r.precoKg; kcalG = r.kcalPorGrama; nomeRacao = r.nome.toLowerCase();
   }
@@ -418,7 +541,7 @@ function calcular() {
   const banhoMes = onde === "petshop" ? (parseFloat($("banho-preco").value) || 0) * freq : PRECOS.banhoCasaMes;
 
   const itens = [
-    { nome: "Ração (" + nomeRacao + ")", valor: racaoMes },
+    { chave: "racao", nome: "Ração (" + nomeRacao + ")", valor: racaoMes },
     { nome: "Antipulgas e carrapatos",    valor: PRECOS.antipulgasMes[f] },
     { nome: "Banho",                      valor: banhoMes },
     { nome: "Petiscos e brinquedos",      valor: parseFloat($("petiscos").value) || 0 },
@@ -432,11 +555,7 @@ function calcular() {
   const maior = Math.max(...itens.map(i => i.valor));
   animarTotal(totalMes);
 
-  $("itens").innerHTML = itens
-    .sort((a, b) => b.valor - a.valor)
-    .map(i => '<li><div class="item-topo"><span>' + i.nome + '</span><b>' + brl(i.valor) + '</b></div>' +
-              '<div class="barra"><span style="width:' + (i.valor / maior * 100).toFixed(0) + '%"></span></div></li>')
-    .join("");
+  desenharItens(itens.sort((a, b) => b.valor - a.valor), maior);
 
   const sacos15 = kgMes / 15;
   $("racao-info").innerHTML = "Seu cachorro come cerca de <b>" + Math.round(gramasDia / 10) * 10 + " g por dia</b>, ou <b>" +
@@ -449,11 +568,11 @@ function calcular() {
   if (fase === "filhote") { extras += PRECOS.filhoteVacinasIniciais + PRECOS.enxoval; partes.push("vacinas iniciais", "enxoval com cama, comedouro e guia"); }
   if (!$("castrado").checked) { extras += PRECOS.castracao; partes.push("castração"); }
   if (extras > 0) {
-    box.classList.remove("escondido");
+    mostrarCaixa(box, true);
     box.innerHTML = "<b>No primeiro ano</b>, some cerca de <b>" + brl(extras) + "</b> de gastos únicos (" + partes.join(", ") +
       "). Total do primeiro ano: <b>" + brl(totalMes * 12 + extras) + "</b>.";
   } else {
-    box.classList.add("escondido");
+    mostrarCaixa(box, false);
   }
 }
 
