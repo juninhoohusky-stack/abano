@@ -300,6 +300,7 @@
           ocupado(botao, false);
           if (r.error) { aviso($("aviso-aceite"), traduzir(r.error)); return; }
           try { sessionStorage.removeItem("abano-novidades"); } catch (err) {}
+          if (busca.get("volta")) { ir(destino()); return; }
           busca.set("bemvindo", "1");
           carregar();
         });
