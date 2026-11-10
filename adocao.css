@@ -1,0 +1,133 @@
+/* Abanô — Adoção (página pública e painel da ONG) */
+.ado{max-width:var(--largura);margin:0 auto;padding:var(--e-8) var(--e-6) var(--e-12)}
+.ado-topo{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:var(--e-4) var(--e-12);align-items:end;margin-bottom:var(--e-8)}
+.ado-topo h1{font-size:var(--t-h1);line-height:1.05}
+.ado-topo p{color:var(--suave);font-size:var(--t-lg);margin-bottom:var(--e-2)}
+.ado-acoes{display:flex;flex-wrap:wrap;gap:var(--e-3);margin-top:var(--e-5)}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Filtros */
+.filtros{display:flex;flex-wrap:wrap;gap:var(--e-2);margin-bottom:var(--e-6);padding:var(--e-3);border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra)}
+.filtros select{flex:1 1 150px;min-height:44px;padding:0 var(--e-3);border:1.5px solid transparent;border-radius:var(--raio-pill);background:var(--areia);font:inherit;font-size:var(--t-ui);font-weight:700;color:var(--tinta)}
+.filtros select:focus{outline:none;border-color:var(--marca)}
+.filtros .limpar{flex:none;min-height:44px;padding:0 var(--e-4);border:0;border-radius:var(--raio-pill);background:transparent;font:inherit;font-weight:800;color:var(--marca);cursor:pointer}
+
+/* Grade de pets */
+.grade-ado{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--e-4)}
+.card-ado{display:flex;flex-direction:column;border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra);overflow:hidden;color:var(--tinta);text-decoration:none;transition:transform var(--dur) var(--mola)}
+@media (hover:hover){.card-ado:hover{transform:translateY(-3px)}}
+.card-ado .foto{position:relative;aspect-ratio:4/3;background:var(--areia)}
+.card-ado .foto img{width:100%;height:100%;object-fit:cover;display:block}
+.card-ado .selo-status{position:absolute;left:var(--e-3);top:var(--e-3)}
+.card-ado .corpo{padding:var(--e-4) var(--e-4) var(--e-5)}
+.card-ado h3{font-size:var(--t-xl);margin-bottom:var(--e-1)}
+.card-ado .meta{color:var(--suave);font-size:var(--t-sm)}
+.card-ado .org{display:block;margin-top:var(--e-2);font-size:var(--t-sm);font-weight:700;color:var(--marca)}
+.selo-status{display:inline-flex;align-items:center;min-height:28px;padding:0 var(--e-3);border-radius:var(--raio-pill);background:var(--superficie);color:var(--tinta);font-size:var(--t-xs);font-weight:800;box-shadow:var(--sombra)}
+.selo-status.em_processo{background:var(--acento-claro);color:var(--acento)}
+.selo-status.adotado{background:var(--lima);color:var(--sobre-lima)}
+.verificada{display:inline-flex;align-items:center;gap:var(--e-1);font-size:var(--t-xs);font-weight:800;color:var(--sobre-lima);background:var(--lima-clara);padding:2px var(--e-2);border-radius:var(--raio-pill)}
+.verificada svg{width:14px;height:14px}
+.vazio-ado{text-align:center;padding:var(--e-12) var(--e-6);border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra)}
+.vazio-ado h3{font-size:var(--t-2xl);margin-bottom:var(--e-2)}
+.vazio-ado p{color:var(--suave);max-width:460px;margin:0 auto var(--e-4)}
+.carregando{color:var(--suave);text-align:center;padding:var(--e-5) 0;font-weight:600}
+
+/* Página do pet */
+.voltar-ado{display:inline-flex;align-items:center;gap:var(--e-1);min-height:44px;margin-bottom:var(--e-4);padding:0 var(--e-4) 0 var(--e-2);border-radius:var(--raio-pill);background:var(--superficie);box-shadow:var(--sombra);color:var(--tinta);font-weight:800;font-size:var(--t-ui);text-decoration:none}
+.voltar-ado svg{width:22px;height:22px;fill:none;stroke:var(--marca);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.pet-ado{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:var(--e-10);align-items:start}
+.galeria .principal{aspect-ratio:4/3;border-radius:var(--raio-lg);overflow:hidden;background:var(--areia)}
+.galeria .principal img{width:100%;height:100%;object-fit:cover;display:block}
+.galeria .miniaturas{display:flex;gap:var(--e-2);margin-top:var(--e-3);flex-wrap:wrap}
+.galeria .miniaturas button{width:72px;height:72px;padding:0;border:2px solid transparent;border-radius:var(--raio-xs);overflow:hidden;background:none;cursor:pointer}
+.galeria .miniaturas button[aria-current=true]{border-color:var(--marca)}
+.galeria .miniaturas img{width:100%;height:100%;object-fit:cover}
+.pet-info h1{font-size:var(--t-h2);line-height:1.05;margin:var(--e-2) 0 var(--e-2)}
+.pet-info .meta{color:var(--suave);font-size:var(--t-lg);margin-bottom:var(--e-5)}
+.saude{display:flex;flex-wrap:wrap;gap:var(--e-2);margin-bottom:var(--e-5);padding:0;list-style:none}
+.saude li{display:inline-flex;align-items:center;gap:var(--e-1);min-height:34px;padding:0 var(--e-3);border-radius:var(--raio-pill);background:var(--areia);font-size:var(--t-sm);font-weight:700}
+.saude li.sim{background:var(--lima-clara);color:var(--sobre-lima)}
+.saude svg{width:16px;height:16px}
+.caixa-ado{padding:var(--e-5);border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra);margin-bottom:var(--e-4)}
+.caixa-ado h2{font-size:var(--t-lg);margin-bottom:var(--e-2)}
+.caixa-ado p{color:var(--suave);white-space:pre-wrap}
+.caixa-ado.assumir{background:var(--acento-claro);box-shadow:none}
+.caixa-ado.assumir h2,.caixa-ado.assumir p{color:var(--tinta)}
+.cta-ado{display:flex;flex-direction:column;gap:var(--e-2)}
+.cta-ado .btn{min-height:54px;font-size:var(--t-lg)}
+.cta-ado small{color:var(--suave);text-align:center}
+
+/* Questionário */
+.dialogo-ado{margin:auto;border:0;padding:0;border-radius:var(--raio-lg);width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;background:var(--superficie);color:var(--tinta);box-shadow:var(--sombra-alta)}
+.dialogo-ado::backdrop{background:rgba(43,22,34,.5);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.dialogo-ado[open]{animation:sobe-ado .24s var(--mola)}
+@keyframes sobe-ado{from{opacity:0;transform:translateY(14px) scale(.98)}}
+.form-ado{padding:var(--e-6)}
+.form-ado .cab{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--e-3);margin-bottom:var(--e-2)}
+.form-ado h2{font-size:var(--t-h4)}
+.form-ado .fechar{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:var(--areia);font-size:26px;line-height:1;color:var(--tinta);cursor:pointer}
+.form-ado fieldset{border:0;padding:0;margin:var(--e-5) 0 0}
+.form-ado legend,.form-ado .rot{display:block;font-weight:800;font-size:var(--t-base);margin-bottom:var(--e-2)}
+.form-ado .ajuda{display:block;font-size:var(--t-sm);color:var(--suave);margin:-4px 0 var(--e-2)}
+.opcoes{display:flex;flex-wrap:wrap;gap:var(--e-2)}
+.opcao{position:relative}
+.opcao input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.opcao span{display:inline-flex;align-items:center;min-height:44px;padding:0 var(--e-4);border-radius:var(--raio-pill);background:var(--fundo);box-shadow:inset 0 0 0 1.5px var(--linha);font-weight:700;font-size:var(--t-ui);cursor:pointer;transition:background-color var(--dur-rapida),color var(--dur-rapida)}
+.opcao input:checked + span{background:var(--marca);color:var(--sobre-marca);box-shadow:none}
+.opcao input:focus-visible + span{box-shadow:0 0 0 4px var(--marca-clara),inset 0 0 0 2px var(--marca)}
+.form-ado input[type=text],.form-ado input[type=tel],.form-ado input[type=url],.form-ado select,.form-ado textarea{width:100%;min-height:48px;padding:var(--e-3) var(--e-4);border:1.5px solid transparent;border-radius:var(--raio-sm);background:var(--areia);font:inherit;font-size:var(--t-corpo);color:var(--tinta)}
+.form-ado textarea{min-height:96px;resize:vertical;line-height:1.45}
+.form-ado input:focus,.form-ado select:focus,.form-ado textarea:focus{outline:none;border-color:var(--marca);background:var(--superficie);box-shadow:0 0 0 4px var(--marca-clara)}
+.form-ado [aria-invalid=true]{border-color:var(--marca)}
+.form-ado .duas{display:grid;grid-template-columns:1fr 1fr;gap:0 var(--e-3)}
+.form-ado .check{display:flex;gap:var(--e-3);align-items:flex-start;margin-top:var(--e-5);font-size:var(--t-ui);line-height:1.5;cursor:pointer}
+.form-ado .check input{flex:none;width:22px;height:22px;accent-color:var(--marca);margin-top:2px}
+.form-ado .btn{width:100%;margin-top:var(--e-6);min-height:52px}
+.form-ado .aviso-conta{margin-top:var(--e-4)}
+.fotos-ado{display:flex;flex-wrap:wrap;gap:var(--e-2);margin-top:var(--e-2)}
+.fotos-ado .previa{position:relative;width:88px;height:88px;border-radius:var(--raio-xs);overflow:hidden}
+.fotos-ado .previa img{width:100%;height:100%;object-fit:cover}
+.fotos-ado .previa button{position:absolute;top:4px;right:4px;width:28px;height:28px;border:0;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:18px;cursor:pointer}
+.arquivo-ado{position:relative;overflow:hidden;display:inline-flex}
+.arquivo-ado input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+/* Painel da ONG e listas de pedidos */
+.abas-ong{display:flex;gap:var(--e-1);overflow-x:auto;scrollbar-width:none;margin-bottom:var(--e-6);padding:var(--e-1);border-radius:var(--raio-pill);background:var(--superficie);box-shadow:var(--sombra)}
+.abas-ong button{flex:1 0 auto;min-height:44px;padding:0 var(--e-4);border:0;border-radius:var(--raio-pill);background:none;font:inherit;font-weight:800;color:var(--suave);cursor:pointer}
+.abas-ong button[aria-selected=true]{background:var(--marca);color:var(--sobre-marca)}
+.lista-ong{display:grid;gap:var(--e-3)}
+.item-ong{display:grid;grid-template-columns:88px 1fr auto;gap:var(--e-4);align-items:center;padding:var(--e-4);border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra)}
+.item-ong img{width:88px;height:88px;border-radius:var(--raio-sm);object-fit:cover;background:var(--areia)}
+.item-ong h3{font-size:var(--t-lg);margin-bottom:var(--e-1)}
+.item-ong .meta{color:var(--suave);font-size:var(--t-sm)}
+.item-ong .acoes-item{display:flex;flex-wrap:wrap;gap:var(--e-2);justify-content:flex-end}
+.item-ong .acoes-item .btn{min-height:40px;padding:0 var(--e-4);font-size:var(--t-sm)}
+.item-ong select{min-height:40px;padding:0 var(--e-3);border-radius:var(--raio-pill);border:1.5px solid var(--linha);background:var(--superficie);font:inherit;font-size:var(--t-sm);font-weight:700;color:var(--tinta)}
+.pedido{padding:var(--e-5);border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra)}
+.pedido-topo{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e-3);margin-bottom:var(--e-3)}
+.pedido-topo img{width:56px;height:56px;border-radius:var(--raio-xs);object-fit:cover}
+.pedido-topo h3{font-size:var(--t-lg)}
+.pedido-topo .meta{color:var(--suave);font-size:var(--t-sm)}
+.respostas{display:grid;gap:var(--e-2);margin:var(--e-3) 0;padding:0;list-style:none}
+.respostas li{padding:var(--e-2) var(--e-3);border-radius:var(--raio-xs);background:var(--fundo);font-size:var(--t-ui)}
+.respostas b{display:block;font-size:var(--t-sm);color:var(--suave);font-weight:700}
+.contato{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e-3);padding:var(--e-3) var(--e-4);border-radius:var(--raio-sm);background:var(--lima-clara);color:var(--sobre-lima);font-weight:700}
+.contato .btn{min-height:42px}
+.status-org{padding:var(--e-6);border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra);margin-bottom:var(--e-6)}
+.status-org h2{font-size:var(--t-h4);margin-bottom:var(--e-2)}
+.status-org p{color:var(--suave)}
+.toast-ado{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));z-index:80;transform:translate(-50%,20px);padding:var(--e-3) var(--e-5);border-radius:var(--raio-pill);background:var(--tinta);color:var(--fundo);font-weight:800;opacity:0;pointer-events:none;transition:opacity .2s,transform .25s var(--mola);max-width:calc(100vw - 32px);text-align:center}
+.toast-ado.ver{opacity:1;transform:translate(-50%,0)}
+
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .verificada,:root:not([data-theme=light]) .saude li.sim,:root:not([data-theme=light]) .contato{color:var(--lima)}}
+@media (prefers-reduced-motion:reduce){.dialogo-ado[open]{animation:none}.card-ado,.toast-ado{transition:none}}
+@media (max-width:900px){
+  .ado{padding:var(--e-6) var(--e-4) var(--e-10)}
+  .ado-topo,.pet-ado{grid-template-columns:1fr;gap:var(--e-5)}
+  .item-ong{grid-template-columns:64px 1fr}
+  .item-ong img{width:64px;height:64px}
+  .item-ong .acoes-item{grid-column:1 / -1;justify-content:flex-start}
+  .form-ado{padding:var(--e-5)}
+  .form-ado .duas{grid-template-columns:1fr}
+}

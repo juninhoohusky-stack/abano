@@ -23,14 +23,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261110t">
+<link rel="stylesheet" href="site.css?v=20261110u">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261110t" defer></script>
+<script src="site.js?v=20261110u" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261110t" defer></script>
-<script src="conta.js?v=20261110t" defer></script>
+<script src="lista.js?v=20261110u" defer></script>
+<script src="conta.js?v=20261110u" defer></script>
 <style>
   .pagina-conta{padding:var(--e-12) 0 var(--e-14)}
   .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:var(--e-16);align-items:start}
@@ -106,6 +106,9 @@
     .pet-acoes{grid-column:1 / -1;flex-direction:row;justify-content:flex-end;align-items:center;gap:var(--e-4)}
     .titulo-linha{flex-wrap:wrap}
   }
+
+  .ado-links{display:flex;flex-wrap:wrap;gap:var(--e-2);margin-top:var(--e-4)}
+  .fc .ado-links .btn{width:auto;margin:0;min-height:44px;padding:0 var(--e-4);font-size:var(--t-ui)}
 
 </style>
 </head>
@@ -234,6 +237,15 @@
               <p class="sub" id="pets-vazio" hidden>Você ainda não cadastrou nenhum pet. Adicione quando quiser: cachorro, gato ou outro bichinho.</p>
               <ul class="lista-pets" id="lista-pets"></ul>
               <p class="aviso-conta" id="aviso-pets" role="alert" hidden></p>
+            </section>
+
+            <section class="fc" id="adocao">
+              <h2>Adoção</h2>
+              <p class="sub">Acompanhe seus pedidos de adoção ou, se você é ONG ou protetor, anuncie pets para adoção.</p>
+              <div class="ado-links">
+                <a class="btn btn-sec" href="adocao.html?v=pedidos">Meus pedidos de adoção</a>
+                <a class="btn btn-sec" href="ong.html">Sou ONG ou protetor</a>
+              </div>
             </section>
 
             <section class="fc">

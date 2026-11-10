@@ -7,9 +7,9 @@
 <title>Moderação | Abanô</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="site.css?v=20261110t">
+<link rel="stylesheet" href="site.css?v=20261110u">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261110t" defer></script>
+<script src="lista.js?v=20261110u" defer></script>
 <style>
   .painel{max-width:980px;margin:0 auto;padding:var(--e-6) var(--e-5) var(--e-12)}
   .topo-admin{display:flex;align-items:center;justify-content:space-between;gap:var(--e-4);max-width:980px;margin:0 auto;padding:var(--e-3) var(--e-5)}
@@ -84,9 +84,18 @@
       <button type="button" data-status="aberta" aria-pressed="true">Abertas</button>
       <button type="button" data-status="fechadas" aria-pressed="false">Resolvidas</button>
       <button type="button" data-status="eventos" aria-pressed="false">Eventos</button>
+      <button type="button" data-status="orgs" aria-pressed="false">Organizações <span id="num-orgs"></span></button>
     </div>
     <div class="lista" id="lista"></div>
 
+    <div id="tela-orgs" hidden>
+      <div class="abas" role="group" aria-label="Situação das organizações" style="margin-bottom:12px">
+        <button type="button" data-org-status="pendente" aria-pressed="true">Aguardando</button>
+        <button type="button" data-org-status="aprovada" aria-pressed="false">Aprovadas</button>
+        <button type="button" data-org-status="todas" aria-pressed="false">Todas</button>
+      </div>
+      <div class="lista" id="lista-orgs"></div>
+    </div>
     <div id="tela-eventos" hidden>
       <form class="evento" id="form-evento" novalidate>
         <h2>Cadastrar evento</h2>
@@ -162,8 +171,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   function carregar() {
     $("tela-eventos").hidden = status !== "eventos";
-    $("lista").hidden = status === "eventos";
+    $("tela-orgs").hidden = status !== "orgs";
+    $("lista").hidden = status === "eventos" || status === "orgs";
     if (status === "eventos") { carregarEventos(); return; }
+    if (status === "orgs") { carregarOrgs(); return; }
     $("lista").innerHTML = '<p class="vazio">Carregando…</p>';
     sb.rpc("moderacao_lista", { p_status: status }).then(function (r) {
       if (r.error) {
@@ -184,11 +195,60 @@ document.addEventListener("DOMContentLoaded", function () {
       carregar();
     });
   });
-  document.querySelectorAll(".abas button").forEach(function (b) {
+  document.querySelectorAll(".abas button[data-status]").forEach(function (b) {
     b.addEventListener("click", function () {
       status = b.dataset.status;
-      document.querySelectorAll(".abas button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      document.querySelectorAll(".abas button[data-status]").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
       carregar();
+    });
+  });
+
+
+  // Organizações (ONGs e protetores) que pedem para anunciar pets para adoção
+  var orgStatus = "pendente";
+  var ROT_ORG = { pendente: "Aguardando análise", aprovada: "Aprovada", recusada: "Recusada", suspensa: "Suspensa" };
+  function zap(n) { var d = String(n || "").replace(/\D/g, ""); if (d.length <= 11) d = "55" + d; return "https://wa.me/" + d; }
+  function carregarOrgs() {
+    $("lista-orgs").innerHTML = '<p class="vazio">Carregando…</p>';
+    sb.rpc("organizacoes_lista", { p_status: orgStatus }).then(function (r) {
+      if (r.error) { $("lista-orgs").innerHTML = '<p class="vazio">' + esc(r.error.message) + "</p>"; return; }
+      var lista = r.data || [];
+      if (orgStatus === "pendente") $("num-orgs").textContent = lista.length ? "(" + lista.length + ")" : "";
+      $("lista-orgs").innerHTML = lista.length ? lista.map(function (o) {
+        var acoes = o.status === "pendente" || o.status === "recusada"
+          ? '<button class="btn" data-org="' + o.id + '" data-acao-org="aprovar">Aprovar</button><button class="btn btn-sec" data-org="' + o.id + '" data-acao-org="recusar">Recusar</button>'
+          : o.status === "aprovada" ? '<button class="btn btn-sec" data-org="' + o.id + '" data-acao-org="suspender">Suspender</button>'
+          : '<button class="btn btn-sec" data-org="' + o.id + '" data-acao-org="reativar">Reativar</button>';
+        return '<article class="den"><div class="den-topo"><span class="tag">' + (o.tipo === "ong" ? "ONG" : "Protetor") + '</span><span class="tag n">' + esc(ROT_ORG[o.status]) + "</span><span>" +
+          new Date(o.criado_em).toLocaleDateString("pt-BR") + " · @" + esc(o.usuario_dono) + " · " + esc(o.email_dono) + " · " + o.total_pets + " pet(s)</span></div>" +
+          '<div class="conteudo"><span class="autor">' + esc(o.nome) + " — " + esc(o.cidade) + "/" + esc(o.estado) + "</span>" +
+          (o.descricao ? esc(o.descricao) + "<br>" : "") +
+          "WhatsApp: <a href=\"" + zap(o.whatsapp) + "\" target=\"_blank\" rel=\"noopener\">" + esc(o.whatsapp) + "</a>" +
+          (o.instagram ? " · Instagram: " + esc(o.instagram) : "") + (o.site ? " · Site: " + esc(o.site) : "") + (o.cnpj ? " · CNPJ: " + esc(o.cnpj) : "") +
+          (o.motivo ? "<br><b>Motivo registrado:</b> " + esc(o.motivo) : "") + "</div>" +
+          '<div class="acoes">' + acoes + "</div></article>";
+      }).join("") : '<p class="vazio">' + (orgStatus === "pendente" ? "Nenhuma organização aguardando análise." : "Nenhuma organização aqui.") + "</p>";
+    });
+  }
+  $("lista-orgs").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-acao-org]"); if (!b) return;
+    var acao = b.dataset.acaoOrg, motivo = null;
+    if (acao === "recusar" || acao === "suspender") {
+      motivo = prompt(acao === "recusar" ? "Motivo da recusa (vai no e-mail para a organização):" : "Motivo da suspensão (fica registrado):");
+      if (motivo === null) return;
+    }
+    if (acao === "aprovar" && !confirm("Aprovar esta organização? Ela poderá anunciar pets para adoção.")) return;
+    b.disabled = true;
+    sb.rpc("moderar_organizacao", { p_org: b.dataset.org, p_acao: acao, p_motivo: motivo }).then(function (r) {
+      if (r.error) { alert(r.error.message); b.disabled = false; return; }
+      carregarOrgs();
+    });
+  });
+  document.querySelectorAll("[data-org-status]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      orgStatus = b.dataset.orgStatus;
+      document.querySelectorAll("[data-org-status]").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      carregarOrgs();
     });
   });
 
@@ -236,6 +296,7 @@ document.addEventListener("DOMContentLoaded", function () {
     $("quem").hidden = false;
     $("quem-email").textContent = s.user.email;
     carregar();
+    sb.rpc("organizacoes_lista", { p_status: "pendente" }).then(function (r) { if (!r.error && r.data && r.data.length) $("num-orgs").textContent = "(" + r.data.length + ")"; });
   });
 });
 </script>
