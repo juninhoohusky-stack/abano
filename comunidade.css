@@ -117,7 +117,10 @@
 .vazio-ico{display:block;font-size:34px;margin-bottom:var(--e-2)}
 .vazio h3{font-size:var(--t-xl);margin-bottom:var(--e-1)}
 .vazio p{color:var(--suave);max-width:420px;margin:0 auto var(--e-4)}
-.voltar{display:inline-flex;align-items:center;min-height:44px;margin-bottom:var(--e-2);font-weight:800;text-decoration:none}
+.voltar{display:inline-flex;align-items:center;gap:var(--e-1);min-height:44px;margin-bottom:var(--e-3);padding:0 var(--e-4) 0 var(--e-2);border-radius:var(--raio-pill);background:var(--superficie);box-shadow:var(--sombra);color:var(--tinta);font-weight:800;font-size:var(--t-ui);text-decoration:none;transition:background-color var(--dur-rapida),transform .1s ease-out}
+.voltar svg{width:22px;height:22px;fill:none;stroke:var(--marca);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.voltar:hover{background:var(--hover)}
+.voltar:active{transform:scale(.96)}
 
 /* Comentários */
 .comentarios{margin-top:var(--e-5);background:var(--superficie);border-radius:var(--raio);padding:var(--e-5);box-shadow:var(--sombra)}

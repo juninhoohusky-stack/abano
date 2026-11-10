@@ -284,6 +284,16 @@
     proxima();
     return { inserirNoTopo: (p) => { if (caixa.querySelector(".vazio")) caixa.innerHTML = ""; caixa.insertAdjacentHTML("afterbegin", cartao(p)); } };
   }
+  // Botão "Voltar": volta para a tela anterior da Comunidade; se a pessoa chegou
+  // por um link de fora, leva para o lugar indicado (início da Comunidade ou clubes)
+  const voltar = (destino) => `<a class="voltar" href="${destino || "comunidade/"}" data-voltar><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>Voltar</span></a>`;
+  document.addEventListener("click", (e) => {
+    const v = e.target.closest("[data-voltar]");
+    if (!v) return;
+    let veioDaComunidade = false;
+    try { veioDaComunidade = new URL(document.referrer).origin === location.origin && /\/comunidade\//.test(new URL(document.referrer).pathname); } catch (err) {}
+    if (veioDaComunidade && history.length > 1) { e.preventDefault(); history.back(); }
+  });
   const vazio = (titulo, texto, extra) => `<div class="vazio"><span class="vazio-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><ellipse cx="12" cy="15.5" rx="4.6" ry="3.8"/><ellipse cx="6.4" cy="10.4" rx="2" ry="2.5"/><ellipse cx="10" cy="6.8" rx="2" ry="2.6"/><ellipse cx="14" cy="6.8" rx="2" ry="2.6"/><ellipse cx="17.6" cy="10.4" rx="2" ry="2.5"/></svg></span><h3>${titulo}</h3><p>${texto}</p>${extra || ""}</div>`;
 
   // ---------- Caixa de publicar ----------
@@ -648,7 +658,7 @@
     definirMeta(resumo.slice(0, 60) + (resumo.length > 60 ? "…" : "") + " | Comunidade Abanô", resumo.slice(0, 155), linkPost(p.id));
     const pergunta = p.tipo === "pergunta";
     centro.innerHTML = `
-      <a class="voltar" href="comunidade/">← Comunidade</a>
+      ${voltar("comunidade/")}
       <div class="ver-post">${cartao(p, true)}</div>
       <section class="comentarios" id="comentarios" aria-label="${pergunta ? "Respostas" : "Comentários"}">
         <h2>${pergunta ? "Respostas" : "Comentários"}</h2>
@@ -726,7 +736,7 @@
   async function telaClubes(meus) {
     definirMeta((meus ? "Minhas comunidades" : "Clubes") + " | Comunidade Abanô", "Clubes por raça, espécie e cidade: Huskies, Golden, Spitz, Labradores, Gatos, tutores do RJ e de SP.", "comunidade/?v=clubes");
     if (meus && !exigir({ tipo: "participar" })) { centro.innerHTML = vazio("Suas comunidades", "Entre na sua conta para ver os clubes de que você participa."); return; }
-    centro.innerHTML = `<header class="tela-topo"><h1>${meus ? "Minhas comunidades" : "Explorar clubes"}</h1><p>${meus ? "Os clubes de que você participa." : "Grupos por raça, espécie e cidade. Participe para publicar e tirar dúvidas com quem entende do assunto."}</p></header><div class="grade-clubes" id="grade-clubes"><p class="carregando">Carregando…</p></div>`;
+    centro.innerHTML = `${voltar("comunidade/")}<header class="tela-topo"><h1>${meus ? "Minhas comunidades" : "Explorar clubes"}</h1><p>${meus ? "Os clubes de que você participa." : "Grupos por raça, espécie e cidade. Participe para publicar e tirar dúvidas com quem entende do assunto."}</p></header><div class="grade-clubes" id="grade-clubes"><p class="carregando">Carregando…</p></div>`;
     const r = await sb.from("clubes").select("*").order("ordem");
     const g = document.getElementById("grade-clubes");
     if (r.error) { g.innerHTML = vazio("Não deu para carregar", erroMsg(r.error)); return; }
@@ -743,7 +753,7 @@
     definirMeta(c.nome + " | Clubes da Comunidade Abanô", c.descricao, linkClube(c.id));
     const dentro = est.clubes.has(c.id);
     centro.innerHTML = `
-      <a class="voltar" href="comunidade/?v=clubes">← Clubes</a>
+      ${voltar("comunidade/?v=clubes")}
       <section class="clube-capa t-${esc(c.tipo)}" data-clube="${esc(c.id)}">
         <h1>${esc(c.nome)}</h1>
         <p>${esc(c.descricao)}</p>
@@ -784,6 +794,7 @@
     const sigo = est.seguindo.has(u.id);
     const local = [u.cidade, u.estado].filter(Boolean).join(" / ");
     centro.innerHTML = `
+      ${voltar("comunidade/")}
       <section class="perfil-capa">
         ${avatar(u, "grande")}
         <div class="perfil-info">
@@ -810,7 +821,7 @@
   async function telaTutores() {
     definirMeta("Tutores perto de você | Comunidade Abanô", "Encontre tutores de cães e gatos no seu estado.", "comunidade/?v=tutores");
     const uf = (q.get("uf") || (est.eu && est.eu.estado) || "").toUpperCase();
-    centro.innerHTML = `<header class="tela-topo"><h1>Tutores perto de você</h1><p>Tutores da Comunidade que moram no estado escolhido.</p>
+    centro.innerHTML = `${voltar("comunidade/")}<header class="tela-topo"><h1>Tutores perto de você</h1><p>Tutores da Comunidade que moram no estado escolhido.</p>
       <form class="filtro-uf" action="comunidade/" method="get"><input type="hidden" name="v" value="tutores"><label class="sr" for="uf">Estado</label>
       <select id="uf" name="uf" onchange="this.form.submit()"><option value="">Escolha o estado</option>${UFS.map((x) => `<option${x === uf ? " selected" : ""}>${x}</option>`).join("")}</select>
       <noscript><button class="btn">Ver</button></noscript></form></header><div id="tutores"></div>`;
@@ -827,7 +838,7 @@
   function telaSalvos() {
     definirMeta("Salvos | Comunidade Abanô", null, "comunidade/?v=salvos");
     if (!exigir({ tipo: "salvos" })) { centro.innerHTML = vazio("Suas publicações salvas", "Entre na sua conta para ver o que você salvou."); return; }
-    centro.innerHTML = '<header class="tela-topo"><h1>Salvos</h1><p>Só você vê o que salvou.</p></header><div id="feed"></div>';
+    centro.innerHTML = voltar("comunidade/") + '<header class="tela-topo"><h1>Salvos</h1><p>Só você vê o que salvou.</p></header><div id="feed"></div>';
     lista(document.getElementById("feed"), { tipo: "salvos" }, vazio("Nada salvo ainda", "Toque no marcador de uma publicação para guardar e ler depois."));
   }
 
