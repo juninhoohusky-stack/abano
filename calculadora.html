@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Quanto custa ter um husky (ou qualquer cachorro)? Calculadora 2026 | Abanô</title>
-<meta name="description" content="Calcule quanto custa ter um cachorro por mês e por ano: ração premium ou super premium, antipulgas, vacinas, vermífugo, banho, veterinário e mais. Preços pesquisados em novembro de 2026.">
-<meta property="og:title" content="Quanto custa ter um husky? Calculadora de custos do pet">
-<meta property="og:description" content="Descubra o custo mensal e anual do seu cachorro em 1 minuto.">
+<title>Quanto custa manter um cachorro ou um gato? Calculadora 2026 | Abanô</title>
+<meta name="description" content="Calcule quanto custa manter um cachorro ou um gato por mês e por ano: ração, areia, antipulgas, vacinas, vermífugo, banho, veterinário e mais. Preços pesquisados em novembro de 2026.">
+<meta property="og:title" content="Quanto custa manter um cachorro ou um gato? Calculadora do Abanô">
+<meta property="og:description" content="Descubra o custo mensal e anual do seu cachorro ou gato em 1 minuto.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -37,10 +37,16 @@
 
   .grade{display:grid;grid-template-columns:1.1fr .9fr;gap:var(--e-6);align-items:start}
   .painel{background:var(--superficie);border:1px solid var(--linha);border-radius:var(--raio-md);padding:var(--e-8);box-shadow:var(--sombra)}
+  .especie{display:grid;grid-template-columns:1fr 1fr;gap:var(--e-1);padding:var(--e-1);margin:var(--e-3) 0 var(--e-1);border-radius:var(--raio-pill);background:var(--areia)}
+  .esp{position:relative;margin:0;font-size:var(--t-base)}
+  .esp input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+  .esp span{display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:var(--raio-pill);font-weight:800;color:var(--suave);transition:background-color var(--dur-rapida),color var(--dur-rapida)}
+  .esp input:checked + span{background:var(--marca);color:var(--sobre-marca);box-shadow:var(--sombra-botao)}
+  .esp input:focus-visible + span{box-shadow:0 0 0 4px var(--marca-clara),inset 0 0 0 2px var(--marca)}
   .bloco{border-top:1px solid var(--linha);padding-top:var(--e-6);margin-top:var(--e-6)}
   .bloco:first-child{border-top:0;padding-top:0;margin-top:0}
   .bloco h2{display:flex;align-items:baseline;gap:var(--e-3);font-size:var(--t-2xl);margin-bottom:var(--e-1)}
-  .bloco h2 span{font-family:var(--fonte);font-size:var(--t-xs);font-weight:600;letter-spacing:.1em;color:var(--acento)}
+  .bloco h2 > span:first-child{font-family:var(--fonte);font-size:var(--t-xs);font-weight:600;letter-spacing:.1em;color:var(--acento)}
   label{display:block;font-weight:600;font-size:var(--t-sm);margin:var(--e-4) 0 var(--e-2)}
   .dica{font-weight:400;color:var(--suave);font-size:var(--t-xs)}
   input[type=number],select{width:100%;min-height:44px;padding:var(--e-2) var(--e-3);border:1px solid transparent;border-radius:var(--raio-sm);font-size:var(--t-corpo);font-family:inherit;color:var(--tinta);background:var(--areia);transition:border-color .2s,box-shadow .2s,background-color .2s}
@@ -72,7 +78,7 @@
   .delta{position:absolute;right:24px;top:24px;z-index:1;font-size:var(--t-ui);font-weight:700;letter-spacing:-.01em;padding:var(--e-1) var(--e-2);border-radius:var(--raio-pill);pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums}
   .delta.sobe{background:rgba(240,138,99,.22);color:#FFD2C0}
   .delta.desce{background:rgba(92,194,168,.22);color:#BFF0E1}
-  .bloco h2 span{display:inline-block;transform-origin:center}
+  .bloco h2 > span:first-child{display:inline-block;transform-origin:center}
   .itens li:first-child .barra span{background:var(--acento)}
   .racao-info{background:var(--marca-clara);border-radius:var(--raio-xs);padding:var(--e-3) var(--e-4);margin-top:var(--e-4);font-size:var(--t-sm)}
   .primeiro-ano{background:var(--acento-claro);border-radius:var(--raio-xs);padding:var(--e-3) var(--e-4);margin-top:var(--e-3);font-size:var(--t-sm)}
@@ -153,19 +159,23 @@
   <div class="intro">
     <p class="migalha surge" style="--i:0"><a href="index.html">Início</a> / Calculadora de custos</p>
     <span class="eyebrow surge" style="--i:0">Ferramenta gratuita · preços de nov/2026</span>
-    <h1 class="surge" style="--i:1">Quanto custa ter um husky?</h1>
-    <p class="sub surge" style="--i:2">Ou qualquer outro cachorro. Informe o peso, a ração e a rotina do seu pet e veja o custo estimado por mês e por ano.</p>
+    <h1 class="surge" style="--i:1">Quanto custa manter o seu pet?</h1>
+    <p class="sub surge" style="--i:2">Para cachorros e gatos. Informe o peso, a fase da vida e a rotina do seu pet e veja quanto ele custa por mês e por ano.</p>
   </div>
 
   <div class="grade surge" style="--i:3">
     <!-- ================= ENTRADAS ================= -->
     <div class="painel">
       <div class="bloco">
-        <h2><span>01</span>Seu cachorro</h2>
+        <h2><span>01</span><span class="titulo-pet">Seu cachorro</span></h2>
+        <div class="especie" role="radiogroup" aria-label="Seu pet é">
+          <label class="esp"><input type="radio" name="especie" value="cachorro" checked><span>Cachorro</span></label>
+          <label class="esp"><input type="radio" name="especie" value="gato"><span>Gato</span></label>
+        </div>
         <div class="linha">
           <div>
             <label for="peso">Peso (kg)</label>
-            <input id="peso" type="number" min="1" max="90" step="0.5" value="25">
+            <input id="peso" type="number" min="0.5" max="90" step="0.5" value="25">
           </div>
           <div>
             <label for="fase">Fase da vida</label>
@@ -179,8 +189,8 @@
         <label for="energia">Nível de energia</label>
         <select id="energia">
           <option value="calmo">Calmo, mais caseiro</option>
-          <option value="normal" selected>Normal, passeia todo dia</option>
-          <option value="ativo">Muito ativo (corre, puxa, não para)</option>
+          <option value="normal" selected data-gato="Normal, brinca todo dia">Normal, passeia todo dia</option>
+          <option value="ativo" data-gato="Muito ativo (corre, sobe em tudo, não para)">Muito ativo (corre, puxa, não para)</option>
         </select>
       </div>
 
@@ -207,13 +217,14 @@
       </div>
 
       <div class="bloco">
-        <h2><span>03</span>Banho</h2>
+        <h2><span>03</span><span class="titulo-banho">Banho</span></h2>
         <div class="linha">
           <div>
             <label for="banho-onde">Onde</label>
             <select id="banho-onde">
               <option value="petshop" selected>Pet shop</option>
               <option value="casa">Em casa</option>
+              <option value="nenhum">Não toma banho</option>
             </select>
           </div>
           <div>
@@ -224,6 +235,14 @@
               <option value="0.5" selected>A cada 2 meses</option>
             </select>
           </div>
+        </div>
+        <div id="areia-box" class="escondido">
+          <label for="areia">Areia higiênica</label>
+          <select id="areia">
+            <option value="comum">Comum de argila (~R$ 35/mês)</option>
+            <option value="silica" selected>Sílica (~R$ 60/mês)</option>
+            <option value="bio">Biodegradável, de madeira ou milho (~R$ 50/mês)</option>
+          </select>
         </div>
         <div id="banho-preco-box">
           <label for="banho-preco">Preço do banho no seu pet shop (R$) <span class="dica">· média preenchida pelo peso</span></label>
@@ -236,7 +255,7 @@
         <label for="petiscos">Petiscos e brinquedos por mês (R$)</label>
         <input id="petiscos" type="number" min="0" step="10" value="60">
         <label class="check"><input type="checkbox" id="reserva" checked> Guardar uma reserva para imprevistos (ou pagar um plano de saúde pet)</label>
-        <label class="check"><input type="checkbox" id="castrado" checked> Meu cachorro já é castrado</label>
+        <label class="check"><input type="checkbox" id="castrado" checked> <span class="txt-castrado">Meu cachorro já é castrado</span></label>
       </div>
     </div>
 
@@ -259,14 +278,14 @@
 
   <!-- ================= CONTEÚDO (SEO) ================= -->
   <section class="conteudo">
-    <h2>Quanto custa ter um husky por mês?</h2>
+    <h2>Quanto custa manter um cachorro por mês?</h2>
     <p>Um husky adulto de uns 25 kg, comendo ração super premium, com antipulgas, vacinas em dia e banho a cada dois meses no pet shop, costuma custar algo entre <b>R$ 500 e R$ 600 por mês</b>, contando uma reserva para imprevistos. A maior parte vai para a ração e para o antipulgas. Use a calculadora acima para ver o valor exato da rotina do seu pet.</p>
 
     <h2>Ração premium x super premium: quanto custa o quilo?</h2>
-    <p>Pesquisamos sacos de 10 a 15 kg para cães adultos de porte médio e grande em lojas como Cobasi, Petz, Petlove e Magalu. Valores médios aproximados:</p>
+    <p>Pesquisamos sacos de 10 a 15 kg para cães adultos de porte médio e grande e de 10,1 kg para gatos adultos, em lojas como Cobasi, Petz, Petlove e Magalu e em comparadores de preço. Valores médios aproximados:</p>
     <div class="tabela">
       <table>
-        <thead><tr><th>Tipo</th><th>Exemplos de marcas</th><th>Preço do kg</th></tr></thead>
+        <thead><tr><th>Ração para cães</th><th>Exemplos de marcas</th><th>Preço do kg</th></tr></thead>
         <tbody id="tabela-racoes">
           <tr><td>Premium</td><td>Gran Plus, Quatree Life, Special Dog</td><td>R$ 12</td></tr>
           <tr><td>Super premium</td><td>Fórmula Natural Life, Guabi Natural, N&amp;D Ancestral Grain</td><td>R$ 19</td></tr>
@@ -277,6 +296,15 @@
     </div>
     <p>As super premium costumam render mais: como são mais nutritivas, o cachorro come uma quantidade menor por dia. Por isso a diferença no bolso é menor do que parece no preço do saco.</p>
 
+    <h2>E um gato, quanto custa por mês?</h2>
+    <p>Um gato adulto de uns 4,5 kg, castrado, comendo ração super premium, com areia de sílica, antipulgas, vacinas em dia e um check-up por ano costuma custar algo entre <b>R$ 250 e R$ 350 por mês</b>, contando uma reserva para imprevistos. Com ração premium e areia comum, dá para ficar perto de R$ 200.</p>
+    <div class="tabela">
+      <table>
+        <thead><tr><th>Ração para gatos</th><th>Exemplos de marcas</th><th>Preço do kg</th></tr></thead>
+        <tbody id="tabela-racoes-gato"></tbody>
+      </table>
+    </div>
+    <p>Para gatos, a areia higiênica entra todo mês: a comum, de argila, é a mais barata; a de sílica dura mais e controla melhor o cheiro; as biodegradáveis, de madeira ou milho, ficam no meio do caminho.</p>
     <h2>O que entra na conta</h2>
     <ul>
       <li><b>Antipulgas e carrapatos:</b> comprimidos como Bravecto (dura cerca de 3 meses), Simparic e NexGard (mensais). Para um cão de 20 a 40 kg, sai na faixa de R$ 70 a R$ 115 por mês.</li>
@@ -334,24 +362,51 @@
    Mude os números quando os preços mudarem. Não mexa no resto.
    ============================================================= */
 const PRECOS = {
-  racoes: [
-    { id: "premium",   nome: "Premium",                 exemplos: "Gran Plus, Quatree Life, Special Dog",                     precoKg: 12, kcalPorGrama: 3.5 },
-    { id: "super",     nome: "Super premium",           exemplos: "Fórmula Natural Life, Guabi Natural, N&D Ancestral Grain", precoKg: 19, kcalPorGrama: 3.8 },
-    { id: "supertop",  nome: "Super premium linha top", exemplos: "Biofresh, Royal Canin",                                    precoKg: 28, kcalPorGrama: 3.9 },
-    { id: "grainfree", nome: "Super premium sem grãos", exemplos: "N&D Prime",                                                precoKg: 41, kcalPorGrama: 4.0 }
-  ],
-  // custo por mês conforme o peso: [até 10 kg, 10 a 20 kg, 20 a 40 kg, acima de 40 kg]
-  antipulgasMes: [55, 65, 85, 95],
-  vermifugoMes:  [5, 6, 8, 12],
-  banhoPetshop:  [50, 65, 85, 110],   // preço de 1 banho (estimativa, varia muito por cidade)
-  banhoCasaMes:  15,                  // shampoo, toalha etc.
-  vacinasAno:    200,                 // V10 + antirrábica
-  consultaAno:   150,                 // 1 check-up por ano
-  reservaMes:    100,                 // imprevistos ou plano de saúde pet
-  // gastos extras só no primeiro ano de um filhote
-  filhoteVacinasIniciais: 450,
-  castracao: 350,
-  enxoval: 300
+  cachorro: {
+    racoes: [
+      { id: "premium",   nome: "Premium",                 exemplos: "Gran Plus, Quatree Life, Special Dog",                     precoKg: 12, kcalPorGrama: 3.5 },
+      { id: "super",     nome: "Super premium",           exemplos: "Fórmula Natural Life, Guabi Natural, N&D Ancestral Grain", precoKg: 19, kcalPorGrama: 3.8 },
+      { id: "supertop",  nome: "Super premium linha top", exemplos: "Biofresh, Royal Canin",                                    precoKg: 28, kcalPorGrama: 3.9 },
+      { id: "grainfree", nome: "Super premium sem grãos", exemplos: "N&D Prime",                                                precoKg: 41, kcalPorGrama: 4.0 }
+    ],
+    // custo por mês conforme o peso: [até 10 kg, 10 a 20 kg, 20 a 40 kg, acima de 40 kg]
+    antipulgasMes: [55, 65, 85, 95],
+    vermifugoMes:  [5, 6, 8, 12],
+    banhoPetshop:  [50, 65, 85, 110],   // preço de 1 banho (estimativa, varia muito por cidade)
+    vacinasAno:    200,                 // V10 + antirrábica
+    petiscos:      60,
+    reservaMes:    100,                 // imprevistos ou plano de saúde pet
+    filhoteVacinasIniciais: 450,
+    castracao: 350,
+    enxoval: 300,                       // cama, comedouro, guia
+    enxovalTexto: "enxoval com cama, comedouro e guia",
+    sacoKg: 15,
+    pesoPadrao: 25
+  },
+  gato: {
+    racoes: [
+      { id: "premium",   nome: "Premium",                 exemplos: "Golden, Gran Plus, Whiskas",               precoKg: 15, kcalPorGrama: 3.7 },
+      { id: "super",     nome: "Super premium",           exemplos: "Premier, Guabi Natural, Fórmula Natural",  precoKg: 32, kcalPorGrama: 4.0 },
+      { id: "supertop",  nome: "Super premium linha top", exemplos: "Royal Canin, Biofresh",                    precoKg: 48, kcalPorGrama: 4.0 },
+      { id: "grainfree", nome: "Super premium sem grãos", exemplos: "N&D Prime",                                precoKg: 70, kcalPorGrama: 4.1 }
+    ],
+    // gatos: um valor só (a maioria pesa até 7,5 kg)
+    antipulgasMes: [45, 45, 45, 45],
+    vermifugoMes:  [5, 5, 5, 5],
+    banhoPetshop:  [70, 70, 70, 70],
+    vacinasAno:    180,                 // V4/V5 + antirrábica
+    petiscos:      40,
+    reservaMes:    80,
+    areiaMes: { comum: 35, silica: 60, bio: 50 },
+    filhoteVacinasIniciais: 350,
+    castracao: 350,
+    enxoval: 350,                       // caixa de areia, arranhador, caixa de transporte, comedouro
+    enxovalTexto: "enxoval com caixa de areia, arranhador e caixa de transporte",
+    sacoKg: 10.1,
+    pesoPadrao: 4.5
+  },
+  banhoCasaMes:  15,                    // shampoo, toalha etc.
+  consultaAno:   150                    // 1 check-up por ano
 };
 /* ======================= fim da área ========================= */
 
@@ -359,16 +414,51 @@ const $ = id => document.getElementById(id);
 const brl = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
 const faixa = kg => kg <= 10 ? 0 : kg <= 20 ? 1 : kg <= 40 ? 2 : 3;
 
-// atualiza os textos do seletor e da tabela com os preços da área acima
-const tabela = $("tabela-racoes");
-tabela.innerHTML = "";
-PRECOS.racoes.forEach(r => {
-  const o = $("racao").querySelector('option[value="' + r.id + '"]');
-  if (o) o.textContent = r.nome + " (~" + brl(r.precoKg) + "/kg)";
-  const tr = document.createElement("tr");
-  tr.innerHTML = "<td>" + r.nome + "</td><td>" + r.exemplos + "</td><td>" + brl(r.precoKg) + "</td>";
-  tabela.appendChild(tr);
-});
+// tabelas de preço de ração (cães e gatos) no texto da página
+function preencherTabela(id, racoes) {
+  const t = $(id);
+  if (!t) return;
+  t.innerHTML = "";
+  racoes.forEach(r => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = "<td>" + r.nome + "</td><td>" + r.exemplos + "</td><td>" + brl(r.precoKg) + "</td>";
+    t.appendChild(tr);
+  });
+}
+preencherTabela("tabela-racoes", PRECOS.cachorro.racoes);
+preencherTabela("tabela-racoes-gato", PRECOS.gato.racoes);
+
+// Cachorro ou gato: troca textos, opções e valores padrão
+const especie = () => document.querySelector('input[name="especie"]:checked').value;
+let especieAtual = null;
+function aplicarEspecie() {
+  const e = especie(), P = PRECOS[e], gato = e === "gato";
+  if (e === especieAtual) return;
+  const primeiraVez = especieAtual === null;
+  especieAtual = e;
+  document.querySelector(".titulo-pet").textContent = gato ? "Seu gato" : "Seu cachorro";
+  document.querySelector(".titulo-banho").textContent = gato ? "Areia e banho" : "Banho";
+  document.querySelector(".txt-castrado").textContent = gato ? "Meu gato já é castrado" : "Meu cachorro já é castrado";
+  $("energia").querySelectorAll("option").forEach(o => {
+    if (!o.dataset.cao) o.dataset.cao = o.textContent;
+    o.textContent = gato && o.dataset.gato ? o.dataset.gato : o.dataset.cao;
+  });
+  P.racoes.forEach(r => {
+    const o = $("racao").querySelector('option[value="' + r.id + '"]');
+    if (o) o.textContent = r.nome + " (~" + brl(r.precoKg) + "/kg)";
+  });
+  mostrarCaixa($("areia-box"), gato);
+  if (!primeiraVez) {
+    $("peso").value = P.pesoPadrao;
+    $("peso").max = gato ? 15 : 90;
+    $("petiscos").value = P.petiscos;
+    $("banho-onde").value = gato ? "nenhum" : "petshop";
+    $("banho-freq").value = "0.5";
+    $("saco-kg").value = gato ? 10.1 : 15;
+    $("saco-preco").value = gato ? 320 : 300;
+    banhoEditado = false;
+  }
+}
 
 // O total "conta" até o novo valor, sempre partindo do número que está na tela
 const poucoMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -506,15 +596,25 @@ let banhoEditado = false;
 $("banho-preco").addEventListener("input", () => { banhoEditado = true; });
 
 function calcular() {
-  const peso = Math.max(1, parseFloat($("peso").value) || 1);
+  aplicarEspecie();
+  const e = especie(), P = PRECOS[e], gato = e === "gato";
+  const peso = Math.max(0.5, parseFloat($("peso").value) || 1);
   const fase = $("fase").value;
   const energia = $("energia").value;
   const f = faixa(peso);
 
-  // energia diária (kcal) = 70 x peso^0,75 x fator
-  let fator = { calmo: 1.4, normal: 1.6, ativo: 2.0 }[energia];
-  if (fase === "filhote") fator = 2.0;
-  if (fase === "idoso") fator = Math.min(fator, 1.4);
+  // energia diária (kcal) = 70 x peso^0,75 x fator (fatores de cães e de gatos são diferentes)
+  let fator;
+  if (gato) {
+    fator = { calmo: 1.0, normal: 1.2, ativo: 1.4 }[energia];
+    if (!$("castrado").checked) fator += 0.2;
+    if (fase === "filhote") fator = 2.5;
+    if (fase === "idoso") fator = Math.min(fator, 1.1);
+  } else {
+    fator = { calmo: 1.4, normal: 1.6, ativo: 2.0 }[energia];
+    if (fase === "filhote") fator = 2.0;
+    if (fase === "idoso") fator = Math.min(fator, 1.4);
+  }
   const kcalDia = 70 * Math.pow(peso, 0.75) * fator;
 
   // ração
@@ -523,10 +623,10 @@ function calcular() {
     mostrarCaixa($("racao-propria"), true);
     const preco = parseFloat($("saco-preco").value) || 0;
     const kg = parseFloat($("saco-kg").value) || 1;
-    precoKg = preco / kg; kcalG = 3.7; nomeRacao = "sua ração";
+    precoKg = preco / kg; kcalG = gato ? 3.9 : 3.7; nomeRacao = "sua ração";
   } else {
     mostrarCaixa($("racao-propria"), false);
-    const r = PRECOS.racoes.find(x => x.id === $("racao").value);
+    const r = P.racoes.find(x => x.id === $("racao").value);
     precoKg = r.precoKg; kcalG = r.kcalPorGrama; nomeRacao = r.nome.toLowerCase();
   }
   const gramasDia = kcalDia / kcalG;
@@ -536,20 +636,22 @@ function calcular() {
   // banho
   const onde = $("banho-onde").value;
   const freq = parseFloat($("banho-freq").value);
-  if (!banhoEditado) $("banho-preco").value = PRECOS.banhoPetshop[f];
+  if (!banhoEditado) $("banho-preco").value = P.banhoPetshop[f];
   $("banho-preco-box").style.display = onde === "petshop" ? "" : "none";
-  const banhoMes = onde === "petshop" ? (parseFloat($("banho-preco").value) || 0) * freq : PRECOS.banhoCasaMes;
+  $("banho-freq").closest("div").style.visibility = onde === "nenhum" ? "hidden" : "";
+  const banhoMes = onde === "petshop" ? (parseFloat($("banho-preco").value) || 0) * freq : onde === "casa" ? PRECOS.banhoCasaMes : 0;
 
   const itens = [
     { chave: "racao", nome: "Ração (" + nomeRacao + ")", valor: racaoMes },
-    { nome: "Antipulgas e carrapatos",    valor: PRECOS.antipulgasMes[f] },
-    { nome: "Banho",                      valor: banhoMes },
+    { nome: "Antipulgas e carrapatos",    valor: P.antipulgasMes[f] },
     { nome: "Petiscos e brinquedos",      valor: parseFloat($("petiscos").value) || 0 },
-    { nome: "Vacinas (por mês)",          valor: PRECOS.vacinasAno / 12 },
+    { nome: "Vacinas (por mês)",          valor: P.vacinasAno / 12 },
     { nome: "Veterinário (check-up)",     valor: PRECOS.consultaAno / 12 },
-    { nome: "Vermífugo",                  valor: PRECOS.vermifugoMes[f] }
+    { nome: "Vermífugo",                  valor: P.vermifugoMes[f] }
   ];
-  if ($("reserva").checked) itens.push({ nome: "Reserva para imprevistos", valor: PRECOS.reservaMes });
+  if (banhoMes > 0) itens.push({ nome: "Banho", valor: banhoMes });
+  if (gato) itens.push({ nome: "Areia higiênica", valor: P.areiaMes[$("areia").value] });
+  if ($("reserva").checked) itens.push({ nome: "Reserva para imprevistos", valor: P.reservaMes });
 
   const totalMes = itens.reduce((s, i) => s + i.valor, 0);
   const maior = Math.max(...itens.map(i => i.valor));
@@ -557,16 +659,16 @@ function calcular() {
 
   desenharItens(itens.sort((a, b) => b.valor - a.valor), maior);
 
-  const sacos15 = kgMes / 15;
-  $("racao-info").innerHTML = "Seu cachorro come cerca de <b>" + Math.round(gramasDia / 10) * 10 + " g por dia</b>, ou <b>" +
-    kgMes.toFixed(1).replace(".", ",") + " kg por mês</b>. Um saco de 15 kg dura uns <b>" +
-    Math.max(1, Math.round(30.4 / sacos15)) + " dias</b>.";
+  const saco = P.sacoKg;
+  const diasSaco = Math.max(1, Math.round(saco / kgMes * 30.4));
+  $("racao-info").innerHTML = (gato ? "Seu gato" : "Seu cachorro") + " come cerca de <b>" + (gato ? Math.round(gramasDia / 5) * 5 : Math.round(gramasDia / 10) * 10) + " g por dia</b>, ou <b>" +
+    kgMes.toFixed(1).replace(".", ",") + " kg por mês</b>. Um saco de " + String(saco).replace(".", ",") + " kg dura uns <b>" + diasSaco + " dias</b>.";
 
   // primeiro ano
   const box = $("primeiro-ano");
   let extras = 0, partes = [];
-  if (fase === "filhote") { extras += PRECOS.filhoteVacinasIniciais + PRECOS.enxoval; partes.push("vacinas iniciais", "enxoval com cama, comedouro e guia"); }
-  if (!$("castrado").checked) { extras += PRECOS.castracao; partes.push("castração"); }
+  if (fase === "filhote") { extras += P.filhoteVacinasIniciais + P.enxoval; partes.push("vacinas iniciais", P.enxovalTexto); }
+  if (!$("castrado").checked) { extras += P.castracao; partes.push("castração"); }
   if (extras > 0) {
     mostrarCaixa(box, true);
     box.innerHTML = "<b>No primeiro ano</b>, some cerca de <b>" + brl(extras) + "</b> de gastos únicos (" + partes.join(", ") +
@@ -577,8 +679,9 @@ function calcular() {
 }
 
 $("peso").addEventListener("input", () => { banhoEditado = false; });
-["peso","fase","energia","racao","saco-preco","saco-kg","banho-onde","banho-freq","banho-preco","petiscos","reserva","castrado"]
+["peso","fase","energia","racao","saco-preco","saco-kg","banho-onde","banho-freq","banho-preco","petiscos","reserva","castrado","areia"]
   .forEach(id => { $(id).addEventListener("input", calcular); $(id).addEventListener("change", calcular); });
+document.querySelectorAll('input[name="especie"]').forEach(r => r.addEventListener("change", calcular));
 calcular();
 </script>
 </body>
