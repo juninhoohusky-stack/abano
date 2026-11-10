@@ -10,7 +10,7 @@
   const sb = C.sb;
   const q = new URLSearchParams(location.search);
   const POR_PAGINA = 15;
-  const SEL = "*, perfil:perfis(id,usuario,nome,foto_url), clube_info:clubes(id,nome)";
+  const SEL = "*, perfil:perfis!posts_autor_fkey(id,usuario,nome,foto_url), clube_info:clubes!posts_clube_fkey(id,nome)";
   const PASTA_FOTOS = SUPABASE_URL + "/storage/v1/object/public/fotos/";
   const est = { sessao: null, eu: null, curtidas: new Set(), salvos: new Set(), votos: new Map(), clubes: new Set(), seguindo: new Set(), bloqueados: new Set(), posts: new Map() };
 
@@ -402,8 +402,12 @@
           for (const arq of fotos) enviadas.push(await C.enviarFoto(est.eu.id, "post", arq));
           dados.fotos = enviadas;
         }
-        const r = await sb.from("posts").insert(dados).select(SEL).single();
-        if (r.error) throw r.error;
+        let r = await sb.from("posts").insert(dados).select(SEL).single();
+        if (r.error && /jwt|PGRST30[13]/i.test((r.error.code || "") + " " + (r.error.message || ""))) {
+          await sb.auth.refreshSession();
+          r = await sb.from("posts").insert(dados).select(SEL).single();
+        }
+        if (r.error) { console.error("Abanô: erro ao publicar", r.error); throw r.error; }
         f.reset(); fotos = []; desenharPrevias(); trocarTipo(); texto.style.height = "";
         toast("Publicado!");
         if (aoPublicar) aoPublicar(r.data);
@@ -672,7 +676,7 @@
         if (!texto) { ta.focus(); return; }
         if (pareceVenda(texto)) { av.textContent = "Venda de animais não é permitida na Comunidade Abanô."; av.hidden = false; return; }
         const b = f.querySelector("button"); b.disabled = true;
-        const r2 = await sb.from("comentarios").insert({ post: p.id, autor: est.eu.id, texto: texto }).select("*, perfil:perfis(id,usuario,nome,foto_url)").single();
+        const r2 = await sb.from("comentarios").insert({ post: p.id, autor: est.eu.id, texto: texto }).select("*, perfil:perfis!comentarios_autor_fkey(id,usuario,nome,foto_url)").single();
         b.disabled = false;
         if (r2.error) { av.textContent = erroMsg(r2.error); av.hidden = false; return; }
         ta.value = "";
@@ -693,7 +697,7 @@
   }
   async function carregarComentarios(p) {
     const ol = document.getElementById("lista-comentarios");
-    const r = await sb.from("comentarios").select("*, perfil:perfis(id,usuario,nome,foto_url)").eq("post", p.id).order("criado_em").limit(500);
+    const r = await sb.from("comentarios").select("*, perfil:perfis!comentarios_autor_fkey(id,usuario,nome,foto_url)").eq("post", p.id).order("criado_em").limit(500);
     if (r.error) { ol.innerHTML = `<li class="vazio-c">Não deu para carregar. ${esc(erroMsg(r.error))}</li>`; return; }
     ol.innerHTML = r.data.length ? r.data.map((c) => itemComentario(c, p)).join("") : `<li class="vazio-c">${p.tipo === "pergunta" ? "Ninguém respondeu ainda. Compartilhe sua experiência!" : "Ainda sem comentários. Comece a conversa!"}</li>`;
     ol.addEventListener("click", async (e) => {

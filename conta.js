@@ -38,7 +38,10 @@
     if (c === "23505") return "Esse nome de usuário já está em uso. Escolha outro.";
     if (c === "P0001" && e.message) return e.message;
     if (m.indexOf("failed to fetch") > -1 || m.indexOf("network") > -1) return "Sem conexão com o servidor. Verifique sua internet e tente de novo.";
-    return "Não deu certo agora. Tente de novo em instantes.";
+    if (m.indexOf("jwt") > -1 || c === "PGRST301" || c === "PGRST303") return "Sua sessão expirou. Saia e entre de novo na sua conta.";
+    if (c === "42501" || m.indexOf("row-level security") > -1) return "Sua conta não tem permissão para isso agora. Confira em Minha conta se o cadastro está completo. (código " + (c || "42501") + ")";
+    // Erro desconhecido: mostra o código técnico para facilitar o suporte
+    return "Não deu certo agora. Tente de novo em instantes." + (c || m ? " (código: " + (c || "?") + (e && e.message ? " · " + String(e.message).slice(0, 120) : "") + ")" : "");
   }
   function emailValido(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v); }
   function senhaBoa(v) { return v.length >= 8 && /[a-zA-Z]/.test(v) && /\d/.test(v); }

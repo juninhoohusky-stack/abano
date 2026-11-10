@@ -430,3 +430,6 @@ img,svg{display:block}
 .ajuda .link-botao,.mini .link-botao,.ver-todos,.voltar{display:inline-flex;align-items:center;min-height:44px}
 @media (prefers-reduced-motion:reduce){.pular{transition:none}}
 main:focus{outline:none}
+
+/* O atributo hidden sempre esconde, mesmo em botões e cartões com display próprio */
+[hidden]{display:none !important}
