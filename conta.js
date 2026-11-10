@@ -43,6 +43,19 @@
     // Erro desconhecido: mostra o código técnico para facilitar o suporte
     return "Não deu certo agora. Tente de novo em instantes." + (c || m ? " (código: " + (c || "?") + (e && e.message ? " · " + String(e.message).slice(0, 120) : "") + ")" : "");
   }
+  var UFS = "AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
+  // Conta sem estado: usa o estado informado no cadastro (se houver) e grava no perfil
+  function completarEstado(conta) {
+    if (!conta || conta.estado || !conta.aceitou) return Promise.resolve(conta);
+    return sb.auth.getSession().then(function (r) {
+      var uf = String(((r.data.session || {}).user || {}).user_metadata && r.data.session.user.user_metadata.estado || "").toUpperCase();
+      if (UFS.indexOf(uf) < 0) return conta;
+      return sb.from("perfis").update({ estado: uf }).eq("id", conta.id).then(function (u) {
+        if (!u.error) conta.estado = uf;
+        return conta;
+      });
+    });
+  }
   function emailValido(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v); }
   function senhaBoa(v) { return v.length >= 8 && /[a-zA-Z]/.test(v) && /\d/.test(v); }
 
@@ -187,7 +200,10 @@
     sb.auth.getSession().then(function (r) { if (r.data.session) $("ja-conectado").hidden = false; });
 
     $("btn-google").addEventListener("click", function () {
-      try { sessionStorage.setItem("abano-novidades", formCriar.novidades.checked ? "1" : "0"); } catch (err) {}
+      try {
+        sessionStorage.setItem("abano-novidades", formCriar.novidades.checked ? "1" : "0");
+        if (formCriar.estado.value) sessionStorage.setItem("abano-estado", formCriar.estado.value);
+      } catch (err) {}
       entrarComGoogle(this, avisoCriar);
     });
     prepararCaptcha("captcha-criar");
@@ -198,10 +214,12 @@
       var nome = formCriar.nome.value.trim().replace(/\s+/g, " ");
       var email = formCriar.email.value.trim().toLowerCase();
       var senha = formCriar.senha.value;
+      var estado = formCriar.estado.value;
       var erros = [];
       marcar(formCriar.nome, nome.length < 2); if (nome.length < 2) erros.push([formCriar.nome, "Digite seu nome (pelo menos 2 letras)."]);
       marcar(formCriar.email, !emailValido(email)); if (!emailValido(email)) erros.push([formCriar.email, "Confira o e-mail: parece que falta alguma parte."]);
       marcar(formCriar.senha, !senhaBoa(senha)); if (!senhaBoa(senha)) erros.push([formCriar.senha, "A senha precisa ter pelo menos 8 caracteres, com letras e números."]);
+      marcar(formCriar.estado, UFS.indexOf(estado) < 0); if (UFS.indexOf(estado) < 0) erros.push([formCriar.estado, "Escolha o estado onde você mora."]);
       if (!formCriar.aceite.checked) erros.push([formCriar.aceite, "Para criar a conta, marque que leu a Política de privacidade e tem 18 anos ou mais."]);
       if (erros.length) { aviso(avisoCriar, erros[0][1]); erros[0][0].focus(); return; }
       var tkC = tokenCaptcha("captcha-criar");
@@ -216,7 +234,7 @@
         options: {
           emailRedirectTo: location.origin + "/entrar.html?volta=" + encodeURIComponent(destino()),
           captchaToken: tkC,
-          data: { nome: nome, versao_politica: VERSAO_POLITICA, maior_de_idade: true, novidades: formCriar.novidades.checked }
+          data: { nome: nome, estado: estado, versao_politica: VERSAO_POLITICA, maior_de_idade: true, novidades: formCriar.novidades.checked }
         }
       }).then(function (r) {
         if (r.error) { renovarCaptcha("captcha-criar"); ocupado(botao, false); aviso(avisoCriar, erroCaptcha(r.error)); return; }
@@ -318,30 +336,50 @@
       sb.rpc("minha_conta").then(function (r) {
         $("conta-carregando").hidden = true;
         if (r.error) { aviso($("aviso-geral"), traduzir(r.error)); return; }
-        conta = r.data;
-        if (!conta.aceitou) { mostrarAceite(); return; }
+        return completarEstado(r.data).then(function (c) {
+        conta = c;
+        if (!conta.aceitou || !conta.estado) { mostrarAceite(); return; }
         $("conta-aceite").hidden = true;
         painel.hidden = false;
         preencherPerfil();
         carregarPets();
         if (busca.get("bemvindo") || veioComCodigo) $("conta-boasvindas").hidden = false;
+        });
       });
     }
 
     // Primeira vez (principalmente quem entrou pelo Google): aceite da política
     function mostrarAceite() {
       var f = $("form-aceite");
+      var precisaAceite = !conta.aceitou;
       $("conta-aceite").hidden = false;
       $("aceite-nome").textContent = (conta.nome || "").split(" ")[0];
-      try { if (sessionStorage.getItem("abano-novidades") === "1") f.novidades.checked = true; } catch (err) {}
+      $("aceite-termos").hidden = !precisaAceite;
+      if (!precisaAceite) {
+        $("aceite-titulo").textContent = "Em qual estado você mora?";
+        $("aceite-sub").textContent = "Agora pedimos o estado de todos os tutores, para mostrar quem está perto de você e planejar encontros na sua região.";
+      }
+      try {
+        if (sessionStorage.getItem("abano-novidades") === "1") f.novidades.checked = true;
+        var ufGuardada = sessionStorage.getItem("abano-estado");
+        if (ufGuardada && UFS.indexOf(ufGuardada) > -1) f.estado.value = ufGuardada;
+      } catch (err) {}
       f.addEventListener("submit", function (e) {
         e.preventDefault();
-        if (!f.aceite.checked) { aviso($("aviso-aceite"), "Para usar a conta, marque que leu a Política de privacidade e tem 18 anos ou mais."); f.aceite.focus(); return; }
+        var uf = f.estado.value;
+        marcar(f.estado, UFS.indexOf(uf) < 0);
+        if (UFS.indexOf(uf) < 0) { aviso($("aviso-aceite"), "Escolha o estado onde você mora."); f.estado.focus(); return; }
+        if (precisaAceite && !f.aceite.checked) { aviso($("aviso-aceite"), "Para usar a conta, marque que leu a Política de privacidade e tem 18 anos ou mais."); f.aceite.focus(); return; }
         var botao = f.querySelector("button[type=submit]");
         ocupado(botao, true, "Salvando…");
-        sb.rpc("aceitar_politica", { p_versao: VERSAO_POLITICA, p_novidades: f.novidades.checked }).then(function (r) {
+        var passo = precisaAceite ? sb.rpc("aceitar_politica", { p_versao: VERSAO_POLITICA, p_novidades: f.novidades.checked }) : Promise.resolve({});
+        passo.then(function (r) {
+          if (r.error) return r;
+          return sb.from("perfis").update({ estado: uf }).eq("id", conta.id);
+        }).then(function (r) {
           ocupado(botao, false);
           if (r.error) { aviso($("aviso-aceite"), traduzir(r.error)); return; }
+          try { sessionStorage.removeItem("abano-estado"); } catch (err) {}
           try { sessionStorage.removeItem("abano-novidades"); } catch (err) {}
           if (busca.get("volta")) { ir(destino()); return; }
           busca.set("bemvindo", "1");
@@ -416,6 +454,8 @@
       };
       marcar(fp.nome, dados.nome.length < 2); marcar(fp.usuario, !/^[a-z0-9][a-z0-9_]{2,29}$/.test(dados.usuario));
       if (dados.nome.length < 2) { aviso(avisoPerfil, "O nome precisa ter pelo menos 2 letras."); fp.nome.focus(); return; }
+      marcar(fp.estado, !dados.estado);
+      if (!dados.estado) { aviso(avisoPerfil, "Escolha o estado onde você mora."); fp.estado.focus(); return; }
       if (!/^[a-z0-9][a-z0-9_]{2,29}$/.test(dados.usuario)) { aviso(avisoPerfil, "O nome de usuário precisa ter de 3 a 30 caracteres: letras minúsculas, números ou _."); fp.usuario.focus(); return; }
       var botao = fp.querySelector("button[type=submit]");
       ocupado(botao, true, "Salvando…");
@@ -590,5 +630,5 @@
     });
   }
 
-  window.abanoConta = { sb: sb, destino: destino, enviarFoto: enviarFoto, apagarFoto: apagarFoto, traduzir: traduzir };
+  window.abanoConta = { sb: sb, completarEstado: completarEstado, destino: destino, enviarFoto: enviarFoto, apagarFoto: apagarFoto, traduzir: traduzir };
 })();

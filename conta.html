@@ -23,14 +23,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261110o">
+<link rel="stylesheet" href="site.css?v=20261110p">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261110n" defer></script>
+<script src="site.js?v=20261110p" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261110n" defer></script>
-<script src="conta.js?v=20261110n" defer></script>
+<script src="lista.js?v=20261110p" defer></script>
+<script src="conta.js?v=20261110p" defer></script>
 <style>
   .pagina-conta{padding:var(--e-12) 0 var(--e-14)}
   .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:var(--e-16);align-items:start}
@@ -158,10 +158,19 @@
       <!-- Primeira vez: aceite da política (quem entrou pelo Google) -->
       <div id="conta-aceite" hidden>
         <form class="fc aceite" id="form-aceite" novalidate>
-          <h2>Boas-vindas, <span id="aceite-nome"></span>!</h2>
-          <p class="sub">Falta só um passo para usar sua conta do Abanô.</p>
+          <h2 id="aceite-titulo">Boas-vindas, <span id="aceite-nome"></span>!</h2>
+          <p class="sub" id="aceite-sub">Falta só um passo para usar sua conta do Abanô.</p>
+          <div id="aceite-estado">
+            <label class="rot" for="a-estado">Estado onde você mora</label>
+            <select id="a-estado" name="estado" autocomplete="address-level1" required aria-describedby="a-estado-ajuda">
+              <option value="">Escolha o estado</option><option value="AC">Acre</option><option value="AL">Alagoas</option><option value="AP">Amapá</option><option value="AM">Amazonas</option><option value="BA">Bahia</option><option value="CE">Ceará</option><option value="DF">Distrito Federal</option><option value="ES">Espírito Santo</option><option value="GO">Goiás</option><option value="MA">Maranhão</option><option value="MT">Mato Grosso</option><option value="MS">Mato Grosso do Sul</option><option value="MG">Minas Gerais</option><option value="PR">Paraná</option><option value="PB">Paraíba</option><option value="PA">Pará</option><option value="PE">Pernambuco</option><option value="PI">Piauí</option><option value="RN">Rio Grande do Norte</option><option value="RS">Rio Grande do Sul</option><option value="RJ">Rio de Janeiro</option><option value="RO">Rondônia</option><option value="RR">Roraima</option><option value="SC">Santa Catarina</option><option value="SE">Sergipe</option><option value="SP">São Paulo</option><option value="TO">Tocantins</option>
+            </select>
+            <span class="ajuda" id="a-estado-ajuda">Ajuda a encontrar tutores e eventos perto de você.</span>
+          </div>
+          <div id="aceite-termos">
           <label class="consente-conta"><input type="checkbox" name="aceite" required><span>Li a <a href="privacidade.html" target="_blank" rel="noopener">Política de privacidade</a> e tenho 18 anos ou mais.</span></label>
           <label class="consente-conta"><input type="checkbox" name="novidades"><span>Quero receber as novidades do Abanô por e-mail <span class="opcional">(opcional)</span></span></label>
+          </div>
           <p class="aviso-conta" id="aviso-aceite" role="alert" hidden></p>
           <button type="submit" class="btn">Continuar</button>
         </form>
@@ -205,9 +214,9 @@
                 <input id="p-cidade" name="cidade" type="text" autocomplete="address-level2" maxlength="80">
               </div>
               <div>
-                <label class="rot" for="p-estado">Estado <span class="opcional">(opcional)</span></label>
-                <select id="p-estado" name="estado" autocomplete="address-level1">
-                  <option value="">Não informar</option>
+                <label class="rot" for="p-estado">Estado</label>
+                <select id="p-estado" name="estado" autocomplete="address-level1" required>
+                  <option value="">Escolha o estado</option>
                   <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option>
                 </select>
               </div>

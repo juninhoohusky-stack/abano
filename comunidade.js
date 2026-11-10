@@ -79,8 +79,8 @@
       toast("Sua conta está suspensa pela moderação. Escreva para contato@abano.com.br se achar que foi um engano.");
       return false;
     }
-    if (est.sessao && est.eu && est.eu.aceitou) return true;
-    if (est.sessao && est.eu && !est.eu.aceitou) {
+    if (est.sessao && est.eu && est.eu.aceitou && est.eu.estado) return true;
+    if (est.sessao && est.eu && (!est.eu.aceitou || !est.eu.estado)) {
       guardarAcao(acao);
       location.href = "conta.html?volta=" + encodeURIComponent(aqui());
       return false;
@@ -136,7 +136,7 @@
     if (!est.sessao) return;
     const r = await sb.rpc("minha_conta");
     if (r.error) return;
-    est.eu = r.data;
+    est.eu = await C.completarEstado(r.data);
     const [cl, sg, bl] = await Promise.all([
       sb.from("clube_membros").select("clube").eq("usuario", est.eu.id),
       sb.from("seguidores").select("seguido").eq("seguidor", est.eu.id),
@@ -289,7 +289,7 @@
   // ---------- Caixa de publicar ----------
   function caixaPublicar(opcoes) {
     opcoes = opcoes || {};
-    if (!est.eu || !est.eu.aceitou) {
+    if (!est.eu || !est.eu.aceitou || !est.eu.estado) {
       return `<button type="button" class="compor-fake" data-acao="publicar">${avatar(null)}<span>Compartilhe uma foto, uma dúvida ou uma história do seu pet…</span></button>`;
     }
     const clubes = [...est.clubes];
@@ -810,7 +810,7 @@
   async function telaTutores() {
     definirMeta("Tutores perto de você | Comunidade Abanô", "Encontre tutores de cães e gatos no seu estado.", "comunidade/?v=tutores");
     const uf = (q.get("uf") || (est.eu && est.eu.estado) || "").toUpperCase();
-    centro.innerHTML = `<header class="tela-topo"><h1>Tutores perto de você</h1><p>Aparecem aqui os tutores que escolheram mostrar o estado no perfil.</p>
+    centro.innerHTML = `<header class="tela-topo"><h1>Tutores perto de você</h1><p>Tutores da Comunidade que moram no estado escolhido.</p>
       <form class="filtro-uf" action="comunidade/" method="get"><input type="hidden" name="v" value="tutores"><label class="sr" for="uf">Estado</label>
       <select id="uf" name="uf" onchange="this.form.submit()"><option value="">Escolha o estado</option>${UFS.map((x) => `<option${x === uf ? " selected" : ""}>${x}</option>`).join("")}</select>
       <noscript><button class="btn">Ver</button></noscript></form></header><div id="tutores"></div>`;
@@ -876,9 +876,14 @@
       const aviso = document.getElementById("com-aviso-suspenso");
       if (aviso) aviso.hidden = false;
     }
-    if (est.eu && !est.eu.aceitou) {
+    if (est.eu && (!est.eu.aceitou || !est.eu.estado)) {
       const aviso = document.getElementById("com-aviso-conta");
-      if (aviso) { aviso.hidden = false; aviso.querySelector("a").href = "conta.html?volta=" + encodeURIComponent(aqui()); }
+      if (aviso) {
+        aviso.hidden = false;
+        const link = aviso.querySelector("a");
+        link.href = "conta.html?volta=" + encodeURIComponent(aqui());
+        if (est.eu.aceitou) link.textContent = "informe o estado onde você mora";
+      }
     }
     marcarMenu();
     await Promise.all([lateral(), rota()]);
