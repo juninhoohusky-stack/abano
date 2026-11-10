@@ -112,6 +112,9 @@ Pesos: títulos 800–900, botões 800, texto 400–600. Números que mudam na t
 | `--sombra-marca` | capas na cor da marca |
 | `--sombra-botao` | botão principal em destaque |
 
+### Largura do conteúdo
+`--largura`: 1280 px (1360 px em telas a partir de 1600 px). Vale para topo, conteúdo (`.wrap`), Comunidade e rodapé. Páginas de leitura longa mantêm a própria coluna mais estreita.
+
 ### Espaçamento
 
 | Token | Valor | Uso típico |

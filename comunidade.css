@@ -1,5 +1,5 @@
 /* Abanô — Comunidade */
-.com{max-width:1240px;margin:0 auto;padding:var(--e-6) var(--e-6) var(--e-10)}
+.com{max-width:var(--largura);margin:0 auto;padding:var(--e-6) var(--e-6) var(--e-10)}
 .com-grade{display:grid;grid-template-columns:220px minmax(0,1fr) 300px;gap:var(--e-6);align-items:start}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 

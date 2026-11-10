@@ -55,6 +55,8 @@
   --degrade:linear-gradient(120deg,#E5157A 0%,#F43F7F 48%,#FF8A1E 100%);
 
   /* Cantos: quanto maior a peça, mais arredondada (pílula só em botões e chips) */
+  /* Largura máxima do conteúdo: 1280 px; em monitores grandes, 1360 px */
+  --largura:1280px;
   --raio-xs:12px;                  /* miniaturas, opções, selos */
   --raio-sm:14px;                  /* campos de formulário, avisos */
   --raio-md:18px;                  /* cartões pequenos, itens de lista */
@@ -164,7 +166,7 @@ a{color:var(--marca)}
 img,svg{display:block}
 ::selection{background:var(--marca-clara)}
 
-.wrap{max-width:1120px;margin:0 auto;padding:0 var(--e-6)}
+.wrap{max-width:var(--largura);margin:0 auto;padding:0 var(--e-6)}
 
 /* Rótulo acima dos títulos */
 .eyebrow{display:inline-block;font-size:var(--t-ui);font-weight:600;letter-spacing:-.01em;color:var(--acento)}
@@ -180,7 +182,7 @@ img,svg{display:block}
 
 /* ---------- Barra de navegação (topo) ---------- */
 .topo{position:sticky;top:0;z-index:50;background:var(--superficie);box-shadow:0 .5px 0 var(--linha);transition:box-shadow .3s}
-.topo-in{max-width:1120px;margin:0 auto;padding:0 24px;min-height:64px;display:flex;align-items:center;gap:24px}
+.topo-in{max-width:var(--largura);margin:0 auto;padding:0 24px;min-height:64px;display:flex;align-items:center;gap:24px}
 
 /* Logo: patinha (logo-pata.svg) + nome "abanô" com o "ô" de dedinhos de pata */
 .topo-logo{display:flex;align-items:center;gap:var(--e-2);min-height:44px;text-decoration:none;flex:none}
@@ -287,7 +289,7 @@ img,svg{display:block}
 
 /* ---------- Rodapé ---------- */
 .rodape{margin-top:var(--e-10);background:var(--superficie);box-shadow:0 -.5px 0 var(--linha);color:var(--suave);font-size:var(--t-sm)}
-.rodape-in{max-width:1120px;margin:0 auto;padding:var(--e-10) var(--e-6) var(--e-6);display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:var(--e-8)}
+.rodape-in{max-width:var(--largura);margin:0 auto;padding:var(--e-10) var(--e-6) var(--e-6);display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:var(--e-8)}
 .rodape .topo-logo{margin-bottom:var(--e-2)}
 .rodape .logo-nome{font-size:26px}
 .rodape p{max-width:340px;font-size:var(--t-ui);line-height:1.6}
@@ -295,7 +297,7 @@ img,svg{display:block}
 .rodape ul{list-style:none;display:grid;gap:var(--e-1)}
 .rodape li a{display:inline-flex;align-items:center;min-height:32px;color:var(--suave);text-decoration:none;font-size:var(--t-ui)}
 .rodape a:hover{color:var(--tinta)}
-.rodape-base{max-width:1120px;margin:0 auto;padding:var(--e-4) var(--e-6) var(--e-6);box-shadow:inset 0 .5px 0 var(--linha);display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--e-2)}
+.rodape-base{max-width:var(--largura);margin:0 auto;padding:var(--e-4) var(--e-6) var(--e-6);box-shadow:inset 0 .5px 0 var(--linha);display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--e-2)}
 @media (max-width:700px){.rodape-in{grid-template-columns:1fr 1fr}.rodape-marca{grid-column:1/-1}}
 
 /* ---------- Entrada da página ---------- */
@@ -433,3 +435,6 @@ main:focus{outline:none}
 
 /* O atributo hidden sempre esconde, mesmo em botões e cartões com display próprio */
 [hidden]{display:none !important}
+
+/* Monitores grandes: um pouco mais de largura para o conteúdo */
+@media (min-width:1600px){:root{--largura:1360px}}
