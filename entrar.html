@@ -29,8 +29,8 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
 <script src="site.js?v=20261110c" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261110d" defer></script>
-<script src="conta.js?v=20261110d" defer></script>
+<script src="lista.js?v=20261110f" defer></script>
+<script src="conta.js?v=20261110f" defer></script>
 <style>
   .pagina-conta{padding:48px 0 56px}
   .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:64px;align-items:start}
@@ -44,6 +44,7 @@
   .beneficios li:nth-child(2) .b-ico{background:var(--acento-claro);color:var(--acento)}
   .beneficios li:nth-child(3) .b-ico{background:var(--lima-clara);color:var(--sobre-lima)}
   .escondido{display:none}
+  .captcha{margin-top:18px;min-height:65px}
   .conta-ok{text-align:center}
   .conta-ok .selo{width:68px;height:68px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:var(--lima);color:var(--sobre-lima)}
   .conta-ok .selo svg{width:32px;height:32px}
@@ -114,6 +115,7 @@
           </div>
           <span class="ajuda"><button type="button" class="link-botao" id="btn-esqueci">Esqueci minha senha</button></span>
 
+          <div class="captcha" id="captcha-entrar" hidden></div>
           <p class="aviso-conta" id="aviso-entrar" role="alert" hidden></p>
           <button type="submit" class="btn">Entrar</button>
           <p class="mini">Ainda não tem conta? <a href="cadastro.html" id="link-criar">Criar conta grátis</a></p>
@@ -124,6 +126,7 @@
           <p class="sub">Digite o e-mail da sua conta. Vamos enviar um link para você criar uma senha nova.</p>
           <label class="rot" for="r-email">E-mail</label>
           <input id="r-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" required>
+          <div class="captcha" id="captcha-recuperar" hidden></div>
           <p class="aviso-conta" id="aviso-recuperar" role="status" hidden></p>
           <button type="submit" class="btn">Enviar link</button>
           <p class="mini"><button type="button" class="link-botao" id="btn-voltar-entrar">Voltar para entrar</button></p>

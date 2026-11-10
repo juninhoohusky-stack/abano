@@ -28,8 +28,8 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
 <script src="site.js?v=20261110c" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261110d" defer></script>
-<script src="conta.js?v=20261110d" defer></script>
+<script src="lista.js?v=20261110f" defer></script>
+<script src="conta.js?v=20261110f" defer></script>
 <style>
   .pagina-conta{padding:48px 0 56px}
   .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:64px;align-items:start}
@@ -43,6 +43,7 @@
   .beneficios li:nth-child(2) .b-ico{background:var(--acento-claro);color:var(--acento)}
   .beneficios li:nth-child(3) .b-ico{background:var(--lima-clara);color:var(--sobre-lima)}
   .escondido{display:none}
+  .captcha{margin-top:18px;min-height:65px}
   .conta-ok{text-align:center}
   .conta-ok .selo{width:68px;height:68px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:var(--lima);color:var(--sobre-lima)}
   .conta-ok .selo svg{width:32px;height:32px}
@@ -131,6 +132,7 @@
           <label class="consente-conta"><input type="checkbox" name="novidades"><span>Quero receber as novidades do Abanô por e-mail <span class="opcional">(opcional)</span></span></label>
           <label class="consente-conta"><input type="checkbox" name="aceite" required><span>Li a <a href="privacidade.html" target="_blank" rel="noopener">Política de privacidade</a> e tenho 18 anos ou mais.</span></label>
 
+          <div class="captcha" id="captcha-criar" hidden></div>
           <p class="aviso-conta" id="aviso-criar" role="alert" hidden></p>
           <button type="submit" class="btn">Criar minha conta</button>
           <p class="mini">Já tem conta? <a href="entrar.html" id="link-entrar">Entrar</a></p>

@@ -56,6 +56,35 @@
     botao.textContent = sim ? (texto || "Aguarde…") : botao.dataset.texto;
   }
 
+  // ---------- Verificação contra robôs (Cloudflare Turnstile) ----------
+  // Só funciona quando TURNSTILE_CHAVE_SITE estiver preenchida em lista.js
+  var CAPTCHA = typeof TURNSTILE_CHAVE_SITE !== "undefined" && TURNSTILE_CHAVE_SITE ? TURNSTILE_CHAVE_SITE : "";
+  var widgets = {}, carregandoTS = null;
+  function carregarTurnstile() {
+    if (!carregandoTS) carregandoTS = new Promise(function (ok, falha) {
+      var s = document.createElement("script");
+      s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      s.async = true; s.onload = ok; s.onerror = falha;
+      document.head.appendChild(s);
+    });
+    return carregandoTS;
+  }
+  function prepararCaptcha(id) {
+    var el = $(id);
+    if (!CAPTCHA || !el) return;
+    el.hidden = false;
+    carregarTurnstile().then(function () {
+      widgets[id] = window.turnstile.render(el, { sitekey: CAPTCHA, language: "pt-br", theme: "auto", size: "flexible" });
+    }, function () { el.textContent = "Não deu para carregar a verificação. Recarregue a página."; });
+  }
+  function tokenCaptcha(id) {
+    if (!CAPTCHA) return undefined;
+    return window.turnstile && widgets[id] != null ? window.turnstile.getResponse(widgets[id]) || "" : "";
+  }
+  function renovarCaptcha(id) { if (CAPTCHA && window.turnstile && widgets[id] != null) window.turnstile.reset(widgets[id]); }
+  var MSG_CAPTCHA = "Conclua a verificação \u201cNão sou um robô\u201d logo acima do botão e tente de novo.";
+  function erroCaptcha(e) { return /captcha/i.test(String((e && e.message) || "")) ? MSG_CAPTCHA : traduzir(e); }
+
   // Mostrar/ocultar senha
   document.querySelectorAll(".campo-senha button").forEach(function (b) {
     b.addEventListener("click", function () {
@@ -98,6 +127,7 @@
     sb.auth.onAuthStateChange(function (ev, s) { if (ev === "SIGNED_IN" && s) ir(destino()); });
 
     $("btn-google").addEventListener("click", function () { entrarComGoogle(this, avisoEntrar); });
+    prepararCaptcha("captcha-entrar");
 
     formEntrar.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -105,17 +135,20 @@
       marcar(formEntrar.email, !emailValido(email)); marcar(formEntrar.senha, !senha);
       if (!emailValido(email)) { aviso(avisoEntrar, "Confira o e-mail: parece que falta alguma parte."); formEntrar.email.focus(); return; }
       if (!senha) { aviso(avisoEntrar, "Digite sua senha."); formEntrar.senha.focus(); return; }
+      var tkE = tokenCaptcha("captcha-entrar");
+      if (tkE === "") { aviso(avisoEntrar, MSG_CAPTCHA); return; }
       aviso(avisoEntrar, "");
       var botao = formEntrar.querySelector("button[type=submit]");
       ocupado(botao, true, "Entrando…");
-      sb.auth.signInWithPassword({ email: email, password: senha }).then(function (r) {
-        if (r.error) { ocupado(botao, false); aviso(avisoEntrar, traduzir(r.error)); return; }
+      sb.auth.signInWithPassword({ email: email, password: senha, options: { captchaToken: tkE } }).then(function (r) {
+        if (r.error) { renovarCaptcha("captcha-entrar"); ocupado(botao, false); aviso(avisoEntrar, erroCaptcha(r.error)); return; }
         ir(destino());
       });
     });
 
     $("btn-esqueci").addEventListener("click", function () {
       formEntrar.hidden = true; formRecuperar.hidden = false;
+      if (widgets["captcha-recuperar"] == null) prepararCaptcha("captcha-recuperar");
       if (formEntrar.email.value) formRecuperar.email.value = formEntrar.email.value;
       formRecuperar.email.focus();
     });
@@ -127,11 +160,14 @@
       var email = formRecuperar.email.value.trim().toLowerCase();
       marcar(formRecuperar.email, !emailValido(email));
       if (!emailValido(email)) { aviso(avisoRec, "Confira o e-mail: parece que falta alguma parte."); return; }
+      var tkR = tokenCaptcha("captcha-recuperar");
+      if (tkR === "") { aviso(avisoRec, MSG_CAPTCHA); return; }
       var botao = formRecuperar.querySelector("button[type=submit]");
       ocupado(botao, true, "Enviando…");
-      sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + "/nova-senha.html" }).then(function (r) {
+      sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + "/nova-senha.html", captchaToken: tkR }).then(function (r) {
         ocupado(botao, false);
-        if (r.error) { aviso(avisoRec, traduzir(r.error)); return; }
+        renovarCaptcha("captcha-recuperar");
+        if (r.error) { aviso(avisoRec, erroCaptcha(r.error)); return; }
         // Mesma resposta exista ou não a conta, para não revelar quem tem cadastro
         aviso(avisoRec, "Se houver uma conta com " + email + ", você vai receber um link para criar uma nova senha. Confira também o spam.", true);
       });
@@ -151,6 +187,7 @@
       try { sessionStorage.setItem("abano-novidades", formCriar.novidades.checked ? "1" : "0"); } catch (err) {}
       entrarComGoogle(this, avisoCriar);
     });
+    prepararCaptcha("captcha-criar");
 
     formCriar.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -164,6 +201,8 @@
       marcar(formCriar.senha, !senhaBoa(senha)); if (!senhaBoa(senha)) erros.push([formCriar.senha, "A senha precisa ter pelo menos 8 caracteres, com letras e números."]);
       if (!formCriar.aceite.checked) erros.push([formCriar.aceite, "Para criar a conta, marque que leu a Política de privacidade e tem 18 anos ou mais."]);
       if (erros.length) { aviso(avisoCriar, erros[0][1]); erros[0][0].focus(); return; }
+      var tkC = tokenCaptcha("captcha-criar");
+      if (tkC === "") { aviso(avisoCriar, MSG_CAPTCHA); return; }
       aviso(avisoCriar, "");
 
       var botao = formCriar.querySelector("button[type=submit]");
@@ -173,10 +212,11 @@
         password: senha,
         options: {
           emailRedirectTo: location.origin + "/entrar.html?volta=" + encodeURIComponent(destino()),
+          captchaToken: tkC,
           data: { nome: nome, versao_politica: VERSAO_POLITICA, maior_de_idade: true, novidades: formCriar.novidades.checked }
         }
       }).then(function (r) {
-        if (r.error) { ocupado(botao, false); aviso(avisoCriar, traduzir(r.error)); return; }
+        if (r.error) { renovarCaptcha("captcha-criar"); ocupado(botao, false); aviso(avisoCriar, erroCaptcha(r.error)); return; }
         if (r.data.session) { ir(destino()); return; }
         // Precisa confirmar o e-mail (a mesma tela aparece se o e-mail já tinha conta)
         formCriar.hidden = true;

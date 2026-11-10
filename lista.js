@@ -14,6 +14,11 @@ const SUPABASE_CHAVE = "sb_publishable_PRC9f8FexEHaH6ZGNCaGig_EVXz8JcY";
    Atualize as duas juntas quando a política mudar. */
 const VERSAO_POLITICA = "2026-11-09";
 
+/* Verificação "Não sou um robô" (Cloudflare Turnstile) em criar conta,
+   entrar e recuperar senha. Cole aqui a "Site Key" (chave pública do site).
+   Vazio = sem verificação. Só ligue o CAPTCHA no Supabase DEPOIS de preencher. */
+const TURNSTILE_CHAVE_SITE = "";
+
 /* ======================= fim da área ===================== */
 
 /* ---------- Formulário "Divulgue no Abanô" (anunciantes) ---------- */
