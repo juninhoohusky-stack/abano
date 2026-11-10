@@ -226,7 +226,7 @@ img,svg{display:block}
 .submenu small{margin-left:auto;font-size:var(--t-xs);font-weight:500;color:var(--suave)}
 
 @media (min-width:901px){
-  [id]{scroll-margin-top:88px}
+  [id]{scroll-margin-top:104px}
   .submenu .so-celular-item{display:none}            /* "Novidades" já é aba no computador */
   #menu-mais{left:auto;right:-3px;width:280px}
 }
@@ -438,3 +438,48 @@ main:focus{outline:none}
 
 /* Monitores grandes: um pouco mais de largura para o conteúdo */
 @media (min-width:1600px){:root{--largura:1360px}}
+
+/* ---------- Topo no estilo da página inicial nova ----------
+   Computador: ícone sobre o nome, item atual numa pílula rosa e a frase sob o logo.
+   "Entrar" é o botão cheio; "Participar" fica contornado ao lado dele. */
+.logo-frase{display:none}
+.topo-entrar{background:var(--marca);color:var(--sobre-marca);border-radius:var(--raio-sm);transition:background-color .2s,transform .1s ease-out}
+.topo-entrar:hover{background:var(--marca-esc)}
+.topo-entrar + .topo-cta{background:transparent;color:var(--marca);box-shadow:inset 0 0 0 1.5px var(--marca)}
+.topo-entrar + .topo-cta:hover{background:var(--marca-clara)}
+.topo-cta{border-radius:var(--raio-sm)}
+.topo-entrar:active,.topo-cta:active{transform:scale(.97)}
+@media (min-width:901px){
+  .topo-in{min-height:84px;gap:20px}
+  .topo-logo{display:grid;grid-template-columns:auto auto;column-gap:var(--e-2);row-gap:0;align-items:end}
+  .topo-logo img{grid-row:1 / span 2;align-self:center}
+  .abas{background:none;padding:0;gap:2px;margin:0 auto}
+  .aba{flex-direction:column;gap:3px;min-height:60px;padding:6px 14px;border-radius:var(--raio-sm);font-weight:600;color:var(--tinta)}
+  .aba svg.ico-off{display:block;width:24px;height:24px}
+  .aba .seta{display:none}
+  .aba:hover{color:var(--marca)}
+  .aba[aria-current="page"],.abas.com-pilula .aba[aria-current="page"]{color:var(--sobre-marca)}
+  .aba[aria-current="page"]{background:var(--marca);box-shadow:var(--sombra-botao)}
+  .aba-pilula{top:0;bottom:0;border-radius:var(--raio-sm);background:var(--marca);box-shadow:var(--sombra-botao)}
+  .topo-entrar{margin-left:0;margin-right:var(--e-2);min-height:48px;padding:0 26px;font-weight:700}
+  .topo-cta{min-height:48px;padding:0 22px;font-weight:700}
+  .grupo-menu .submenu{top:calc(100% + 6px)}
+}
+@media (min-width:1200px){
+  .topo-logo{row-gap:2px}
+  .logo-frase{display:block;grid-column:2;font-size:12px;font-weight:700;line-height:1.2;color:var(--tinta);letter-spacing:-.01em;white-space:nowrap}
+}
+@media (min-width:901px) and (max-width:1199px){
+  .aba{padding:6px 10px;font-size:var(--t-sm)}
+  .topo-entrar,.topo-cta{padding:0 16px}
+}
+/* Barra de baixo com 6 itens (Início entrou): em celulares bem estreitos, nome menor para caber */
+@media (max-width:360px){
+  .aba{min-width:0;padding-left:1px;padding-right:1px;font-size:10px;letter-spacing:0}
+  .aba svg{width:24px;height:24px}
+  .topo-in{padding:0 12px;gap:8px}
+  .logo-nome{font-size:22px}
+  .topo-logo img{width:28px;height:28px}
+  .topo-entrar{padding:0 10px}
+  .topo-cta{padding:0 10px}
+}

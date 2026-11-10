@@ -22,11 +22,11 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261110u">
+<link rel="stylesheet" href="site.css?v=20261110v">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261110u" defer></script>
+<script src="site.js?v=20261110v" defer></script>
 <style>
   /* =========================================================
      Página inicial — neurodesign + motion
@@ -369,15 +369,75 @@
     .palco .cao{left:21%}
     .barrinhas i{transform:scaleY(.7)}
   }
+
+  /* ---------- Abertura (modelo novo): texto à esquerda, Husky e gato com cartões à direita ---------- */
+  .hero{grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:var(--e-6);min-height:min(720px,calc(100svh - 84px));padding-top:var(--e-10);padding-bottom:var(--e-12)}
+  .hero::before,.hero::after{display:none}
+  .selo-topo{gap:var(--e-3);padding:6px var(--e-4) 6px 6px;font-size:var(--t-ui);font-weight:500;color:var(--tinta);max-width:100%}
+  .selo-topo b{padding:6px var(--e-3);font-size:var(--t-ui);font-weight:800}
+  .selo-topo strong{font-weight:800}
+  .selo-topo em{font-style:normal;font-weight:800;color:var(--marca)}
+  .titulo-hero{font-size:clamp(44px,5.3vw,78px);line-height:1.04;letter-spacing:-.045em;word-spacing:0;font-weight:900;margin:var(--e-8) 0 var(--e-6)}
+  .titulo-hero .l1{position:relative;display:block;width:fit-content}
+  .titulo-hero .brilhos{position:absolute;right:-.62em;top:-.42em;width:.5em;height:.5em;fill:none;stroke:var(--marca);stroke-width:3.4;stroke-linecap:round}
+  .titulo-hero .destaque{position:relative;display:inline-block;color:var(--marca);white-space:nowrap}
+  .titulo-hero .destaque::after{content:"";position:absolute;left:0;right:4%;bottom:-.16em;height:.17em;pointer-events:none;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 16' preserveAspectRatio='none'%3E%3Cpath d='M4 12C55 4 130 2 196 8' fill='none' stroke='%23FF8A1E' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center/100% 100%}
+  .hero .lead{font-size:var(--t-lead);line-height:1.55;max-width:33em;color:var(--suave)}
+  .hero .acoes{margin-top:var(--e-8);gap:var(--e-4)}
+  .hero .acoes .btn{min-height:58px;padding:0 var(--e-8)}
+  .hero .acoes .btn-sec{background:transparent;color:var(--marca);box-shadow:inset 0 0 0 1.5px var(--marca)}
+  .hero .acoes .btn-sec:hover{background:var(--marca-clara)}
+  .pata-btn{width:22px !important;height:22px !important;margin-right:var(--e-2)}
+
+  .hero-arte{position:relative;width:100%;max-width:700px;aspect-ratio:700/600;margin-left:auto}
+  .arte-fundo{position:absolute;left:0;top:3%;width:90%;height:auto;overflow:visible}
+  .hero-arte .pets{position:absolute;left:1%;bottom:3%;width:88%;height:auto;filter:drop-shadow(0 26px 24px rgba(120,20,60,.16))}
+  .cartao-hero{position:absolute;z-index:2;display:flex;align-items:center;gap:var(--e-3);width:min(240px,36%);padding:var(--e-4) var(--e-5);border-radius:var(--raio-lg);
+    background:var(--superficie);box-shadow:var(--sombra-alta);color:var(--tinta);text-decoration:none;font-size:var(--t-lg);line-height:1.2;transition:transform .3s var(--mola),box-shadow .3s}
+  .cartao-hero b{display:block;font-weight:900}
+  .cartao-hero .ci{flex:none;display:grid;place-items:center;width:56px;height:56px;color:var(--marca)}
+  .cartao-hero .ci svg{width:100%;height:100%}
+  .cartao-hero.c1{right:3%;top:4%;rotate:-4deg}
+  .cartao-hero.c2{right:0;top:37%;rotate:2deg}
+  .cartao-hero.c3{right:1%;top:68%;rotate:-1.5deg}
+  .cartao-hero:hover{transform:translateY(-4px);box-shadow:0 30px 60px -22px rgba(43,22,34,.45),0 0 0 .5px var(--linha)}
+  .tracos{position:absolute;width:40px;height:40px;fill:none;stroke:var(--laranja);stroke-width:3.4;stroke-linecap:round;pointer-events:none}
+  .tracos.t1{right:2%;top:-5%}
+  .tracos.t2{right:5%;bottom:-3%}
+  @media (min-width:1001px) and (max-width:1199px){
+    .cartao-hero{font-size:var(--t-base);padding:var(--e-3) var(--e-4)}
+    .cartao-hero .ci{width:44px;height:44px}
+  }
+  @media (max-width:1000px){
+    .hero{grid-template-columns:1fr;min-height:0;padding-top:var(--e-8);padding-bottom:var(--e-10)}
+    .hero-arte{margin:var(--e-4) auto 0;max-width:600px}
+  }
+  @media (max-width:560px){
+    .selo-topo{font-size:var(--t-xs);gap:var(--e-2)}
+    .selo-topo b{font-size:var(--t-xs);padding:4px var(--e-2)}
+    .titulo-hero{font-size:clamp(36px,11vw,48px);margin:var(--e-5) 0 var(--e-4)}
+    .hero .acoes .btn{width:100%;min-height:54px}
+    .hero-arte{aspect-ratio:700/640}
+    .hero-arte .pets{width:88%}
+    .cartao-hero{width:auto;max-width:46%;gap:var(--e-2);padding:var(--e-2) var(--e-3);border-radius:var(--raio-sm);font-size:var(--t-xs)}
+    .cartao-hero .ci{width:30px;height:30px}
+    .cartao-hero.c1{top:0;right:0}
+    .cartao-hero.c2{display:none}
+    .cartao-hero.c3{top:auto;bottom:-2%;right:0}
+    .tracos{width:28px;height:28px}
+  }
+  @media (prefers-reduced-motion:reduce){.cartao-hero{transition:none}.cartao-hero:hover{transform:none}}
 </style>
 </head>
 <body>
 
 <header class="topo">
   <div class="topo-in">
-    <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial"><img src="logo-pata.svg" alt="" width="38" height="38"><span class="logo-nome" aria-hidden="true">aban<span class="logo-o">o<svg viewBox="0 0 26 13" aria-hidden="true"><ellipse cx="4.6" cy="8.2" rx="3.6" ry="3.9"/><ellipse cx="13" cy="4.4" rx="3.7" ry="4.1"/><ellipse cx="21.4" cy="8.2" rx="3.6" ry="3.9"/></svg></span></span></a>
+    <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial"><img src="logo-pata.svg" alt="" width="38" height="38"><span class="logo-nome" aria-hidden="true">aban<span class="logo-o">o<svg viewBox="0 0 26 13" aria-hidden="true"><ellipse cx="4.6" cy="8.2" rx="3.6" ry="3.9"/><ellipse cx="13" cy="4.4" rx="3.7" ry="4.1"/><ellipse cx="21.4" cy="8.2" rx="3.6" ry="3.9"/></svg></span></span><span class="logo-frase">O universo pet em um só lugar</span></a>
     <nav class="abas" aria-label="Seções do site">
       <span class="aba-pilula" aria-hidden="true"></span>
+      <a href="index.html" class="aba" aria-current="page"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5"/><path d="M6 9v10.5a.5.5 0 0 0 .5.5H10v-5.5h4V20h3.5a.5.5 0 0 0 .5-.5V9"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.4 3.2a1 1 0 0 1 1.2 0l8 6.4a.8.8 0 0 1-1 1.3l-.4-.3v9.2a1.4 1.4 0 0 1-1.4 1.4h-3.6v-5.6h-4.4v5.6H6.2a1.4 1.4 0 0 1-1.4-1.4v-9.2l-.4.3a.8.8 0 0 1-1-1.3z"/></svg><span>Início</span></a>
       <a href="comunidade/" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-3.5 3v-3H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/><path d="M17 9.5h3a2 2 0 0 1 2 2v5.5a2 2 0 0 1-2 2h-1v2.5L16 19h-3.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 5h11a2.5 2.5 0 0 1 2.5 2.5v6A2.5 2.5 0 0 1 15 16H9.3l-3.6 3.1a.6.6 0 0 1-1-.45V16H4a2.5 2.5 0 0 1-2.5-2.5v-6A2.5 2.5 0 0 1 4 5z"/><path d="M19 9a2.5 2.5 0 0 1 2.5 2.5V17a2.5 2.5 0 0 1-2.5 2.5h-.6v2a.6.6 0 0 1-1 .45L14.6 19.5H12a2.5 2.5 0 0 1-2-1h5a3.5 3.5 0 0 0 3.5-3.5V9z"/></svg><span>Comunidade</span></a>
       <div class="grupo-menu">
         <button type="button" class="aba aba-menu" aria-expanded="false" aria-controls="menu-servicos"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="3.5" y="12.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="12.5" width="8" height="8" rx="2.2"/></svg><span>Serviços</span><svg class="seta" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></button>
@@ -393,7 +453,7 @@
         </div>
       </div>
       <a href="calculadora.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.2" y="2.2" width="15.6" height="19.6" rx="3.6" fill="currentColor"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01" fill="none" stroke-width="2" stroke-linecap="round" style="stroke:var(--superficie)"/></svg><span>Calculadora</span></a>
-      <a href="husky-solta-muito-pelo.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.3 5.6A3.3 3.3 0 0 1 6.6 2.3h14.1v16.3H6.6a1.6 1.6 0 1 0 0 3.2h14.1v1.4H6.6a3.3 3.3 0 0 1-3.3-3.3z"/></svg><span>Guia do Husky</span></a>
+      <a href="husky-solta-muito-pelo.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.3 5.6A3.3 3.3 0 0 1 6.6 2.3h14.1v16.3H6.6a1.6 1.6 0 1 0 0 3.2h14.1v1.4H6.6a3.3 3.3 0 0 1-3.3-3.3z"/></svg><span>Guia pet</span></a>
       <a href="novidades.html" class="aba so-desktop"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.6 2.4H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8a6.6 6.6 0 0 0-6.6 6.6v5.9l-1.8 2.9a.8.8 0 0 0 .7 1.2h15.4a.8.8 0 0 0 .7-1.2l-1.8-2.9V9.4A6.6 6.6 0 0 0 12 2.8z"/><path d="M9.5 20.6a2.6 2.6 0 0 0 5 0z"/></svg><span>Novidades</span></a>
       <a href="sobre.html" class="aba so-desktop aba-extra"><span>Nossa história</span></a>
       <a href="anuncie.html" class="aba so-desktop aba-extra"><span>Divulgue</span></a>
@@ -414,78 +474,29 @@
 <main>
   <!-- 1. ABERTURA: movimento chama o olhar; slogan repetido fixa a marca -->
   <div class="wrap hero">
-    <div>
-      <span class="selo-topo surge" style="--i:0"><b>No ar</b> Calculadora de custos e Guia do Husky</span>
-      <h1 class="titulo-hero surge" style="--i:1">
-        <span class="linha">Tem pet?</span>
-        <span class="linha" aria-hidden="true">Tem <span class="rotativo" id="rotativo"><span class="ativa">eventos.</span><span>hospedagem.</span><span>veterinário.</span><span>adoção.</span><span>doador.</span><span class="fim"><em>no Abanô.</em></span></span></span>
-        <span class="sr">Tem no Abanô.</span>
-      </h1>
-      <p class="lead surge" style="--i:2">Tudo pra cães e gatos num lugar só, perto de você. Pare de procurar em dez sites e cuide do seu pet com tranquilidade.</p>
+    <div class="hero-texto">
+      <p class="selo-topo surge" style="--i:0"><b>No ar</b><span>Tem <strong>pet?</strong> <em>Tem eventos?</em> Tem <strong>hospedagem?</strong> Tem <strong>adoção?</strong></span></p>
+      <h1 class="titulo-hero surge" style="--i:1"><span class="l1">Seu mundo pet,<svg class="brilhos" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 6l5 9M22 3l-1 10M33 12l-9 5"/></svg></span> em um <span class="destaque">só lugar.</span></h1>
+      <p class="lead surge" style="--i:2">Encontre serviços, descubra eventos, participe da comunidade e tenha tudo o que seu pet precisa a poucos cliques de distância.</p>
       <div class="acoes surge" style="--i:3">
-        <a href="cadastro.html?volta=%2Fcomunidade%2F" class="btn btn-grande btn-brilho" data-cta-comunidade>Fazer parte da Comunidade</a>
-        <a href="calculadora.html" class="btn btn-sec btn-grande">Calcular os gastos do meu pet</a>
+        <a href="comunidade/" class="btn btn-grande btn-brilho"><svg class="pata-btn" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="6" cy="10" rx="2.2" ry="2.7"/><ellipse cx="10" cy="6" rx="2.2" ry="2.8"/><ellipse cx="14.5" cy="6" rx="2.2" ry="2.8"/><ellipse cx="18.4" cy="10" rx="2.2" ry="2.7"/><path d="M12.2 11.5c2.6 0 5.3 3.4 5.3 5.8 0 1.9-1.5 2.7-3 2.7-1 0-1.6-.5-2.3-.5s-1.4.5-2.4.5c-1.5 0-3-.8-3-2.7 0-2.4 2.8-5.8 5.4-5.8z"/></svg>Explorar Abanô</a>
+        <a href="#servicos" class="btn btn-sec btn-grande">Conhecer serviços</a>
       </div>
     </div>
 
-    <div class="palco surge" style="--i:3" id="palco" aria-hidden="true">
-      <!-- Chão do palco: as pegadas do Juninho aparecem aqui -->
-      <div class="chao" id="chao"></div>
-      <!-- Juninho em 3D (gerado por IA a partir de um reel dele), separado em partes para se mexer -->
-      <div class="cao" id="cao">
-        <div class="cao-corpo">
-          <span class="sombra-cao"></span>
-          <div class="cao-img" id="cao-img">
-            <!-- Juninho 2D, de perfil (olhando para a esquerda). Cada pata é uma peça
-                 separada, com o próprio ponto de giro, para o ciclo de caminhada. -->
-            <svg viewBox="0 0 240 190" role="img" aria-label="Juninho, husky siberiano, em desenho">
-              <!-- patas do lado de lá (mais claras, atrás do corpo) -->
-              <g class="perna fundo-frente"><path d="M107 104h15l-2 70q0 6-6 6h-3q-6 0-5-6z" fill="#C9C7BF"/><ellipse cx="111" cy="180" rx="9" ry="4.5" fill="#C9C7BF"/></g>
-              <g class="perna fundo-tras"><path d="M152 104h17l-3 34-2 36q0 6-6 6h-3q-6 0-5-6l1-36z" fill="#C9C7BF"/><ellipse cx="157" cy="180" rx="9" ry="4.5" fill="#C9C7BF"/></g>
-              <g class="tronco">
-                <!-- rabo enrolado sobre as costas -->
-                <g class="rabo">
-                  <path d="M186 94C214 92 230 62 220 38 213 21 193 17 184 29c11 2 20 13 16 28-4 14-14 21-24 25z" fill="#3E4651"/>
-                  <path d="M184 29c9-12 29-8 36 9-7-6-18-8-27-4-3 1-6 0-9-5z" fill="#F6F5F1"/>
-                  <path d="M188 92c14-2 25-12 30-26-1 13-12 26-30 30z" fill="#F6F5F1" opacity=".9"/>
-                </g>
-                <!-- corpo: costas escuras, barriga branca -->
-                <path d="M72 92c6-22 36-28 68-27 32 0 58 9 60 31 2 17-12 27-34 28H104C84 124 68 110 72 92z" fill="#3E4651"/>
-                <path d="M84 108c18 14 74 16 104 2-2 9-16 16-36 16h-46c-14 0-22-8-22-18z" fill="#F6F5F1"/>
-                <path d="M120 70c18-3 44-1 60 8-16-3-40-4-60-2z" fill="#4C5561" opacity=".7"/>
-              </g>
-              <!-- patas do lado de cá -->
-              <g class="perna perto-tras"><ellipse cx="172" cy="108" rx="17" ry="15" fill="#3E4651"/><path d="M164 112h18l-3 62q0 6-6 6h-4q-6 0-5-6z" fill="#F6F5F1"/><ellipse cx="172" cy="181" rx="10" ry="5" fill="#F6F5F1"/></g>
-              <g class="perna perto-frente"><ellipse cx="95" cy="104" rx="14" ry="13" fill="#3E4651"/><path d="M87 106h16l-1 68q0 6-6 6h-3q-6 0-6-6z" fill="#F6F5F1"/><ellipse cx="95" cy="181" rx="10" ry="5" fill="#F6F5F1"/></g>
-              <!-- peito, coleira e cabeça -->
-              <g class="tronco">
-                <path d="M66 82c12-8 30-4 32 10 2 14-12 22-26 18-10-3-14-20-6-28z" fill="#F6F5F1"/>
-                <path d="M70 80q14-4 26 6l-4 7q-10-8-22-6z" fill="#5CC2A8"/>
-                <circle cx="90" cy="96" r="4.2" fill="#F2C14E"/>
-                <g class="cabeca">
-                  <path d="M50 42l4-30 16 27z" fill="#2F353D"/>
-                  <ellipse cx="62" cy="58" rx="28" ry="25" fill="#3E4651"/>
-                  <g class="orelha"><path d="M62 38l11-32 16 32z" fill="#3E4651"/><path d="M68 34l5-17 9 17z" fill="#E9A79A"/></g>
-                  <path d="M88 62c-1 15-14 25-32 25H32c-11 0-16-7-12-14 5-6 14-7 21-10 5-8 11-11 15-4 4-7 13-9 18-2 6-3 14 0 14 5z" fill="#F6F5F1"/>
-                  <ellipse cx="38" cy="74" rx="21" ry="12" fill="#F6F5F1"/>
-                  <circle cx="61" cy="47" r="4" fill="#F6F5F1"/>
-                  <g class="olho">
-                    <ellipse cx="58" cy="58" rx="7" ry="5.4" fill="#2B3036"/>
-                    <circle cx="57" cy="58" r="4.2" fill="#7CC4E8"/>
-                    <circle cx="56.4" cy="58.2" r="2.1" fill="#1B1F24"/>
-                    <circle cx="55.4" cy="56.6" r="1.2" fill="#fff"/>
-                  </g>
-                  <ellipse cx="19" cy="70" rx="6" ry="4.8" fill="#1F2328"/>
-                  <ellipse cx="17.5" cy="68.6" rx="2" ry="1.1" fill="#fff" opacity=".4"/>
-                  <path d="M34 81q5 1 10 0 1 11-5 12-6-1-5-12z" fill="#EF8E8E"/>
-                  <path d="M22 77q12 9 28 3" fill="none" stroke="#2B3036" stroke-width="2.4" stroke-linecap="round"/>
-                </g>
-              </g>
-            </svg>
-          </div>
-        </div>
-        <span class="balao" id="balao">Au au!</span>
-      </div>
+    <div class="hero-arte surge" style="--i:2">
+      <svg class="arte-fundo" viewBox="0 0 600 560" aria-hidden="true">
+        <circle cx="58" cy="392" r="74" fill="var(--laranja)"/>
+        <ellipse cx="530" cy="500" rx="78" ry="44" fill="#FFD43B"/>
+        <path d="M150 92C222 22 360 2 462 40c92 34 122 122 112 212-8 80 18 148-22 206-42 60-142 70-252 60-110-10-196-34-236-112C24 330 62 178 150 92z" fill="var(--marca)"/>
+        <path d="M445 175c-8-14-28-12-31 3-3-15-24-17-31-3-9 18 15 37 31 47 16-10 40-29 31-47z" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+      </svg>
+      <img class="pets" src="imagens/hero-pets.webp" width="900" height="651" alt="Husky e gato abraçados e felizes, com bandanas rosa e pêssego" fetchpriority="high" decoding="async">
+      <a class="cartao-hero c1" href="eventos.html"><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><g fill="currentColor" stroke="none"><circle cx="9.6" cy="13.2" r="1"/><circle cx="12" cy="12.3" r="1"/><circle cx="14.4" cy="13.2" r="1"/><path d="M12 14.4c1.2 0 2.3 1.4 2.3 2.4 0 .8-.6 1.1-1.2 1.1-.4 0-.7-.2-1.1-.2s-.7.2-1.1.2c-.6 0-1.2-.3-1.2-1.1 0-1 1.1-2.4 2.3-2.4z"/></g></svg></span><span><b>Eventos</b> perto de você</span></a>
+      <a class="cartao-hero c2" href="#servicos"><span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.5s-7.5-6.4-7.5-12a7.5 7.5 0 0 1 15 0c0 5.6-7.5 12-7.5 12z"/><g fill="currentColor" stroke="none"><circle cx="9.3" cy="8.6" r="1.1"/><circle cx="12" cy="7.4" r="1.1"/><circle cx="14.7" cy="8.6" r="1.1"/><path d="M12 10.2c1.3 0 2.6 1.6 2.6 2.7 0 .9-.7 1.3-1.4 1.3-.5 0-.8-.3-1.2-.3s-.7.3-1.2.3c-.7 0-1.4-.4-1.4-1.3 0-1.1 1.3-2.7 2.6-2.7z"/></g></svg></span><span><b>Serviços</b> na sua região</span></a>
+      <a class="cartao-hero c3" href="comunidade/"><span class="ci"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="7" r="3.3"/><circle cx="5" cy="9" r="2.4"/><circle cx="19" cy="9" r="2.4"/><path d="M5.8 19.5c0-3.6 2.8-6.3 6.2-6.3s6.2 2.7 6.2 6.3c0 .6-.4 1-1 1H6.8c-.6 0-1-.4-1-1z"/><path d="M4.3 13.1c-1.9.3-3.3 1.9-3.3 3.9 0 .5.4.9.9.9h2.5c.1-1.8.6-3.4 1.6-4.7a4 4 0 0 0-1.7-.1zM19.7 13.1c1.9.3 3.3 1.9 3.3 3.9 0 .5-.4.9-.9.9h-2.5c-.1-1.8-.6-3.4-1.6-4.7a4 4 0 0 1 1.7-.1z"/></svg></span><span><b>Comunidade</b> Abanô</span></a>
+      <svg class="tracos t1" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 26l4-12M18 30l10-12M24 36l12-4"/></svg>
+      <svg class="tracos t2" viewBox="0 0 40 40" aria-hidden="true"><path d="M6 10l2 14M18 6l3 14M30 10l-4 13"/></svg>
     </div>
   </div>
 
@@ -543,7 +554,7 @@
   </section>
 
   <!-- 4. MOSAICO: o que já funciona em destaque (prova concreta) + o que vem -->
-  <section style="padding-top:0">
+  <section id="servicos" style="padding-top:0">
     <div class="wrap">
       <div class="titulo-secao" data-revelar>
         <h2>Tudo do seu pet, num lugar só.</h2>
