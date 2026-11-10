@@ -34,6 +34,9 @@
   .vazio{color:var(--suave);font-size:15px}
   .acoes{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 26px}
   .nota{font-size:13px;color:var(--suave);margin-top:18px}
+  .nav-admin{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+  .nav-admin a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;background:var(--superficie);box-shadow:var(--sombra);font-weight:800;text-decoration:none;color:var(--tinta)}
+  .nav-admin a[aria-current=page]{background:var(--marca);color:#fff}
   [hidden]{display:none !important}
   @media (max-width:800px){.grade{grid-template-columns:1fr}.kpi{padding:16px}.kpi b{font-size:28px}.painel{padding:24px 16px 32px}.topo-admin{padding:12px 16px}}
 </style>
@@ -47,7 +50,11 @@
 </header>
 
 <main class="painel">
-  <span class="eyebrow">Área administrativa</span>
+  <nav class="nav-admin" aria-label="Área administrativa">
+    <a href="admin/moderacao.html">Moderação</a>
+    <a href="admin/pesquisa.html" aria-current="page">Pesquisa dos Huskies</a>
+    <a href="comunidade/">Ver a Comunidade</a>
+  </nav>
   <h1>Pesquisa: Onde estão os Huskies do Brasil?</h1>
   <p class="sub">Resultados reais da página <a href="pesquisa-huskies/">/pesquisa-huskies/</a>. Nada aqui é estimado ou simulado.</p>
 

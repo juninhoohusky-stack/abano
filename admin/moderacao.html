@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<base href="/">
+<title>Moderação | Abanô</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="site.css?v=20261110c">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
+<script src="lista.js?v=20261110d" defer></script>
+<style>
+  .painel{max-width:980px;margin:0 auto;padding:28px 20px 48px}
+  .topo-admin{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:980px;margin:0 auto;padding:12px 20px}
+  .topo-admin .quem{font-size:14px;color:var(--suave);display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+  .nav-admin{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+  .nav-admin a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;background:var(--superficie);box-shadow:var(--sombra);font-weight:800;text-decoration:none;color:var(--tinta)}
+  .nav-admin a[aria-current=page]{background:var(--marca);color:#fff}
+  h1{font-size:clamp(28px,4vw,40px);margin:4px 0 6px}
+  .sub{color:var(--suave);margin-bottom:20px}
+  .caixa{padding:36px 26px;border-radius:24px;background:var(--superficie);box-shadow:var(--sombra);text-align:center;max-width:520px;margin:36px auto}
+  .caixa p{color:var(--suave);margin:10px 0 20px}
+  .abas{display:flex;gap:6px;margin-bottom:16px}
+  .abas button{min-height:42px;padding:0 18px;border:0;border-radius:999px;background:var(--superficie);box-shadow:var(--sombra);font:inherit;font-weight:800;color:var(--suave);cursor:pointer}
+  .abas button[aria-pressed=true]{background:var(--marca);color:#fff}
+  .lista{display:grid;gap:14px}
+  .den{padding:18px;border-radius:22px;background:var(--superficie);box-shadow:var(--sombra)}
+  .den-topo{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;font-size:14px;color:var(--suave)}
+  .tag{display:inline-flex;align-items:center;min-height:26px;padding:0 10px;border-radius:999px;background:var(--marca-clara);color:var(--marca);font-weight:800;font-size:13px}
+  .tag.n{background:var(--acento-claro);color:var(--acento)}
+  .conteudo{padding:12px 14px;border-radius:14px;background:var(--fundo);margin-bottom:12px;font-size:15.5px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+  .conteudo .autor{display:block;font-weight:800;margin-bottom:4px;white-space:normal}
+  .conteudo img{width:96px;height:96px;object-fit:cover;border-radius:10px;margin:8px 6px 0 0}
+  .detalhe{font-size:14.5px;color:var(--suave);margin-bottom:12px}
+  .acoes{display:flex;flex-wrap:wrap;gap:8px}
+  .acoes .btn{min-height:42px;padding:0 16px;font-size:14.5px}
+  .btn-perigo{background:#B3123E}
+  .btn-perigo:hover{background:#8F0E31}
+  .vazio{color:var(--suave);text-align:center;padding:30px}
+  form.evento{display:grid;gap:12px;padding:22px;border-radius:22px;background:var(--superficie);box-shadow:var(--sombra)}
+  form.evento label{font-weight:800;font-size:14px;display:grid;gap:6px}
+  form.evento input,form.evento textarea,form.evento select{min-height:46px;padding:10px 14px;border:1.5px solid transparent;border-radius:14px;background:var(--areia);font:inherit;font-size:16px;color:var(--tinta)}
+  .duas{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .aviso{padding:12px 14px;border-radius:14px;background:var(--marca-clara);color:var(--marca-esc);font-weight:700}
+  .aviso.ok{background:var(--lima-clara);color:var(--sobre-lima)}
+  .eventos-lista{margin-top:16px;display:grid;gap:8px}
+  .eventos-lista li{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--superficie);box-shadow:var(--sombra)}
+  [hidden]{display:none !important}
+  @media (max-width:640px){.duas{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="topo">
+  <div class="topo-admin">
+    <a href="index.html" class="topo-logo" aria-label="Abanô, página inicial"><img src="logo-pata.svg" alt="" width="38" height="38"><span class="logo-nome" aria-hidden="true">aban<span class="logo-o">o<svg viewBox="0 0 26 13" aria-hidden="true"><ellipse cx="4.6" cy="8.2" rx="3.6" ry="3.9"/><ellipse cx="13" cy="4.4" rx="3.7" ry="4.1"/><ellipse cx="21.4" cy="8.2" rx="3.6" ry="3.9"/></svg></span></span></a>
+    <div class="quem" id="quem" hidden><span id="quem-email"></span><button class="btn btn-sec" id="sair" type="button">Sair</button></div>
+  </div>
+</header>
+
+<main class="painel">
+  <nav class="nav-admin" aria-label="Área administrativa">
+    <a href="admin/moderacao.html" aria-current="page">Moderação</a>
+    <a href="admin/pesquisa.html">Pesquisa dos Huskies</a>
+    <a href="comunidade/">Ver a Comunidade</a>
+  </nav>
+  <h1>Moderação da Comunidade</h1>
+  <p class="sub">Denúncias enviadas pelos tutores. Conteúdo com 5 denúncias de pessoas diferentes sai do ar sozinho até você revisar.</p>
+
+  <div class="caixa" id="tela-entrar" hidden>
+    <h2>Entre para moderar</h2>
+    <p>Só administradores do Abanô têm acesso.</p>
+    <button class="btn" id="entrar" type="button">Entrar com o Google</button>
+  </div>
+  <div class="caixa" id="tela-negado" hidden>
+    <h2>Acesso restrito</h2>
+    <p>Esta conta não está na lista de administradores.</p>
+  </div>
+  <div class="caixa" id="tela-erro" hidden><h2>Não deu para carregar</h2><p id="erro-msg"></p></div>
+
+  <section id="tela-dados" hidden>
+    <div class="abas" role="group" aria-label="Filtro">
+      <button type="button" data-status="aberta" aria-pressed="true">Abertas</button>
+      <button type="button" data-status="fechadas" aria-pressed="false">Resolvidas</button>
+      <button type="button" data-status="eventos" aria-pressed="false">Eventos</button>
+    </div>
+    <div class="lista" id="lista"></div>
+
+    <div id="tela-eventos" hidden>
+      <form class="evento" id="form-evento" novalidate>
+        <h2>Cadastrar evento</h2>
+        <label>Título<input name="titulo" maxlength="120" required></label>
+        <div class="duas">
+          <label>Data e hora<input name="inicio" type="datetime-local" required></label>
+          <label>Clube (opcional)<select name="clube" id="evento-clube"><option value="">Nenhum</option></select></label>
+        </div>
+        <div class="duas">
+          <label>Cidade<input name="cidade" maxlength="80"></label>
+          <label>Estado<input name="estado" maxlength="2" placeholder="RJ"></label>
+        </div>
+        <label>Local<input name="local" maxlength="160"></label>
+        <label>Link com mais informações (https://)<input name="link" type="url" placeholder="https://"></label>
+        <label>Descrição<textarea name="descricao" maxlength="2000" rows="3"></textarea></label>
+        <p class="aviso" id="evento-aviso" hidden></p>
+        <button class="btn" type="submit">Publicar evento</button>
+      </form>
+      <ul class="eventos-lista" id="eventos-lista"></ul>
+    </div>
+  </section>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_CHAVE, { auth: { flowType: "pkce", persistSession: true, detectSessionInUrl: true } });
+  var $ = function (id) { return document.getElementById(id); };
+  var PASTA = SUPABASE_URL + "/storage/v1/object/public/fotos/";
+  var telas = ["tela-entrar", "tela-negado", "tela-erro", "tela-dados"];
+  function mostrar(id) { telas.forEach(function (t) { $(t).hidden = t !== id; }); }
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var MOTIVOS = { spam: "Spam", venda: "Venda de animais", ofensa: "Ofensa ou assédio", golpe: "Golpe", improprio: "Impróprio ou maus-tratos", dados_pessoais: "Dados pessoais", saude: "Saúde perigosa", outro: "Outro" };
+  var ACOES = { remover: "Conteúdo removido", restaurar: "Conteúdo restaurado", descartar: "Denúncia descartada", suspender: "Autor suspenso", reativar: "Autor reativado" };
+  var status = "aberta";
+
+  function blocoConteudo(d) {
+    if (d.post) {
+      var p = d.post, fotos = (p.fotos || []).filter(function (f) { return String(f).indexOf(PASTA) === 0; });
+      return '<div class="conteudo"><span class="autor">Publicação de ' + esc(p.autor.nome) + ' (@' + esc(p.autor.usuario) + ')' + (p.autor.suspenso ? " · suspenso" : "") + (p.removido ? " · fora do ar" : "") +
+        ' · <a href="comunidade/?p=' + encodeURIComponent(p.id) + '" target="_blank" rel="noopener">abrir</a></span>' + esc(p.texto || "(sem texto)") +
+        (p.video_url ? "\nVídeo: " + esc(p.video_url) : "") + (fotos.length ? "<br>" + fotos.map(function (f) { return '<img src="' + esc(f) + '" alt="">'; }).join("") : "") + "</div>";
+    }
+    if (d.comentario) {
+      var c = d.comentario;
+      return '<div class="conteudo"><span class="autor">Comentário de ' + esc(c.autor.nome) + ' (@' + esc(c.autor.usuario) + ')' + (c.autor.suspenso ? " · suspenso" : "") + (c.removido ? " · fora do ar" : "") +
+        ' · <a href="comunidade/?p=' + encodeURIComponent(c.post) + '#comentarios" target="_blank" rel="noopener">abrir</a></span>' + esc(c.texto) + "</div>";
+    }
+    if (d.perfil) {
+      var u = d.perfil;
+      return '<div class="conteudo"><span class="autor">Perfil de ' + esc(u.nome) + ' (@' + esc(u.usuario) + ')' + (u.suspenso ? " · suspenso" : "") +
+        ' · <a href="comunidade/?u=' + encodeURIComponent(u.usuario) + '" target="_blank" rel="noopener">abrir</a></span>' + esc(u.bio || "(sem bio)") + "</div>";
+    }
+    return '<div class="conteudo">O conteúdo denunciado já foi apagado.</div>';
+  }
+  function botoes(d) {
+    if (d.status !== "aberta") return '<p class="detalhe">' + esc(ACOES[d.acao] || d.status) + (d.resolvida_por ? " por " + esc(d.resolvida_por) : "") + "</p>" +
+      (d.post && d.post.removido || d.comentario && d.comentario.removido ? '<div class="acoes"><button class="btn btn-sec" data-acao="restaurar" data-id="' + d.id + '">Restaurar conteúdo</button></div>' : "") +
+      ((d.post && d.post.autor.suspenso) || (d.comentario && d.comentario.autor.suspenso) || (d.perfil && d.perfil.suspenso) ? '<div class="acoes" style="margin-top:8px"><button class="btn btn-sec" data-acao="reativar" data-id="' + d.id + '">Reativar autor</button></div>' : "");
+    var temConteudo = d.post || d.comentario;
+    return '<div class="acoes">' +
+      (temConteudo ? '<button class="btn btn-perigo" data-acao="remover" data-id="' + d.id + '">Tirar do ar</button>' : "") +
+      '<button class="btn btn-sec" data-acao="descartar" data-id="' + d.id + '">Descartar denúncia</button>' +
+      (d.post || d.comentario || d.perfil ? '<button class="btn btn-sec" data-acao="suspender" data-id="' + d.id + '">Suspender autor</button>' : "") +
+      "</div>";
+  }
+  function desenhar(lista) {
+    $("lista").innerHTML = lista.length ? lista.map(function (d) {
+      return '<article class="den"><div class="den-topo"><span class="tag">' + esc(MOTIVOS[d.motivo] || d.motivo) + "</span>" +
+        (d.total_denuncias > 1 ? '<span class="tag n">' + d.total_denuncias + " denúncias</span>" : "") +
+        "<span>" + new Date(d.criado_em).toLocaleString("pt-BR") + (d.denunciante ? " · por @" + esc(d.denunciante) : "") + "</span></div>" +
+        blocoConteudo(d) + (d.detalhe ? '<p class="detalhe">“' + esc(d.detalhe) + "”</p>" : "") + botoes(d) + "</article>";
+    }).join("") : '<p class="vazio">' + (status === "aberta" ? "Nenhuma denúncia aberta. Tudo tranquilo por aqui." : "Nenhuma denúncia resolvida ainda.") + "</p>";
+  }
+  function carregar() {
+    $("tela-eventos").hidden = status !== "eventos";
+    $("lista").hidden = status === "eventos";
+    if (status === "eventos") { carregarEventos(); return; }
+    $("lista").innerHTML = '<p class="vazio">Carregando…</p>';
+    sb.rpc("moderacao_lista", { p_status: status }).then(function (r) {
+      if (r.error) {
+        if (r.error.code === "42501") { mostrar("tela-negado"); return; }
+        $("erro-msg").textContent = r.error.message; mostrar("tela-erro"); return;
+      }
+      mostrar("tela-dados");
+      desenhar(r.data || []);
+    });
+  }
+  $("lista").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-acao]"); if (!b) return;
+    var acao = b.dataset.acao;
+    if (acao === "suspender" && !confirm("Suspender este autor? Ele continua vendo a comunidade, mas não publica, comenta nem curte até ser reativado.")) return;
+    b.disabled = true;
+    sb.rpc("moderar", { p_denuncia: Number(b.dataset.id), p_acao: acao }).then(function (r) {
+      if (r.error) { alert(r.error.message); b.disabled = false; return; }
+      carregar();
+    });
+  });
+  document.querySelectorAll(".abas button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      status = b.dataset.status;
+      document.querySelectorAll(".abas button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      carregar();
+    });
+  });
+
+  // Eventos
+  function carregarEventos() {
+    sb.from("clubes").select("id,nome").order("ordem").then(function (r) {
+      var sel = $("evento-clube");
+      if (sel.options.length < 2) (r.data || []).forEach(function (c) { var o = document.createElement("option"); o.value = c.id; o.textContent = c.nome; sel.appendChild(o); });
+    });
+    sb.from("eventos").select("*").order("inicio", { ascending: false }).limit(50).then(function (r) {
+      $("eventos-lista").innerHTML = (r.data || []).map(function (e) {
+        return "<li><span><b>" + esc(e.titulo) + "</b><br><small>" + new Date(e.inicio).toLocaleString("pt-BR") + (e.cidade ? " · " + esc(e.cidade) : "") + '</small></span><button class="btn btn-sec" data-ev="' + esc(e.id) + '">Apagar</button></li>';
+      }).join("") || '<li><span>Nenhum evento cadastrado.</span></li>';
+    });
+  }
+  $("eventos-lista").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-ev]"); if (!b || !confirm("Apagar este evento?")) return;
+    sb.from("eventos").delete().eq("id", b.dataset.ev).then(function (r) { if (r.error) alert(r.error.message); carregarEventos(); });
+  });
+  $("form-evento").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var f = e.target, av = $("evento-aviso");
+    var link = f.link.value.trim();
+    if (f.titulo.value.trim().length < 3 || !f.inicio.value) { av.textContent = "Preencha o título e a data."; av.className = "aviso"; av.hidden = false; return; }
+    if (link && !/^https:\/\//i.test(link)) { av.textContent = "O link precisa começar com https://"; av.className = "aviso"; av.hidden = false; return; }
+    var uf = f.estado.value.trim().toUpperCase();
+    sb.from("eventos").insert({
+      titulo: f.titulo.value.trim(), inicio: new Date(f.inicio.value).toISOString(), clube: f.clube.value || null,
+      cidade: f.cidade.value.trim() || null, estado: uf || null, local: f.local.value.trim() || null,
+      link: link || null, descricao: f.descricao.value.trim() || null
+    }).then(function (r) {
+      av.hidden = false;
+      if (r.error) { av.textContent = r.error.message; av.className = "aviso"; return; }
+      av.textContent = "Evento publicado."; av.className = "aviso ok"; f.reset(); carregarEventos();
+    });
+  });
+
+  $("entrar").addEventListener("click", function () {
+    sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + "/admin/moderacao.html" } });
+  });
+  $("sair").addEventListener("click", function () { sb.auth.signOut().then(function () { location.reload(); }); });
+  sb.auth.getSession().then(function (r) {
+    var s = r.data.session;
+    if (!s) { mostrar("tela-entrar"); return; }
+    $("quem").hidden = false;
+    $("quem-email").textContent = s.user.email;
+    carregar();
+  });
+});
+</script>
+</body>
+</html>

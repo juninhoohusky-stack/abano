@@ -1,0 +1,24 @@
+name: Limpar fotos de contas excluídas
+
+# Todo dia de madrugada (horário de Brasília) ou manualmente pela aba Actions
+on:
+  schedule:
+    - cron: "30 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  limpar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apagar fotos sem dono
+        run: node scripts/limpar-fotos.mjs
+        env:
+          SUPABASE_URL: https://igpwzidpiypzukmnskdb.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}

@@ -488,7 +488,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (r.ok) { concluir(); return; }
       if (r.status === 409) { concluir(); return; }                 // este e-mail já respondeu
       return r.json().then(function (j) {
-        if (j && j.code === "P0001") erro("Muitas respostas ao mesmo tempo. Espere alguns segundos e envie de novo.");
+        if (j && j.code === "P0001") erro(j.message || "Muitos envios seguidos. Tente de novo mais tarde.");
         else erro("Não conseguimos salvar agora. Confira as respostas e tente de novo.");
       }, function () { erro("Não conseguimos salvar agora. Tente de novo em instantes."); });
     }).catch(function () {

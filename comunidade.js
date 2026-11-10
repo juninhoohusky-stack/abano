@@ -12,7 +12,7 @@
   const POR_PAGINA = 15;
   const SEL = "*, perfil:perfis(id,usuario,nome,foto_url), clube_info:clubes(id,nome)";
   const PASTA_FOTOS = SUPABASE_URL + "/storage/v1/object/public/fotos/";
-  const est = { sessao: null, eu: null, curtidas: new Set(), salvos: new Set(), votos: new Map(), clubes: new Set(), seguindo: new Set(), posts: new Map() };
+  const est = { sessao: null, eu: null, curtidas: new Set(), salvos: new Set(), votos: new Map(), clubes: new Set(), seguindo: new Set(), bloqueados: new Set(), posts: new Map() };
 
   // ---------- Utilidades ----------
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -75,6 +75,10 @@
   // ---------- Login para agir (com volta para a ação) ----------
   const CHAVE_ACAO = "abano-acao";
   function exigir(acao) {
+    if (est.eu && est.eu.suspenso && acao && acao.tipo !== "denunciar") {
+      toast("Sua conta está suspensa pela moderação. Escreva para contato@abano.com.br se achar que foi um engano.");
+      return false;
+    }
     if (est.sessao && est.eu && est.eu.aceitou) return true;
     if (est.sessao && est.eu && !est.eu.aceitou) {
       guardarAcao(acao);
@@ -91,7 +95,7 @@
   const TITULOS_LOGIN = {
     curtir: "Gostou dessa publicação?", comentar: "Quer participar da conversa?", salvar: "Quer guardar essa publicação?",
     votar: "Quer votar nessa enquete?", publicar: "Quer compartilhar com a comunidade?", participar: "Quer participar desse clube?",
-    seguir: "Quer acompanhar esse tutor?", salvos: "Quer ver suas publicações salvas?", perfil: "Quer montar seu perfil?"
+    seguir: "Quer acompanhar esse tutor?", denunciar: "Viu algo errado?", bloquear: "Quer bloquear alguém?", salvos: "Quer ver suas publicações salvas?", perfil: "Quer montar seu perfil?"
   };
   function abrirLogin(acao) {
     const d = document.getElementById("dialogo-login");
@@ -133,10 +137,12 @@
     const r = await sb.rpc("minha_conta");
     if (r.error) return;
     est.eu = r.data;
-    const [cl, sg] = await Promise.all([
+    const [cl, sg, bl] = await Promise.all([
       sb.from("clube_membros").select("clube").eq("usuario", est.eu.id),
-      sb.from("seguidores").select("seguido").eq("seguidor", est.eu.id)
+      sb.from("seguidores").select("seguido").eq("seguidor", est.eu.id),
+      sb.from("bloqueios").select("bloqueado").eq("bloqueador", est.eu.id)
     ]);
+    (bl.data || []).forEach((x) => est.bloqueados.add(x.bloqueado));
     (cl.data || []).forEach((x) => est.clubes.add(x.clube));
     (sg.data || []).forEach((x) => est.seguindo.add(x.seguido));
   }
@@ -197,11 +203,11 @@
     const curtido = est.curtidas.has(p.id), salvo = est.salvos.has(p.id);
     const ehMeu = est.eu && p.autor === est.eu.id;
     const pergunta = p.tipo === "pergunta";
-    return `<article class="post${pergunta ? " pergunta" : ""}" id="post-${esc(p.id)}" data-post="${esc(p.id)}">
+    return `<article class="post${pergunta ? " pergunta" : ""}" id="post-${esc(p.id)}" data-post="${esc(p.id)}" data-autor="${esc(p.autor)}">
       <header class="post-topo">
         <a href="${linkPerfil(a.usuario)}" class="post-autor">${avatar(a)}<span><b>${esc(a.nome || "Tutor")}</b><small>@${esc(a.usuario)} · <time datetime="${esc(p.criado_em)}">${tempo(p.criado_em)}</time>${p.editado_em ? " · editado" : ""}</small></span></a>
         ${p.clube_info ? `<a class="post-clube" href="${linkClube(p.clube_info.id)}">${esc(p.clube_info.nome)}</a>` : ""}
-        ${ehMeu ? `<button type="button" class="post-mais" data-acao="apagar" data-id="${esc(p.id)}" aria-label="Apagar esta publicação">${ICONE.mais}</button>` : ""}
+        <button type="button" class="post-mais" data-acao="opcoes" data-id="${esc(p.id)}" aria-label="${ehMeu ? "Opções da sua publicação" : "Mais opções: denunciar ou bloquear"}">${ICONE.mais}</button>
       </header>
       ${pergunta ? '<span class="selo-pergunta">Pergunta</span>' : ""}
       ${textoPost(p, completo)}
@@ -492,7 +498,88 @@
       if (n) n.textContent = Math.max(0, Number(n.textContent.replace(/\D/g, "")) + (sigo ? -1 : 1)).toLocaleString("pt-BR");
     }
   };
-  const PRECISA_LOGIN = { curtir: 1, salvar: 1, votar: 1, apagar: 1, participar: 1, seguir: 1, publicar: 1 };
+  // ---------- Menu ⋯, denúncias e bloqueios ----------
+  function abrirOpcoes(itens) {
+    const d = document.getElementById("dialogo-opcoes"), corpo = document.getElementById("opcoes-corpo");
+    corpo.innerHTML = "";
+    itens.forEach(([texto, fn, perigo]) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "menu-item" + (perigo ? " perigo" : ""); b.textContent = texto;
+      b.addEventListener("click", () => { d.close(); fn(); });
+      corpo.appendChild(b);
+    });
+    d.showModal();
+  }
+  acoes.opcoes = (id) => {
+    const p = est.posts.get(id); if (!p) return;
+    const u = (p.perfil || {}).usuario;
+    if (est.eu && p.autor === est.eu.id) {
+      abrirOpcoes([["Copiar link", () => acoes.compartilhar(id)], ["Apagar publicação", () => acoes.apagar(id), true]]);
+      return;
+    }
+    abrirOpcoes([
+      ["Copiar link", () => acoes.compartilhar(id)],
+      ["Denunciar publicação", () => abrirDenuncia({ tipo: "post", id: id }), true],
+      ["Bloquear @" + u, () => bloquear(p.autor, u), true]
+    ]);
+  };
+  acoes["opcoes-perfil"] = (id, _o, el) => {
+    const u = el.dataset.usuario;
+    abrirOpcoes(est.bloqueados.has(id)
+      ? [["Desbloquear @" + u, () => desbloquear(id)], ["Denunciar perfil", () => abrirDenuncia({ tipo: "perfil", id: id }), true]]
+      : [["Denunciar perfil", () => abrirDenuncia({ tipo: "perfil", id: id }), true], ["Bloquear @" + u, () => bloquear(id, u), true]]);
+  };
+  acoes.desbloquear = (id) => desbloquear(id);
+
+  async function bloquear(perfilId, usuario) {
+    if (!exigir({ tipo: "bloquear", id: perfilId })) return;
+    if (!confirm("Bloquear @" + usuario + "?\n\nVocê deixa de ver as publicações e comentários dessa pessoa. Ela não poderá comentar nas suas publicações nem seguir você. Ela não é avisada.")) return;
+    const r = await sb.from("bloqueios").insert({ bloqueador: est.eu.id, bloqueado: perfilId });
+    if (r.error && r.error.code !== "23505") { toast(erroMsg(r.error)); return; }
+    est.bloqueados.add(perfilId); est.seguindo.delete(perfilId);
+    document.querySelectorAll(`[data-autor="${perfilId}"]`).forEach((el) => el.remove());
+    toast("@" + usuario + " foi bloqueado.");
+    if (q.get("u")) rota();
+  }
+  async function desbloquear(perfilId) {
+    const r = await sb.from("bloqueios").delete().eq("bloqueador", est.eu.id).eq("bloqueado", perfilId);
+    if (r.error) { toast(erroMsg(r.error)); return; }
+    est.bloqueados.delete(perfilId);
+    toast("Perfil desbloqueado.");
+    rota();
+  }
+
+  let alvoDenuncia = null;
+  function abrirDenuncia(alvo) {
+    if (!exigir({ tipo: "denunciar", id: alvo.id })) return;
+    alvoDenuncia = alvo;
+    const f = document.getElementById("form-denuncia");
+    f.reset();
+    document.getElementById("den-aviso").hidden = true;
+    document.getElementById("den-titulo").textContent = { post: "Denunciar publicação", comentario: "Denunciar comentário", perfil: "Denunciar perfil" }[alvo.tipo];
+    document.getElementById("dialogo-denuncia").showModal();
+  }
+  (function ligarDenuncia() {
+    const f = document.getElementById("form-denuncia");
+    if (!f) return;
+    const d = document.getElementById("dialogo-denuncia"), av = document.getElementById("den-aviso");
+    document.getElementById("den-cancelar").addEventListener("click", () => d.close());
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const motivo = (f.querySelector('input[name="motivo"]:checked') || {}).value;
+      if (!motivo) { av.textContent = "Escolha um motivo."; av.hidden = false; return; }
+      const dados = { denunciante: est.eu.id, alvo_tipo: alvoDenuncia.tipo, motivo: motivo, detalhe: f.detalhe.value.trim() || null };
+      dados[alvoDenuncia.tipo] = alvoDenuncia.id;
+      const b = f.querySelector('button[type="submit"]'); b.disabled = true;
+      const r = await sb.from("denuncias").insert(dados);
+      b.disabled = false;
+      if (r.error && r.error.code !== "23505") { av.textContent = erroMsg(r.error); av.hidden = false; return; }
+      d.close();
+      toast("Denúncia enviada. Obrigado por cuidar da comunidade!");
+    });
+  })();
+
+  const PRECISA_LOGIN = { curtir: 1, salvar: 1, votar: 1, apagar: 1, participar: 1, seguir: 1, publicar: 1, desbloquear: 1 };
 
   document.addEventListener("click", (e) => {
     const b = e.target.closest("[data-acao]");
@@ -506,7 +593,7 @@
     if (tipo === "compartilhar") { acoes.compartilhar(id); return; }
     if (PRECISA_LOGIN[tipo] && !exigir({ tipo: tipo, id: id, opcao: b.dataset.opcao != null ? Number(b.dataset.opcao) : null })) return;
     if (tipo === "publicar") { const c = document.getElementById("compor-texto"); if (c) c.focus(); return; }
-    if (acoes[tipo]) acoes[tipo](id, b.dataset.opcao);
+    if (acoes[tipo]) acoes[tipo](id, b.dataset.opcao, b);
   });
 
   // ---------- Telas ----------
@@ -601,7 +688,8 @@
   function itemComentario(c, p) {
     const a = c.perfil || {};
     const posso = est.eu && (c.autor === est.eu.id || p.autor === est.eu.id);
-    return `<li class="comentario" data-comentario="${esc(c.id)}">${avatar(a)}<div><p class="c-topo"><a href="${linkPerfil(a.usuario)}"><b>${esc(a.nome)}</b></a> <small>${tempo(c.criado_em)}</small>${posso ? ` <button type="button" class="link-botao c-apagar" data-c="${esc(c.id)}">Apagar</button>` : ""}</p><p class="c-txt">${esc(c.texto)}</p></div></li>`;
+    const meu = est.eu && c.autor === est.eu.id;
+    return `<li class="comentario" data-comentario="${esc(c.id)}" data-autor="${esc(c.autor)}">${avatar(a)}<div><p class="c-topo"><a href="${linkPerfil(a.usuario)}"><b>${esc(a.nome)}</b></a> <small>${tempo(c.criado_em)}</small>${posso ? ` <button type="button" class="link-botao c-apagar" data-c="${esc(c.id)}">Apagar</button>` : ""}${meu ? "" : ` <button type="button" class="link-botao c-denunciar" data-c="${esc(c.id)}">Denunciar</button>`}</p><p class="c-txt">${esc(c.texto)}</p></div></li>`;
   }
   async function carregarComentarios(p) {
     const ol = document.getElementById("lista-comentarios");
@@ -609,6 +697,8 @@
     if (r.error) { ol.innerHTML = `<li class="vazio-c">Não deu para carregar. ${esc(erroMsg(r.error))}</li>`; return; }
     ol.innerHTML = r.data.length ? r.data.map((c) => itemComentario(c, p)).join("") : `<li class="vazio-c">${p.tipo === "pergunta" ? "Ninguém respondeu ainda. Compartilhe sua experiência!" : "Ainda sem comentários. Comece a conversa!"}</li>`;
     ol.addEventListener("click", async (e) => {
+      const d = e.target.closest(".c-denunciar");
+      if (d) { abrirDenuncia({ tipo: "comentario", id: d.dataset.c }); return; }
       const b = e.target.closest(".c-apagar"); if (!b) return;
       if (!confirm("Apagar este comentário?")) return;
       const r2 = await sb.from("comentarios").delete().eq("id", b.dataset.c);
@@ -698,8 +788,9 @@
           ${u.bio ? `<p class="perfil-bio">${esc(u.bio)}</p>` : ""}
           <p class="perfil-num"><b id="num-seguidores">${num(seg1.count)}</b> ${seg1.count === 1 ? "seguidor" : "seguidores"} · <b>${num(seg2.count)}</b> seguindo</p>
         </div>
-        ${ehEu ? '<a class="btn btn-sec" href="conta.html">Editar perfil</a>' : `<button type="button" class="btn${sigo ? " btn-sec" : ""}" data-acao="seguir" data-id="${esc(u.id)}" aria-pressed="${sigo}">${sigo ? "Seguindo" : "Seguir"}</button>`}
+        ${ehEu ? '<a class="btn btn-sec" href="conta.html">Editar perfil</a>' : `<div class="perfil-botoes">${est.bloqueados.has(u.id) ? "" : `<button type="button" class="btn${sigo ? " btn-sec" : ""}" data-acao="seguir" data-id="${esc(u.id)}" aria-pressed="${sigo}">${sigo ? "Seguindo" : "Seguir"}</button>`}<button type="button" class="post-mais" data-acao="opcoes-perfil" data-id="${esc(u.id)}" data-usuario="${esc(u.usuario)}" aria-label="Mais opções: denunciar ou bloquear">${ICONE.mais}</button></div>`}
       </section>
+      ${!ehEu && est.bloqueados.has(u.id) ? `<p class="convite-clube">Você bloqueou este perfil: as publicações e comentários dessa pessoa não aparecem para você. <button type="button" class="link-botao" data-acao="desbloquear" data-id="${esc(u.id)}">Desbloquear</button></p>` : ""}
       <section class="perfil-bloco">
         <h2>Pets</h2>
         ${(pets.data || []).length ? `<ul class="grade-pets">${pets.data.map((p) => `<li class="pet">${avatar(p, "pet-av")}<b>${esc(p.nome)}</b><small>${esc([ESPECIES[p.especie], p.raca, p.idade, SEXOS[p.sexo]].filter(Boolean).join(" · "))}</small>${p.personalidade ? `<span class="pet-tag">${esc(p.personalidade)}</span>` : ""}${p.descricao ? `<p>${esc(p.descricao)}</p>` : ""}</li>`).join("")}</ul>`
@@ -777,6 +868,10 @@
   (async function iniciar() {
     const [, nomes] = await Promise.all([carregarEu(), sb.from("clubes").select("id,nome")]);
     (nomes.data || []).forEach((x) => { nomesClubes[x.id] = x.nome; });
+    if (est.eu && est.eu.suspenso) {
+      const aviso = document.getElementById("com-aviso-suspenso");
+      if (aviso) aviso.hidden = false;
+    }
     if (est.eu && !est.eu.aceitou) {
       const aviso = document.getElementById("com-aviso-conta");
       if (aviso) { aviso.hidden = false; aviso.querySelector("a").href = "conta.html?volta=" + encodeURIComponent(aqui()); }

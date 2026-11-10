@@ -249,3 +249,21 @@
 .av-vazio{background:var(--marca-clara)}.av-vazio img{width:70%;height:70%;object-fit:contain}
 @media (max-width:600px){.com-capa::after{width:120px;height:120px;right:-58px;top:-68px}.com-capa h1{padding-right:40px}}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]) .post-clube,:root:not([data-theme=light]) .nota-vet,:root:not([data-theme=light]) .pet-tag{color:var(--lima)}}
+/* Menu ⋯ e denúncias */
+.dialogo-menu{width:min(380px,calc(100vw - 32px))}
+.menu-corpo{display:grid;padding:10px}
+.menu-item{min-height:52px;padding:0 18px;border:0;border-radius:16px;background:transparent;font:inherit;font-weight:800;font-size:16px;color:var(--tinta);text-align:left;cursor:pointer}
+.menu-item:hover{background:var(--hover)}
+.menu-item.perigo{color:#C0123F}
+.dialogo-menu .login-fechar{display:block;width:100%;margin:0;border-top:1px solid var(--linha);border-radius:0}
+.den{text-align:left}
+.den h2{margin-bottom:6px}
+.den .sub{font-size:15px;margin-bottom:12px}
+.motivos{border:0;padding:0;margin:0 0 12px;display:grid;gap:6px}
+.motivos label{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 14px;border-radius:14px;background:var(--fundo);font-weight:700;font-size:15px;cursor:pointer}
+.motivos input{width:20px;height:20px;accent-color:var(--marca)}
+.den textarea{width:100%;min-height:64px;padding:12px 14px;border:1.5px solid transparent;border-radius:14px;background:var(--areia);font:inherit;font-size:16px;color:var(--tinta);resize:vertical}
+.den .login-fechar{display:block;margin:6px auto 0}
+.perfil-botoes{display:flex;align-items:center;gap:6px}
+.c-denunciar{font-size:13px;color:var(--suave);margin-left:6px}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .menu-item.perigo{color:#FF7A9C}}

@@ -25,10 +25,10 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
 <script src="site.js?v=20261110c" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261110d" defer></script>
-<script src="conta.js?v=20261110d" defer></script>
-<script src="comunidade.js?v=20261110d" defer></script>
-<link rel="stylesheet" href="comunidade.css?v=20261110d">
+<script src="lista.js?v=20261110e" defer></script>
+<script src="conta.js?v=20261110e" defer></script>
+<script src="comunidade.js?v=20261110e" defer></script>
+<link rel="stylesheet" href="comunidade.css?v=20261110e">
 </head>
 <body>
 
@@ -71,6 +71,7 @@
 </header>
 
 <main class="com">
+  <p class="aviso-conta com-aviso" id="com-aviso-suspenso" hidden>Sua conta está suspensa pela moderação: você pode ler, mas não publicar, comentar ou curtir. Se achar que foi um engano, escreva para <a href="mailto:contato@abano.com.br">contato@abano.com.br</a>.</p>
   <p class="aviso-conta com-aviso" id="com-aviso-conta" hidden>Falta um passo para participar: <a href="conta.html">confirme a política de privacidade na sua conta</a>.</p>
   <div class="com-grade">
     <aside class="com-menu" aria-label="Menu da Comunidade">
@@ -123,6 +124,33 @@
       <a class="btn btn-sec" id="login-criar" href="cadastro.html">Criar minha conta</a>
       <form method="dialog"><button class="login-fechar">Agora não</button></form>
     </div>
+  </dialog>
+  <dialog class="dialogo-login dialogo-menu" id="dialogo-opcoes" aria-label="Opções">
+    <div class="menu-corpo" id="opcoes-corpo"></div>
+    <form method="dialog"><button class="login-fechar">Cancelar</button></form>
+  </dialog>
+
+  <dialog class="dialogo-login" id="dialogo-denuncia" aria-labelledby="den-titulo">
+    <form class="login-corpo den" id="form-denuncia" novalidate>
+      <h2 id="den-titulo">Denunciar</h2>
+      <p class="sub">Escolha o motivo. Quem foi denunciado não fica sabendo quem denunciou.</p>
+      <fieldset class="motivos">
+        <legend class="sr">Motivo</legend>
+        <label><input type="radio" name="motivo" value="spam"><span>Spam ou propaganda</span></label>
+        <label><input type="radio" name="motivo" value="venda"><span>Venda de animais</span></label>
+        <label><input type="radio" name="motivo" value="ofensa"><span>Ofensa, ódio ou assédio</span></label>
+        <label><input type="radio" name="motivo" value="golpe"><span>Golpe ou fraude</span></label>
+        <label><input type="radio" name="motivo" value="improprio"><span>Conteúdo impróprio ou maus-tratos</span></label>
+        <label><input type="radio" name="motivo" value="dados_pessoais"><span>Expõe dados pessoais</span></label>
+        <label><input type="radio" name="motivo" value="saude"><span>Conselho de saúde perigoso</span></label>
+        <label><input type="radio" name="motivo" value="outro"><span>Outro motivo</span></label>
+      </fieldset>
+      <label class="sr" for="den-detalhe">Detalhes</label>
+      <textarea id="den-detalhe" name="detalhe" maxlength="500" rows="2" placeholder="Detalhes (opcional)"></textarea>
+      <p class="aviso-conta" id="den-aviso" role="alert" hidden></p>
+      <button type="submit" class="btn">Enviar denúncia</button>
+      <button type="button" class="login-fechar" id="den-cancelar">Cancelar</button>
+    </form>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </main>
