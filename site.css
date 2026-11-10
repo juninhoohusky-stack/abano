@@ -119,17 +119,20 @@
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 /* ---------- Tipografia: confortável para ler ----------
    Corpo 17px com entrelinha 1.65; títulos mais justos e com quebra equilibrada;
    parágrafos sem palavra sozinha na última linha (onde o navegador permite). */
 body{font-family:var(--fonte);font-size:var(--t-corpo);line-height:1.65;letter-spacing:-.006em;background:var(--fundo);color:var(--tinta);
-  font-kerning:normal;font-variant-ligatures:common-ligatures;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  font-kerning:normal;font-variant-ligatures:common-ligatures;text-rendering:optimizeLegibility}
 h1,h2,h3,h4{font-family:var(--fonte);line-height:1.12;color:var(--tinta);text-wrap:balance}
 h1{font-size:var(--t-h1);font-weight:900;letter-spacing:-.025em;line-height:1.06}
 h2{font-size:var(--t-h3);font-weight:850;letter-spacing:-.018em}
 h3{font-size:var(--t-xl);font-weight:800;letter-spacing:-.008em;line-height:1.25}
-p,li,dd,blockquote{text-wrap:pretty}
+p,li,dd,blockquote,figcaption,label,legend{text-wrap:pretty}
+pre,code{text-wrap:wrap}
+/* Números que mudam na tela (contadores, totais, curtidas): algarismos de largura fixa, o layout não pula */
+[data-contar],.num-fixo{font-variant-numeric:tabular-nums}
 b,strong{font-weight:700}
 small{font-size:.85em}
 input,select,textarea,button{font-family:inherit}

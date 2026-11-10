@@ -267,3 +267,6 @@
 .perfil-botoes{display:flex;align-items:center;gap:6px}
 .c-denunciar{font-size:var(--t-xs);color:var(--suave);margin-left:6px}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]) .menu-item.perigo{color:#FF7A9C}}
+
+/* Contagens que mudam ao vivo: algarismos de largura fixa */
+.acao span,.membros,.perfil-num b,.enq-total,.c-topo small{font-variant-numeric:tabular-nums}
