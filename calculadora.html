@@ -22,46 +22,46 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261110c">
+<link rel="stylesheet" href="site.css?v=20261110h">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261110c" defer></script>
+<script src="site.js?v=20261110h" defer></script>
 <style>
   .intro{padding:56px 0 40px;max-width:760px}
-  .migalha{font-size:14px;color:var(--suave);margin-bottom:22px}
+  .migalha{font-size:var(--t-sm);color:var(--suave);margin-bottom:22px}
   .migalha a{text-decoration:none;color:var(--suave)}
   .migalha a:hover{color:var(--tinta)}
-  .intro h1{font-size:clamp(36px,5vw,56px);margin:16px 0 16px}
-  .sub{font-size:18px;color:var(--suave)}
+  .intro h1{font-size:var(--t-h1);margin:16px 0 16px}
+  .sub{font-size:var(--t-lg);color:var(--suave)}
 
   .grade{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:start}
   .painel{background:var(--superficie);border:1px solid var(--linha);border-radius:20px;padding:30px;box-shadow:var(--sombra)}
   .bloco{border-top:1px solid var(--linha);padding-top:26px;margin-top:26px}
   .bloco:first-child{border-top:0;padding-top:0;margin-top:0}
-  .bloco h2{display:flex;align-items:baseline;gap:12px;font-size:22px;margin-bottom:4px}
-  .bloco h2 span{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--acento)}
-  label{display:block;font-weight:600;font-size:14px;margin:16px 0 7px}
-  .dica{font-weight:400;color:var(--suave);font-size:13px}
-  input[type=number],select{width:100%;min-height:44px;padding:10px 14px;border:1px solid transparent;border-radius:var(--raio-sm);font-size:17px;font-family:inherit;color:var(--tinta);background:var(--areia);transition:border-color .2s,box-shadow .2s,background-color .2s}
+  .bloco h2{display:flex;align-items:baseline;gap:12px;font-size:var(--t-2xl);margin-bottom:4px}
+  .bloco h2 span{font-family:var(--fonte);font-size:var(--t-xs);font-weight:600;letter-spacing:.1em;color:var(--acento)}
+  label{display:block;font-weight:600;font-size:var(--t-sm);margin:16px 0 7px}
+  .dica{font-weight:400;color:var(--suave);font-size:var(--t-xs)}
+  input[type=number],select{width:100%;min-height:44px;padding:10px 14px;border:1px solid transparent;border-radius:var(--raio-sm);font-size:var(--t-corpo);font-family:inherit;color:var(--tinta);background:var(--areia);transition:border-color .2s,box-shadow .2s,background-color .2s}
   input:focus,select:focus{outline:none;border-color:var(--marca);background:var(--superficie);box-shadow:0 0 0 4px var(--marca-clara)}
   .linha{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .check{display:flex;gap:12px;align-items:flex-start;font-weight:500;font-size:15px;margin-top:16px;cursor:pointer}
+  .check{display:flex;gap:12px;align-items:flex-start;font-weight:500;font-size:var(--t-ui);margin-top:16px;cursor:pointer}
   .check input{margin-top:4px;width:18px;height:18px;accent-color:var(--marca);flex:none}
   .escondido{display:none}
 
   .resultado{position:sticky;top:96px}
   .total{background:var(--faixa);color:var(--sobre-faixa);border-radius:20px;padding:30px;margin-bottom:16px;position:relative;overflow:hidden}
   .total::after{content:"";position:absolute;right:-80px;bottom:-110px;width:240px;height:240px;border-radius:50%;border:1px solid rgba(255,255,255,.12);box-shadow:0 0 0 40px rgba(255,255,255,.03);pointer-events:none}
-  .total small{display:block;font-size:12.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#E4FF8F}
-  .total .valor{font-family:var(--serif);font-size:58px;font-weight:700;letter-spacing:-.03em;line-height:1.05;margin:10px 0 6px;color:#fff;font-variant-numeric:tabular-nums}
-  .total .ano{font-size:16px}
+  .total small{display:block;font-size:var(--t-xs);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#E4FF8F}
+  .total .valor{font-family:var(--fonte);font-size:var(--t-num);font-weight:700;letter-spacing:-.03em;line-height:1.05;margin:10px 0 6px;color:#fff;font-variant-numeric:tabular-nums}
+  .total .ano{font-size:var(--t-base)}
   .total .ano b{color:#fff;font-weight:600}
-  .resultado .painel h2{font-size:20px;margin-bottom:8px}
+  .resultado .painel h2{font-size:var(--t-xl);margin-bottom:8px}
   .itens{list-style:none}
   .itens li{padding:11px 0;border-bottom:1px solid var(--linha)}
   .itens li:last-child{border-bottom:0}
-  .item-topo{display:flex;justify-content:space-between;gap:10px;font-size:15px}
+  .item-topo{display:flex;justify-content:space-between;gap:10px;font-size:var(--t-ui)}
   .item-topo b{white-space:nowrap;font-weight:600;font-variant-numeric:tabular-nums}
   .barra{height:5px;background:var(--areia);border-radius:99px;margin-top:8px;overflow:hidden}
   /* A barra cresce com scaleX (animação leve, sem recalcular o layout) */
@@ -69,31 +69,31 @@
   .itens li{position:relative}
   .total .valor{transform-origin:left center;display:inline-block}
   /* Selo "+R$ 30" que sobe e some quando o total muda */
-  .delta{position:absolute;right:24px;top:24px;z-index:1;font-size:15px;font-weight:700;letter-spacing:-.01em;padding:3px 10px;border-radius:999px;pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .delta{position:absolute;right:24px;top:24px;z-index:1;font-size:var(--t-ui);font-weight:700;letter-spacing:-.01em;padding:3px 10px;border-radius:999px;pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums}
   .delta.sobe{background:rgba(240,138,99,.22);color:#FFD2C0}
   .delta.desce{background:rgba(92,194,168,.22);color:#BFF0E1}
   .bloco h2 span{display:inline-block;transform-origin:center}
   .itens li:first-child .barra span{background:var(--acento)}
-  .racao-info{background:var(--marca-clara);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:14px}
-  .primeiro-ano{background:var(--acento-claro);border-radius:12px;padding:14px 16px;margin-top:12px;font-size:14px}
-  .aviso{font-size:12.5px;color:var(--suave);margin-top:16px}
+  .racao-info{background:var(--marca-clara);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:var(--t-sm)}
+  .primeiro-ano{background:var(--acento-claro);border-radius:12px;padding:14px 16px;margin-top:12px;font-size:var(--t-sm)}
+  .aviso{font-size:var(--t-xs);color:var(--suave);margin-top:16px}
 
   .conteudo{margin:88px auto 0;max-width:760px}
-  .conteudo h2{font-size:clamp(26px,3.4vw,34px);margin:44px 0 14px}
+  .conteudo h2{font-size:var(--t-h3);margin:44px 0 14px}
   .conteudo h2:first-child{margin-top:0}
-  .conteudo p,.conteudo li{font-size:18px;line-height:1.75;margin-bottom:14px}
+  .conteudo p,.conteudo li{font-size:var(--t-lg);line-height:1.75;margin-bottom:14px}
   .conteudo ul{padding-left:20px}
   .conteudo li::marker{color:var(--acento)}
   .tabela{border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden;margin:16px 0 18px;background:var(--superficie)}
-  table{width:100%;border-collapse:collapse;font-size:15px}
+  table{width:100%;border-collapse:collapse;font-size:var(--t-ui)}
   th,td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--linha)}
   tr:last-child td{border-bottom:0}
-  th{background:var(--areia);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--suave)}
+  th{background:var(--areia);font-size:var(--t-xs);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--suave)}
   td:last-child{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
   .dica-box{border-left:2px solid var(--acento);padding:4px 0 4px 18px;margin-top:24px}
 
   .proximo{display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;background:var(--superficie);border:1px solid var(--linha);border-radius:20px;padding:40px;margin:88px 0 0}
-  .proximo h2{font-size:clamp(24px,3vw,32px);margin:12px 0 8px}
+  .proximo h2{font-size:var(--t-h3);margin:12px 0 8px}
   .proximo p{color:var(--suave);max-width:560px}
 
   @media (max-width:860px){
@@ -104,7 +104,7 @@
   @media (max-width:520px){
     .painel{padding:22px}
     .total{padding:24px}
-    .total .valor{font-size:48px}
+    .total .valor{font-size:var(--t-num)}
     th:nth-child(2),td:nth-child(2){display:none}
   }
 </style>

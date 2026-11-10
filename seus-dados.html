@@ -18,40 +18,40 @@
 <meta property="og:title" content="Seus dados | Abanô">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261110c">
+<link rel="stylesheet" href="site.css?v=20261110h">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261110c" defer></script>
-<script src="lista.js?v=20261110g" defer></script>
+<script src="site.js?v=20261110h" defer></script>
+<script src="lista.js?v=20261110h" defer></script>
 <style>
   .leitura{max-width:760px;margin:0 auto;padding:56px 24px 0}
-  h1{font-size:clamp(34px,5vw,48px);margin:12px 0 12px}
-  .lead{font-size:19px;color:var(--suave);margin-bottom:32px}
+  h1{font-size:var(--t-h1);margin:12px 0 12px}
+  .lead{font-size:var(--t-lg);color:var(--suave);margin-bottom:32px}
   .atalhos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:40px}
   .atalho{background:var(--superficie);border-radius:var(--raio);padding:22px;box-shadow:var(--sombra)}
   .atalho .ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--marca-clara);color:var(--marca);margin-bottom:14px}
   .atalho .ico svg{width:21px;height:21px}
-  .atalho h2{font-size:18px;margin-bottom:6px}
-  .atalho p{font-size:15px;color:var(--suave);line-height:1.5}
+  .atalho h2{font-size:var(--t-lg);margin-bottom:6px}
+  .atalho p{font-size:var(--t-ui);color:var(--suave);line-height:1.5}
   .bloco{background:var(--superficie);border-radius:20px;padding:32px;box-shadow:var(--sombra);margin-bottom:20px}
-  .bloco h2{font-size:24px;margin-bottom:8px}
-  .bloco > p{color:var(--suave);font-size:16px;margin-bottom:6px}
+  .bloco h2{font-size:var(--t-3xl);margin-bottom:8px}
+  .bloco > p{color:var(--suave);font-size:var(--t-base);margin-bottom:6px}
   .direitos{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-top:16px}
-  .direitos li{font-size:15px;line-height:1.5;padding-left:18px;position:relative;color:var(--suave)}
+  .direitos li{font-size:var(--t-ui);line-height:1.5;padding-left:18px;position:relative;color:var(--suave)}
   .direitos li::before{content:"";position:absolute;left:0;top:.6em;width:8px;height:2px;background:var(--marca)}
-  .direitos b{display:block;font-size:16px;color:var(--tinta)}
-  label{display:block;font-weight:600;font-size:14px;margin:18px 0 7px}
+  .direitos b{display:block;font-size:var(--t-base);color:var(--tinta)}
+  label{display:block;font-weight:600;font-size:var(--t-sm);margin:18px 0 7px}
   .opcional{font-weight:400;color:var(--suave)}
-  input,select,textarea{width:100%;min-height:44px;padding:10px 14px;border:1px solid transparent;border-radius:var(--raio-sm);font-size:17px;font-family:inherit;color:var(--tinta);background:var(--areia);transition:border-color .2s,box-shadow .2s,background-color .2s}
+  input,select,textarea{width:100%;min-height:44px;padding:10px 14px;border:1px solid transparent;border-radius:var(--raio-sm);font-size:var(--t-corpo);font-family:inherit;color:var(--tinta);background:var(--areia);transition:border-color .2s,box-shadow .2s,background-color .2s}
   textarea{min-height:110px;resize:vertical}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--marca);background:var(--superficie);box-shadow:0 0 0 4px var(--marca-clara)}
   .duas{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   form .btn{margin-top:24px}
-  .form-aviso{margin-top:18px;padding:12px 14px;border-radius:var(--raio-sm);background:var(--acento-claro);color:var(--acento);font-size:15px;font-weight:500}
-  .ok h2{font-size:24px;margin:8px 0}
+  .form-aviso{margin-top:18px;padding:12px 14px;border-radius:var(--raio-sm);background:var(--acento-claro);color:var(--acento);font-size:var(--t-ui);font-weight:500}
+  .ok h2{font-size:var(--t-3xl);margin:8px 0}
   .ok p{color:var(--suave)}
-  .nota{font-size:13px;color:var(--suave);margin-top:14px;line-height:1.5}
+  .nota{font-size:var(--t-xs);color:var(--suave);margin-top:14px;line-height:1.5}
   button.btn:disabled{opacity:.6;cursor:progress}
   [hidden]{display:none !important}
   @media (max-width:760px){.atalhos{grid-template-columns:1fr}.direitos{grid-template-columns:1fr}.duas{grid-template-columns:1fr;gap:0}.bloco{padding:24px}}

@@ -23,22 +23,22 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261110c">
+<link rel="stylesheet" href="site.css?v=20261110h">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261110c" defer></script>
+<script src="site.js?v=20261110h" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261110g" defer></script>
-<script src="conta.js?v=20261110f" defer></script>
+<script src="lista.js?v=20261110h" defer></script>
+<script src="conta.js?v=20261110h" defer></script>
 <style>
   .pagina-conta{padding:48px 0 56px}
   .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:64px;align-items:start}
   .conta-grade.so{grid-template-columns:minmax(0,480px);justify-content:center}
-  .conta-intro h1{font-size:clamp(34px,5vw,50px);line-height:1.05;margin:12px 0 14px}
-  .conta-intro > p{color:var(--suave);font-size:18px;max-width:520px}
+  .conta-intro h1{font-size:var(--t-h1);line-height:1.05;margin:12px 0 14px}
+  .conta-intro > p{color:var(--suave);font-size:var(--t-lg);max-width:520px}
   .beneficios{list-style:none;margin-top:26px;display:grid;gap:14px;padding:0}
-  .beneficios li{display:flex;gap:12px;align-items:flex-start;font-size:17px}
+  .beneficios li{display:flex;gap:12px;align-items:flex-start;font-size:var(--t-corpo)}
   .beneficios .b-ico{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--marca-clara);color:var(--marca)}
   .beneficios .b-ico svg{width:20px;height:20px}
   .beneficios li:nth-child(2) .b-ico{background:var(--acento-claro);color:var(--acento)}
@@ -57,8 +57,8 @@
   .minha-conta > .aviso-conta{margin-bottom:18px}
   #conta-boasvindas{margin:0 0 20px}
   .conta-topo{display:flex;align-items:center;gap:18px;margin-bottom:24px}
-  .conta-topo h1{font-size:clamp(26px,3.6vw,36px);line-height:1.1;margin:0 0 4px}
-  .conta-topo p{color:var(--suave);font-size:15px;word-break:break-word}
+  .conta-topo h1{font-size:var(--t-h3);line-height:1.1;margin:0 0 4px}
+  .conta-topo p{color:var(--suave);font-size:var(--t-ui);word-break:break-word}
   .conta-topo > div{flex:1;min-width:0}
   .avatar{flex:none;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:var(--degrade);color:#fff;font-weight:900;font-size:26px}
   .avatar img{width:100%;height:100%;object-fit:cover;display:block}
@@ -67,9 +67,9 @@
   .conta-lado{display:grid;gap:20px}
   .titulo-linha{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
   .titulo-linha h2{margin:0}
-  .titulo-linha .btn{width:auto;margin:0;min-height:44px;padding:0 18px;font-size:15px}
+  .titulo-linha .btn{width:auto;margin:0;min-height:44px;padding:0 18px;font-size:var(--t-ui)}
   .foto-linha{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px}
-  .fc .arquivo{position:relative;width:auto;margin:0;min-height:44px;padding:0 18px;font-size:15px;cursor:pointer;overflow:hidden}
+  .fc .arquivo{position:relative;width:auto;margin:0;min-height:44px;padding:0 18px;font-size:var(--t-ui);cursor:pointer;overflow:hidden}
   .arquivo input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
   .arquivo:focus-within{box-shadow:0 0 0 4px var(--marca-clara),inset 0 0 0 2px var(--marca)}
   .lista-pets{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:12px}
@@ -77,15 +77,15 @@
   .pet-card .pet-foto{width:56px;height:56px;border-radius:16px;font-size:22px}
   .pet-card .pet-foto{flex:none;display:grid;place-items:center;overflow:hidden;background:var(--degrade);color:#fff;font-weight:900}
   .pet-card .pet-foto img{width:100%;height:100%;object-fit:cover}
-  .pet-card h3{font-size:17px;margin:0 0 2px}
-  .pet-card p{font-size:14px;color:var(--suave);margin:0}
+  .pet-card h3{font-size:var(--t-corpo);margin:0 0 2px}
+  .pet-card p{font-size:var(--t-sm);color:var(--suave);margin:0}
   .pet-card .pet-perso{color:var(--tinta);margin-top:2px}
   .pet-acoes{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-  .fc .pet-acoes .btn{width:auto;margin:0;min-height:38px;padding:0 14px;font-size:14px}
-  .pet-acoes .link-botao{font-size:14px;color:var(--suave)}
+  .fc .pet-acoes .btn{width:auto;margin:0;min-height:38px;padding:0 14px;font-size:var(--t-sm)}
+  .pet-acoes .link-botao{font-size:var(--t-sm);color:var(--suave)}
   .zona-perigo{margin-top:26px;padding-top:20px;border-top:1px solid var(--linha)}
-  .zona-perigo h3{font-size:16px;margin:0 0 4px}
-  .zona-perigo p{font-size:14px;color:var(--suave);margin:0 0 8px}
+  .zona-perigo h3{font-size:var(--t-base);margin:0 0 4px}
+  .zona-perigo p{font-size:var(--t-sm);color:var(--suave);margin:0 0 8px}
   #form-trocar-senha .btn{margin-top:14px}
   .btn-perigo{background:#B3123E}
   .btn-perigo:hover{background:#8F0E31}

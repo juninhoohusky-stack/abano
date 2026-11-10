@@ -7,17 +7,17 @@
 <title>Moderação | Abanô</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="site.css?v=20261110c">
+<link rel="stylesheet" href="site.css?v=20261110h">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261110g" defer></script>
+<script src="lista.js?v=20261110h" defer></script>
 <style>
   .painel{max-width:980px;margin:0 auto;padding:28px 20px 48px}
   .topo-admin{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:980px;margin:0 auto;padding:12px 20px}
-  .topo-admin .quem{font-size:14px;color:var(--suave);display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+  .topo-admin .quem{font-size:var(--t-sm);color:var(--suave);display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
   .nav-admin{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
   .nav-admin a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;background:var(--superficie);box-shadow:var(--sombra);font-weight:800;text-decoration:none;color:var(--tinta)}
   .nav-admin a[aria-current=page]{background:var(--marca);color:#fff}
-  h1{font-size:clamp(28px,4vw,40px);margin:4px 0 6px}
+  h1{font-size:var(--t-h2);margin:4px 0 6px}
   .sub{color:var(--suave);margin-bottom:20px}
   .caixa{padding:36px 26px;border-radius:24px;background:var(--superficie);box-shadow:var(--sombra);text-align:center;max-width:520px;margin:36px auto}
   .caixa p{color:var(--suave);margin:10px 0 20px}
@@ -26,21 +26,21 @@
   .abas button[aria-pressed=true]{background:var(--marca);color:#fff}
   .lista{display:grid;gap:14px}
   .den{padding:18px;border-radius:22px;background:var(--superficie);box-shadow:var(--sombra)}
-  .den-topo{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;font-size:14px;color:var(--suave)}
-  .tag{display:inline-flex;align-items:center;min-height:26px;padding:0 10px;border-radius:999px;background:var(--marca-clara);color:var(--marca);font-weight:800;font-size:13px}
+  .den-topo{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;font-size:var(--t-sm);color:var(--suave)}
+  .tag{display:inline-flex;align-items:center;min-height:26px;padding:0 10px;border-radius:999px;background:var(--marca-clara);color:var(--marca);font-weight:800;font-size:var(--t-xs)}
   .tag.n{background:var(--acento-claro);color:var(--acento)}
-  .conteudo{padding:12px 14px;border-radius:14px;background:var(--fundo);margin-bottom:12px;font-size:15.5px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+  .conteudo{padding:12px 14px;border-radius:14px;background:var(--fundo);margin-bottom:12px;font-size:var(--t-ui);line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
   .conteudo .autor{display:block;font-weight:800;margin-bottom:4px;white-space:normal}
   .conteudo img{width:96px;height:96px;object-fit:cover;border-radius:10px;margin:8px 6px 0 0}
-  .detalhe{font-size:14.5px;color:var(--suave);margin-bottom:12px}
+  .detalhe{font-size:var(--t-sm);color:var(--suave);margin-bottom:12px}
   .acoes{display:flex;flex-wrap:wrap;gap:8px}
-  .acoes .btn{min-height:42px;padding:0 16px;font-size:14.5px}
+  .acoes .btn{min-height:42px;padding:0 16px;font-size:var(--t-sm)}
   .btn-perigo{background:#B3123E}
   .btn-perigo:hover{background:#8F0E31}
   .vazio{color:var(--suave);text-align:center;padding:30px}
   form.evento{display:grid;gap:12px;padding:22px;border-radius:22px;background:var(--superficie);box-shadow:var(--sombra)}
-  form.evento label{font-weight:800;font-size:14px;display:grid;gap:6px}
-  form.evento input,form.evento textarea,form.evento select{min-height:46px;padding:10px 14px;border:1.5px solid transparent;border-radius:14px;background:var(--areia);font:inherit;font-size:16px;color:var(--tinta)}
+  form.evento label{font-weight:800;font-size:var(--t-sm);display:grid;gap:6px}
+  form.evento input,form.evento textarea,form.evento select{min-height:46px;padding:10px 14px;border:1.5px solid transparent;border-radius:14px;background:var(--areia);font:inherit;font-size:var(--t-base);color:var(--tinta)}
   .duas{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .aviso{padding:12px 14px;border-radius:14px;background:var(--marca-clara);color:var(--marca-esc);font-weight:700}
   .aviso.ok{background:var(--lima-clara);color:var(--sobre-lima)}
