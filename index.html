@@ -539,6 +539,71 @@
     .sec-vitrine .m2 svg{width:56px;height:56px}
   }
   @media (prefers-reduced-motion:reduce){.vit-grande,.vit-card,.vit-ilu{transition:none}.vit-grande:hover,.vit-card:hover{transform:none}}
+
+  /* ---------- 4ª dobra (modelo novo): três passos numerados e "Por que o Abanô?" ---------- */
+  .sec-passos{position:relative;overflow:hidden;isolation:isolate}
+  .sec-passos .mancha{position:absolute;z-index:-1;pointer-events:none;border-radius:42% 58% 63% 37% / 45% 40% 60% 55%}
+  .sec-passos .m1{left:-140px;top:18%;width:250px;height:300px;background:color-mix(in srgb,var(--marca) 12%,transparent)}
+  .sec-passos .m2{right:-90px;top:-70px;width:300px;height:300px;display:grid;place-items:center;background:linear-gradient(200deg,#FFC94A,var(--laranja));opacity:.9;color:#fff}
+  .sec-passos .m2 svg{width:96px;height:96px;translate:-30px 14px;rotate:12deg}
+  .sec-passos .m3{right:-90px;bottom:-110px;width:240px;height:230px;background:linear-gradient(160deg,var(--marca),#FF4F9A);opacity:.85}
+  .pata-solta{position:absolute;left:-30px;bottom:6%;z-index:-1;width:150px;color:color-mix(in srgb,var(--marca) 12%,transparent);rotate:-18deg;pointer-events:none}
+  .pata-solta svg{width:100%;height:auto}
+  .etapas{position:relative}
+  .etapas-lista{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--e-8);margin:0;padding:0;list-style:none}
+  .etapas-trilha{position:absolute;top:36px;left:16.6%;right:16.6%;height:2px;background:color-mix(in srgb,var(--marca) 40%,transparent);transform-origin:left;scale:0 1;transition:scale 1.4s var(--mola) .2s}
+  .etapas.visivel .etapas-trilha{scale:1 1}
+  .etapa{display:flex;flex-direction:column;align-items:center;gap:var(--e-6)}
+  .etapa-num{flex:none;position:relative;z-index:1;display:grid;place-items:center;width:74px;height:74px;border-radius:50%;background:var(--marca);color:var(--sobre-marca);font-size:30px;font-weight:900;
+    box-shadow:0 0 0 8px var(--fundo),var(--sombra-botao)}
+  .etapa-linha{display:flex;align-items:flex-start;gap:var(--e-4);align-self:stretch}
+  .etapa-ico{flex:none;display:grid;place-items:center;width:96px;height:96px;border-radius:var(--raio-lg);background:var(--marca-clara);color:var(--marca)}
+  .etapa-ico svg{width:46px;height:46px}
+  .etapa h3{font-size:var(--t-xl);line-height:1.2;font-weight:900;margin:var(--e-2) 0 var(--e-2)}
+  .etapa p{margin:0;font-size:var(--t-base);line-height:1.5;color:var(--tinta)}
+  .btn-passos{min-height:66px}
+  .sec-porque{padding-top:0 !important}
+  .porque{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--e-6);padding:var(--e-10);border-radius:var(--raio-lg);
+    background:linear-gradient(120deg,color-mix(in srgb,var(--marca) 9%,var(--superficie)),color-mix(in srgb,var(--marca) 4%,var(--superficie)));box-shadow:var(--sombra)}
+  .porque-selo{width:130px;height:130px;color:var(--marca)}
+  .porque-texto{padding-left:var(--e-8);border-left:2px solid color-mix(in srgb,var(--marca) 45%,transparent)}
+  .porque-texto h2{white-space:nowrap;font-size:clamp(28px,3.2vw,46px);line-height:1.1;font-weight:900;letter-spacing:-.035em;margin:0 0 var(--e-3)}
+  .porque-texto p{margin:0;font-size:var(--t-base);line-height:1.6;color:var(--tinta);max-width:32em}
+  .porque-lista{display:grid;grid-template-columns:repeat(4,auto);margin:0;padding:0;list-style:none}
+  .porque-lista li{display:flex;flex-direction:column;align-items:center;gap:var(--e-3);padding:0 var(--e-4);text-align:center;font-size:var(--t-sm);font-weight:800;line-height:1.3;max-width:9.5em}
+  .porque-lista li + li{border-left:1.5px solid color-mix(in srgb,var(--marca) 35%,transparent)}
+  .porque-lista svg{width:48px;height:48px;color:var(--marca)}
+  @media (max-width:1200px){
+    .porque{grid-template-columns:auto minmax(0,1fr);padding:var(--e-8)}
+    .porque-lista{grid-column:1 / -1;justify-content:center}
+  }
+  @media (max-width:900px){
+    .etapas{max-width:520px;margin:0 auto}
+    .etapas-lista{grid-template-columns:1fr;gap:var(--e-6)}
+    .etapas-trilha{top:0;bottom:0;left:36px;right:auto;width:2px;height:auto;transform-origin:top;scale:1 0}
+    .etapas.visivel .etapas-trilha{scale:1 1}
+    .etapa{flex-direction:row;align-items:flex-start;gap:var(--e-4)}
+    .etapa-num{width:72px;height:72px;font-size:26px}
+    .etapa-ico{display:none}
+    .etapa h3{margin-top:var(--e-3)}
+  }
+  @media (max-width:640px){
+    .porque{grid-template-columns:1fr;justify-items:start;gap:var(--e-5);padding:var(--e-6) var(--e-5)}
+    .porque-selo{width:84px;height:84px}
+    .porque-texto{padding-left:var(--e-4)}
+    .porque-lista{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:var(--e-6);width:100%}
+    .porque-lista li{padding:0 var(--e-2);max-width:none}
+    .porque-lista li:nth-child(3){border-left:0}
+    .porque-lista svg{width:38px;height:38px}
+    .etapa-num{width:56px;height:56px;font-size:22px}
+    .etapas-trilha{left:28px}
+    .sec-passos .m2{width:160px;height:160px}
+    .sec-passos .m1{width:120px;height:160px;left:-80px}
+    .sec-passos .m3{display:none}
+    .sec-passos .m2 svg{width:56px;height:56px}
+    .pata-solta{width:90px}
+  }
+  @media (prefers-reduced-motion:reduce){.etapas-trilha{transition:none;scale:1 1}}
 </style>
 </head>
 <body>
@@ -743,17 +808,62 @@
     </div>
   </section>
 
-  <!-- 5. COMO FUNCIONA: 3 passos (carga cognitiva baixa) + efeito de progresso -->
-  <section style="padding-top:0">
+  <!-- 5. COMO COMEÇAR: três passos + por que o Abanô -->
+  <section class="sec-passos">
+    <span class="mancha m1" aria-hidden="true"></span><span class="mancha m3" aria-hidden="true"></span>
+    <span class="mancha m2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="6" cy="10" rx="2" ry="2.5"/><ellipse cx="10" cy="6" rx="2" ry="2.6"/><ellipse cx="14.5" cy="6" rx="2" ry="2.6"/><ellipse cx="18.4" cy="10" rx="2" ry="2.5"/><path d="M12.2 11.8c2.4 0 4.9 3.1 4.9 5.3 0 1.7-1.4 2.5-2.8 2.5-.9 0-1.5-.5-2.1-.5s-1.3.5-2.2.5c-1.4 0-2.8-.8-2.8-2.5 0-2.2 2.6-5.3 5-5.3z"/></svg></span>
+    <span class="pata-solta" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="6" cy="10" rx="2.2" ry="2.7"/><ellipse cx="10" cy="6" rx="2.2" ry="2.8"/><ellipse cx="14.5" cy="6" rx="2.2" ry="2.8"/><ellipse cx="18.4" cy="10" rx="2.2" ry="2.7"/><path d="M12.2 11.5c2.6 0 5.3 3.4 5.3 5.8 0 1.9-1.5 2.7-3 2.7-1 0-1.6-.5-2.3-.5s-1.4.5-2.4.5c-1.5 0-3-.8-3-2.7 0-2.4 2.8-5.8 5.4-5.8z"/></svg></span>
     <div class="wrap">
-      <div class="titulo-secao" data-revelar>
-        <h2>Três passos e pronto.</h2>
+      <div class="dores-topo" data-revelar>
+        <h2><span class="l1">Comece agora em<svg class="brilhos" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 6l5 9M22 3l-1 10M33 12l-9 5"/></svg></span> <span class="destaque">três passos simples.</span></h2>
+        <p>É rápido, gratuito e você já começa a aproveitar todo o universo do Abanô.</p>
       </div>
-      <div class="passos" data-revelar id="passos">
-        <span class="trilha" aria-hidden="true"></span>
-        <div class="passo" style="--d:0"><span class="bola">1</span><h3>Crie sua conta</h3><p>Nome, e-mail e o seu estado. É grátis e leva um minuto.</p></div>
-        <div class="passo" style="--d:1"><span class="bola">2</span><h3>Monte o perfil do seu pet</h3><p>Foto, raça e personalidade de cada um, do cachorro à calopsita.</p></div>
-        <div class="passo" style="--d:2"><span class="bola">3</span><h3>Participe da Comunidade</h3><p>Publique, tire dúvidas e entre nos clubes da sua raça e do seu estado.</p></div>
+      <div class="etapas" data-revelar>
+        <span class="etapas-trilha" aria-hidden="true"></span>
+        <ol class="etapas-lista">
+        <li class="etapa" style="--d:0">
+          <span class="etapa-num" aria-hidden="true">1</span>
+          <div class="etapa-linha">
+            <span class="etapa-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="3.6"/><path d="M3.5 20a6.5 6.5 0 0 1 11.2-4.5M18.5 13v6M15.5 16h6"/></svg></span>
+            <div><h3><span class="sr">Passo 1: </span>Crie sua conta</h3><p>É grátis e leva apenas um minuto.</p></div>
+          </div>
+        </li>
+        <li class="etapa" style="--d:1">
+          <span class="etapa-num" aria-hidden="true">2</span>
+          <div class="etapa-linha">
+            <span class="etapa-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="6" cy="10" rx="2.2" ry="2.7"/><ellipse cx="10" cy="6" rx="2.2" ry="2.8"/><ellipse cx="14.5" cy="6" rx="2.2" ry="2.8"/><ellipse cx="18.4" cy="10" rx="2.2" ry="2.7"/><path d="M12.2 11.5c2.6 0 5.3 3.4 5.3 5.8 0 1.9-1.5 2.7-3 2.7-1 0-1.6-.5-2.3-.5s-1.4.5-2.4.5c-1.5 0-3-.8-3-2.7 0-2.4 2.8-5.8 5.4-5.8z"/></svg></span>
+            <div><h3><span class="sr">Passo 2: </span>Monte o perfil do seu pet</h3><p>Adicione foto, raça, idade e outras informações.</p></div>
+          </div>
+        </li>
+        <li class="etapa" style="--d:2">
+          <span class="etapa-num" aria-hidden="true">3</span>
+          <div class="etapa-linha">
+            <span class="etapa-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3"/><circle cx="5.5" cy="10" r="2.2"/><circle cx="18.5" cy="10" r="2.2"/><path d="M6.5 19.5a5.5 5.5 0 0 1 11 0zM2.5 17.5a3.5 3.5 0 0 1 3.8-3.4M21.5 17.5a3.5 3.5 0 0 0-3.8-3.4"/></svg></span>
+            <div><h3><span class="sr">Passo 3: </span>Participe da Comunidade</h3><p>Conecte-se, tire dúvidas, compartilhe experiências e faça parte dos clubes.</p></div>
+          </div>
+        </li>
+        </ol>
+      </div>
+      <div class="dores-cta" data-revelar>
+        <a href="cadastro.html?volta=%2Fcomunidade%2F" class="btn btn-grande btn-solucoes btn-passos" data-cta-comunidade>Criar minha conta gratuitamente<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-porque">
+    <div class="wrap">
+      <div class="porque" data-revelar>
+        <svg class="porque-selo" viewBox="0 0 64 64" aria-hidden="true"><path d="M22 44 14 58l7-1.5 3.5 6.5L31 50M42 44l8 14-7-1.5-3.5 6.5L33 50" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><circle cx="32" cy="28" r="20" fill="#fff" stroke="currentColor" stroke-width="2.8"/><g transform="translate(20 16) scale(1)" fill="currentColor"><ellipse cx="6" cy="10" rx="2.2" ry="2.7"/><ellipse cx="10" cy="6" rx="2.2" ry="2.8"/><ellipse cx="14.5" cy="6" rx="2.2" ry="2.8"/><ellipse cx="18.4" cy="10" rx="2.2" ry="2.7"/><path d="M12.2 11.5c2.6 0 5.3 3.4 5.3 5.8 0 1.9-1.5 2.7-3 2.7-1 0-1.6-.5-2.3-.5s-1.4.5-2.4.5c-1.5 0-3-.8-3-2.7 0-2.4 2.8-5.8 5.4-5.8z"/></g><path d="M52 4l-2 6M58 10l-6 3M60 18l-6 0" fill="none" stroke="#F5B21B" stroke-width="2.6" stroke-linecap="round"/></svg>
+        <div class="porque-texto">
+          <h2>Por que o Abanô?</h2>
+          <p>Porque reunimos em um só lugar as ferramentas, as informações e uma comunidade real, feita por pessoas que vivem a rotina pet todos os dias.</p>
+        </div>
+        <ul class="porque-lista">
+          <li><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2.5 5 13.5h6l-1 8 8-11h-6z"/></svg></span>Praticidade no dia a dia</li>
+          <li><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.2 7.5 9.5 4.3-1.3 7.5-4.9 7.5-9.5V6z"/><path d="m8.8 12.2 2.3 2.3 4.3-4.6"/></svg></span>Mais segurança</li>
+          <li><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></span>Comunidade ativa</li>
+          <li><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.2 6.1L12 16.8l-5.5 2.9 1.2-6.1-4.5-4.2 6.1-.8z"/></svg></span>Conteúdo confiável</li>
+        </ul>
       </div>
     </div>
   </section>
