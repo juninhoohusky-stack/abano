@@ -79,13 +79,6 @@
   .btn-brilho::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);translate:-120% 0;animation:brilho 4.5s var(--mola) infinite 1.5s}
   @keyframes brilho{0%,60%{translate:-120% 0}100%{translate:120% 0}}
 
-  .prova{display:flex;align-items:center;gap:var(--e-3);margin-top:var(--e-10);font-size:var(--t-sm);color:var(--suave)}
-  .avatares{display:flex}
-  .avatares span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;margin-left:-9px;border:2.5px solid var(--fundo);font-size:13px;font-weight:700;color:var(--sobre-marca);background:var(--marca)}
-  .avatares span:first-child{margin-left:0}
-  .avatares span:nth-child(2){background:#F43F7F}.avatares span:nth-child(3){background:#FF5B3D}
-  .avatares span:nth-child(4){background:#FF8A1E}.avatares span:nth-child(5){background:var(--acento)}.avatares span:nth-child(6){background:#B7E12F}
-  .prova b{color:var(--tinta)}
 
   /* ---------- Palco: o Juninho (3D) passeia pelo lado direito do banner ----------
      Ele anda só dentro do palco (coluna da direita; no celular, abaixo do texto),
@@ -191,15 +184,6 @@
     @keyframes chegar{from{opacity:0}}
   }
 
-  /* Avatares da família se abrem ao passar o mouse */
-  .avatares span{transition:transform .45s var(--mola-salto)}
-  @media (hover:hover){
-    .prova:hover .avatares span:nth-child(2){transform:translateX(4px)}
-    .prova:hover .avatares span:nth-child(3){transform:translateX(8px)}
-    .prova:hover .avatares span:nth-child(4){transform:translateX(12px)}
-    .prova:hover .avatares span:nth-child(5){transform:translateX(16px)}
-    .prova:hover .avatares span:nth-child(6){transform:translateX(20px)}
-  }
   .flutua .valor{font-size:var(--t-2xl);font-weight:700;letter-spacing:-.02em;color:var(--marca)}
   .tag-mini{display:inline-block;margin-left:var(--e-1);padding:2px var(--e-2);border-radius:var(--raio-pill);background:var(--areia);color:var(--suave);font-size:var(--t-mini);font-weight:600;vertical-align:1px}
 
@@ -441,10 +425,6 @@
       <div class="acoes surge" style="--i:3">
         <a href="cadastro.html?volta=%2Fcomunidade%2F" class="btn btn-grande btn-brilho" data-cta-comunidade>Fazer parte da Comunidade</a>
         <a href="calculadora.html" class="btn btn-sec btn-grande">Quanto custa o meu pet?</a>
-      </div>
-      <div class="prova surge" style="--i:4">
-        <span class="avatares" aria-hidden="true"><span>J</span><span>L</span><span>P</span><span>T</span><span>N</span><span>N</span></span>
-        <span>Feito pela família de <b>4 huskies e 2 gatos</b><br>do <a href="https://www.instagram.com/juninhoohusky/" target="_blank" rel="noopener">@juninhoohusky</a>, em Maricá (RJ)</span>
       </div>
     </div>
 
@@ -1030,7 +1010,8 @@
       });
     }
     // Avatares da família entram um por um (a linha deles aparece aos ~0,3 s)
-    if (avataresCedo) {
+    var temAvatares = document.querySelector(".avatares span");
+    if (avataresCedo && temAvatares) {
       var avatares = Array.prototype.slice.call(document.querySelectorAll(".avatares span"));
       avatares.forEach(function (a) { a.style.opacity = "0"; a.style.transition = "none"; });
       G.fromTo(avatares, { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(2.4)", stagger: 0.07, delay: 0.55,
