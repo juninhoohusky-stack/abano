@@ -17,7 +17,7 @@ const VERSAO_POLITICA = "2026-11-09";
 /* Verificação "Não sou um robô" (Cloudflare Turnstile) em criar conta,
    entrar e recuperar senha. Cole aqui a "Site Key" (chave pública do site).
    Vazio = sem verificação. Só ligue o CAPTCHA no Supabase DEPOIS de preencher. */
-const TURNSTILE_CHAVE_SITE = "";
+const TURNSTILE_CHAVE_SITE = "0x4AAAAAAF6rkLspJ1IFTLYf";
 
 /* ======================= fim da área ===================== */
 
