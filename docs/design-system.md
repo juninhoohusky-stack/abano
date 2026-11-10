@@ -8,7 +8,7 @@ Todos os tokens ficam no começo do `site.css` (`:root`), com versão para o mod
 
 ## Auditoria (9 de novembro de 2026)
 
-**Peças revisadas:** 9 componentes e 6 grupos de tokens | **Problemas encontrados:** 11 | **Nota:** 82/100 depois das correções (era 58)
+**Peças revisadas:** 9 componentes e 6 grupos de tokens | **Problemas encontrados:** 12 | **Nota:** 90/100 depois das correções (era 58)
 
 ### Cobertura de tokens
 
@@ -19,7 +19,7 @@ Todos os tokens ficam no começo do `site.css` (`:root`), com versão para o mod
 | Cantos | 6 + círculo | 24 valores diferentes | 0, exceto detalhes de 2 e 6 px |
 | Sombras | 4 | 38 sombras diferentes | anéis de foco e bordas internas, que são funcionais |
 | Movimento | 3 durações + 3 curvas | durações variadas | durações criadas agora; usar daqui em diante |
-| Espaçamento | escala recomendada abaixo | 116 combinações de padding | **pendente**: aplicar aos poucos ao mexer em cada página |
+| Espaçamento | 13 (`--e-1` a `--e-24`) | 1.123 espaçamentos com valores soltos (116 combinações) | 55, só no menu do topo, nas abas e no logo, que têm encaixe justo |
 
 ### O que foi corrigido nesta revisão
 1. Escala de cantos com hierarquia, no lugar de 24 valores soltos.
@@ -32,10 +32,12 @@ Todos os tokens ficam no começo do `site.css` (`:root`), com versão para o mod
    - rótulos acima de cada título da página inicial;
    - animação de "subir ao rolar" em todo bloco de todas as páginas.
 
+5. Espaçamentos (padding, margin e gap) trocados pela escala de 13 degraus. As páginas ficaram de 0,6% a 4% mais curtas e nenhuma ganhou rolagem lateral.
+6. Topo do site: com o "Entrar", o menu passava da borda em telas a partir de 1200 px. Agora "Nossa história" e "Divulgue" ficam no "Mais" no computador (e "Novidades" também, entre 901 e 1023 px).
+
 ### Próximas prioridades
-1. **Espaçamento:** trocar paddings e gaps soltos pela escala abaixo, página por página.
-2. **Componentes nas páginas antigas:** algumas páginas de serviço repetem estilos de cartão e botão no próprio `<style>`. Mover o que se repete para o `site.css`.
-3. **Durações:** trocar `.2s`, `.25s` etc. por `var(--dur-rapida)`, `var(--dur)` e `var(--dur-lenta)` ao editar cada arquivo.
+1. **Componentes nas páginas antigas:** algumas páginas de serviço repetem estilos de cartão e botão no próprio `<style>`. Mover o que se repete para o `site.css`.
+2. **Durações:** trocar `.2s`, `.25s` etc. por `var(--dur-rapida)`, `var(--dur)` e `var(--dur-lenta)` ao editar cada arquivo.
 
 ---
 
@@ -110,8 +112,18 @@ Pesos: títulos 800–900, botões 800, texto 400–600. Números que mudam na t
 | `--sombra-marca` | capas na cor da marca |
 | `--sombra-botao` | botão principal em destaque |
 
-### Espaçamento (escala recomendada)
-4 · 8 · 12 · 16 · 20 · 24 · 32 · 48 · 64 px. Entre cartões, 16 px; dentro de cartões, 18 a 24 px; entre seções, 64 a 96 px.
+### Espaçamento
+
+| Token | Valor | Uso típico |
+|---|---|---|
+| `--e-1` / `--e-2` | 4 / 8 px | entre ícone e texto, entre chips |
+| `--e-3` / `--e-4` | 12 / 16 px | entre itens de lista, entre cartões |
+| `--e-5` / `--e-6` | 20 / 24 px | dentro de cartões, margem lateral da página |
+| `--e-8` / `--e-10` | 32 / 40 px | dentro de blocos grandes, entre grupos |
+| `--e-12` / `--e-14` / `--e-16` | 48 / 56 / 64 px | entre seções no celular |
+| `--e-20` / `--e-24` | 80 / 96 px | entre seções no computador |
+
+O número do token é o valor dividido por 4. Exceções: o menu do topo, as abas e o logo usam medidas próprias, porque 1 ou 2 px já desencaixam.
 
 ### Movimento
 
