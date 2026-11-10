@@ -262,3 +262,200 @@
   a.addEventListener("click", function (e) { e.preventDefault(); main.focus(); main.scrollIntoView(); });
   document.body.insertBefore(a, document.body.firstChild);
 })();
+
+/* ---------- Busca do site (lupa no topo) ----------
+   A pessoa digita uma palavra ("vacina", "fugiu", "hotel") e vê as páginas ligadas a ela.
+   Tudo roda no navegador, a partir da lista abaixo: nenhuma busca sai do site.
+   Ao criar uma página nova, acrescente-a aqui com as palavras que alguém usaria para achá-la. */
+(function () {
+  var topo = document.querySelector(".topo-in");
+  if (!topo || document.querySelector(".topo-busca")) return;
+
+  var ICO = {
+    lupa: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/>',
+    casa: '<path d="M4 10.5 12 4l8 6.5"/><path d="M6 9v11h12V9"/>',
+    pessoas: '<circle cx="12" cy="8" r="3"/><circle cx="5.5" cy="10" r="2.2"/><circle cx="18.5" cy="10" r="2.2"/><path d="M6.5 19.5a5.5 5.5 0 0 1 11 0zM2.5 17.5a3.5 3.5 0 0 1 3.8-3.4M21.5 17.5a3.5 3.5 0 0 0-3.8-3.4"/>',
+    calc: '<rect x="4.5" y="3" width="15" height="18" rx="3.5"/><path d="M8 7.5h8M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/>',
+    livro: '<path d="M12 6.5C10.3 5 7.6 4.5 3.5 4.8v13.4c4.1-.3 6.8.2 8.5 1.7 1.7-1.5 4.4-2 8.5-1.7V4.8c-4.1-.3-6.8.2-8.5 1.7z"/><path d="M12 6.5v13.4"/>',
+    agenda: '<rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/>',
+    cama: '<path d="M3 6v13M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/>',
+    vet: '<path d="M6 3.5H4.5v5a4.5 4.5 0 0 0 9 0v-5H12"/><path d="M9 13v1.5a5 5 0 0 0 10 0V12"/><circle cx="19" cy="10" r="2"/>',
+    coracao: '<path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/>',
+    qr: '<rect x="4" y="4" width="6" height="6" rx="1.3"/><rect x="14" y="4" width="6" height="6" rx="1.3"/><rect x="4" y="14" width="6" height="6" rx="1.3"/><path d="M14 14h2.5v2.5H14zM18.5 18.5H20V20h-1.5z"/>',
+    gota: '<path d="M12 3.5s6 6.4 6 10.7a6 6 0 0 1-12 0C6 9.9 12 3.5 12 3.5z"/><path d="M12 11v5M9.5 13.5h5"/>',
+    sino: '<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.6 2.4H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/>',
+    mapa: '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/>',
+    alto: '<path d="M3.5 10.2v3.6a1 1 0 0 0 1 1H7l7 4.4V4.8L7 9.2H4.5a1 1 0 0 0-1 1z"/><path d="M17.6 9.3a3.9 3.9 0 0 1 0 5.4"/>',
+    perfil: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>',
+    escudo: '<path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.2 7.5 9.5 4.3-1.3 7.5-4.9 7.5-9.5V6z"/>'
+  };
+
+  // url, título, descrição, ícone, situação ("" = no ar), palavras que alguém usaria
+  var PAGINAS = [
+    ["comunidade/", "Comunidade Abanô", "Publique, tire dúvidas e entre nos clubes da sua raça e do seu estado.", "pessoas", "",
+      "comunidade forum fórum grupo clube clubes rede social postar publicar post foto fotos dúvida duvida pergunta perguntar conversar amigos tutores tutor raça estado conselho dica dicas"],
+    ["calculadora.html", "Calculadora de custos", "Quanto custa manter um cachorro ou um gato por mês e por ano.", "calc", "",
+      "calculadora custo custos gasto gastos quanto custa preço preços valor dinheiro orçamento mensal anual ração racao petisco antipulgas vermífugo vacina veterinário areia banho conta economizar"],
+    ["husky-solta-muito-pelo.html", "Guia pet: husky solta muito pelo?", "O que fazer com a queda de pelo do husky, de quem tem quatro.", "livro", "",
+      "guia artigo dica dicas husky pelo pelos queda troca muda escovar escova escovação rasqueadeira soprador banho tosa calor alimentação cuidado cuidados raça siberiano"],
+    ["adocao.html", "Adoção", "Cães, gatos e outros pets de ONGs e protetores verificados.", "coracao", "Novo",
+      "adoção adocao adotar adote filhote filhotes cachorro cão cao gato gatinho resgate resgatado ong ongs protetor protetora abrigo lar doação doar ganhar pet"],
+    ["ong.html", "Painel da ONG ou protetor", "Cadastre sua ONG, anuncie pets para adoção e veja os pedidos.", "coracao", "",
+      "ong ongs protetor protetora anunciar adoção cadastrar ong painel pedidos de adoção abrigo resgate"],
+    ["veterinarios.html", "Veterinários e serviços", "Clínicas 24h, banho e tosa e lugares pet friendly.", "vet", "Em breve",
+      "cachorro cão gato banho e tosa veterinário veterinario vet clínica clinica hospital emergência emergencia urgência 24h 24 horas plantão madrugada doente passou mal vacina consulta banho tosa pet shop petshop pet friendly serviço serviços"],
+    ["eventos.html", "Eventos pet", "Encontros, feiras e passeios perto de você.", "agenda", "Em breve",
+      "evento eventos encontro encontros feira feiras passeio passeios cãominhada caominhada agenda programação fim de semana husky experience"],
+    ["hospedagem.html", "Hospedagem", "Hotéis, creches e anfitriões para viajar tranquilo.", "cama", "Em breve",
+      "hospedagem hotel hotelzinho creche daycare anfitrião pet sitter babá baba cuidador viagem viajar férias ferias feriado deixar o pet"],
+    ["perdidos.html", "Pet desaparecido", "Cartaz pronto e alerta para quem está perto.", "lupa", "Em breve",
+      "cachorro cão gato pet perdido perdida desaparecido desaparecida sumiu fugiu fuga fugir achado achei encontrei cartaz alerta procurar procura"],
+    ["perfil-qr.html", "Perfil do pet com QR", "Quem encontrar o seu pet fala com você na hora.", "qr", "Em breve",
+      "qr qrcode qr code plaquinha plaqueta coleira identificação identificacao tag pingente contato perfil do pet"],
+    ["doador-de-sangue.html", "Doador de sangue", "Encontre um doador ou cadastre o seu pet para ajudar.", "gota", "Em breve",
+      "sangue doador doadores doação doar transfusão transfusao cirurgia anemia"],
+    ["pesquisa-huskies/", "Onde estão os Huskies do Brasil?", "Pesquisa nacional dos tutores de husky. Leva 2 minutos.", "mapa", "",
+      "pesquisa questionário mapa husky huskies brasil tutores encontro husky experience"],
+    ["novidades.html", "Novidades", "O que há de novo no Abanô.", "sino", "",
+      "novidades novidade notícias noticias atualização lançamento lançamentos o que mudou"],
+    ["sobre.html", "Nossa história", "Como o Abanô nasceu, numa casa com quatro huskies e dois gatos.", "coracao", "",
+      "história historia sobre quem somos juninho família familia fundador abanô abano"],
+    ["anuncie.html", "Divulgue no Abanô", "Para quem organiza eventos ou tem um negócio pet.", "alto", "",
+      "anunciar anuncie divulgar divulgue propaganda publicidade negócio negocio empresa loja pet shop parceiro parceria marca evento"],
+    ["cadastro.html?volta=%2Fcomunidade%2F", "Criar conta", "Grátis: libera a Comunidade e o perfil dos seus pets.", "perfil", "",
+      "criar conta cadastro cadastrar cadastre inscrever registrar participar entrar na comunidade grátis gratis"],
+    ["entrar.html", "Entrar", "Acesse a sua conta com e-mail ou Google.", "perfil", "",
+      "entrar login logar acessar acesso conta senha google"],
+    ["conta.html", "Minha conta e meus pets", "Seu perfil, o perfil dos seus pets e a sua senha.", "perfil", "",
+      "minha conta perfil meus pets meu pet foto senha trocar senha configurações configuracoes dados editar"],
+    ["adocao.html?v=pedidos", "Meus pedidos de adoção", "Acompanhe os pedidos de adoção que você fez.", "coracao", "",
+      "meus pedidos pedido de adoção acompanhar adoção status"],
+    ["privacidade.html", "Política de privacidade", "Como o Abanô cuida dos seus dados.", "escudo", "",
+      "privacidade política lgpd dados cookies segurança termos"],
+    ["seus-dados.html", "Seus dados (LGPD)", "Veja, baixe ou peça a exclusão dos seus dados.", "escudo", "",
+      "meus dados seus dados lgpd excluir apagar deletar conta exclusão descadastrar cancelar e-mail email"],
+    ["index.html", "Página inicial", "Tudo o que o seu pet precisa em um só lugar.", "casa", "",
+      "início inicio home página inicial começo"]
+  ];
+  var SUGESTOES = [0, 1, 2, 3, 5];
+  var VAZIAS = { de: 1, do: 1, da: 1, dos: 1, das: 1, o: 1, a: 1, os: 1, as: 1, e: 1, um: 1, uma: 1, para: 1, pra: 1, pro: 1, com: 1, no: 1, na: 1, em: 1, meu: 1, minha: 1, que: 1, como: 1, quero: 1, onde: 1, se: 1 };
+
+  function norm(t) { return String(t).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+  function raiz(t) { return t.length > 4 ? t.replace(/(oes|aes|ais|eis|es|s)$/, "") : t; }
+  var BASE = PAGINAS.map(function (p) {
+    var titulo = norm(p[1]), palavras = norm(p[1] + " " + p[5]).split(/[^a-z0-9]+/).filter(Boolean).map(raiz);
+    return { titulo: titulo, palavras: palavras, frase: norm(p[5]), desc: norm(p[2]) };
+  });
+
+  function pontuar(i, termos, consulta) {
+    var b = BASE[i], total = 0, acertos = 0;
+    for (var k = 0; k < termos.length; k++) {
+      var t = termos[k], melhor = 0;
+      if (b.titulo.indexOf(t) >= 0) melhor = 6;
+      for (var j = 0; j < b.palavras.length && melhor < 4; j++) {
+        var w = b.palavras[j];
+        if (w === t) melhor = Math.max(melhor, 4);
+        else if (t.length >= 3 && w.indexOf(t) === 0) melhor = Math.max(melhor, 3);
+        else if (w.length >= 4 && t.indexOf(w) === 0) melhor = Math.max(melhor, 2);
+      }
+      if (!melhor && b.desc.indexOf(t) >= 0) melhor = 1;
+      if (melhor) { total += melhor; acertos++; }
+    }
+    if (termos.length > 1 && b.frase.indexOf(consulta) >= 0) total += 4;   // frase inteira, ex.: "banho e tosa"
+    return { n: total, acertos: acertos };
+  }
+
+  function buscar(q) {
+    var consulta = norm(q).trim();
+    var termos = consulta.split(/[^a-z0-9]+/).filter(function (t) { return t && !VAZIAS[t]; }).map(raiz);
+    if (!termos.length) return null;
+    var notas = PAGINAS.map(function (p, i) { var r = pontuar(i, termos, consulta); r.i = i; return r; });
+    // Primeiro, as páginas que combinam com todas as palavras; se nenhuma, as que combinam com a maioria
+    var todas = notas.filter(function (r) { return r.acertos === termos.length; });
+    var achados = todas.length ? todas : notas.filter(function (r) { return r.acertos > 0 && r.acertos >= Math.ceil(termos.length / 2); });
+    return achados.sort(function (a, b) { return b.acertos - a.acertos || b.n - a.n; })
+      .slice(0, 7).map(function (r) { return r.i; });
+  }
+
+  function svg(nome, classe) {
+    return '<svg' + (classe ? ' class="' + classe + '"' : "") + ' viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICO[nome] + "</svg>";
+  }
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  // Botão da lupa no topo, antes de "Entrar"/"Participar"
+  var botao = document.createElement("button");
+  botao.type = "button";
+  botao.className = "topo-busca";
+  botao.setAttribute("aria-label", "Buscar no Abanô");
+  botao.setAttribute("aria-haspopup", "dialog");
+  botao.innerHTML = svg("lupa") + '<span class="topo-busca-txt">Buscar</span>';
+  var antes = topo.querySelector(".topo-entrar") || topo.querySelector(".topo-cta");
+  topo.insertBefore(botao, antes);
+
+  var dlg = document.createElement("dialog");
+  dlg.className = "busca";
+  dlg.setAttribute("aria-label", "Buscar no Abanô");
+  dlg.innerHTML =
+    '<div class="busca-caixa">' +
+      '<form class="busca-campo" role="search">' + svg("lupa") +
+        '<input type="search" id="busca-q" placeholder="O que você procura? Ex.: vacina, hotel, adoção" autocomplete="off" enterkeyhint="search" aria-label="O que você procura?" aria-controls="busca-lista">' +
+        '<button type="button" class="busca-fechar" aria-label="Fechar a busca">Esc</button>' +
+      "</form>" +
+      '<p class="busca-status" id="busca-status" aria-live="polite"></p>' +
+      '<ul class="busca-lista" id="busca-lista"></ul>' +
+    "</div>";
+  document.body.appendChild(dlg);
+  var campo = dlg.querySelector("#busca-q"), lista = dlg.querySelector("#busca-lista"), status = dlg.querySelector("#busca-status");
+
+  function mostrar(q) {
+    var achados = buscar(q);
+    var ids = achados || SUGESTOES;
+    if (achados && !achados.length) {
+      status.textContent = "Nada encontrado para “" + q.trim() + "”. Que tal perguntar na Comunidade?";
+      ids = [0, 3, 1];
+    } else {
+      status.textContent = achados ? (achados.length === 1 ? "1 resultado" : achados.length + " resultados") : "Mais procurados";
+    }
+    lista.innerHTML = ids.map(function (i) {
+      var p = PAGINAS[i];
+      return '<li><a href="' + p[0] + '"><span class="busca-ico">' + svg(p[3]) + '</span><span class="busca-txt"><b>' + esc(p[1]) + "</b><small>" + esc(p[2]) + "</small></span>" +
+        (p[4] ? '<span class="chip' + (p[4] === "Novo" ? " no-ar" : "") + '">' + p[4] + "</span>" : "") + "</a></li>";
+    }).join("");
+  }
+
+  function abrir() {
+    if (dlg.open) return;
+    mostrar(campo.value);
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+    campo.focus();
+    campo.select();
+  }
+  function fechar() { if (dlg.open) { dlg.close ? dlg.close() : dlg.removeAttribute("open"); } }
+
+  botao.addEventListener("click", abrir);
+  dlg.querySelector(".busca-fechar").addEventListener("click", fechar);
+  dlg.addEventListener("close", function () { botao.focus(); });
+  dlg.addEventListener("click", function (e) { if (e.target === dlg) fechar(); });   // clique fora da caixa
+  campo.addEventListener("input", function () { mostrar(campo.value); });
+  dlg.querySelector("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var primeiro = lista.querySelector("a");
+    if (primeiro && campo.value.trim()) location.href = primeiro.href;
+  });
+  // Setas para cima e para baixo andam pelos resultados
+  dlg.addEventListener("keydown", function (e) {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    var links = Array.prototype.slice.call(lista.querySelectorAll("a"));
+    if (!links.length) return;
+    var i = links.indexOf(document.activeElement);
+    e.preventDefault();
+    if (e.key === "ArrowDown") (links[i + 1] || links[0]).focus();
+    else if (i <= 0) campo.focus();
+    else links[i - 1].focus();
+  });
+  // Atalhos: "/" ou Ctrl+K abrem a busca
+  document.addEventListener("keydown", function (e) {
+    var digitando = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) || document.activeElement.isContentEditable;
+    if ((e.key === "k" && (e.ctrlKey || e.metaKey)) || (e.key === "/" && !digitando)) { e.preventDefault(); abrir(); }
+  });
+})();

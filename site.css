@@ -483,3 +483,51 @@ main:focus{outline:none}
   .topo-entrar{padding:0 10px}
   .topo-cta{padding:0 10px}
 }
+
+/* ---------- Busca do site: lupa no topo e janela de resultados ---------- */
+.topo-busca{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:var(--e-2);min-width:44px;min-height:44px;padding:0 var(--e-3);margin-right:var(--e-2);border:0;border-radius:var(--raio-sm);
+  background:transparent;color:var(--tinta);font:inherit;font-size:var(--t-ui);font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background-color .2s,color .2s}
+.topo-busca svg{width:24px;height:24px;flex:none}
+.topo-busca:hover{background:var(--marca-clara);color:var(--marca)}
+.topo-busca:focus-visible{outline:none;box-shadow:0 0 0 4px var(--marca-clara),0 0 0 2px var(--marca)}
+.topo-busca-txt{display:none}
+@media (min-width:1200px){
+  .topo-busca{box-shadow:inset 0 0 0 1.5px var(--linha);padding:0 var(--e-4) 0 var(--e-3)}
+  .topo-busca-txt{display:inline}
+}
+@media (max-width:900px){
+  .topo-busca{margin-left:auto;margin-right:0;min-width:40px;min-height:40px;padding:0}
+  .topo-busca + .topo-entrar,.topo-busca + .topo-cta{margin-left:var(--e-1)}
+}
+@media (max-width:360px){.topo-busca{min-width:36px}.topo-busca svg{width:22px;height:22px}}
+
+.busca{margin:min(12vh,96px) auto auto;padding:0;border:0;width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 48px);border-radius:var(--raio-lg);background:var(--superficie);color:var(--tinta);box-shadow:var(--sombra-alta);overflow:auto}
+.busca::backdrop{background:rgba(43,22,34,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.busca[open]{animation:busca-entra .2s var(--mola)}
+@keyframes busca-entra{from{opacity:0;transform:translateY(-10px) scale(.98)}}
+.busca-caixa{padding:var(--e-3)}
+.busca-campo{display:flex;align-items:center;gap:var(--e-3);padding:0 var(--e-2) 0 var(--e-4);border-radius:var(--raio-md);background:var(--fundo);box-shadow:inset 0 0 0 1.5px var(--linha)}
+.busca-campo:focus-within{box-shadow:inset 0 0 0 2px var(--marca)}
+.busca-campo > svg{width:24px;height:24px;flex:none;color:var(--marca)}
+.busca-campo input{flex:1;min-width:0;min-height:56px;border:0;background:transparent;color:var(--tinta);font:inherit;font-size:var(--t-base);font-weight:600;outline:none}
+.busca-campo input::-webkit-search-cancel-button{display:none}
+.busca-campo input:focus,.busca-campo input:focus-visible{outline:none;box-shadow:none}
+.busca-fechar{flex:none;min-height:36px;padding:0 var(--e-3);border:0;border-radius:var(--raio-xs);background:var(--areia);color:var(--suave);font:inherit;font-size:var(--t-xs);font-weight:800;cursor:pointer}
+.busca-fechar:hover{background:var(--hover);color:var(--tinta)}
+.busca-status{margin:var(--e-4) var(--e-2) var(--e-2);font-size:var(--t-xs);font-weight:700;color:var(--suave)}
+.busca-lista{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.busca-lista a{display:flex;align-items:center;gap:var(--e-3);min-height:56px;padding:var(--e-2);border-radius:var(--raio-sm);color:var(--tinta);text-decoration:none;outline:none}
+.busca-lista a:hover,.busca-lista a:focus-visible{background:var(--marca-clara)}
+.busca-lista a:focus-visible{box-shadow:inset 0 0 0 2px var(--marca)}
+.busca-ico{flex:none;display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:var(--marca-clara);color:var(--marca)}
+.busca-ico svg{width:22px;height:22px}
+.busca-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.busca-txt b{font-size:var(--t-ui);font-weight:800;line-height:1.25}
+.busca-txt small{font-size:var(--t-xs);color:var(--suave);line-height:1.35}
+.busca .chip{flex:none;display:inline-flex;align-items:center;padding:3px 10px;border-radius:var(--raio-pill);background:var(--areia);color:var(--tinta);font-size:var(--t-xs);font-weight:700;white-space:nowrap}
+.busca .chip.no-ar{background:var(--marca-clara);color:var(--marca);font-weight:800}
+@media (max-width:600px){.busca{margin-top:12px}.busca-campo input{font-size:16px}}
+@media (prefers-reduced-motion:reduce){.busca[open]{animation:none}}
+/* Barra de baixo: os 6 itens sempre dividem a largura da tela, sem empurrar a página */
+@media (max-width:900px){.abas .aba,.abas .grupo-menu{min-width:0;flex:1 1 0}.abas .grupo-menu .aba{width:100%}}
+@media (max-width:900px){.topo-in{gap:var(--e-2)}}
