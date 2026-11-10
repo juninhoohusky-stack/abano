@@ -23,14 +23,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261110p">
+<link rel="stylesheet" href="site.css?v=20261110q">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261110p" defer></script>
+<script src="site.js?v=20261110q" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261110p" defer></script>
-<script src="conta.js?v=20261110p" defer></script>
+<script src="lista.js?v=20261110q" defer></script>
+<script src="conta.js?v=20261110q" defer></script>
 <style>
   .pagina-conta{padding:var(--e-12) 0 var(--e-14)}
   .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:var(--e-16);align-items:start}
@@ -287,12 +287,16 @@
             <option value="">Escolha</option>
             <option value="cachorro">Cachorro</option>
             <option value="gato">Gato</option>
+            <option value="ave">Ave (calopsita, periquito, papagaio…)</option>
+            <option value="pequeno_mamifero">Pequeno mamífero (hamster, coelho, porquinho-da-índia…)</option>
+            <option value="reptil">Réptil (jabuti, tartaruga, lagarto…)</option>
+            <option value="peixe">Peixe</option>
             <option value="outro">Outro</option>
           </select>
         </div>
         <div>
-          <label class="rot" for="pet-raca">Raça <span class="opcional">(opcional)</span></label>
-          <input id="pet-raca" name="raca" type="text" maxlength="60" placeholder="Ex.: Husky Siberiano, SRD">
+          <label class="rot" for="pet-raca">Raça ou tipo <span class="opcional">(opcional)</span></label>
+          <input id="pet-raca" name="raca" type="text" maxlength="60" placeholder="Ex.: Husky, SRD, calopsita, hamster sírio">
         </div>
         <div>
           <label class="rot" for="pet-idade">Idade <span class="opcional">(opcional)</span></label>

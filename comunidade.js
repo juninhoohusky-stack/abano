@@ -761,7 +761,7 @@
     ligarPublicar((p) => { if (p.clube === c.id && (aba === "posts" || p.tipo === "pergunta")) l.inserirNoTopo(p); });
   }
 
-  const ESPECIES = { cachorro: "Cachorro", gato: "Gato", outro: "Outro" };
+  const ESPECIES = { cachorro: "Cachorro", gato: "Gato", ave: "Ave", pequeno_mamifero: "Pequeno mamífero", reptil: "Réptil", peixe: "Peixe", outro: "Outro" };
   const SEXOS = { macho: "Macho", femea: "Fêmea" };
 
   async function telaPerfil(usuario) {

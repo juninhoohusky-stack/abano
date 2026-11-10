@@ -470,7 +470,7 @@
     });
 
     // Pets
-    var ESPECIES = { cachorro: "Cachorro", gato: "Gato", outro: "Outro" };
+    var ESPECIES = { cachorro: "Cachorro", gato: "Gato", ave: "Ave", pequeno_mamifero: "Pequeno mamífero", reptil: "Réptil", peixe: "Peixe", outro: "Outro" };
     var SEXOS = { macho: "Macho", femea: "Fêmea" };
     var dialogo = $("dialogo-pet"), fpet = $("form-pet"), avisoPet = $("aviso-pet");
     var editando = null, fotoNova = null;
