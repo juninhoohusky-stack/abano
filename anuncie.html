@@ -22,14 +22,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261110j">
+<link rel="stylesheet" href="site.css?v=20261110k">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261110j" defer></script>
-<script src="lista.js?v=20261110j" defer></script>
+<script src="site.js?v=20261110k" defer></script>
+<script src="lista.js?v=20261110k" defer></script>
 <style>
-  form{background:var(--superficie);border:1px solid var(--linha);border-radius:20px;padding:32px;box-shadow:var(--sombra)}
+  form{background:var(--superficie);border:1px solid var(--linha);border-radius:var(--raio-md);padding:32px;box-shadow:var(--sombra)}
   label{display:block;font-weight:600;font-size:var(--t-sm);margin:18px 0 7px}
   form > label:first-of-type{margin-top:0}
   .opcional{font-weight:400;color:var(--suave)}
@@ -41,7 +41,7 @@
   .mini{font-size:var(--t-xs);color:var(--suave);margin-top:12px;text-align:center}
   .google-bloco{margin-bottom:6px}
   .google-bloco[hidden],.google-conectado[hidden]{display:none}
-  .btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;padding:0 18px;border-radius:999px;border:1px solid var(--linha);background:var(--superficie);color:var(--tinta);font-family:inherit;font-size:var(--t-base);font-weight:600;cursor:pointer;transition:background-color .2s,transform .1s ease-out;-webkit-tap-highlight-color:transparent}
+  .btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;padding:0 18px;border-radius:var(--raio-pill);border:1px solid var(--linha);background:var(--superficie);color:var(--tinta);font-family:inherit;font-size:var(--t-base);font-weight:600;cursor:pointer;transition:background-color .2s,transform .1s ease-out;-webkit-tap-highlight-color:transparent}
   .btn-google:hover{background:var(--hover)}
   .btn-google:active{transform:scale(.98)}
   .btn-google:disabled{opacity:.6;cursor:progress}
@@ -63,16 +63,16 @@
   /* Divulgue no Abanô */
   .pagina{padding:56px 0 24px}
   .anuncie h1{font-size:var(--t-h1);margin:12px 0 14px}
-  .anuncie{background:var(--superficie);border:1px solid var(--linha);border-radius:24px;padding:56px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+  .anuncie{background:var(--superficie);border:1px solid var(--linha);border-radius:var(--raio);padding:56px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
   .anuncie h2{font-size:var(--t-h2);margin:14px 0}
   .anuncie > div > p{color:var(--suave);font-size:var(--t-corpo)}
   .anuncie form{background:var(--fundo);box-shadow:none}
   .tipos{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
-  .tipos li{font-size:var(--t-sm);font-weight:500;padding:7px 13px;border-radius:999px;background:var(--marca-clara);color:var(--marca)}
+  .tipos li{font-size:var(--t-sm);font-weight:500;padding:7px 13px;border-radius:var(--raio-pill);background:var(--marca-clara);color:var(--marca)}
   .anuncie .passos{list-style:none;counter-reset:p;display:grid;gap:14px;margin-top:30px}
   .anuncie .passos li{counter-increment:p;display:flex;gap:12px;align-items:flex-start;font-size:var(--t-base)}
   .anuncie .passos li::before{content:counter(p);flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--acento-claro);color:var(--acento);font-size:var(--t-sm);font-weight:700}
-  .anuncie-ok{background:var(--fundo);border:1px solid var(--linha);border-radius:20px;padding:36px 32px;text-align:center}
+  .anuncie-ok{background:var(--fundo);border:1px solid var(--linha);border-radius:var(--raio-md);padding:36px 32px;text-align:center}
   .anuncie-ok:focus{outline:none}
   .anuncie-ok h3{font-size:var(--t-3xl);margin-bottom:8px}
   .anuncie-ok p{color:var(--suave)}
@@ -95,7 +95,7 @@
     .previa-valor{font-size:var(--t-num)}
     .previa-itens li{grid-template-columns:84px 1fr 56px}
     form{padding:24px}
-    .anuncie{padding:28px 18px;border-radius:20px}
+    .anuncie{padding:28px 18px;border-radius:var(--raio-md)}
     .anuncie form{padding:20px 16px}
   }
 </style>

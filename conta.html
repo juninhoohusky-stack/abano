@@ -23,14 +23,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261110j">
+<link rel="stylesheet" href="site.css?v=20261110k">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261110j" defer></script>
+<script src="site.js?v=20261110k" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261110j" defer></script>
-<script src="conta.js?v=20261110j" defer></script>
+<script src="lista.js?v=20261110k" defer></script>
+<script src="conta.js?v=20261110k" defer></script>
 <style>
   .pagina-conta{padding:48px 0 56px}
   .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:64px;align-items:start}
@@ -39,7 +39,7 @@
   .conta-intro > p{color:var(--suave);font-size:var(--t-lg);max-width:520px}
   .beneficios{list-style:none;margin-top:26px;display:grid;gap:14px;padding:0}
   .beneficios li{display:flex;gap:12px;align-items:flex-start;font-size:var(--t-corpo)}
-  .beneficios .b-ico{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--marca-clara);color:var(--marca)}
+  .beneficios .b-ico{flex:none;width:36px;height:36px;border-radius:var(--raio-xs);display:grid;place-items:center;background:var(--marca-clara);color:var(--marca)}
   .beneficios .b-ico svg{width:20px;height:20px}
   .beneficios li:nth-child(2) .b-ico{background:var(--acento-claro);color:var(--acento)}
   .beneficios li:nth-child(3) .b-ico{background:var(--lima-clara);color:var(--sobre-lima)}
@@ -74,8 +74,8 @@
   .arquivo input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
   .arquivo:focus-within{box-shadow:0 0 0 4px var(--marca-clara),inset 0 0 0 2px var(--marca)}
   .lista-pets{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:12px}
-  .pet-card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:14px;border-radius:18px;background:var(--fundo)}
-  .pet-card .pet-foto{width:56px;height:56px;border-radius:16px;font-size:22px}
+  .pet-card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:14px;border-radius:var(--raio-md);background:var(--fundo)}
+  .pet-card .pet-foto{width:56px;height:56px;border-radius:var(--raio-sm);font-size:22px}
   .pet-card .pet-foto{flex:none;display:grid;place-items:center;overflow:hidden;background:var(--degrade-forte);color:#fff;font-weight:900}
   .pet-card .pet-foto img{width:100%;height:100%;object-fit:cover}
   .pet-card h3{font-size:var(--t-corpo);margin:0 0 2px}
@@ -88,15 +88,15 @@
   .zona-perigo h3{font-size:var(--t-base);margin:0 0 4px}
   .zona-perigo p{font-size:var(--t-sm);color:var(--suave);margin:0 0 8px}
   #form-trocar-senha .btn{margin-top:14px}
-  .btn-perigo{background:#B3123E}
-  .btn-perigo:hover{background:#8F0E31}
-  .dialogo{margin:auto;border:0;padding:0;background:transparent;width:min(620px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;border-radius:24px}
+  .btn-perigo{background:var(--perigo)}
+  .btn-perigo:hover{background:var(--perigo-esc)}
+  .dialogo{margin:auto;border:0;padding:0;background:transparent;width:min(620px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;border-radius:var(--raio)}
   .dialogo::backdrop{background:rgba(43,22,34,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
   .dialogo[open]{animation:dialogo-entra .22s var(--mola)}
   @keyframes dialogo-entra{from{opacity:0;transform:translateY(12px) scale(.98)}}
   .fechar{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:var(--areia);color:var(--tinta);font-size:26px;line-height:1;cursor:pointer}
   .fechar:hover{background:var(--hover)}
-  .dialogo .avatar{border-radius:18px}
+  .dialogo .avatar{border-radius:var(--raio-md)}
   @media (prefers-reduced-motion:reduce){.dialogo[open]{animation:none}}
   @media (max-width:900px){.conta-colunas{grid-template-columns:1fr}}
   @media (max-width:600px){

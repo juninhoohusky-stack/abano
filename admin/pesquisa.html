@@ -7,35 +7,35 @@
 <title>Painel da pesquisa | Abanô</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="site.css?v=20261110j">
+<link rel="stylesheet" href="site.css?v=20261110k">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261110j" defer></script>
+<script src="lista.js?v=20261110k" defer></script>
 <style>
   .painel{max-width:1120px;margin:0 auto;padding:32px 24px 40px}
   .topo-admin{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1120px;margin:0 auto;padding:12px 24px}
   .topo-admin .quem{font-size:var(--t-sm);color:var(--suave);display:flex;align-items:center;gap:12px}
   h1{font-size:var(--t-h2);margin:6px 0 8px}
   .sub{color:var(--suave);margin-bottom:28px}
-  .caixa{padding:40px 28px;border-radius:24px;background:var(--superficie);box-shadow:var(--sombra);text-align:center;max-width:520px;margin:40px auto}
+  .caixa{padding:40px 28px;border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra);text-align:center;max-width:520px;margin:40px auto}
   .caixa p{color:var(--suave);margin:10px 0 22px}
   .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,40vw),1fr));gap:14px;margin-bottom:22px}
-  .kpi{padding:20px;border-radius:20px;background:var(--superficie);box-shadow:var(--sombra)}
+  .kpi{padding:20px;border-radius:var(--raio-md);background:var(--superficie);box-shadow:var(--sombra)}
   .kpi b{display:block;font-size:var(--t-h3);font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--tinta)}
   .kpi span{display:block;margin-top:4px;font-size:var(--t-sm);line-height:1.35;color:var(--suave);font-weight:600}
   .grade{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .card{padding:22px;border-radius:20px;background:var(--superficie);box-shadow:var(--sombra)}
+  .card{padding:22px;border-radius:var(--raio-md);background:var(--superficie);box-shadow:var(--sombra)}
   .card h2{font-size:var(--t-lg);margin-bottom:14px}
   .linhas{display:grid;gap:10px;max-height:420px;overflow:auto}
   .linha{display:grid;grid-template-columns:minmax(90px,1.3fr) 2fr auto;align-items:center;gap:10px;font-size:var(--t-sm)}
-  .linha i{height:10px;border-radius:99px;background:var(--areia);overflow:hidden;display:block}
-  .linha i::after{content:"";display:block;height:100%;width:var(--w);border-radius:99px;background:var(--marca)}
+  .linha i{height:10px;border-radius:var(--raio-pill);background:var(--areia);overflow:hidden;display:block}
+  .linha i::after{content:"";display:block;height:100%;width:var(--w);border-radius:var(--raio-pill);background:var(--marca)}
   .linha b{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
   .linha small{color:var(--suave)}
   .vazio{color:var(--suave);font-size:var(--t-ui)}
   .acoes{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 26px}
   .nota{font-size:var(--t-xs);color:var(--suave);margin-top:18px}
   .nav-admin{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
-  .nav-admin a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;background:var(--superficie);box-shadow:var(--sombra);font-weight:800;text-decoration:none;color:var(--tinta)}
+  .nav-admin a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:var(--raio-pill);background:var(--superficie);box-shadow:var(--sombra);font-weight:800;text-decoration:none;color:var(--tinta)}
   .nav-admin a[aria-current=page]{background:var(--marca);color:var(--sobre-marca)}
   [hidden]{display:none !important}
   @media (max-width:800px){.grade{grid-template-columns:1fr}.kpi{padding:16px}.kpi b{font-size:var(--t-h4)}.painel{padding:24px 16px 32px}.topo-admin{padding:12px 16px}}

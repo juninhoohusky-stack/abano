@@ -19,33 +19,33 @@
 <meta property="og:description" content="Um QR code na coleira: quem encontrar o seu pet fala com você na hora. Em breve no Abanô.">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261110j">
+<link rel="stylesheet" href="site.css?v=20261110k">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261110j" defer></script>
+<script src="site.js?v=20261110k" defer></script>
 <style>
   .leitura{max-width:760px;margin:0 auto;padding:56px 24px 0}
   .migalha{font-size:var(--t-sm);color:var(--suave);margin-bottom:22px}
   .migalha a{color:var(--suave);text-decoration:none}
   .migalha a:hover{color:var(--tinta)}
   .cabeca-servico{display:flex;align-items:center;gap:14px;margin-bottom:6px}
-  .cabeca-servico .ico{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:var(--marca-clara);color:var(--marca);flex:none}
+  .cabeca-servico .ico{width:52px;height:52px;border-radius:var(--raio-sm);display:grid;place-items:center;background:var(--marca-clara);color:var(--marca);flex:none}
   .cabeca-servico .ico svg{width:26px;height:26px}
-  .tag{display:inline-flex;align-items:center;gap:6px;font-size:var(--t-xs);font-weight:600;color:var(--suave);background:var(--areia);padding:5px 12px;border-radius:999px}
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:var(--t-xs);font-weight:600;color:var(--suave);background:var(--areia);padding:5px 12px;border-radius:var(--raio-pill)}
   .tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
   h1{font-size:var(--t-h1);margin:18px 0 14px}
   .lead{font-size:var(--t-lg);color:var(--suave);margin-bottom:32px}
-  .bloco{background:var(--superficie);border-radius:20px;padding:30px 32px;box-shadow:var(--sombra);margin-bottom:20px}
+  .bloco{background:var(--superficie);border-radius:var(--raio-md);padding:30px 32px;box-shadow:var(--sombra);margin-bottom:20px}
   .bloco h2{font-size:var(--t-2xl);margin-bottom:14px}
   .itens{list-style:none;display:grid;gap:12px}
   .itens li{display:flex;gap:12px;align-items:flex-start;font-size:var(--t-corpo)}
   .itens svg{width:20px;height:20px;flex:none;margin-top:3px;color:var(--marca)}
-  .avise{background:var(--faixa);color:var(--sobre-faixa);border-radius:20px;padding:32px;margin-bottom:20px}
+  .avise{background:var(--faixa);color:var(--sobre-faixa);border-radius:var(--raio-md);padding:32px;margin-bottom:20px}
   .avise h2{color:#fff;font-size:var(--t-3xl);margin-bottom:8px}
   .avise p{opacity:.9;margin-bottom:20px}
-  .avise .btn{background:#fff;color:#C40E58}
-  .avise .btn:hover{background:#FFE9F1}
+  .avise .btn{background:#fff;color:var(--faixa)}
+  .avise .btn:hover{background:var(--sobre-faixa)}
   .extra{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;padding:18px 24px;border-radius:var(--raio);background:var(--acento-claro);color:var(--tinta);text-decoration:none;font-size:var(--t-base)}
   .extra strong{font-weight:600}
   .extra span:last-child{color:var(--acento);font-weight:600;white-space:nowrap}

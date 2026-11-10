@@ -20,18 +20,18 @@
 <link rel="manifest" href="site.webmanifest">
 <meta name="theme-color" content="#D10F5E">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261110j">
+<link rel="stylesheet" href="site.css?v=20261110k">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261110j" defer></script>
-<script src="lista.js?v=20261110j" defer></script>
+<script src="site.js?v=20261110k" defer></script>
+<script src="lista.js?v=20261110k" defer></script>
 <style>
   .pesquisa{max-width:800px;margin:0 auto;padding:32px 24px 0}
-  .pq-capa{position:relative;overflow:hidden;padding:48px 44px 44px;border-radius:32px;background:var(--degrade-forte);color:#fff;box-shadow:0 30px 60px -30px rgba(209,15,94,.55)}
+  .pq-capa{position:relative;overflow:hidden;padding:48px 44px 44px;border-radius:var(--raio-lg);background:var(--degrade-forte);color:#fff;box-shadow:var(--sombra-marca)}
   .pq-capa::after{content:"";position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;background:var(--lima);opacity:.95}
   .pq-capa > *{position:relative;z-index:1}
-  .pq-selo{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.18);font-weight:800;font-size:var(--t-sm)}
+  .pq-selo{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:var(--raio-pill);background:rgba(255,255,255,.18);font-weight:800;font-size:var(--t-sm)}
   .pq-capa h1{color:#fff;font-size:var(--t-h1);line-height:1.02;margin:16px 0 14px;max-width:620px}
   .pq-capa p{font-size:var(--t-lead);line-height:1.5;max-width:600px;opacity:.96}
   .pq-meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:20px;font-weight:700;font-size:var(--t-ui)}
@@ -43,8 +43,8 @@
   .pq-porque p{color:var(--suave)}
 
   .pq-progresso{position:sticky;top:64px;z-index:5;margin:0 -8px 18px;padding:10px 8px;background:color-mix(in srgb,var(--fundo) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
-  .pq-progresso .trilho{height:8px;border-radius:99px;background:var(--areia);overflow:hidden}
-  .pq-progresso .barra{height:100%;width:100%;border-radius:99px;background:var(--degrade);transform-origin:left;transform:scaleX(0);transition:transform .5s var(--mola)}
+  .pq-progresso .trilho{height:8px;border-radius:var(--raio-pill);background:var(--areia);overflow:hidden}
+  .pq-progresso .barra{height:100%;width:100%;border-radius:var(--raio-pill);background:var(--degrade);transform-origin:left;transform:scaleX(0);transition:transform .5s var(--mola)}
   .pq-progresso small{display:block;font-variant-numeric:tabular-nums;margin-top:6px;font-size:var(--t-xs);font-weight:700;color:var(--suave)}
 
   form.pq{display:grid;gap:16px}
@@ -57,13 +57,13 @@
   .chips{display:flex;flex-wrap:wrap;gap:10px;clear:both}
   .chip{position:relative}
   .chip input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
-  .chip span{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:10px 18px;border-radius:999px;background:var(--fundo);box-shadow:inset 0 0 0 1.5px var(--linha);font-weight:700;font-size:var(--t-base);color:var(--tinta);transition:background-color .2s,box-shadow .2s,color .2s,transform .1s ease-out;cursor:pointer;user-select:none}
-  .chip input:checked + span{background:var(--marca);color:var(--sobre-marca);box-shadow:0 8px 18px -10px color-mix(in srgb,var(--marca) 80%,transparent)}
+  .chip span{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:10px 18px;border-radius:var(--raio-pill);background:var(--fundo);box-shadow:inset 0 0 0 1.5px var(--linha);font-weight:700;font-size:var(--t-base);color:var(--tinta);transition:background-color .2s,box-shadow .2s,color .2s,transform .1s ease-out;cursor:pointer;user-select:none}
+  .chip input:checked + span{background:var(--marca);color:var(--sobre-marca);box-shadow:var(--sombra-botao)}
   .chip input:focus-visible + span{box-shadow:0 0 0 4px var(--marca-clara),inset 0 0 0 2px var(--marca)}
   .chip input:active + span{transform:scale(.96)}
   @media (hover:hover){.chip:hover input:not(:checked) + span{box-shadow:inset 0 0 0 1.5px var(--marca)}}
   .chips.coluna{flex-direction:column;align-items:stretch}
-  .chips.coluna .chip span{width:100%;justify-content:flex-start;border-radius:16px}
+  .chips.coluna .chip span{width:100%;justify-content:flex-start;border-radius:var(--raio-sm)}
   .pq input[type=text],.pq input[type=email],.pq input[type=number],.pq select,.pq textarea{width:100%;min-height:48px;padding:11px 14px;border:1.5px solid transparent;border-radius:var(--raio-sm);font-size:var(--t-corpo);font-family:inherit;color:var(--tinta);background:var(--areia);transition:border-color .2s,box-shadow .2s,background-color .2s}
   .pq textarea{min-height:96px;resize:vertical}
   .pq input:focus,.pq select:focus,.pq textarea:focus{outline:none;border-color:var(--marca);background:var(--superficie);box-shadow:0 0 0 4px var(--marca-clara)}
@@ -82,7 +82,7 @@
   .pq-enviar .btn{min-height:56px;padding:0 34px;font-size:var(--t-lg)}
   .pq-enviar small{color:var(--suave);font-size:var(--t-sm)}
   .pq-aviso{padding:12px 16px;border-radius:var(--raio-sm);background:var(--marca-clara);color:var(--marca);font-weight:700}
-  .pq-ok{padding:44px 28px;border-radius:28px;background:var(--superficie);box-shadow:var(--sombra);text-align:center}
+  .pq-ok{padding:44px 28px;border-radius:var(--raio-lg);background:var(--superficie);box-shadow:var(--sombra);text-align:center}
   .pq-ok .selo{width:76px;height:76px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;background:var(--lima);color:var(--sobre-lima)}
   .pq-ok .selo svg{width:38px;height:38px}
   .pq-ok h2{font-size:var(--t-h3);margin-bottom:10px}
@@ -90,7 +90,7 @@
   .pq-ok .acoes{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
   .escondido{display:none}
   @media (max-width:600px){
-    .pq-capa{padding:34px 24px;border-radius:26px}
+    .pq-capa{padding:34px 24px;border-radius:var(--raio-lg)}
     .pq fieldset,.pq .campo{padding:20px 18px}
     .pq .duas{grid-template-columns:1fr}
     .pq .ajuda{margin-left:0}

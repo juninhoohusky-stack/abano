@@ -148,6 +148,7 @@
       else if (!temSurge) blocos.push(el);
     });
   }
+  var paginaInicial = !!document.querySelector('.titulo-hero');
   juntar(main, 0);
   if (!blocos.length) return;
 
@@ -155,6 +156,8 @@
   var pendentes = [];
   blocos.forEach(function (el) {
     if (jaPintou && el.getBoundingClientRect().top < alturaTela) return;
+    // Fora da página inicial, só o que aparece ao abrir tem entrada; o resto já está lá
+    if (!paginaInicial && el.getBoundingClientRect().top > alturaTela * 0.95) return;
     var info = { el: el, split: null, palavras: null, itens: [], icones: [], pop: [] };
     if (el.tagName === 'H1' && Split) {
       // Título palavra por palavra; o texto original volta inteiro no fim (leitor de tela e Google)
