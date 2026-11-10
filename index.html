@@ -439,7 +439,7 @@
       </h1>
       <p class="lead surge" style="--i:2">Tudo pra cães e gatos num lugar só, perto de você. Pare de procurar em dez sites e cuide do seu pet com tranquilidade.</p>
       <div class="acoes surge" style="--i:3">
-        <a href="cadastro.html" class="btn btn-grande btn-brilho">Cadastre-se grátis</a>
+        <a href="cadastro.html?volta=%2Fcomunidade%2F" class="btn btn-grande btn-brilho" data-cta-comunidade>Fazer parte da Comunidade</a>
         <a href="calculadora.html" class="btn btn-sec btn-grande">Quanto custa o meu pet?</a>
       </div>
       <div class="prova surge" style="--i:4">
@@ -655,9 +655,9 @@
       </div>
       <div class="passos" data-revelar id="passos">
         <span class="trilha" aria-hidden="true"></span>
-        <div class="passo" style="--d:0"><span class="bola">1</span><h3>Cadastre-se</h3><p>Conte qual é o seu pet e a sua cidade. É grátis e leva um minuto.</p></div>
-        <div class="passo" style="--d:1"><span class="bola">2</span><h3>Use o que já está no ar</h3><p>Simule quanto custa o seu pet e tire dúvidas no Guia.</p></div>
-        <div class="passo" style="--d:2"><span class="bola">3</span><h3>Tenha tudo perto de você</h3><p>Cada serviço novo chega primeiro no seu e-mail, na ordem que os tutores escolherem.</p></div>
+        <div class="passo" style="--d:0"><span class="bola">1</span><h3>Crie sua conta</h3><p>Nome, e-mail e o seu estado. É grátis e leva um minuto.</p></div>
+        <div class="passo" style="--d:1"><span class="bola">2</span><h3>Monte o perfil do seu pet</h3><p>Foto, raça e personalidade de cada um, do cachorro à calopsita.</p></div>
+        <div class="passo" style="--d:2"><span class="bola">3</span><h3>Participe da Comunidade</h3><p>Publique, tire dúvidas e entre nos clubes da sua raça e do seu estado.</p></div>
       </div>
     </div>
   </section>
@@ -691,18 +691,18 @@
     <div class="wrap">
       <div class="final" data-revelar>
         <div class="final-texto">
-        <span class="eyebrow">Cadastro gratuito</span>
-        <h2>Seja um tutor fundador do Abanô.</h2>
-        <p>Entre agora e ajude a decidir o que construir primeiro.</p>
+        <span class="eyebrow">Comunidade Abanô</span>
+        <h2>Faça parte da Comunidade Abanô.</h2>
+        <p>Uma conta grátis libera a Comunidade e todas as ferramentas do Abanô para você e seus pets.</p>
         </div>
         <div class="final-acao">
         <ul class="beneficios">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Seu pet no Mural dos Fundadores</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Prioridade nos encontros</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Voto no que vem primeiro</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Publique fotos e tire dúvidas com outros tutores</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Entre nos clubes da sua raça e do seu estado</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Um perfil para você e para cada pet</li>
         </ul>
-        <a href="cadastro.html" class="btn btn-grande btn-brilho">Cadastre-se grátis</a>
-        <span class="anuncie-link">Tem um negócio pet? <a href="anuncie.html">Divulgue no Abanô</a></span>
+        <a href="cadastro.html?volta=%2Fcomunidade%2F" class="btn btn-grande btn-brilho" data-cta-comunidade>Fazer parte da Comunidade</a>
+        <span class="anuncie-link">Prefere olhar antes? <a href="comunidade/">Ver a Comunidade</a> · Tem um negócio pet? <a href="anuncie.html">Divulgue no Abanô</a></span>
         </div>
       </div>
     </div>
@@ -1067,6 +1067,15 @@
       });
     }
   });
+})();
+</script>
+<script>
+/* Quem já está conectado vai direto para a Comunidade */
+(function () {
+  var conectado = false;
+  try { conectado = !!localStorage.getItem("sb-igpwzidpiypzukmnskdb-auth-token"); } catch (e) {}
+  if (!conectado) return;
+  document.querySelectorAll("[data-cta-comunidade]").forEach(function (a) { a.href = "comunidade/"; a.textContent = "Ir para a Comunidade"; });
 })();
 </script>
 </body>
