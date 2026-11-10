@@ -428,6 +428,57 @@
     .tracos{width:28px;height:28px}
   }
   @media (prefers-reduced-motion:reduce){.cartao-hero{transition:none}.cartao-hero:hover{transform:none}}
+
+  /* ---------- 2ª dobra (modelo novo): título com destaque, cartões-atalho e botão ---------- */
+  .sec-dores{position:relative;overflow:hidden;isolation:isolate}
+  .faixa-clara.sec-dores{background:color-mix(in srgb,var(--marca) 3%,var(--fundo))}
+  .sec-dores .mancha{position:absolute;z-index:-1;pointer-events:none;border-radius:42% 58% 63% 37% / 45% 40% 60% 55%}
+  .sec-dores .m1{left:-90px;top:-110px;width:260px;height:240px;background:color-mix(in srgb,var(--marca) 16%,transparent)}
+  .sec-dores .m2{right:-80px;top:-90px;width:240px;height:260px;background:linear-gradient(200deg,var(--laranja),#FFC94A);opacity:.85}
+  .sec-dores .m3{right:-60px;bottom:-80px;width:260px;height:230px;display:grid;place-items:center;background:linear-gradient(160deg,#FFC94A,var(--laranja));opacity:.85;color:#fff}
+  .sec-dores .m3 svg{width:64px;height:64px;opacity:.75;translate:-24px -18px;rotate:-14deg}
+  .dores-topo{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:var(--e-12);align-items:center;margin-bottom:var(--e-12)}
+  .dores-topo h2{position:relative;font-size:clamp(34px,4.2vw,58px);line-height:1.06;letter-spacing:-.04em;font-weight:900;margin:0;max-width:13.5em}
+  .dores-topo .l1{position:relative;display:inline-block}
+  .dores-topo .destaque{position:relative;display:inline-block;color:var(--marca)}
+  .dores-topo .destaque::after{content:"";position:absolute;left:18%;right:6%;bottom:-.3em;height:.2em;pointer-events:none;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 16' preserveAspectRatio='none'%3E%3Cpath d='M4 13C60 5 130 3 196 7' fill='none' stroke='%23F5B21B' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center/100% 100%}
+  .dores-topo .brilhos{position:absolute;top:-.6em;right:-.75em;width:.62em;height:.62em;fill:none;stroke:var(--marca);stroke-width:3.4;stroke-linecap:round}
+  .dores-topo p{margin:0;padding-left:var(--e-8);border-left:2px solid var(--marca);font-size:var(--t-lead);line-height:1.6;color:var(--tinta);max-width:34em}
+  .dores{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--e-5)}
+  .dor{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--e-4);padding:var(--e-6);border-radius:var(--raio-lg);background:var(--superficie);
+    box-shadow:var(--sombra);color:var(--tinta);text-decoration:none;overflow:visible;transition:transform .3s var(--mola),box-shadow .3s}
+  .dor:hover{transform:translateY(-4px);box-shadow:var(--sombra-alta)}
+  .dor-ico{display:grid;place-items:center;width:84px;height:84px;border-radius:50%;background:var(--marca-clara);color:var(--marca)}
+  .dor-ico svg{width:46px;height:46px}
+  .dor h3{font-size:var(--t-xl);line-height:1.2;font-weight:900;margin:0 0 var(--e-2)}
+  .dor p{margin:0;font-size:var(--t-base);line-height:1.45;color:var(--suave)}
+  .dor-seta{align-self:end;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--marca) 35%,transparent);color:var(--marca);transition:background-color .2s,color .2s}
+  .dor-seta svg{width:20px;height:20px}
+  .dor:hover .dor-seta{background:var(--marca);color:var(--sobre-marca)}
+  .dores-cta{position:relative;display:flex;justify-content:center;margin-top:var(--e-12)}
+  .btn-solucoes{gap:var(--e-4);min-height:72px;padding:0 var(--e-12);font-size:clamp(18px,2vw,26px);box-shadow:var(--sombra-botao)}
+  .btn-solucoes svg{width:28px;height:28px}
+  .btn-solucoes:hover svg:last-child{transform:translateX(4px)}
+  .tracos-cta{width:46px;height:46px;margin:-30px var(--e-2) 0 0;align-self:flex-start;fill:none;stroke:#F5B21B;stroke-width:3.4;stroke-linecap:round}
+  @media (max-width:1100px){
+    .dores{grid-template-columns:1fr;max-width:640px;margin:0 auto}
+    .dores-topo{grid-template-columns:1fr;gap:var(--e-6)}
+  }
+  @media (max-width:560px){
+    .dores-topo p{padding-left:var(--e-4)}
+    .dor{gap:var(--e-3);padding:var(--e-4)}
+    .dor-ico{width:60px;height:60px}
+    .dor-ico svg{width:32px;height:32px}
+    .dor-seta{width:36px;height:36px}
+    .btn-solucoes{width:100%;min-height:60px;padding:0 var(--e-5);gap:var(--e-2);font-size:var(--t-base)}
+    .btn-solucoes svg{width:22px;height:22px}
+    .tracos-cta{display:none}
+    .sec-dores .m1,.sec-dores .m2{width:140px;height:130px}
+    .sec-dores .m3{width:150px;height:130px}
+    .sec-dores .m3 svg{width:40px;height:40px;translate:-14px -10px}
+  }
+  @media (prefers-reduced-motion:reduce){.dor{transition:none}.dor:hover{transform:none}}
 </style>
 </head>
 <body>
@@ -527,28 +578,31 @@
   </section>
 
   <!-- 3. O QUE ESTÁ EM JOGO: aversão à perda + alívio imediato -->
-  <section class="faixa-clara">
+  <section class="faixa-clara sec-dores">
+    <span class="mancha m1" aria-hidden="true"></span><span class="mancha m2" aria-hidden="true"></span>
+    <span class="mancha m3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><ellipse cx="6" cy="10" rx="2.2" ry="2.7"/><ellipse cx="10" cy="6" rx="2.2" ry="2.8"/><ellipse cx="14.5" cy="6" rx="2.2" ry="2.8"/><ellipse cx="18.4" cy="10" rx="2.2" ry="2.7"/><path d="M12.2 11.5c2.6 0 5.3 3.4 5.3 5.8 0 1.9-1.5 2.7-3 2.7-1 0-1.6-.5-2.3-.5s-1.4.5-2.4.5c-1.5 0-3-.8-3-2.7 0-2.4 2.8-5.8 5.4-5.8z"/></svg></span>
     <div class="wrap">
-      <div class="titulo-secao" data-revelar>
-        <h2>Quando o pet precisa, não dá pra perder tempo procurando.</h2>
-        <p>Tudo que é de pet está espalhado em grupo de WhatsApp, Instagram e Google. Na hora que importa, a ajuda chega tarde.</p>
+      <div class="dores-topo" data-revelar>
+        <h2><span class="l1">Quando o pet precisa,<svg class="brilhos" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 6l5 9M22 3l-1 10M33 12l-9 5"/></svg></span> não dá pra perder <span class="destaque">tempo procurando.</span></h2>
+        <p>Tudo que é de pet está espalhado em vários lugares. No Abanô, você encontra as soluções de que precisa em um só lugar, com praticidade e segurança.</p>
       </div>
       <div class="dores">
-        <article class="dor" data-revelar style="--d:0">
-          <h3>O pet fugiu</h3>
-          <p>As primeiras horas são as mais importantes, e você gasta essas horas descobrindo onde avisar.</p>
-          <a class="resolve" href="perdidos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>No Abanô: alerta para quem está perto</a>
-        </article>
-        <article class="dor" data-revelar style="--d:1">
-          <h3>Emergência de madrugada</h3>
-          <p>O pet passa mal e você está no Google, ligando para três clínicas que não atendem.</p>
-          <a class="resolve" href="veterinarios.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>No Abanô: clínicas 24h abertas agora</a>
-        </article>
-        <article class="dor" data-revelar style="--d:2">
-          <h3>O gasto que pega de surpresa</h3>
-          <p>Ração, antipulgas, vacina, banho: no fim do mês, a conta do pet assusta.</p>
-          <a class="resolve" href="calculadora.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Já no ar: simule o custo do seu pet</a>
-        </article>
+        <a class="dor" href="perdidos.html" data-revelar style="--d:0">
+          <span class="dor-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5s-7.5-6.4-7.5-12a7.5 7.5 0 0 1 15 0c0 5.6-7.5 12-7.5 12z"/><g fill="currentColor" stroke="none"><circle cx="9.3" cy="8.6" r="1.1"/><circle cx="12" cy="7.4" r="1.1"/><circle cx="14.7" cy="8.6" r="1.1"/><path d="M12 10.2c1.3 0 2.6 1.6 2.6 2.7 0 .9-.7 1.3-1.4 1.3-.5 0-.8-.3-1.2-.3s-.7.3-1.2.3c-.7 0-1.4-.4-1.4-1.3 0-1.1 1.3-2.7 2.6-2.7z"/></g></svg></span>
+          <span class="dor-txt"><h3>O pet fugiu</h3><p>Encontre apoio e ajuda na divulgação rapidamente.</p></span><span class="dor-seta" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m10 7 5 5-5 5"/></svg></span>
+        </a>
+        <a class="dor" href="veterinarios.html" data-revelar style="--d:1">
+          <span class="dor-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 9.5h17M8 3v4M16 3v4M12 12.2v5.6M9.2 15h5.6"/></svg></span>
+          <span class="dor-txt"><h3>Emergência de madrugada</h3><p>Localize clínicas e veterinários 24h.</p></span><span class="dor-seta" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m10 7 5 5-5 5"/></svg></span>
+        </a>
+        <a class="dor" href="calculadora.html" data-revelar style="--d:2">
+          <span class="dor-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="15.5" cy="6" rx="5" ry="2.3"/><path d="M10.5 6v8.5c0 1.3 2.2 2.3 5 2.3s5-1 5-2.3V6M10.5 10.2c0 1.3 2.2 2.3 5 2.3s5-1 5-2.3"/><ellipse cx="8.5" cy="13" rx="5" ry="2.3"/><path d="M3.5 13v4.7c0 1.3 2.2 2.3 5 2.3s5-1 5-2.3V13"/></svg></span>
+          <span class="dor-txt"><h3>O gasto que pega de surpresa</h3><p>Organize, acompanhe e calcule os custos do seu pet.</p></span><span class="dor-seta" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m10 7 5 5-5 5"/></svg></span>
+        </a>
+      </div>
+      <div class="dores-cta" data-revelar>
+        <svg class="tracos-cta" viewBox="0 0 40 40" aria-hidden="true"><path d="M30 6l-4 12M16 10l8 12M6 26l14 2"/></svg>
+        <a href="#servicos" class="btn btn-grande btn-solucoes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>Encontrar soluções no Abanô<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
       </div>
     </div>
   </section>
