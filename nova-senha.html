@@ -23,14 +23,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261110i">
+<link rel="stylesheet" href="site.css?v=20261110j">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261110i" defer></script>
+<script src="site.js?v=20261110j" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261110i" defer></script>
-<script src="conta.js?v=20261110i" defer></script>
+<script src="lista.js?v=20261110j" defer></script>
+<script src="conta.js?v=20261110j" defer></script>
 <style>
   .pagina-conta{padding:48px 0 56px}
   .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:64px;align-items:start}
@@ -44,6 +44,7 @@
   .beneficios li:nth-child(2) .b-ico{background:var(--acento-claro);color:var(--acento)}
   .beneficios li:nth-child(3) .b-ico{background:var(--lima-clara);color:var(--sobre-lima)}
   .escondido{display:none}
+  .fc h1{font-size:var(--t-h4);line-height:1.15;margin-bottom:6px}
   .captcha{margin-top:18px;min-height:65px}
   .conta-ok{text-align:center}
   .conta-ok .selo{width:68px;height:68px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:var(--lima);color:var(--sobre-lima)}
@@ -99,7 +100,7 @@
   <section class="pagina-conta">
     <div class="wrap conta-grade so">
       <div class="fc">
-        <h2>Criar nova senha</h2>
+        <h1>Criar nova senha</h1>
         <p class="sub" id="senha-carregando">Conferindo o link…</p>
         <form id="form-nova-senha" novalidate hidden>
           <label class="rot" for="n-senha">Nova senha</label>

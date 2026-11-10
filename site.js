@@ -245,3 +245,17 @@
   entrar.textContent = "Entrar";
   cta.parentNode.insertBefore(entrar, cta);
 })();
+
+/* ---------- Atalho "Pular para o conteúdo" (teclado e leitores de tela) ---------- */
+(function () {
+  var main = document.querySelector("main");
+  if (!main || document.querySelector(".pular")) return;
+  if (!main.id) main.id = "conteudo";
+  if (!main.hasAttribute("tabindex")) main.setAttribute("tabindex", "-1");
+  var a = document.createElement("a");
+  a.className = "pular";
+  a.href = "#" + main.id;
+  a.textContent = "Pular para o conteúdo";
+  a.addEventListener("click", function (e) { e.preventDefault(); main.focus(); main.scrollIntoView(); });
+  document.body.insertBefore(a, document.body.firstChild);
+})();

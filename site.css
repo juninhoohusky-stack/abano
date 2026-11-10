@@ -65,6 +65,7 @@
   --serif:var(--fonte);
   --sans:var(--fonte);
 
+  --degrade-forte:linear-gradient(120deg,#C70D59 0%,#D41E64 50%,#C2410C 100%); /* atrás de texto branco */
   --t-mini:11px;                   /* rótulos minúsculos (barra de abas do celular, selos) */
   --t-xs:13px;                     /* legendas, datas, notas */
   --t-sm:14px;                     /* textos de apoio, ajudas de campo */
@@ -331,15 +332,15 @@ img,svg{display:block}
 }
 
 /* ---------- Convite para a pesquisa dos Huskies ---------- */
-.convite-pesquisa{position:relative;overflow:hidden;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:22px;padding:26px 30px;border-radius:28px;background:var(--degrade);color:#fff;text-decoration:none;box-shadow:0 24px 50px -28px rgba(209,15,94,.6)}
+.convite-pesquisa{position:relative;overflow:hidden;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:22px;padding:26px 30px;border-radius:28px;background:var(--degrade-forte);color:#fff;text-decoration:none;box-shadow:0 24px 50px -28px rgba(209,15,94,.6)}
 .convite-pesquisa::after{content:"";position:absolute;right:-50px;bottom:-60px;width:160px;height:160px;border-radius:50%;background:var(--lima);opacity:.9}
 .convite-pesquisa > *{position:relative;z-index:1}
 .convite-pesquisa .selo-mapa{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:rgba(255,255,255,.2)}
 .convite-pesquisa .selo-mapa svg{width:34px;height:34px}
 .convite-pesquisa h2{color:#fff;font-size:var(--t-h4);line-height:1.15;margin:0 0 6px}
 .convite-pesquisa p{margin:0;font-size:var(--t-base);line-height:1.5;opacity:.95;max-width:560px}
-.convite-pesquisa .btn{background:#fff;color:var(--marca);box-shadow:0 10px 24px -12px rgba(0,0,0,.35);white-space:nowrap}
-.convite-pesquisa .btn:hover{background:#fff;color:var(--marca-esc)}
+.convite-pesquisa .btn{background:#fff;color:#AE0C4E;box-shadow:0 10px 24px -12px rgba(0,0,0,.35);white-space:nowrap}
+.convite-pesquisa .btn:hover{background:#FFF1F5;color:#8F0A40}
 @media (max-width:760px){
   .convite-pesquisa{grid-template-columns:1fr;gap:14px;padding:24px 22px}
   .convite-pesquisa .btn{justify-self:start}
@@ -389,3 +390,14 @@ img,svg{display:block}
   .fc .duas{grid-template-columns:1fr}
   .topo-entrar{min-height:36px;padding:0 8px;font-size:var(--t-sm);margin-right:2px}
 }
+
+/* ---------- Acessibilidade e toque (revisão ui-ux-pro-max) ---------- */
+/* Foco visível em todo controle; os que têm anel próprio continuam com o deles */
+:focus-visible{outline:3px solid var(--marca);outline-offset:2px;border-radius:6px}
+/* Atalho "Pular para o conteúdo" (aparece só ao navegar pelo teclado) */
+.pular{position:fixed;left:12px;top:-60px;z-index:200;padding:10px 18px;border-radius:999px;background:var(--marca);color:var(--sobre-marca);font-weight:800;text-decoration:none;transition:top .15s}
+.pular:focus{top:12px}
+/* Links e botões de texto soltos: área de toque mínima de 44 px */
+.ajuda .link-botao,.mini .link-botao,.ver-todos,.voltar{display:inline-flex;align-items:center;min-height:44px}
+@media (prefers-reduced-motion:reduce){.pular{transition:none}}
+main:focus{outline:none}

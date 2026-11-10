@@ -32,7 +32,7 @@
     return new Date(iso).toLocaleDateString("pt-BR", { day: "numeric", month: "short", year: "numeric" });
   }
   function avatar(perfil, classe) {
-    if (!perfil) return `<span class="av av-vazio ${classe || ""}" aria-hidden="true"><img src="logo-pata.svg" alt=""></span>`;
+    if (!perfil) return `<span class="av av-vazio ${classe || ""}" aria-hidden="true"><img src="logo-pata.svg" alt="" width="30" height="30"></span>`;
     const p = perfil;
     const fotoOk = p.foto_url && String(p.foto_url).indexOf(PASTA_FOTOS) === 0;
     return `<span class="av ${classe || ""}" aria-hidden="true">${fotoOk ? `<img src="${esc(p.foto_url)}" alt="" loading="lazy">` : esc((p.nome || "?").trim().charAt(0).toUpperCase())}</span>`;
@@ -274,7 +274,7 @@
       cursor = r.proximo;
       acabou = r.fim || r.posts.length < POR_PAGINA;
       if (!total) { caixa.innerHTML = vazio; return; }
-      if (acabou) { msg.hidden = false; msg.textContent = "Você chegou ao fim. 🐾"; }
+      if (acabou) { msg.hidden = false; msg.textContent = "Você chegou ao fim."; }
       else { botao.hidden = false; botao.textContent = "Carregar mais"; }
     }
     botao.addEventListener("click", proxima);
@@ -284,7 +284,7 @@
     proxima();
     return { inserirNoTopo: (p) => { if (caixa.querySelector(".vazio")) caixa.innerHTML = ""; caixa.insertAdjacentHTML("afterbegin", cartao(p)); } };
   }
-  const vazio = (titulo, texto, extra) => `<div class="vazio"><span class="vazio-ico" aria-hidden="true">🐾</span><h3>${titulo}</h3><p>${texto}</p>${extra || ""}</div>`;
+  const vazio = (titulo, texto, extra) => `<div class="vazio"><span class="vazio-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><ellipse cx="12" cy="15.5" rx="4.6" ry="3.8"/><ellipse cx="6.4" cy="10.4" rx="2" ry="2.5"/><ellipse cx="10" cy="6.8" rx="2" ry="2.6"/><ellipse cx="14" cy="6.8" rx="2" ry="2.6"/><ellipse cx="17.6" cy="10.4" rx="2" ry="2.5"/></svg></span><h3>${titulo}</h3><p>${texto}</p>${extra || ""}</div>`;
 
   // ---------- Caixa de publicar ----------
   function caixaPublicar(opcoes) {
