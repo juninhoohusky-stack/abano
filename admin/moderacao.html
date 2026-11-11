@@ -48,6 +48,34 @@
   .eventos-lista{margin-top:var(--e-4);display:grid;gap:var(--e-2)}
   .eventos-lista li{display:flex;justify-content:space-between;gap:var(--e-2);align-items:center;padding:var(--e-3) var(--e-3);border-radius:var(--raio-sm);background:var(--superficie);box-shadow:var(--sombra)}
   [hidden]{display:none !important}
+  .cad-numeros{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+  .cad-num{padding:16px;border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra)}
+  .cad-num b{display:block;font-size:34px;line-height:1.1;font-weight:900;color:var(--marca);font-variant-numeric:tabular-nums}
+  .cad-num span{font-size:var(--t-sm);font-weight:700;color:var(--suave)}
+  .cad-grade{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:12px;margin-bottom:12px}
+  .cad-caixa{padding:18px;border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra);margin-bottom:12px}
+  .cad-caixa h2{font-size:var(--t-base);font-weight:900;margin:0 0 12px}
+  .cad-grafico{display:flex;align-items:flex-end;gap:3px;height:180px;padding-top:18px}
+  .cad-grafico div{flex:1;position:relative;min-height:2px;border-radius:4px 4px 0 0;background:var(--marca)}
+  .cad-grafico div.zero{background:var(--areia)}
+  .cad-grafico div span{position:absolute;bottom:100%;left:50%;translate:-50% -2px;font-size:10px;font-weight:800;color:var(--suave)}
+  .cad-eixo{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--suave)}
+  .cad-barras{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+  .cad-barras li{display:grid;grid-template-columns:110px 1fr 36px;align-items:center;gap:8px;font-size:var(--t-sm)}
+  .cad-barras i{height:10px;border-radius:999px;background:var(--areia);overflow:hidden}
+  .cad-barras i::after{content:"";display:block;height:100%;width:var(--w);background:var(--marca);border-radius:999px}
+  .cad-barras b{text-align:right;font-variant-numeric:tabular-nums}
+  .cad-cab{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+  .cad-cab h2{margin:0}
+  .cad-cab input{min-height:42px;min-width:260px;padding:0 14px;border:1.5px solid transparent;border-radius:999px;background:var(--areia);font:inherit;color:var(--tinta)}
+  .cad-cab input:focus{outline:none;border-color:var(--marca)}
+  .cad-tabela-caixa{overflow-x:auto}
+  .cad-tabela{width:100%;border-collapse:collapse;font-size:var(--t-sm)}
+  .cad-tabela th{text-align:left;padding:8px;color:var(--suave);font-weight:800;border-bottom:1px solid var(--linha);white-space:nowrap}
+  .cad-tabela td{padding:8px;border-bottom:1px solid var(--linha);vertical-align:top}
+  .cad-tabela td small{display:block;color:var(--suave)}
+  .cad-tabela .tag{margin-left:4px}
+  @media (max-width:800px){.cad-grade{grid-template-columns:1fr}.cad-cab input{min-width:0;width:100%}}
   .sub-admin{font-size:var(--t-xl);margin:var(--e-8) 0 var(--e-3)}
   .marca-linha{display:flex !important;align-items:center;gap:var(--e-2);grid-template-columns:none}
   .marca-linha input{width:22px;height:22px;min-height:0;accent-color:var(--marca)}
@@ -87,6 +115,7 @@
 
   <section id="tela-dados" hidden>
     <div class="abas" role="group" aria-label="Filtro">
+      <button type="button" data-status="cadastros" aria-pressed="false">Cadastros</button>
       <button type="button" data-status="aberta" aria-pressed="true">Abertas</button>
       <button type="button" data-status="fechadas" aria-pressed="false">Resolvidas</button>
       <button type="button" data-status="eventos" aria-pressed="false">Eventos</button>
@@ -103,6 +132,18 @@
         <button type="button" data-org-status="todas" aria-pressed="false">Todas</button>
       </div>
       <div class="lista" id="lista-orgs"></div>
+    </div>
+    <div id="tela-cadastros" hidden>
+      <div class="cad-numeros" id="cad-numeros"></div>
+      <div class="cad-grade">
+        <section class="cad-caixa"><h2>Novos tutores nos últimos 30 dias</h2><div id="cad-grafico" class="cad-grafico"></div></section>
+        <section class="cad-caixa"><h2>Tutores por estado</h2><ul id="cad-estados" class="cad-barras"></ul>
+          <h2 style="margin-top:20px">Pets por espécie</h2><ul id="cad-especies" class="cad-barras"></ul></section>
+      </div>
+      <section class="cad-caixa"><div class="cad-cab"><h2>Cadastros mais recentes</h2><input type="search" id="cad-busca" placeholder="Filtrar por nome, @usuário, e-mail ou cidade" aria-label="Filtrar cadastros"></div>
+        <div class="cad-tabela-caixa"><table class="cad-tabela"><thead><tr><th>Tutor</th><th>E-mail</th><th>Local</th><th>Pets</th><th>Cadastro</th><th>Último acesso</th></tr></thead><tbody id="cad-lista"></tbody></table></div>
+        <p class="detalhe" style="margin-top:12px">Mostra os 100 mais recentes. "Incompleto" é quem criou a conta mas ainda não aceitou a política (não aparece na Comunidade). Os e-mails são dados pessoais: use só para falar com o próprio tutor.</p>
+      </section>
     </div>
     <div id="tela-alertas" hidden>
       <p class="detalhe">Alertas de pets perdidos e encontrados. Tire do ar o que for golpe, pedido de dinheiro ou conteúdo falso; o autor não consegue colocar de volta no ar.</p>
@@ -223,7 +264,9 @@ document.addEventListener("DOMContentLoaded", function () {
     $("tela-orgs").hidden = status !== "orgs";
     $("tela-parceiros").hidden = status !== "parceiros";
     $("tela-alertas").hidden = status !== "alertas";
-    $("lista").hidden = status === "eventos" || status === "orgs" || status === "parceiros" || status === "alertas";
+    $("tela-cadastros").hidden = status !== "cadastros";
+    $("lista").hidden = status === "eventos" || status === "orgs" || status === "parceiros" || status === "alertas" || status === "cadastros";
+    if (status === "cadastros") { carregarCadastros(); return; }
     if (status === "alertas") { carregarAlertas(); return; }
     if (status === "eventos") { carregarEventos(); return; }
     if (status === "orgs") { carregarOrgs(); return; }
@@ -306,6 +349,49 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 
+
+
+  // Cadastros: números da Comunidade, por dia, por estado e os mais recentes
+  var cadRecentes = [];
+  var ESP = { cachorro: "Cachorros", gato: "Gatos", ave: "Aves", pequeno_mamifero: "Pequenos mamíferos", reptil: "Répteis", peixe: "Peixes", outro: "Outros" };
+  function dataHora(d) { return d ? new Date(d).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—"; }
+  function barras(el, itens, rot) {
+    var max = Math.max.apply(null, itens.map(function (x) { return x.n; }).concat([1]));
+    $(el).innerHTML = itens.length ? itens.map(function (x) {
+      return '<li><span>' + esc(rot(x)) + '</span><i style="--w:' + Math.round(x.n / max * 100) + '%"></i><b>' + x.n + "</b></li>";
+    }).join("") : '<li class="detalhe">Nada ainda.</li>';
+  }
+  function desenharCadastros() {
+    var t = ($("cad-busca").value || "").trim().toLowerCase();
+    var l = cadRecentes.filter(function (u) { return !t || [u.nome, u.usuario, u.email, u.cidade, u.estado].join(" ").toLowerCase().indexOf(t) >= 0; });
+    $("cad-lista").innerHTML = l.length ? l.map(function (u) {
+      return "<tr><td><b>" + esc(u.nome) + "</b>" + (u.completo ? "" : '<span class="tag n">Incompleto</span>') + '<small><a href="comunidade/?u=' + encodeURIComponent(u.usuario) + '" target="_blank" rel="noopener">@' + esc(u.usuario) + "</a></small></td>" +
+        "<td>" + esc(u.email) + "<small>" + (u.entrada === "google" ? "Google" : "E-mail e senha") + "</small></td>" +
+        "<td>" + esc([u.cidade, u.estado].filter(Boolean).join(" / ") || "—") + "</td><td>" + u.pets + "</td>" +
+        "<td>" + dataHora(u.criado_em) + "</td><td>" + dataHora(u.ultimo_acesso) + "</td></tr>";
+    }).join("") : '<tr><td colspan="6" class="detalhe">Nenhum cadastro encontrado.</td></tr>';
+  }
+  function carregarCadastros() {
+    $("cad-numeros").innerHTML = '<p class="vazio">Carregando…</p>';
+    sb.rpc("cadastros_resumo").then(function (r) {
+      if (r.error) { $("cad-numeros").innerHTML = '<p class="vazio">' + esc(/cadastros_resumo/.test(r.error.message) ? "Rode o arquivo supabase/painel_cadastros.sql no Supabase para ver os cadastros aqui." : r.error.message) + "</p>"; return; }
+      var d = r.data;
+      var nums = [["tutores", "tutores na Comunidade"], ["hoje", "novos hoje"], ["semana", "nos últimos 7 dias"], ["mes", "nos últimos 30 dias"], ["pets", "pets cadastrados"], ["posts", "publicações"], ["incompletos", "contas sem aceitar a política"]];
+      $("cad-numeros").innerHTML = nums.map(function (n) { return '<div class="cad-num"><b>' + Number(d[n[0]] || 0).toLocaleString("pt-BR") + "</b><span>" + n[1] + "</span></div>"; }).join("");
+      var dias = d.por_dia || [], max = Math.max.apply(null, dias.map(function (x) { return x.n; }).concat([1]));
+      $("cad-grafico").innerHTML = dias.map(function (x) {
+        var dt = new Date(x.dia + "T12:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+        return '<div class="' + (x.n ? "" : "zero") + '" style="height:' + Math.max(2, Math.round(x.n / max * 100)) + '%" title="' + dt + ": " + x.n + '">' + (x.n ? "<span>" + x.n + "</span>" : "") + "</div>";
+      }).join("") ;
+      var eixoAntes = $("cad-eixo"); if (eixoAntes) eixoAntes.remove();
+      if (dias.length) $("cad-grafico").insertAdjacentHTML("afterend", '<div class="cad-eixo" id="cad-eixo"><span>' + new Date(dias[0].dia + "T12:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }) + "</span><span>hoje</span></div>");
+      barras("cad-estados", (d.por_estado || []).slice(0, 12), function (x) { return x.estado === "?" ? "Sem estado" : x.estado; });
+      barras("cad-especies", d.por_especie || [], function (x) { return ESP[x.especie] || x.especie; });
+      cadRecentes = d.recentes || [];
+      desenharCadastros();
+    });
+  }
+  $("cad-busca").addEventListener("input", desenharCadastros);
 
   // Pets desaparecidos: tirar do ar ou devolver
   function carregarAlertas() {
