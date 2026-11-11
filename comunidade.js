@@ -12,7 +12,7 @@
   const POR_PAGINA = 15;
   const SEL = "*, perfil:perfis!posts_autor_fkey(id,usuario,nome,foto_url), clube_info:clubes!posts_clube_fkey(id,nome)";
   const PASTA_FOTOS = SUPABASE_URL + "/storage/v1/object/public/fotos/";
-  const est = { sessao: null, eu: null, curtidas: new Set(), salvos: new Set(), votos: new Map(), clubes: new Set(), seguindo: new Set(), bloqueados: new Set(), posts: new Map() };
+  const est = { sessao: null, eu: null, curtidas: new Set(), salvos: new Set(), votos: new Map(), clubes: new Set(), seguindo: new Set(), bloqueados: new Set(), posts: new Map(), previas: new Map() };
 
   // ---------- Utilidades ----------
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -175,7 +175,7 @@
   function blocoFotos(p) {
     const fotos = (p.fotos || []).filter((f) => String(f).indexOf(PASTA_FOTOS) === 0);
     if (!fotos.length) return "";
-    return `<div class="fotos n${fotos.length}">${fotos.map((f, i) => `<a href="${esc(f)}" target="_blank" rel="noopener"><img src="${esc(f)}" alt="Foto ${i + 1} da publicação de ${esc((p.perfil || {}).nome)}" loading="lazy" decoding="async"></a>`).join("")}</div>`;
+    return `<div class="fotos n${fotos.length}">${fotos.map((f, i) => `<a href="${esc(f)}" data-galeria="${esc(p.id)}" data-i="${i}" aria-label="Ver foto ${i + 1} de ${fotos.length} em tela cheia"><img src="${esc(f)}" alt="Foto ${i + 1} da publicação de ${esc((p.perfil || {}).nome)}" loading="lazy" decoding="async"></a>`).join("")}</div>`;
   }
   function blocoEnquete(p) {
     if (p.tipo !== "enquete" || !p.opcoes) return "";
@@ -219,7 +219,35 @@
         <button type="button" class="acao${salvo ? " ativa" : ""}" data-acao="salvar" data-id="${esc(p.id)}" aria-pressed="${salvo}">${ICONE.salvar}<span class="sr">Salvar</span></button>
         <button type="button" class="acao" data-acao="compartilhar" data-id="${esc(p.id)}">${ICONE.compartilhar}<span class="sr">Compartilhar</span></button>
       </footer>
+      ${completo ? "" : blocoComentarios(p)}
     </article>`;
+  }
+  // Prévia dos comentários no feed: "Ver todos", os 2 mais recentes e o campo para comentar
+  function blocoComentarios(p) {
+    const n = p.total_comentarios || 0, pergunta = p.tipo === "pergunta";
+    const previa = (est.previas.get(p.id) || []).filter((c) => !est.bloqueados.has(c.autor));
+    const verTodos = n > previa.length
+      ? `<a class="ver-coment" href="${linkPost(p.id)}#comentarios">${n === 1 ? (pergunta ? "Ver 1 resposta" : "Ver 1 comentário") : `Ver ${n > 2 ? "todos os " : "os "}${num(n)} ${pergunta ? "respostas" : "comentários"}`}</a>` : "";
+    const itens = previa.map((c) => `<li><a href="${linkPerfil((c.perfil || {}).usuario)}"><b>${esc((c.perfil || {}).nome || "Tutor")}</b></a> ${esc(c.texto)}</li>`).join("");
+    const campo = est.eu && est.eu.aceitou
+      ? `<form class="coment-rapido" data-post="${esc(p.id)}">${avatar(est.eu)}<label class="sr" for="cr-${esc(p.id)}">${pergunta ? "Sua resposta" : "Seu comentário"}</label><input id="cr-${esc(p.id)}" maxlength="2000" autocomplete="off" enterkeyhint="send" placeholder="${pergunta ? "Responda com a sua experiência…" : "Adicione um comentário…"}"><button type="submit" disabled>Publicar</button></form>`
+      : `<button type="button" class="coment-rapido coment-login" data-acao="comentar-login" data-id="${esc(p.id)}">${avatar(null)}<span>${pergunta ? "Entre para responder…" : "Entre para comentar…"}</span></button>`;
+    return `<div class="post-coment" data-coment="${esc(p.id)}">${verTodos}${itens ? `<ul class="previa-coment">${itens}</ul>` : ""}${campo}</div>`;
+  }
+  // Busca os comentários mais recentes dos posts que acabaram de aparecer no feed
+  async function previasComentarios(posts) {
+    const ids = posts.filter((p) => p.total_comentarios > 0).map((p) => p.id);
+    if (!ids.length) return;
+    const r = await sb.from("comentarios").select("id,post,autor,texto,criado_em, perfil:perfis!comentarios_autor_fkey(usuario,nome)")
+      .in("post", ids).order("criado_em", { ascending: false }).limit(Math.min(200, ids.length * 6));
+    if (r.error || !r.data) return;
+    const por = new Map();
+    r.data.forEach((c) => { const l = por.get(c.post) || []; if (l.length < 2) { l.push(c); por.set(c.post, l); } });
+    por.forEach((l, id) => {
+      est.previas.set(id, l.reverse());
+      const p = est.posts.get(id);
+      document.querySelectorAll(`[data-coment="${id}"]`).forEach((el) => { if (p) el.outerHTML = blocoComentarios(p); });
+    });
   }
   function atualizarCartao(id) {
     const p = est.posts.get(id);
@@ -270,6 +298,7 @@
       if (r.erro) { msg.hidden = false; msg.textContent = "Não deu para carregar as publicações. Verifique sua internet e tente de novo."; botao.hidden = false; botao.textContent = "Tentar de novo"; return; }
       await carregarMeusEstados(r.posts);
       caixa.insertAdjacentHTML("beforeend", r.posts.map((p) => cartao(p)).join(""));
+      previasComentarios(r.posts);
       total += r.posts.length;
       cursor = r.proximo;
       acabou = r.fim || r.posts.length < POR_PAGINA;
@@ -593,7 +622,99 @@
     });
   })();
 
-  const PRECISA_LOGIN = { curtir: 1, salvar: 1, votar: 1, apagar: 1, participar: 1, seguir: 1, publicar: 1, desbloquear: 1 };
+  const PRECISA_LOGIN = { curtir: 1, salvar: 1, votar: 1, apagar: 1, participar: 1, seguir: 1, publicar: 1, desbloquear: 1, "comentar-login": 1 };
+
+  // ---------- Visualizador de fotos (tela cheia, sem sair da página) ----------
+  const galeria = (() => {
+    const d = document.createElement("dialog");
+    d.className = "galeria";
+    d.setAttribute("aria-label", "Fotos da publicação");
+    d.innerHTML = `<div class="gal-topo"><span class="gal-cont" aria-live="polite"></span><button type="button" class="gal-fechar" aria-label="Fechar as fotos">&times;</button></div>
+      <button type="button" class="gal-seta gal-ant" aria-label="Foto anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="gal-palco"><img alt=""></div>
+      <button type="button" class="gal-seta gal-prox" aria-label="Próxima foto"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      <div class="gal-pontos" aria-hidden="true"></div>`;
+    document.body.appendChild(d);
+    const img = d.querySelector("img"), cont = d.querySelector(".gal-cont"), pontos = d.querySelector(".gal-pontos");
+    let fotos = [], i = 0, nomeAutor = "", comHistorico = false;
+    function mostrar(n) {
+      i = (n + fotos.length) % fotos.length;
+      img.src = fotos[i];
+      img.alt = `Foto ${i + 1} de ${fotos.length} da publicação de ${nomeAutor}`;
+      cont.textContent = fotos.length > 1 ? `${i + 1} / ${fotos.length}` : "";
+      d.classList.toggle("uma", fotos.length < 2);
+      pontos.innerHTML = fotos.length > 1 ? fotos.map((_, k) => `<span${k === i ? ' class="ativo"' : ""}></span>`).join("") : "";
+    }
+    function abrir(lista, n, autor) {
+      fotos = lista; nomeAutor = autor || "";
+      mostrar(n);
+      d.showModal();
+      document.documentElement.classList.add("sem-rolar");
+      // O botão "voltar" do celular fecha as fotos em vez de sair da página
+      try { history.pushState({ galeria: 1 }, ""); comHistorico = true; } catch (e) { comHistorico = false; }
+    }
+    function fechar(peloVoltar) {
+      if (!d.open) return;
+      d.close();
+      document.documentElement.classList.remove("sem-rolar");
+      if (comHistorico && !peloVoltar) { comHistorico = false; history.back(); }
+      comHistorico = false;
+    }
+    d.querySelector(".gal-fechar").addEventListener("click", () => fechar());
+    d.querySelector(".gal-ant").addEventListener("click", () => mostrar(i - 1));
+    d.querySelector(".gal-prox").addEventListener("click", () => mostrar(i + 1));
+    d.addEventListener("cancel", (e) => { e.preventDefault(); fechar(); });
+    d.addEventListener("click", (e) => { if (e.target === d || e.target.classList.contains("gal-palco")) fechar(); });
+    d.addEventListener("keydown", (e) => { if (e.key === "ArrowLeft") mostrar(i - 1); if (e.key === "ArrowRight") mostrar(i + 1); });
+    window.addEventListener("popstate", () => { if (d.open) fechar(true); });
+    // Arrastar para o lado troca a foto; arrastar para baixo fecha
+    let x0 = null, y0 = null;
+    d.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    d.addEventListener("touchend", (e) => {
+      if (x0 == null) return;
+      const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      x0 = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) mostrar(i + (dx < 0 ? 1 : -1));
+      else if (dy > 90 && Math.abs(dy) > Math.abs(dx)) fechar();
+    });
+    return { abrir };
+  })();
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("[data-galeria]");
+    if (!a || e.metaKey || e.ctrlKey) return;
+    const p = est.posts.get(a.dataset.galeria);
+    if (!p) return;
+    e.preventDefault();
+    const fotos = (p.fotos || []).filter((f) => String(f).indexOf(PASTA_FOTOS) === 0);
+    galeria.abrir(fotos, Number(a.dataset.i) || 0, (p.perfil || {}).nome);
+  });
+
+  // ---------- Comentar direto do feed ----------
+  document.addEventListener("input", (e) => {
+    const f = e.target.closest(".coment-rapido");
+    if (f && f.tagName === "FORM") f.querySelector("button").disabled = !e.target.value.trim();
+  });
+  document.addEventListener("submit", async (e) => {
+    const f = e.target.closest("form.coment-rapido");
+    if (!f) return;
+    e.preventDefault();
+    const id = f.dataset.post, campo = f.querySelector("input"), botao = f.querySelector("button"), texto = campo.value.trim();
+    if (!texto || !exigir({ tipo: "comentar", id: id })) return;
+    if (pareceVenda(texto)) { toast("Venda de animais não é permitida na Comunidade Abanô."); return; }
+    botao.disabled = true; campo.disabled = true;
+    const r = await sb.from("comentarios").insert({ post: id, autor: est.eu.id, texto: texto }).select("id,post,autor,texto,criado_em, perfil:perfis!comentarios_autor_fkey(usuario,nome)").single();
+    campo.disabled = false;
+    if (r.error) { botao.disabled = false; toast(erroMsg(r.error)); return; }
+    const p = est.posts.get(id);
+    if (p) {
+      p.total_comentarios = (p.total_comentarios || 0) + 1;
+      const l = (est.previas.get(id) || []).concat([r.data]).slice(-2);
+      est.previas.set(id, l);
+      atualizarCartao(id);
+    }
+    toast("Comentário publicado!");
+  });
+
 
   document.addEventListener("click", (e) => {
     const b = e.target.closest("[data-acao]");
@@ -607,6 +728,7 @@
     if (tipo === "compartilhar") { acoes.compartilhar(id); return; }
     if (PRECISA_LOGIN[tipo] && !exigir({ tipo: tipo, id: id, opcao: b.dataset.opcao != null ? Number(b.dataset.opcao) : null })) return;
     if (tipo === "publicar") { const c = document.getElementById("compor-texto"); if (c) c.focus(); return; }
+    if (tipo === "comentar-login") return;
     if (acoes[tipo]) acoes[tipo](id, b.dataset.opcao, b);
   });
 
@@ -661,11 +783,11 @@
       ${voltar("comunidade/")}
       <div class="ver-post">${cartao(p, true)}</div>
       <section class="comentarios" id="comentarios" aria-label="${pergunta ? "Respostas" : "Comentários"}">
-        <h2>${pergunta ? "Respostas" : "Comentários"}</h2>
+        <h2>${pergunta ? "Respostas" : "Comentários"}${p.total_comentarios ? ` <small id="num-coment">${num(p.total_comentarios)}</small>` : ""}</h2>
+        <ol class="lista-comentarios" id="lista-comentarios"><li class="carregando">Carregando…</li></ol>
         ${est.eu && est.eu.aceitou
           ? `<form class="comentar" id="form-comentar" novalidate>${avatar(est.eu)}<label class="sr" for="comentario-texto">${pergunta ? "Sua resposta" : "Seu comentário"}</label><textarea id="comentario-texto" maxlength="2000" rows="2" placeholder="${pergunta ? "Escreva uma resposta com base na sua experiência…" : "Escreva um comentário…"}"></textarea><button type="submit" class="btn">${pergunta ? "Responder" : "Comentar"}</button><p class="aviso-conta" id="comentar-aviso" role="alert" hidden></p></form>`
           : `<button type="button" class="compor-fake" id="comentar-login">${avatar(null)}<span>${pergunta ? "Entre para responder" : "Entre para comentar"}</span></button>`}
-        <ol class="lista-comentarios" id="lista-comentarios"><li class="carregando">Carregando…</li></ol>
       </section>`;
     // Dados estruturados para buscadores
     const ld = document.createElement("script");
@@ -703,7 +825,13 @@
     const a = c.perfil || {};
     const posso = est.eu && (c.autor === est.eu.id || p.autor === est.eu.id);
     const meu = est.eu && c.autor === est.eu.id;
-    return `<li class="comentario" data-comentario="${esc(c.id)}" data-autor="${esc(c.autor)}">${avatar(a)}<div><p class="c-topo"><a href="${linkPerfil(a.usuario)}"><b>${esc(a.nome)}</b></a> <small>${tempo(c.criado_em)}</small>${posso ? ` <button type="button" class="link-botao c-apagar" data-c="${esc(c.id)}">Apagar</button>` : ""}${meu ? "" : ` <button type="button" class="link-botao c-denunciar" data-c="${esc(c.id)}">Denunciar</button>`}</p><p class="c-txt">${esc(c.texto)}</p></div></li>`;
+    return `<li class="comentario" data-comentario="${esc(c.id)}" data-autor="${esc(c.autor)}">
+      <a href="${linkPerfil(a.usuario)}" class="c-av" tabindex="-1" aria-hidden="true">${avatar(a)}</a>
+      <div class="c-corpo">
+        <div class="c-balao"><a class="c-nome" href="${linkPerfil(a.usuario)}">${esc(a.nome || "Tutor")}</a><p class="c-txt">${esc(c.texto)}</p></div>
+        <p class="c-meta"><time datetime="${esc(c.criado_em)}">${tempo(c.criado_em)}</time>${posso ? ` <button type="button" class="c-apagar" data-c="${esc(c.id)}">Apagar</button>` : ""}${meu ? "" : ` <button type="button" class="c-denunciar" data-c="${esc(c.id)}">Denunciar</button>`}</p>
+      </div>
+    </li>`;
   }
   async function carregarComentarios(p) {
     const ol = document.getElementById("lista-comentarios");
