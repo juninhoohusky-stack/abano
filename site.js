@@ -327,7 +327,7 @@
       "sangue doador doadora doadores doação doar transfusão transfusao cirurgia anemia tipo sanguíneo dea banco de sangue emergência herói"],
     ["pesquisa-huskies/", "Onde estão os Huskies do Brasil?", "Pesquisa nacional dos tutores de husky. Leva 2 minutos.", "mapa", "",
       "pesquisa questionário mapa husky huskies brasil tutores encontro husky experience"],
-    ["novidades.html", "Novidades", "O que há de novo no Abanô.", "sino", "",
+    ["novidades.html", "Novidades", "O que há de novo no Abanô.", "alto", "",
       "novidades novidade notícias noticias atualização lançamento lançamentos o que mudou"],
     ["sobre.html", "Nossa história", "Como o Abanô nasceu, numa casa com quatro huskies e dois gatos.", "coracao", "",
       "história historia sobre quem somos juninho família familia fundador abanô abano"],
@@ -400,7 +400,7 @@
   botao.setAttribute("aria-label", "Buscar no Abanô");
   botao.setAttribute("aria-haspopup", "dialog");
   botao.innerHTML = svg("lupa") + '<span class="topo-busca-txt">Buscar</span>';
-  var antes = topo.querySelector(".topo-entrar") || topo.querySelector(".topo-cta");
+  var antes = topo.querySelector(".topo-sino") || topo.querySelector(".topo-entrar") || topo.querySelector(".topo-cta");
   topo.insertBefore(botao, antes);
 
   var dlg = document.createElement("dialog");
@@ -469,4 +469,41 @@
     var digitando = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) || document.activeElement.isContentEditable;
     if ((e.key === "k" && (e.ctrlKey || e.metaKey)) || (e.key === "/" && !digitando)) { e.preventDefault(); abrir(); }
   });
+})();
+
+/* ---------- Sininho de notificações (só para quem está logado) ----------
+   Mostra quantos avisos novos a pessoa tem na Comunidade (curtidas, comentários,
+   respostas e seguidores). A lista fica em comunidade/?v=notificacoes. */
+(function () {
+  var topo = document.querySelector(".topo-in");
+  if (!topo || document.querySelector(".topo-sino")) return;
+  var sessao = null;
+  try { sessao = JSON.parse(localStorage.getItem("sb-igpwzidpiypzukmnskdb-auth-token") || "null"); } catch (e) {}
+  if (!sessao || !sessao.access_token) return;
+  var a = document.createElement("a");
+  a.className = "topo-sino";
+  a.href = "comunidade/?v=notificacoes";
+  a.setAttribute("aria-label", "Notificações");
+  a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.6 2.4H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg><b data-sino-num hidden></b>';
+  if (/[?&]v=notificacoes/.test(location.search)) a.setAttribute("aria-current", "page");
+  var antes = topo.querySelector(".topo-busca") || topo.querySelector(".topo-entrar") || topo.querySelector(".topo-cta");
+  topo.insertBefore(a, antes ? antes.nextSibling : null);
+  // Conta os avisos novos (chave pública do site, a mesma do lista.js)
+  function contar() {
+    var s = null;
+    try { s = JSON.parse(localStorage.getItem("sb-igpwzidpiypzukmnskdb-auth-token") || "null"); } catch (e) {}
+    if (!s || !s.access_token || (s.expires_at && s.expires_at * 1000 < Date.now() + 30000)) return;
+    fetch("https://igpwzidpiypzukmnskdb.supabase.co/rest/v1/rpc/notificacoes_nao_lidas", {
+      method: "POST",
+      headers: { "apikey": "sb_publishable_PRC9f8FexEHaH6ZGNCaGig_EVXz8JcY", "Authorization": "Bearer " + s.access_token, "Content-Type": "application/json" },
+      body: "{}"
+    }).then(function (r) { return r.ok ? r.json() : null; }).then(function (n) {
+      if (typeof n !== "number") return;
+      document.querySelectorAll("[data-sino-num]").forEach(function (el) { el.textContent = n > 99 ? "99+" : String(n || ""); el.hidden = !n; });
+      a.setAttribute("aria-label", n ? "Notificações: " + n + (n === 1 ? " nova" : " novas") : "Notificações");
+    }).catch(function () {});
+  }
+  contar();
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) contar(); });
+  setInterval(function () { if (!document.hidden) contar(); }, 120000);
 })();

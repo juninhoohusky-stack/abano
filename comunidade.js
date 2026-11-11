@@ -1127,6 +1127,71 @@
     if (!termo && !uf) campo.focus();
   }
 
+  // ---------- Notificações (o sininho) ----------
+  const TEXTO_AVISO = {
+    curtida: (n) => n > 1 ? "curtiram sua publicação" : "curtiu sua publicação",
+    comentario: () => "comentou na sua publicação",
+    resposta: () => "respondeu seu comentário",
+    curtida_comentario: (n) => n > 1 ? "curtiram seu comentário" : "curtiu seu comentário",
+    seguidor: () => "começou a seguir você"
+  };
+  const ICONE_AVISO = {
+    curtida: '<path d="M12 20.5s-8-4.9-8-10.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.9c0 5.7-8 10.6-8 10.6z"/>',
+    curtida_comentario: '<path d="M12 20.5s-8-4.9-8-10.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.9c0 5.7-8 10.6-8 10.6z"/>',
+    comentario: '<path d="M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 20 17.5H9l-4.5 3.5v-3.5H4A1.5 1.5 0 0 1 2.5 16V7A1.5 1.5 0 0 1 4 5.5z"/>',
+    resposta: '<path d="M10 8 4 13l6 5v-3.5c5 0 8 1 10 4.5 0-6-3-10-10-10z"/>',
+    seguidor: '<circle cx="10" cy="8" r="3.6"/><path d="M3.5 20a6.5 6.5 0 0 1 11.2-4.5M18.5 13v6M15.5 16h6"/>'
+  };
+  function agruparAvisos(lista) {
+    // Curtidas no mesmo post (ou no mesmo comentário) viram um aviso só: "Fulana e mais 3 pessoas curtiram"
+    const grupos = [], porChave = new Map();
+    lista.forEach((n) => {
+      const agrupa = n.tipo === "curtida" || n.tipo === "curtida_comentario";
+      const chave = agrupa ? n.tipo + ":" + (n.comentario || n.post) : "u" + n.id;
+      let g = porChave.get(chave);
+      if (!g) { g = { ...n, pessoas: [], lida: true }; porChave.set(chave, g); grupos.push(g); }
+      if (!g.pessoas.some((x) => x.de === n.de)) g.pessoas.push(n);
+      if (!n.lida) g.lida = false;
+    });
+    return grupos;
+  }
+  function itemAviso(g) {
+    const quem = g.pessoas[0], outros = g.pessoas.length - 1;
+    const nomes = `<b>${esc(quem.de_nome)}</b>${outros ? ` e mais ${outros === 1 ? "1 pessoa" : outros + " pessoas"}` : ""}`;
+    const link = g.tipo === "seguidor" ? linkPerfil(quem.de_usuario) : linkPost(g.post) + (g.comentario ? "#comentarios" : "");
+    const trecho = g.tipo === "comentario" || g.tipo === "resposta" ? g.trecho_comentario : g.tipo === "curtida_comentario" ? g.trecho_comentario : g.tipo === "curtida" ? g.trecho_post : "";
+    return `<li><a class="aviso${g.lida ? "" : " novo"}" href="${link}">
+      <span class="aviso-av">${avatar({ nome: quem.de_nome, foto_url: quem.de_foto })}<span class="aviso-ico t-${g.tipo}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONE_AVISO[g.tipo]}</svg></span></span>
+      <span class="aviso-txt">${nomes} ${TEXTO_AVISO[g.tipo](g.pessoas.length)}${trecho ? `: <span class="aviso-trecho">“${esc(trecho)}”</span>` : "."}<small>${tempo(g.criado_em)}</small></span>
+    </a></li>`;
+  }
+  async function telaNotificacoes() {
+    definirMeta("Notificações | Comunidade Abanô", null, "comunidade/?v=notificacoes");
+    if (!exigir({ tipo: "notificacoes" })) { centro.innerHTML = vazio("Suas notificações", "Entre na sua conta para ver quem curtiu, comentou e começou a seguir você."); return; }
+    centro.innerHTML = `${voltar("comunidade/")}<header class="tela-topo"><h1>Notificações</h1><p>Curtidas, comentários, respostas e novos seguidores.</p></header><ul class="avisos" id="avisos"><li class="carregando">Carregando…</li></ul>`;
+    const r = await sb.rpc("minhas_notificacoes", { p_limite: 120 });
+    const ul = document.getElementById("avisos");
+    if (r.error) {
+      ul.outerHTML = vazio("Notificações quase prontas", /minhas_notificacoes/.test(r.error.message || "") ? "Falta ativar as notificações no banco de dados do Abanô." : erroMsg(r.error));
+      return;
+    }
+    const lista = (r.data || []).filter((n) => !est.bloqueados.has(n.de));
+    ul.innerHTML = lista.length ? agruparAvisos(lista).map(itemAviso).join("")
+      : `<li class="avisos-vazio">${vazio("Nada por aqui ainda", "Quando alguém curtir, comentar ou começar a seguir você, aparece aqui.", '<a class="btn" href="comunidade/">Ir para o feed</a>')}</li>`;
+    if (lista.some((n) => !n.lida)) { await sb.rpc("marcar_notificacoes_lidas"); atualizarSino(0); }
+  }
+  // Contador do sininho (no menu da Comunidade e no topo do site)
+  function atualizarSino(n) {
+    const item = document.querySelector('.com-menu [data-rota="notificacoes"]');
+    if (item && !item.querySelector("[data-sino-num]")) item.insertAdjacentHTML("beforeend", '<b class="menu-num" data-sino-num hidden></b>');
+    document.querySelectorAll("[data-sino-num]").forEach((el) => { el.textContent = n > 99 ? "99+" : String(n || ""); el.hidden = !n; });
+  }
+  async function contarAvisos() {
+    if (!est.eu) return;
+    const r = await sb.rpc("notificacoes_nao_lidas");
+    if (!r.error) atualizarSino(r.data || 0);
+  }
+
   function telaSalvos() {
     definirMeta("Salvos | Comunidade Abanô", null, "comunidade/?v=salvos");
     if (!exigir({ tipo: "salvos" })) { centro.innerHTML = vazio("Suas publicações salvas", "Entre na sua conta para ver o que você salvou."); return; }
@@ -1188,9 +1253,12 @@
     if (v === "clubes") return telaClubes(!!q.get("meus"));
     if (v === "tutores") return telaTutores();
     if (v === "salvos") return telaSalvos();
+    if (v === "notificacoes") return telaNotificacoes();
     return telaFeed();
   }
 
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) contarAvisos(); });
+  setTimeout(contarAvisos, 1500);
   (async function iniciar() {
     const [, nomes] = await Promise.all([carregarEu(), sb.from("clubes").select("id,nome")]);
     (nomes.data || []).forEach((x) => { nomesClubes[x.id] = x.nome; });

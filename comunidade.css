@@ -416,3 +416,24 @@ html.sem-rolar{overflow:hidden}
 .lista-comentarios,.c-respostas{grid-template-columns:minmax(0,1fr)}
 .lista-comentarios > li,.c-respostas > li,.form-resposta{min-width:0}
 .form-resposta input{width:100%}
+
+/* ---------- Notificações ---------- */
+.avisos{list-style:none;margin:0;padding:0;display:grid;gap:2px;background:var(--superficie);border-radius:var(--raio);box-shadow:var(--sombra);overflow:hidden}
+.avisos .carregando{padding:var(--e-5)}
+.avisos-vazio{list-style:none}
+.aviso{display:flex;align-items:center;gap:var(--e-3);padding:var(--e-3) var(--e-4);color:var(--tinta);text-decoration:none;transition:background-color .2s}
+.aviso:hover{background:var(--areia)}
+.aviso.novo{background:color-mix(in srgb,var(--marca) 7%,var(--superficie))}
+.aviso.novo::after{content:"";flex:none;width:10px;height:10px;border-radius:50%;background:var(--marca)}
+.aviso-av{position:relative;flex:none}
+.aviso-av .av{width:52px;height:52px;font-size:21px}
+.aviso-ico{position:absolute;right:-4px;bottom:-4px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;box-shadow:0 0 0 2px var(--superficie);color:#fff;background:var(--marca)}
+.aviso-ico svg{width:14px;height:14px;fill:currentColor;stroke:none}
+.aviso-ico.t-comentario,.aviso-ico.t-resposta{background:#2F80ED}
+.aviso-ico.t-seguidor{background:var(--laranja)}
+.aviso-ico.t-seguidor svg{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.aviso-txt{flex:1;min-width:0;font-size:var(--t-sm);line-height:1.45}
+.aviso-txt b{font-weight:800}
+.aviso-trecho{color:var(--suave)}
+.aviso-txt small{display:block;margin-top:2px;color:var(--suave);font-size:var(--t-xs)}
+.com-menu .menu-num{margin-left:auto}
