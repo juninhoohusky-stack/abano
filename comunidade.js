@@ -915,6 +915,25 @@
     if (cl) cl.innerHTML = (c.data || []).length
       ? `<ul class="lado-lista">${c.data.map((x) => `<li data-clube="${esc(x.id)}"><a href="${linkClube(x.id)}"><b>${esc(x.nome)}</b></a><small class="membros">${textoMembros(x.total_membros)}</small></li>`).join("")}</ul><a class="ver-todos" href="comunidade/?v=clubes">Ver todos os clubes</a>`
       : '<p class="sub">Não deu para carregar os clubes.</p>';
+    alertasPerto();
+  }
+
+  // Pets desaparecidos no estado de quem está vendo (ou no Brasil todo, para visitantes)
+  async function alertasPerto() {
+    const lado = document.querySelector(".com-lado");
+    if (!lado || document.getElementById("lado-perdidos")) return;
+    const uf = est.eu && est.eu.estado;
+    const r = await sb.rpc("alertas_lista", { p_estado: uf || null, p_tipo: null, p_status: "ativo" });
+    if (r.error || !r.data || !r.data.length) return;
+    const pasta = SUPABASE_URL + "/storage/v1/object/public/fotos/";
+    const caixa = document.createElement("section");
+    caixa.className = "lado-caixa lado-perdidos";
+    caixa.id = "lado-perdidos";
+    caixa.innerHTML = `<h2>Pets desaparecidos${uf ? " em " + esc(uf) : ""}</h2><ul class="lado-alertas">${r.data.slice(0, 3).map((x) =>
+      `<li><a href="perdidos.html?a=${esc(x.id)}">${String(x.foto_url || "").indexOf(pasta) === 0 ? `<img src="${esc(x.foto_url)}" alt="" loading="lazy">` : "<span></span>"}<span><b>${esc(x.nome || (x.tipo === "encontrado" ? "Pet encontrado" : "Pet"))}</b><small><em class="${x.tipo}">${x.tipo === "perdido" ? "Perdido" : "Encontrado"}</em> · ${esc(x.bairro)}, ${esc(x.cidade)}</small></span></a></li>`).join("")}</ul>
+      <a class="ver-todos" href="perdidos.html">Ver todos os alertas</a>`;
+    const pesquisa = lado.querySelector(".lado-pesquisa");
+    lado.insertBefore(caixa, pesquisa ? pesquisa.nextSibling : lado.firstChild);
   }
 
   function marcarMenu() {

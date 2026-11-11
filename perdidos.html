@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Pet desaparecido | Abanô</title>
-<meta name="description" content="Cadastre um pet perdido ou encontrado, gere um cartaz pronto e avise quem está por perto. Em breve no Abanô.">
+<title>Pet desaparecido: perdidos e encontrados | Abanô</title>
+<meta name="description" content="Alertas de cães, gatos e outros pets perdidos e encontrados perto de você. Crie um alerta grátis, com cartaz pronto para compartilhar.">
+<meta property="og:title" content="Pet desaparecido: perdidos e encontrados">
+<meta property="og:description" content="Alertas de cães, gatos e outros pets perdidos e encontrados perto de você. Crie um alerta grátis, com cartaz pronto para compartilhar.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -15,41 +17,23 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="https://abano.com.br/perdidos.html">
 <meta property="og:image" content="https://abano.com.br/compartilhar.png">
-<meta property="og:title" content="Pet desaparecido | Abanô">
-<meta property="og:description" content="Cadastre um pet perdido ou encontrado, gere um cartaz pronto e avise quem está por perto. Em breve no Abanô.">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261111e">
+<link rel="stylesheet" href="site.css?v=20261111g">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261111e" defer></script>
+<script src="site.js?v=20261111g" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
+<script src="lista.js?v=20261111g" defer></script>
+<script src="conta.js?v=20261111g" defer></script>
+<link rel="stylesheet" href="perdidos.css?v=20261111g">
+<script src="perdidos.js?v=20261111g" defer></script>
 <style>
-  .leitura{max-width:760px;margin:0 auto;padding:var(--e-14) var(--e-6) 0}
-  .migalha{font-size:var(--t-sm);color:var(--suave);margin-bottom:var(--e-5)}
-  .migalha a{color:var(--suave);text-decoration:none}
-  .migalha a:hover{color:var(--tinta)}
-  .cabeca-servico{display:flex;align-items:center;gap:var(--e-3);margin-bottom:var(--e-1)}
-  .cabeca-servico .ico{width:52px;height:52px;border-radius:var(--raio-sm);display:grid;place-items:center;background:var(--marca-clara);color:var(--marca);flex:none}
-  .cabeca-servico .ico svg{width:26px;height:26px}
-  .tag{display:inline-flex;align-items:center;gap:var(--e-1);font-size:var(--t-xs);font-weight:600;color:var(--suave);background:var(--areia);padding:var(--e-1) var(--e-3);border-radius:var(--raio-pill)}
-  .tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
-  h1{font-size:var(--t-h1);margin:var(--e-4) 0 var(--e-3)}
-  .lead{font-size:var(--t-lg);color:var(--suave);margin-bottom:var(--e-8)}
-  .bloco{background:var(--superficie);border-radius:var(--raio-md);padding:var(--e-8) var(--e-8);box-shadow:var(--sombra);margin-bottom:var(--e-5)}
-  .bloco h2{font-size:var(--t-2xl);margin-bottom:var(--e-3)}
-  .itens{list-style:none;display:grid;gap:var(--e-3)}
-  .itens li{display:flex;gap:var(--e-3);align-items:flex-start;font-size:var(--t-corpo)}
-  .itens svg{width:20px;height:20px;flex:none;margin-top:var(--e-1);color:var(--marca)}
-  .avise{background:var(--faixa);color:var(--sobre-faixa);border-radius:var(--raio-md);padding:var(--e-8);margin-bottom:var(--e-5)}
-  .avise h2{color:#fff;font-size:var(--t-3xl);margin-bottom:var(--e-2)}
-  .avise p{opacity:.9;margin-bottom:var(--e-5)}
-  .avise .btn{background:#fff;color:var(--faixa)}
-  .avise .btn:hover{background:var(--sobre-faixa)}
-  .extra{display:flex;align-items:center;justify-content:space-between;gap:var(--e-3) var(--e-5);flex-wrap:wrap;padding:var(--e-4) var(--e-6);border-radius:var(--raio);background:var(--acento-claro);color:var(--tinta);text-decoration:none;font-size:var(--t-base)}
-  .extra strong{font-weight:600}
-  .extra span:last-child{color:var(--acento);font-weight:600;white-space:nowrap}
-  @media (max-width:600px){.bloco,.avise{padding:var(--e-6)}}
+
 </style>
 </head>
 <body>
@@ -62,7 +46,7 @@
       <a href="index.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5"/><path d="M6 9v10.5a.5.5 0 0 0 .5.5H10v-5.5h4V20h3.5a.5.5 0 0 0 .5-.5V9"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.4 3.2a1 1 0 0 1 1.2 0l8 6.4a.8.8 0 0 1-1 1.3l-.4-.3v9.2a1.4 1.4 0 0 1-1.4 1.4h-3.6v-5.6h-4.4v5.6H6.2a1.4 1.4 0 0 1-1.4-1.4v-9.2l-.4.3a.8.8 0 0 1-1-1.3z"/></svg><span>Início</span></a>
       <a href="comunidade/" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-3.5 3v-3H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/><path d="M17 9.5h3a2 2 0 0 1 2 2v5.5a2 2 0 0 1-2 2h-1v2.5L16 19h-3.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 5h11a2.5 2.5 0 0 1 2.5 2.5v6A2.5 2.5 0 0 1 15 16H9.3l-3.6 3.1a.6.6 0 0 1-1-.45V16H4a2.5 2.5 0 0 1-2.5-2.5v-6A2.5 2.5 0 0 1 4 5z"/><path d="M19 9a2.5 2.5 0 0 1 2.5 2.5V17a2.5 2.5 0 0 1-2.5 2.5h-.6v2a.6.6 0 0 1-1 .45L14.6 19.5H12a2.5 2.5 0 0 1-2-1h5a3.5 3.5 0 0 0 3.5-3.5V9z"/></svg><span>Comunidade</span></a>
       <div class="grupo-menu">
-        <button type="button" class="aba aba-menu" aria-expanded="false" aria-controls="menu-servicos" aria-current="page"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="3.5" y="12.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="12.5" width="8" height="8" rx="2.2"/></svg><span>Serviços</span><svg class="seta" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></button>
+        <button type="button" class="aba aba-menu" aria-expanded="false" aria-controls="menu-servicos"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="3.5" y="12.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="12.5" width="8" height="8" rx="2.2"/></svg><span>Serviços</span><svg class="seta" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></button>
         <div class="submenu" id="menu-servicos">
           <p class="submenu-titulo">Serviços</p>
           <a href="eventos.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2a4.5 4.5 0 0 1 5 4.8"/></svg></span>Eventos pet<small>Em breve</small></a>
@@ -72,7 +56,7 @@
           <a href="adestramento.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="5.5"/><path d="M8.6 13.4 7 21l5-2.5 5 2.5-1.6-7.6"/><path d="m10 9 1.4 1.4L14.2 7.6"/></svg></span>Adestramento</a>
           <a href="hospedagem.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/></svg></span>Hospedagem</a>
           <a href="adocao.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></span>Adoção<small>Novo</small></a>
-          <a href="perdidos.html" aria-current="page"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></span>Pet desaparecido<small>Em breve</small></a>
+          <a href="perdidos.html" aria-current="page"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></span>Pet desaparecido<small>Novo</small></a>
           <a href="perfil-qr.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2M20 14v.01M14 20h.01M18 18h2v2h-2z"/></svg></span>Perfil do pet com QR<small>Em breve</small></a>
           <a href="doador-de-sangue.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5s6 6.4 6 10.7a6 6 0 0 1-12 0C6 9.9 12 3.5 12 3.5z"/><path d="M12 11v5M9.5 13.5h5"/></svg></span>Doador de sangue<small>Novo</small></a>
         </div>
@@ -96,31 +80,38 @@
   </div>
 </header>
 
-<main class="leitura">
-  <p class="migalha"><a href="index.html">Início</a> / Pet desaparecido</p>
-  <div class="cabeca-servico">
-    <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></span>
-    <span class="tag">Em breve</span>
-  </div>
-  <h1>Pet desaparecido</h1>
-  <p class="lead">Cadastre um pet perdido ou encontrado, gere um cartaz pronto e avise quem está por perto, nas primeiras horas, que são as mais importantes.</p>
+<main class="per">
+  <div class="wrap">
+    <p class="migalha"><a href="index.html">Início</a> / Pet desaparecido</p>
+    <section class="per-hero" id="per-hero">
+      <div>
+        <h1>Perdeu ou encontrou um pet? <em>A gente ajuda a espalhar.</em></h1>
+        <p class="per-lead">Crie um alerta grátis com foto e local. Ele aparece para quem está na sua região e gera um cartaz pronto para mandar nos grupos do bairro.</p>
+        <div class="per-acoes">
+          <a class="btn btn-grande per-btn-perdido" href="perdidos.html?novo=perdido" data-novo="perdido"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>Meu pet sumiu</a>
+          <a class="btn btn-grande per-btn-encontrado" href="perdidos.html?novo=encontrado" data-novo="encontrado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg>Encontrei um pet</a>
+        </div>
+      </div>
+    </section>
 
-  <div class="bloco">
-    <h2>O que vai ter aqui</h2>
-    <ul class="itens">
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Cadastro rápido com foto e o último lugar onde o pet foi visto</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Cartaz pronto para imprimir e compartilhar</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Alerta para tutores e parceiros da região</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Busca de pets encontrados perto de você</span></li>
-    </ul>
-  </div>
+    <div id="per-centro" aria-live="polite"><p class="per-carregando">Carregando…</p></div>
 
-  <div class="avise">
-    <h2>Quer ser avisado quando abrir?</h2>
-    <p>Crie sua conta grátis e marque a opção de receber as novidades por e-mail: avisamos quando <b>Pet desaparecido</b> abrir. Enquanto isso, a Comunidade já está aberta.</p>
-    <a href="cadastro.html?volta=%2Fcomunidade%2F" class="btn">Participar da Comunidade</a>
+    <section class="per-dicas" aria-labelledby="per-dicas-t">
+      <h2 id="per-dicas-t">O pet sumiu? Faça isso nas primeiras horas</h2>
+      <ol><li><b>Saia para procurar na hora</b><span>Percorra as ruas perto de onde ele sumiu, chamando pelo nome. Muitos pets ficam escondidos a poucas quadras, com medo.</span></li><li><b>Crie o alerta e espalhe o cartaz</b><span>Publique aqui, baixe o cartaz e mande nos grupos do bairro, do condomínio e nas redes. Quanto mais gente vê, melhor.</span></li><li><b>Avise clínicas, pet shops e abrigos</b><span>Ligue para os veterinários e abrigos da região: é para lá que muita gente leva um pet encontrado.</span></li><li><b>Deixe algo com o cheiro de casa</b><span>Uma roupa sua ou a caminha dele na porta ajudam o pet a achar o caminho de volta.</span></li><li><b>Procure de novo à noite e cedo</b><span>Com a rua mais calma, ele se sente seguro para sair do esconderijo e responder ao seu chamado.</span></li><li><b>Cuidado com golpes</b><span>Desconfie de quem pede dinheiro antes de mostrar o pet. Combine o encontro em lugar movimentado.</span></li></ol>
+    </section>
   </div>
 
+  <dialog class="dialogo-per" id="dialogo-entrar-per" aria-labelledby="per-entrar-motivo">
+    <div class="per-dialogo-caixa">
+      <h2 id="per-entrar-motivo">Para criar um alerta, entre na sua conta</h2>
+      <p>É grátis e leva um minuto. Assim quem viu o pet consegue falar com você com segurança.</p>
+      <a class="btn" id="per-entrar" href="entrar.html">Entrar</a>
+      <a class="btn btn-sec" id="per-criar" href="cadastro.html">Criar minha conta</a>
+      <form method="dialog"><button class="link-botao">Agora não</button></form>
+    </div>
+  </dialog>
+  <div class="toast-per" id="toast-per" role="status" aria-live="polite"></div>
 </main>
 
 <footer class="rodape">
@@ -146,10 +137,11 @@
         <li><a href="https://www.instagram.com/juninhoohusky/" target="_blank" rel="noopener">Instagram @juninhoohusky</a></li>
         <li><a href="https://www.youtube.com/@JuninhoOhusky" target="_blank" rel="noopener">YouTube Juninho O Husky</a></li>
         <li><a href="privacidade.html">Política de privacidade</a></li>
+        <li><a href="seus-dados.html">Seus dados (LGPD)</a></li>
       </ul>
     </div>
   </div>
-  <div class="rodape-base"><span>© 2026 Abanô</span><span>Tem pet? Tem no Abanô.</span></div>
+  <div class="rodape-base"><span>© 2026 Abanô</span><span>Feito em Maricá (RJ), com quatro huskies supervisionando.</span></div>
 </footer>
 
 </body>

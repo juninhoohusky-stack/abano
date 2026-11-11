@@ -7,9 +7,9 @@
 <title>Moderação | Abanô</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="site.css?v=20261111e">
+<link rel="stylesheet" href="site.css?v=20261111g">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261111e" defer></script>
+<script src="lista.js?v=20261111g" defer></script>
 <style>
   .painel{max-width:980px;margin:0 auto;padding:var(--e-6) var(--e-5) var(--e-12)}
   .topo-admin{display:flex;align-items:center;justify-content:space-between;gap:var(--e-4);max-width:980px;margin:0 auto;padding:var(--e-3) var(--e-5)}
@@ -92,6 +92,7 @@
       <button type="button" data-status="eventos" aria-pressed="false">Eventos</button>
       <button type="button" data-status="orgs" aria-pressed="false">Organizações <span id="num-orgs"></span></button>
       <button type="button" data-status="parceiros" aria-pressed="false">Parceiros</button>
+      <button type="button" data-status="alertas" aria-pressed="false">Desaparecidos</button>
     </div>
     <div class="lista" id="lista"></div>
 
@@ -102,6 +103,10 @@
         <button type="button" data-org-status="todas" aria-pressed="false">Todas</button>
       </div>
       <div class="lista" id="lista-orgs"></div>
+    </div>
+    <div id="tela-alertas" hidden>
+      <p class="detalhe">Alertas de pets perdidos e encontrados. Tire do ar o que for golpe, pedido de dinheiro ou conteúdo falso; o autor não consegue colocar de volta no ar.</p>
+      <div class="lista" id="lista-alertas"></div>
     </div>
     <div id="tela-parceiros" hidden>
       <form class="evento" id="form-parceiro" novalidate>
@@ -217,7 +222,9 @@ document.addEventListener("DOMContentLoaded", function () {
     $("tela-eventos").hidden = status !== "eventos";
     $("tela-orgs").hidden = status !== "orgs";
     $("tela-parceiros").hidden = status !== "parceiros";
-    $("lista").hidden = status === "eventos" || status === "orgs" || status === "parceiros";
+    $("tela-alertas").hidden = status !== "alertas";
+    $("lista").hidden = status === "eventos" || status === "orgs" || status === "parceiros" || status === "alertas";
+    if (status === "alertas") { carregarAlertas(); return; }
     if (status === "eventos") { carregarEventos(); return; }
     if (status === "orgs") { carregarOrgs(); return; }
     if (status === "parceiros") { carregarParceiros(); return; }
@@ -298,6 +305,32 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+
+
+  // Pets desaparecidos: tirar do ar ou devolver
+  function carregarAlertas() {
+    $("lista-alertas").innerHTML = '<p class="vazio">Carregando…</p>';
+    sb.rpc("alertas_admin").then(function (r) {
+      if (r.error) { $("lista-alertas").innerHTML = '<p class="vazio">' + esc(/alertas_admin/.test(r.error.message) ? "Rode o arquivo supabase/pets_perdidos.sql no Supabase para ativar os alertas." : r.error.message) + "</p>"; return; }
+      var l = r.data || [];
+      var ROT = { ativo: "No ar", resolvido: "Resolvido", removido: "Tirado do ar" };
+      $("lista-alertas").innerHTML = l.length ? l.map(function (a) {
+        return '<article class="den"><div class="den-topo"><span class="tag' + (a.status === "ativo" ? "" : " off") + '">' + ROT[a.status] + '</span><span class="tag n">' + (a.tipo === "perdido" ? "Perdido" : "Encontrado") + "</span><span>" +
+          new Date(a.criado_em).toLocaleDateString("pt-BR") + " · @" + esc(a.autor_usuario) + ' · <a href="perdidos.html?a=' + a.id + '" target="_blank" rel="noopener">abrir</a></span></div>' +
+          '<div class="parc-mini">' + (String(a.foto_url).indexOf(PASTA) === 0 ? '<img src="' + esc(a.foto_url) + '" alt="">' : '<span class="ini">?</span>') +
+          '<div class="conteudo" style="flex:1;margin:0"><span class="autor">' + esc(a.nome || a.especie) + " — " + esc(a.bairro) + ", " + esc(a.cidade) + "/" + esc(a.estado) + "</span>" + esc(a.descricao) + "</div></div>" +
+          '<div class="acoes" style="margin-top:12px">' + (a.status === "removido"
+            ? '<button class="btn btn-sec" data-alerta="' + a.id + '" data-acao-alerta="restaurar">Devolver ao ar</button>'
+            : '<button class="btn btn-perigo" data-alerta="' + a.id + '" data-acao-alerta="remover">Tirar do ar</button>') + "</div></article>";
+      }).join("") : '<p class="vazio">Nenhum alerta ainda.</p>';
+    });
+  }
+  $("lista-alertas").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-acao-alerta]"); if (!b) return;
+    if (b.dataset.acaoAlerta === "remover" && !confirm("Tirar este alerta do ar? Ele deixa de aparecer para todos.")) return;
+    b.disabled = true;
+    sb.rpc("moderar_alerta", { p_id: b.dataset.alerta, p_acao: b.dataset.acaoAlerta }).then(function (r) { if (r.error) alert(r.error.message); carregarAlertas(); });
+  });
 
   // Parceiros em destaque (pagos) e avaliações dos tutores
   var CATS = { veterinario: "Veterinário", banho_tosa: "Banho e tosa", petshop: "Pet shop", adestramento: "Adestramento", hospedagem: "Hospedagem" };

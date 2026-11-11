@@ -314,3 +314,15 @@
 .lista-pessoas .btn{flex:none;width:auto;margin:0;min-height:40px;padding:0 var(--e-4);font-size:var(--t-sm)}
 .pessoa-eu{flex:none;font-size:var(--t-sm);font-weight:700;color:var(--suave)}
 .pessoas-sub{font-size:var(--t-lg);font-weight:900;margin:0 0 var(--e-3)}
+
+/* Coluna lateral: pets desaparecidos perto */
+.lado-perdidos{box-shadow:var(--sombra),inset 0 0 0 2px color-mix(in srgb,#E5484D 35%,transparent)}
+.lado-alertas{list-style:none;margin:0;padding:0;display:grid;gap:var(--e-2)}
+.lado-alertas a{display:flex;align-items:center;gap:var(--e-3);color:var(--tinta);text-decoration:none}
+.lado-alertas img,.lado-alertas a > span:first-child{flex:none;width:48px;height:48px;border-radius:var(--raio-sm);object-fit:cover;background:var(--areia)}
+.lado-alertas a > span:last-child{min-width:0;display:flex;flex-direction:column}
+.lado-alertas b{font-size:var(--t-sm);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lado-alertas small{font-size:var(--t-xs);color:var(--suave);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lado-alertas em{font-style:normal;font-weight:800;color:#C2373C}
+.lado-alertas em.encontrado{color:#E8641B}
+.lado-alertas a:hover b{color:var(--marca)}
