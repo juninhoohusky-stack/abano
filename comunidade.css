@@ -391,3 +391,28 @@ html.sem-rolar{overflow:hidden}
 .comentarios .comentar{margin:0;padding-top:var(--e-4);border-top:1px solid var(--linha)}
 .comentarios .compor-fake{margin:0}
 .lista-comentarios .vazio-c{color:var(--suave);font-size:var(--t-sm)}
+
+/* ---------- Comentários: curtir e responder (como no Facebook) ---------- */
+.c-balao{position:relative}
+.c-curtidas{position:absolute;right:-8px;bottom:-12px;display:inline-flex;align-items:center;gap:3px;padding:2px 7px 2px 4px;border-radius:var(--raio-pill);background:var(--superficie);box-shadow:0 2px 8px rgba(43,22,34,.16);font-size:var(--t-xs);font-weight:800;color:var(--tinta);font-variant-numeric:tabular-nums}
+.c-curtidas svg{width:16px;height:16px;padding:3px;border-radius:50%;background:var(--marca);fill:#fff}
+.c-meta .c-curtir.ativa{color:var(--marca)}
+.c-mencao{font-weight:800;color:var(--marca);text-decoration:none}
+.c-respostas{list-style:none;margin:0;padding:0;display:grid;gap:var(--e-3)}
+.c-respostas:not(:empty){margin-top:var(--e-3)}
+.comentario > .c-corpo > .c-respostas{margin-left:0}
+.comentario.resposta .av{width:28px;height:28px;font-size:12px}
+.comentario.resposta .c-balao{padding:6px var(--e-3)}
+.comentario.resposta .c-txt{font-size:var(--t-sm)}
+.comentario.resposta .c-meta{margin-left:var(--e-3)}
+.form-resposta{display:flex;align-items:center;gap:var(--e-2);margin-top:var(--e-3)}
+.form-resposta .av{width:28px;height:28px;font-size:12px;flex:none}
+.form-resposta input{flex:1;min-width:0;min-height:40px;padding:0 var(--e-4);border:0;border-radius:var(--raio-pill);background:var(--areia);color:var(--tinta);font:inherit;font-size:16px}
+.form-resposta input:focus{outline:none;box-shadow:inset 0 0 0 2px var(--marca);background:var(--superficie)}
+.form-resposta button{flex:none;min-height:40px;padding:0 var(--e-2);border:0;background:none;color:var(--marca);font:inherit;font-weight:800;font-size:var(--t-sm);cursor:pointer}
+.c-meta{gap:2px var(--e-3);margin-top:10px;line-height:1.2}
+.c-meta button{min-height:24px}
+@media (max-width:480px){.c-meta{gap:2px 10px;margin-left:var(--e-2)}.comentario.resposta .c-meta{margin-left:var(--e-2)}.c-respostas{margin-left:-6px}}
+.lista-comentarios,.c-respostas{grid-template-columns:minmax(0,1fr)}
+.lista-comentarios > li,.c-respostas > li,.form-resposta{min-width:0}
+.form-resposta input{width:100%}

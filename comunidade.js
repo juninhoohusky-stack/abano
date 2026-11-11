@@ -238,11 +238,11 @@
   async function previasComentarios(posts) {
     const ids = posts.filter((p) => p.total_comentarios > 0).map((p) => p.id);
     if (!ids.length) return;
-    const r = await sb.from("comentarios").select("id,post,autor,texto,criado_em, perfil:perfis!comentarios_autor_fkey(usuario,nome)")
+    const r = await sb.from("comentarios").select("*, perfil:perfis!comentarios_autor_fkey(usuario,nome)")
       .in("post", ids).order("criado_em", { ascending: false }).limit(Math.min(200, ids.length * 6));
     if (r.error || !r.data) return;
     const por = new Map();
-    r.data.forEach((c) => { const l = por.get(c.post) || []; if (l.length < 2) { l.push(c); por.set(c.post, l); } });
+    r.data.filter((c) => !c.resposta_a).forEach((c) => { const l = por.get(c.post) || []; if (l.length < 2) { l.push(c); por.set(c.post, l); } });
     por.forEach((l, id) => {
       est.previas.set(id, l.reverse());
       const p = est.posts.get(id);
@@ -815,39 +815,143 @@
         p.total_comentarios++;
         const ol = document.getElementById("lista-comentarios");
         if (ol.querySelector(".vazio-c")) ol.innerHTML = "";
-        ol.insertAdjacentHTML("beforeend", itemComentario(r2.data, p));
+        ol.insertAdjacentHTML("beforeend", conversa(r2.data, new Map(), p));
         ol.lastElementChild.scrollIntoView({ block: "nearest" });
+        atualizarNumComentarios(p);
       });
     }
     if (location.hash === "#comentarios") setTimeout(() => document.getElementById("comentarios").scrollIntoView(), 50);
   }
-  function itemComentario(c, p) {
+  // ---------- Comentários: curtir, responder e conversas (respostas num nível só) ----------
+  const CORACAO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-8-4.9-8-10.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.9c0 5.7-8 10.6-8 10.6z"/></svg>';
+  const comCurtidos = new Set();
+  function itemComentario(c, p, resposta, extra) {
     const a = c.perfil || {};
     const posso = est.eu && (c.autor === est.eu.id || p.autor === est.eu.id);
     const meu = est.eu && c.autor === est.eu.id;
-    return `<li class="comentario" data-comentario="${esc(c.id)}" data-autor="${esc(c.autor)}">
+    const curti = comCurtidos.has(c.id), n = c.total_curtidas || 0;
+    return `<li class="comentario${resposta ? " resposta" : ""}" data-comentario="${esc(c.id)}" data-autor="${esc(c.autor)}" data-usuario="${esc(a.usuario)}">
       <a href="${linkPerfil(a.usuario)}" class="c-av" tabindex="-1" aria-hidden="true">${avatar(a)}</a>
       <div class="c-corpo">
-        <div class="c-balao"><a class="c-nome" href="${linkPerfil(a.usuario)}">${esc(a.nome || "Tutor")}</a><p class="c-txt">${esc(c.texto)}</p></div>
-        <p class="c-meta"><time datetime="${esc(c.criado_em)}">${tempo(c.criado_em)}</time>${posso ? ` <button type="button" class="c-apagar" data-c="${esc(c.id)}">Apagar</button>` : ""}${meu ? "" : ` <button type="button" class="c-denunciar" data-c="${esc(c.id)}">Denunciar</button>`}</p>
+        <div class="c-balao"><a class="c-nome" href="${linkPerfil(a.usuario)}">${esc(a.nome || "Tutor")}</a><p class="c-txt">${textoComMencao(c.texto)}</p>
+          ${n ? `<span class="c-curtidas" aria-label="${plural(n, "curtida", "curtidas")}">${CORACAO}${num(n)}</span>` : ""}</div>
+        <p class="c-meta"><time datetime="${esc(c.criado_em)}">${tempo(c.criado_em)}</time>
+          <button type="button" class="c-curtir${curti ? " ativa" : ""}" data-c="${esc(c.id)}" aria-pressed="${curti}">${curti ? "Curtido" : "Curtir"}</button>
+          <button type="button" class="c-responder" data-c="${esc(c.id)}" data-pai="${esc(c.resposta_a || c.id)}">Responder</button>
+          ${posso ? `<button type="button" class="c-apagar" data-c="${esc(c.id)}">Apagar</button>` : ""}${meu ? "" : `<button type="button" class="c-denunciar" data-c="${esc(c.id)}">Denunciar</button>`}</p>
+        ${extra || ""}
       </div>
     </li>`;
+  }
+  // "@usuario" no começo da resposta vira link para o perfil
+  function textoComMencao(t) {
+    const m = /^@([a-z0-9_]{3,30})\b/.exec(t || "");
+    if (!m) return esc(t);
+    return `<a class="c-mencao" href="${linkPerfil(m[1])}">@${esc(m[1])}</a>${esc(t.slice(m[0].length))}`;
+  }
+  function conversa(c, respostas, p) {
+    const filhas = respostas.get(c.id) || [];
+    return itemComentario(c, p, false, `<ol class="c-respostas" data-respostas="${esc(c.id)}">${filhas.map((r) => itemComentario(r, p, true)).join("")}</ol>`);
   }
   async function carregarComentarios(p) {
     const ol = document.getElementById("lista-comentarios");
     const r = await sb.from("comentarios").select("*, perfil:perfis!comentarios_autor_fkey(id,usuario,nome,foto_url)").eq("post", p.id).order("criado_em").limit(500);
     if (r.error) { ol.innerHTML = `<li class="vazio-c">Não deu para carregar. ${esc(erroMsg(r.error))}</li>`; return; }
-    ol.innerHTML = r.data.length ? r.data.map((c) => itemComentario(c, p)).join("") : `<li class="vazio-c">${p.tipo === "pergunta" ? "Ninguém respondeu ainda. Compartilhe sua experiência!" : "Ainda sem comentários. Comece a conversa!"}</li>`;
+    const todos = (r.data || []).filter((c) => !est.bloqueados.has(c.autor));
+    if (est.eu && todos.length) {
+      const k = await sb.from("curtidas_comentarios").select("comentario").eq("usuario", est.eu.id).in("comentario", todos.map((c) => c.id));
+      if (!k.error) (k.data || []).forEach((x) => comCurtidos.add(x.comentario));
+    }
+    const ids = new Set(todos.map((c) => c.id));
+    const respostas = new Map();
+    const raiz = todos.filter((c) => {
+      if (c.resposta_a && ids.has(c.resposta_a)) { const l = respostas.get(c.resposta_a) || []; l.push(c); respostas.set(c.resposta_a, l); return false; }
+      return true;
+    });
+    ol.innerHTML = raiz.length ? raiz.map((c) => conversa(c, respostas, p)).join("") : `<li class="vazio-c">${p.tipo === "pergunta" ? "Ninguém respondeu ainda. Compartilhe sua experiência!" : "Ainda sem comentários. Comece a conversa!"}</li>`;
     ol.addEventListener("click", async (e) => {
       const d = e.target.closest(".c-denunciar");
       if (d) { abrirDenuncia({ tipo: "comentario", id: d.dataset.c }); return; }
+      const cu = e.target.closest(".c-curtir");
+      if (cu) { curtirComentario(cu); return; }
+      const re = e.target.closest(".c-responder");
+      if (re) { abrirResposta(re, p); return; }
       const b = e.target.closest(".c-apagar"); if (!b) return;
-      if (!confirm("Apagar este comentário?")) return;
+      if (!confirm("Apagar este comentário? As respostas a ele também somem.")) return;
       const r2 = await sb.from("comentarios").delete().eq("id", b.dataset.c);
       if (r2.error) { toast(erroMsg(r2.error)); return; }
-      b.closest(".comentario").remove();
+      const li = b.closest(".comentario");
+      const quantos = 1 + li.querySelectorAll(".c-respostas .comentario").length;
+      p.total_comentarios = Math.max(0, (p.total_comentarios || 0) - quantos);
+      li.remove();
+      atualizarNumComentarios(p);
       toast("Comentário apagado.");
     });
+    ol.addEventListener("submit", (e) => {
+      const f = e.target.closest(".form-resposta"); if (!f) return;
+      e.preventDefault();
+      enviarResposta(f, p);
+    });
+  }
+  function atualizarNumComentarios(p) {
+    const n = document.getElementById("num-coment");
+    if (n) n.textContent = num(p.total_comentarios || 0);
+    est.posts.set(p.id, p);
+    const acao = document.querySelector(`.ver-post [data-post="${p.id}"] .post-acoes a.acao span`);
+    if (acao) acao.textContent = p.total_comentarios ? num(p.total_comentarios) : "";
+  }
+  async function curtirComentario(b) {
+    if (!exigir({ tipo: "comentar" })) return;
+    const id = b.dataset.c, li = b.closest(".comentario"), curti = comCurtidos.has(id);
+    b.disabled = true;
+    const r = curti
+      ? await sb.from("curtidas_comentarios").delete().eq("comentario", id).eq("usuario", est.eu.id)
+      : await sb.from("curtidas_comentarios").insert({ comentario: id, usuario: est.eu.id });
+    b.disabled = false;
+    if (r.error && r.error.code !== "23505") { toast(/curtidas_comentarios/.test(r.error.message || "") ? "Curtir comentários fica disponível em instantes." : erroMsg(r.error)); return; }
+    if (curti) comCurtidos.delete(id); else comCurtidos.add(id);
+    b.classList.toggle("ativa", !curti); b.setAttribute("aria-pressed", !curti); b.textContent = curti ? "Curtir" : "Curtido";
+    const balao = li.querySelector(":scope > .c-corpo > .c-balao");
+    let cont = balao.querySelector(".c-curtidas");
+    const atual = cont ? Number(cont.textContent.replace(/\D/g, "")) || 0 : 0;
+    const novo = Math.max(0, atual + (curti ? -1 : 1));
+    if (!novo) { if (cont) cont.remove(); return; }
+    if (!cont) { balao.insertAdjacentHTML("beforeend", `<span class="c-curtidas"></span>`); cont = balao.querySelector(".c-curtidas"); }
+    cont.innerHTML = CORACAO + num(novo);
+    cont.setAttribute("aria-label", plural(novo, "curtida", "curtidas"));
+  }
+  function abrirResposta(b, p) {
+    if (!exigir({ tipo: "comentar" })) return;
+    const pai = b.dataset.pai, alvo = b.closest(".comentario");
+    const lista = document.querySelector(`[data-respostas="${pai}"]`);
+    if (!lista) return;
+    let f = lista.parentElement.querySelector(":scope > .form-resposta");
+    if (!f) {
+      lista.insertAdjacentHTML("afterend", `<form class="form-resposta" data-pai="${esc(pai)}">${avatar(est.eu)}<label class="sr" for="resp-${esc(pai)}">Sua resposta</label><input id="resp-${esc(pai)}" maxlength="2000" autocomplete="off" enterkeyhint="send" placeholder="Escreva uma resposta…"><button type="submit">Enviar</button></form>`);
+      f = lista.parentElement.querySelector(":scope > .form-resposta");
+    }
+    const campo = f.querySelector("input");
+    // Responder a uma resposta marca a pessoa com @, como no Facebook
+    const usuario = alvo.dataset.usuario;
+    if (alvo.classList.contains("resposta") && usuario && (!est.eu || usuario !== est.eu.usuario) && !campo.value.startsWith("@" + usuario)) campo.value = "@" + usuario + " " + campo.value;
+    campo.focus();
+    campo.setSelectionRange(campo.value.length, campo.value.length);
+  }
+  async function enviarResposta(f, p) {
+    const campo = f.querySelector("input"), botao = f.querySelector("button"), texto = campo.value.trim();
+    if (!texto) { campo.focus(); return; }
+    if (pareceVenda(texto)) { toast("Venda de animais não é permitida na Comunidade Abanô."); return; }
+    botao.disabled = true;
+    const r = await sb.from("comentarios").insert({ post: p.id, autor: est.eu.id, texto: texto, resposta_a: f.dataset.pai }).select("*, perfil:perfis!comentarios_autor_fkey(id,usuario,nome,foto_url)").single();
+    botao.disabled = false;
+    if (r.error) { toast(/resposta_a/.test(r.error.message || "") ? "Responder comentários fica disponível em instantes." : erroMsg(r.error)); return; }
+    campo.value = "";
+    const lista = document.querySelector(`[data-respostas="${r.data.resposta_a || f.dataset.pai}"]`);
+    lista.insertAdjacentHTML("beforeend", itemComentario(r.data, p, true));
+    lista.lastElementChild.scrollIntoView({ block: "nearest" });
+    f.remove();
+    p.total_comentarios = (p.total_comentarios || 0) + 1;
+    atualizarNumComentarios(p);
   }
 
   const textoMembros = (n) => n ? plural(n, "membro", "membros") : "Seja o primeiro a participar";
