@@ -116,7 +116,8 @@
     botao.disabled = true;
     sb.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: location.origin + "/entrar.html?volta=" + encodeURIComponent(destino()) }
+      // "select_account": o Google sempre mostra a lista de contas, para a pessoa escolher qual usar
+      options: { redirectTo: location.origin + "/entrar.html?volta=" + encodeURIComponent(destino()), queryParams: { prompt: "select_account" } }
     }).then(function (r) {
       if (r.error) { botao.disabled = false; aviso(avisoEl, traduzir(r.error)); }
     });
