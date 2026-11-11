@@ -305,6 +305,142 @@
       img.src = url;
     });
   }
+  // ---------- Enquadrar a foto antes de enviar (arrastar, zoom e girar) ----------
+  // Devolve um arquivo quadrado já recortado, ou null se a pessoa cancelar.
+  function enquadrar(arquivo, opcoes) {
+    opcoes = opcoes || {};
+    return new Promise(function (resolver, falhar) {
+      if (!arquivo || !/^image\//i.test(arquivo.type)) { falhar(new Error("Escolha uma foto em JPG, PNG ou WebP.")); return; }
+      var url = URL.createObjectURL(arquivo), img = new Image();
+      img.onerror = function () { URL.revokeObjectURL(url); falhar(new Error("Não deu para abrir essa foto. Tente outra em JPG ou PNG.")); };
+      img.onload = function () {
+        URL.revokeObjectURL(url);
+        // A foto vira um canvas (assim dá para girar sem perder qualidade)
+        var fonte = document.createElement("canvas");
+        var lado = Math.min(2400, Math.max(img.naturalWidth, img.naturalHeight)), esc0 = lado / Math.max(img.naturalWidth, img.naturalHeight);
+        fonte.width = Math.round(img.naturalWidth * esc0); fonte.height = Math.round(img.naturalHeight * esc0);
+        fonte.getContext("2d").drawImage(img, 0, 0, fonte.width, fonte.height);
+
+        var d = document.createElement("dialog");
+        d.className = "enq" + (opcoes.redondo ? " redondo" : "");
+        d.setAttribute("aria-label", "Ajustar a foto");
+        d.innerHTML = '<div class="enq-caixa"><h2>Ajustar a foto</h2><p class="enq-dica">Arraste para posicionar e use o zoom para enquadrar.</p>' +
+          '<div class="enq-palco" tabindex="0" aria-label="Área da foto: arraste ou use as setas do teclado"><canvas class="enq-img"></canvas><span class="enq-mascara" aria-hidden="true"></span></div>' +
+          '<div class="enq-controles"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.3-4.3M8.5 11h5"/></svg>' +
+          '<input type="range" class="enq-zoom" min="1" max="4" step="0.01" value="1" aria-label="Zoom">' +
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.3-4.3M8.5 11h5M11 8.5v5"/></svg>' +
+          '<button type="button" class="enq-girar" aria-label="Girar a foto"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button></div>' +
+          '<div class="enq-botoes"><button type="button" class="btn btn-sec enq-cancelar">Cancelar</button><button type="button" class="btn enq-usar">Usar foto</button></div></div>';
+        document.body.appendChild(d);
+        var palco = d.querySelector(".enq-palco"), tela = d.querySelector(".enq-img"), zoomEl = d.querySelector(".enq-zoom");
+        var ctx = tela.getContext("2d");
+        var S = 0, base = 1, z = 1, x = 0, y = 0;
+
+        function medir() {
+          var antes = S;
+          S = palco.clientWidth || 300;
+          if (antes && antes !== S) { x *= S / antes; y *= S / antes; }
+          var dpr = Math.min(2, window.devicePixelRatio || 1);
+          tela.width = Math.round(S * dpr); tela.height = Math.round(S * dpr);
+          base = Math.max(S / fonte.width, S / fonte.height);
+        }
+        function prender() {
+          var W = fonte.width * base * z, H = fonte.height * base * z;
+          x = Math.min(0, Math.max(S - W, x));
+          y = Math.min(0, Math.max(S - H, y));
+        }
+        function desenhar() {
+          prender();
+          var k = tela.width / S;
+          ctx.clearRect(0, 0, tela.width, tela.height);
+          ctx.drawImage(fonte, x * k, y * k, fonte.width * base * z * k, fonte.height * base * z * k);
+        }
+        function centralizar() {
+          z = 1; zoomEl.value = 1;
+          x = (S - fonte.width * base) / 2; y = (S - fonte.height * base) / 2;
+          desenhar();
+        }
+        // Zoom mantendo fixo o ponto que está sob o dedo ou no centro
+        function zoomPara(nz, cx, cy) {
+          nz = Math.min(4, Math.max(1, nz));
+          if (cx == null) { cx = S / 2; cy = S / 2; }
+          x = cx - (cx - x) * (nz / z); y = cy - (cy - y) * (nz / z);
+          z = nz; zoomEl.value = z;
+          desenhar();
+        }
+        var dedos = new Map(), ultimo = null, distInicial = 0, zInicial = 1;
+        palco.addEventListener("pointerdown", function (e) {
+          palco.setPointerCapture(e.pointerId);
+          dedos.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          if (dedos.size === 2) { var p = Array.from(dedos.values()); distInicial = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y); zInicial = z; }
+          ultimo = { x: e.clientX, y: e.clientY };
+        });
+        palco.addEventListener("pointermove", function (e) {
+          if (!dedos.has(e.pointerId)) return;
+          dedos.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          if (dedos.size === 2) {
+            var p = Array.from(dedos.values()), r = palco.getBoundingClientRect();
+            var dist = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
+            if (distInicial) zoomPara(zInicial * dist / distInicial, (p[0].x + p[1].x) / 2 - r.left, (p[0].y + p[1].y) / 2 - r.top);
+            return;
+          }
+          if (ultimo) { x += e.clientX - ultimo.x; y += e.clientY - ultimo.y; desenhar(); }
+          ultimo = { x: e.clientX, y: e.clientY };
+        });
+        function soltar(e) { dedos.delete(e.pointerId); ultimo = dedos.size === 1 ? Array.from(dedos.values())[0] : null; if (dedos.size < 2) distInicial = 0; }
+        palco.addEventListener("pointerup", soltar);
+        palco.addEventListener("pointercancel", soltar);
+        palco.addEventListener("wheel", function (e) {
+          e.preventDefault();
+          var r = palco.getBoundingClientRect();
+          zoomPara(z * (e.deltaY < 0 ? 1.08 : 1 / 1.08), e.clientX - r.left, e.clientY - r.top);
+        }, { passive: false });
+        palco.addEventListener("keydown", function (e) {
+          var passo = { ArrowLeft: [10, 0], ArrowRight: [-10, 0], ArrowUp: [0, 10], ArrowDown: [0, -10] }[e.key];
+          if (passo) { e.preventDefault(); x += passo[0]; y += passo[1]; desenhar(); }
+          if (e.key === "+" || e.key === "=") zoomPara(z * 1.1);
+          if (e.key === "-") zoomPara(z / 1.1);
+        });
+        zoomEl.addEventListener("input", function () { zoomPara(Number(zoomEl.value)); });
+        d.querySelector(".enq-girar").addEventListener("click", function () {
+          var g = document.createElement("canvas");
+          g.width = fonte.height; g.height = fonte.width;
+          var gc = g.getContext("2d");
+          gc.translate(g.width, 0); gc.rotate(Math.PI / 2); gc.drawImage(fonte, 0, 0);
+          fonte = g; base = Math.max(S / fonte.width, S / fonte.height); centralizar();
+        });
+        function fechar(resultado) {
+          d.close(); d.remove();
+          document.documentElement.classList.remove("sem-rolar");
+          resolver(resultado);
+        }
+        d.querySelector(".enq-cancelar").addEventListener("click", function () { fechar(null); });
+        d.addEventListener("cancel", function (e) { e.preventDefault(); fechar(null); });
+        d.querySelector(".enq-usar").addEventListener("click", function () {
+          var botao = this; botao.disabled = true; botao.textContent = "Preparando…";
+          var saida = document.createElement("canvas"), T = 1000;
+          saida.width = T; saida.height = T;
+          var esc = base * z, sx = -x / esc, sy = -y / esc, sl = S / esc;
+          var sc = saida.getContext("2d");
+          sc.fillStyle = "#fff"; sc.fillRect(0, 0, T, T);
+          sc.drawImage(fonte, sx, sy, sl, sl, 0, 0, T, T);
+          saida.toBlob(function (b) {
+            if (!b) { botao.disabled = false; botao.textContent = "Usar foto"; return; }
+            fechar(new File([b], "foto.jpg", { type: "image/jpeg" }));
+          }, "image/jpeg", 0.9);
+        });
+        d.showModal();
+        document.documentElement.classList.add("sem-rolar");
+        medir(); centralizar(); palco.focus();
+        // Se a tela girar ou mudar de tamanho, a foto acompanha
+        function aoRedimensionar() { if (d.open) { medir(); desenhar(); } }
+        window.addEventListener("resize", aoRedimensionar);
+        d.addEventListener("close", function () { window.removeEventListener("resize", aoRedimensionar); });
+      };
+      img.src = url;
+    });
+  }
+
   function enviarFoto(uid, prefixo, arquivo) {
     return prepararFoto(arquivo).then(function (blob) {
       var ext = blob.type === "image/webp" ? "webp" : "jpg";
@@ -421,9 +557,13 @@
     $("foto-perfil").addEventListener("change", function () {
       var arq = this.files[0], input = this;
       if (!arq) return;
-      aviso(avisoPerfil, "Enviando foto…", true);
       var antiga = conta.foto_url;
-      enviarFoto(conta.id, "perfil", arq).then(function (url) {
+      enquadrar(arq, { redondo: true }).then(function (cortada) {
+        if (!cortada) { input.value = ""; return null; }
+        aviso(avisoPerfil, "Enviando foto…", true);
+        return enviarFoto(conta.id, "perfil", cortada);
+      }).then(function (url) {
+        if (!url) return;
         return sb.from("perfis").update({ foto_url: url }).eq("id", conta.id).then(function (r) {
           if (r.error) throw r.error;
           conta.foto_url = url;
@@ -566,11 +706,15 @@
     $("btn-add-pet").addEventListener("click", function () { abrirPet(null); });
     $("fechar-pet").addEventListener("click", function () { dialogo.close(); });
     $("foto-pet").addEventListener("change", function () {
-      fotoNova = this.files[0] || null;
-      if (fotoNova) {
+      var input = this, arq = this.files[0] || null;
+      if (!arq) return;
+      enquadrar(arq).then(function (cortada) {
+        input.value = "";
+        if (!cortada) return;
+        fotoNova = cortada;
         var el = $("pet-previa"); el.textContent = "";
         var i = new Image(); i.alt = ""; i.src = URL.createObjectURL(fotoNova); el.appendChild(i);
-      }
+      }).catch(function (err) { aviso(avisoPet, err.message); });
     });
     fpet.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -681,5 +825,5 @@
     });
   }
 
-  window.abanoConta = { sb: sb, completarEstado: completarEstado, destino: destino, enviarFoto: enviarFoto, apagarFoto: apagarFoto, traduzir: traduzir };
+  window.abanoConta = { sb: sb, completarEstado: completarEstado, destino: destino, enviarFoto: enviarFoto, apagarFoto: apagarFoto, traduzir: traduzir, enquadrar: enquadrar };
 })();
