@@ -293,3 +293,24 @@
 .perfil-doador svg path:last-child{stroke:#E5484D}
 .perfil-doador:hover{background:color-mix(in srgb,#E5484D 16%,var(--superficie))}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]) .selo-doador.quer,:root:not([data-theme=light]) .tipo-sangue,:root:not([data-theme=light]) .perfil-doador{color:#FF8A8F !important}}
+
+/* Encontrar tutores: busca por nome ou @usuário */
+.busca-pessoas{display:flex;align-items:center;gap:var(--e-3);margin-top:var(--e-4);padding:0 var(--e-4);border-radius:var(--raio-pill);background:var(--superficie);box-shadow:var(--sombra),inset 0 0 0 1.5px var(--linha)}
+.busca-pessoas:focus-within{box-shadow:var(--sombra),inset 0 0 0 2px var(--marca)}
+.busca-pessoas svg{width:22px;height:22px;flex:none;color:var(--marca)}
+.busca-pessoas input{flex:1;min-width:0;min-height:52px;border:0;background:transparent;color:var(--tinta);font:inherit;font-size:16px;font-weight:600;outline:none}
+.busca-pessoas input:focus,.busca-pessoas input:focus-visible{outline:none;box-shadow:none}
+.busca-pessoas input::-webkit-search-cancel-button{cursor:pointer}
+.tela-topo .filtro-uf{display:flex;align-items:center;gap:var(--e-2);margin-top:var(--e-3)}
+.tela-topo .filtro-uf label{font-size:var(--t-sm);font-weight:700;color:var(--suave)}
+.lista-pessoas{list-style:none;margin:0;padding:0;display:grid;gap:var(--e-2)}
+.lista-pessoas li{display:flex;align-items:center;gap:var(--e-3);padding:var(--e-3) var(--e-4);border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra)}
+.pessoa{flex:1;min-width:0;display:flex;align-items:center;gap:var(--e-3);color:var(--tinta);text-decoration:none}
+.pessoa .av{width:52px;height:52px;font-size:22px;flex:none}
+.pessoa > span{min-width:0;display:flex;flex-direction:column}
+.pessoa b{font-size:var(--t-base);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pessoa small{font-size:var(--t-sm);color:var(--suave);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pessoa:hover b{color:var(--marca)}
+.lista-pessoas .btn{flex:none;width:auto;margin:0;min-height:40px;padding:0 var(--e-4);font-size:var(--t-sm)}
+.pessoa-eu{flex:none;font-size:var(--t-sm);font-weight:700;color:var(--suave)}
+.pessoas-sub{font-size:var(--t-lg);font-weight:900;margin:0 0 var(--e-3)}

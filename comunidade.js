@@ -826,21 +826,73 @@
     (p.tipo_sanguineo ? `<small class="tipo-sangue">${TIPO_SANGUE[p.tipo_sanguineo] || ""}</small>` : "");
 
   const UFS = "AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
+  // Encontrar tutores: busca por nome ou @usuário (todo o Brasil) e lista por estado
   async function telaTutores() {
-    definirMeta("Tutores perto de você | Comunidade Abanô", "Encontre tutores de cães e gatos no seu estado.", "comunidade/?v=tutores");
-    const uf = (q.get("uf") || (est.eu && est.eu.estado) || "").toUpperCase();
-    centro.innerHTML = `${voltar("comunidade/")}<header class="tela-topo"><h1>Tutores perto de você</h1><p>Tutores da Comunidade que moram no estado escolhido.</p>
-      <form class="filtro-uf" action="comunidade/" method="get"><input type="hidden" name="v" value="tutores"><label class="sr" for="uf">Estado</label>
-      <select id="uf" name="uf" onchange="this.form.submit()"><option value="">Escolha o estado</option>${UFS.map((x) => `<option${x === uf ? " selected" : ""}>${x}</option>`).join("")}</select>
-      <noscript><button class="btn">Ver</button></noscript></form></header><div id="tutores"></div>`;
-    const box = document.getElementById("tutores");
-    if (!UFS.includes(uf)) { box.innerHTML = vazio("Escolha um estado", "Selecione acima para ver os tutores da região."); return; }
-    box.innerHTML = '<p class="carregando">Carregando…</p>';
-    const r = await sb.from("perfis").select("id,usuario,nome,cidade,estado,foto_url").eq("estado", uf).order("criado_em", { ascending: false }).limit(60);
-    if (r.error) { box.innerHTML = vazio("Não deu para carregar", erroMsg(r.error)); return; }
-    box.innerHTML = r.data.length
-      ? `<ul class="grade-tutores">${r.data.map((u) => `<li><a href="${linkPerfil(u.usuario)}">${avatar(u)}<b>${esc(u.nome)}</b><small>${esc([u.cidade, u.estado].filter(Boolean).join(" / "))}</small></a></li>`).join("")}</ul>`
-      : vazio("Ainda não há tutores de " + uf + " com perfil público", "Convide amigos tutores para a Comunidade Abanô!");
+    const termo = (q.get("q") || "").slice(0, 60);
+    const uf = (q.get("uf") || (termo ? "" : (est.eu && est.eu.estado)) || "").toUpperCase();
+    definirMeta("Encontrar tutores | Comunidade Abanô", "Busque tutores de cães, gatos e outros pets pelo nome ou @usuário, em qualquer estado.", "comunidade/?v=tutores");
+    centro.innerHTML = `${voltar("comunidade/")}<header class="tela-topo"><h1>Encontrar tutores</h1><p>Busque pelo nome ou @usuário, em qualquer estado, ou veja quem mora perto de você.</p>
+      <form class="busca-pessoas" id="busca-pessoas" role="search" action="comunidade/" method="get"><input type="hidden" name="v" value="tutores">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+        <label class="sr" for="q-pessoas">Buscar pessoas</label>
+        <input type="search" id="q-pessoas" name="q" value="${esc(termo)}" placeholder="Buscar por nome ou @usuário" autocomplete="off" enterkeyhint="search" maxlength="60">
+      </form>
+      <form class="filtro-uf" action="comunidade/" method="get"><input type="hidden" name="v" value="tutores"><label for="uf">Estado</label>
+      <select id="uf" name="uf"><option value="">${termo ? "Todos os estados" : "Escolha o estado"}</option>${UFS.map((x) => `<option${x === uf ? " selected" : ""}>${x}</option>`).join("")}</select>
+      <noscript><button class="btn">Ver</button></noscript></form></header><p class="sr" id="pessoas-status" aria-live="polite"></p><div id="tutores"></div>`;
+    const box = document.getElementById("tutores"), campo = document.getElementById("q-pessoas"), sel = document.getElementById("uf");
+
+    function linha(u) {
+      const ehEu = est.eu && est.eu.id === u.id, sigo = est.seguindo.has(u.id);
+      const local = [u.cidade, u.estado].filter(Boolean).join(" / ");
+      return `<li><a class="pessoa" href="${linkPerfil(u.usuario)}">${avatar(u)}<span><b>${esc(u.nome)}</b><small>@${esc(u.usuario)}${local ? " · " + esc(local) : ""}</small></span></a>
+        ${ehEu ? '<span class="pessoa-eu">Você</span>' : est.bloqueados.has(u.id) ? "" : `<button type="button" class="btn${sigo ? " btn-sec" : ""}" data-acao="seguir" data-id="${esc(u.id)}" aria-pressed="${sigo}">${sigo ? "Seguindo" : "Seguir"}</button>`}</li>`;
+    }
+    async function buscar(t, estado) {
+      const r = await sb.rpc("buscar_pessoas", { p_termo: t, p_estado: estado || null });
+      if (!r.error) return r;
+      // Sem a função no banco ainda: busca simples (diferencia acentos)
+      const limpo = t.replace(/^@/, "").replace(/[,()*%\\]/g, " ").trim();
+      let consulta = sb.from("perfis").select("id,usuario,nome,cidade,estado,foto_url").or(`usuario.ilike.*${limpo}*,nome.ilike.*${limpo}*`).order("nome").limit(40);
+      if (estado) consulta = consulta.eq("estado", estado);
+      return consulta;
+    }
+    let vez = 0;
+    async function mostrar() {
+      const t = campo.value.trim(), estado = sel.value, minha = ++vez;
+      const url = new URL(location.href);
+      url.searchParams.set("v", "tutores");
+      if (t) url.searchParams.set("q", t); else url.searchParams.delete("q");
+      if (estado) url.searchParams.set("uf", estado); else url.searchParams.delete("uf");
+      history.replaceState(history.state, "", url.pathname + url.search);
+      sel.options[0].textContent = t ? "Todos os estados" : "Escolha o estado";
+      if (t.replace(/^@/, "").length >= 2) {
+        box.innerHTML = '<p class="carregando">Buscando…</p>';
+        const r = await buscar(t, estado);
+        if (minha !== vez) return;
+        if (r.error) { box.innerHTML = vazio("Não deu para buscar", erroMsg(r.error)); return; }
+        const lista = (r.data || []).filter((u) => !est.bloqueados.has(u.id));
+        document.getElementById("pessoas-status").textContent = lista.length ? lista.length + (lista.length === 1 ? " pessoa encontrada" : " pessoas encontradas") : "Ninguém encontrado";
+        box.innerHTML = lista.length ? `<ul class="lista-pessoas">${lista.map(linha).join("")}</ul>`
+          : vazio("Ninguém encontrado com “" + esc(t) + "”", estado ? "Tente em todos os estados ou confira como se escreve o nome." : "Confira como se escreve o nome ou o @usuário. Só aparecem perfis públicos.");
+        return;
+      }
+      if (t) { box.innerHTML = vazio("Digite pelo menos 2 letras", "Pode ser o nome ou o @usuário da pessoa."); return; }
+      if (!UFS.includes(estado)) { box.innerHTML = vazio("Busque alguém ou escolha um estado", "Digite o nome ou o @usuário acima, ou escolha um estado para ver os tutores da região."); return; }
+      box.innerHTML = '<p class="carregando">Carregando…</p>';
+      const r = await sb.from("perfis").select("id,usuario,nome,cidade,estado,foto_url").eq("estado", estado).order("criado_em", { ascending: false }).limit(60);
+      if (minha !== vez) return;
+      if (r.error) { box.innerHTML = vazio("Não deu para carregar", erroMsg(r.error)); return; }
+      box.innerHTML = r.data.length
+        ? `<h2 class="pessoas-sub">Tutores de ${esc(estado)}</h2><ul class="grade-tutores">${r.data.map((u) => `<li><a href="${linkPerfil(u.usuario)}">${avatar(u)}<b>${esc(u.nome)}</b><small>${esc([u.cidade, u.estado].filter(Boolean).join(" / "))}</small></a></li>`).join("")}</ul>`
+        : vazio("Ainda não há tutores de " + estado + " com perfil público", "Convide amigos tutores para a Comunidade Abanô!");
+    }
+    let espera;
+    campo.addEventListener("input", () => { clearTimeout(espera); espera = setTimeout(mostrar, 300); });
+    document.getElementById("busca-pessoas").addEventListener("submit", (e) => { e.preventDefault(); clearTimeout(espera); mostrar(); });
+    sel.addEventListener("change", mostrar);
+    mostrar();
+    if (!termo && !uf) campo.focus();
   }
 
   function telaSalvos() {

@@ -297,6 +297,8 @@
   var PAGINAS = [
     ["comunidade/", "Comunidade Abanô", "Publique, tire dúvidas e entre nos clubes da sua raça e do seu estado.", "pessoas", "",
       "comunidade forum fórum grupo clube clubes rede social postar publicar post foto fotos dúvida duvida pergunta perguntar conversar amigos tutores tutor raça estado conselho dica dicas"],
+    ["comunidade/?v=tutores", "Encontrar tutores", "Busque pessoas pelo nome ou @usuário, em qualquer estado.", "pessoas", "",
+      "pessoa pessoas buscar pessoa encontrar tutor tutores perfil seguir amigo amiga usuário usuario nome procurar alguém alguem"],
     ["calculadora.html", "Calculadora de custos", "Quanto custa manter um cachorro ou um gato por mês e por ano.", "calc", "",
       "calculadora custo custos gasto gastos quanto custa preço preços valor dinheiro orçamento mensal anual ração racao petisco antipulgas vermífugo vacina veterinário areia banho conta economizar"],
     ["husky-solta-muito-pelo.html", "Guia pet: husky solta muito pelo?", "O que fazer com a queda de pelo do husky, de quem tem quatro.", "livro", "",
