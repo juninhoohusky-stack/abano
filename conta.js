@@ -539,7 +539,9 @@
         var rm = document.createElement("button"); rm.type = "button"; rm.className = "link-botao"; rm.textContent = "Remover";
         rm.setAttribute("aria-label", "Remover " + p.nome);
         rm.addEventListener("click", function () { removerPet(p); });
-        acoes.appendChild(ed); acoes.appendChild(rm);
+        var qr = document.createElement("a"); qr.className = "link-botao pet-qr"; qr.href = "perfil-qr.html?pet=" + encodeURIComponent(p.id); qr.textContent = "Perfil QR";
+        qr.setAttribute("aria-label", "Perfil com QR Code de " + p.nome);
+        acoes.appendChild(ed); acoes.appendChild(qr); acoes.appendChild(rm);
         li.appendChild(foto); li.appendChild(txt); li.appendChild(acoes);
         lista.appendChild(li);
       });

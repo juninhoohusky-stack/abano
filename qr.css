@@ -1,0 +1,96 @@
+/* Abanô — Perfil do pet com QR Code */
+.qr{padding:var(--e-10) 0 var(--e-16)}
+.qr .migalha{font-size:var(--t-sm);color:var(--suave);margin:0 0 var(--e-5)}
+.qr .migalha a{color:var(--suave);text-decoration:none}
+
+.qr-hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:var(--e-8);align-items:center;padding:var(--e-10);border-radius:var(--raio-lg);margin-bottom:var(--e-10);
+  background:linear-gradient(135deg,color-mix(in srgb,var(--marca) 8%,var(--superficie)),color-mix(in srgb,var(--laranja) 8%,var(--superficie)));box-shadow:var(--sombra)}
+.qr-selo{display:inline-flex;align-items:center;gap:var(--e-2);padding:6px 14px 6px 8px;border-radius:var(--raio-pill);background:var(--superficie);color:var(--marca);font-size:var(--t-sm);font-weight:800;box-shadow:var(--sombra)}
+.qr-selo svg{width:22px;height:22px}
+.qr-hero h1{font-size:clamp(32px,4.6vw,56px);line-height:1.05;letter-spacing:-.04em;font-weight:900;margin:var(--e-5) 0 var(--e-4)}
+.qr-hero h1 em{font-style:normal;color:var(--marca)}
+.qr-lead{font-size:var(--t-lead);line-height:1.55;margin:0;max-width:36em}
+.qr-acoes{margin-top:var(--e-8)}
+.qr-acoes .btn{width:auto;margin:0}
+.qr-passos{list-style:none;margin:0;padding:0;display:grid;gap:var(--e-3)}
+.qr-passos li{display:grid;grid-template-columns:auto 1fr;gap:2px var(--e-4);align-items:center;padding:var(--e-4);border-radius:var(--raio-md);background:var(--superficie);box-shadow:var(--sombra)}
+.qr-passo-ico{grid-row:1 / span 2;display:grid;place-items:center;width:52px;height:52px;border-radius:var(--raio-sm);background:var(--marca-clara);color:var(--marca)}
+.qr-passo-ico svg{width:28px;height:28px}
+.qr-passos b{font-size:var(--t-base);font-weight:900}
+.qr-passos li > span:last-child{font-size:var(--t-sm);line-height:1.45;color:var(--suave)}
+
+.qr-carregando{color:var(--suave)}
+.qr-vazio{display:flex;flex-direction:column;align-items:flex-start;gap:var(--e-3);padding:var(--e-6);border-radius:var(--raio-lg);background:color-mix(in srgb,var(--marca) 4%,var(--superficie));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--marca) 14%,transparent)}
+.qr-vazio p{margin:0;line-height:1.55}
+.qr-vazio .btn{width:auto;margin:0}
+
+.qr-meus h2,.qr-placa h2{font-size:clamp(22px,2.6vw,32px);font-weight:900;letter-spacing:-.03em;margin:0 0 var(--e-4)}
+.qr-lista{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--e-3)}
+.qr-lista a{display:flex;align-items:center;gap:var(--e-3);padding:var(--e-4);border-radius:var(--raio-md);background:var(--superficie);box-shadow:var(--sombra);color:var(--tinta);text-decoration:none}
+.qr-lista a > span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column}
+.qr-lista small{color:var(--suave);font-size:var(--t-sm)}
+.qr-ir{font-size:var(--t-sm);font-weight:800;color:var(--marca)}
+.qr-mini{flex:none;display:grid;place-items:center;width:56px;height:56px;border-radius:var(--raio-sm);overflow:hidden;background:var(--degrade-forte);color:#fff;font-weight:900;font-size:24px}
+.qr-mini img{width:100%;height:100%;object-fit:cover}
+
+.qr-voltar{display:inline-flex;align-items:center;min-height:44px;padding:0 var(--e-4);margin-bottom:var(--e-4);border-radius:var(--raio-pill);background:var(--superficie);box-shadow:var(--sombra);color:var(--tinta);text-decoration:none;font-weight:800;font-size:var(--t-sm)}
+.qr-gerencia{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--e-6);align-items:start}
+.qr-cartao,.qr-placa{padding:var(--e-6);border-radius:var(--raio-lg);background:var(--superficie);box-shadow:var(--sombra)}
+.qr-cab{display:flex;align-items:center;gap:var(--e-4);margin-bottom:var(--e-2)}
+.qr-cab h1{font-size:clamp(22px,2.6vw,30px);font-weight:900;letter-spacing:-.02em;margin:0}
+.qr-cab p{margin:2px 0 0;font-size:var(--t-sm);color:var(--suave)}
+.qr-on{color:#1F9D63;font-weight:800}
+.qr-off{color:var(--perigo);font-weight:800}
+#qr-form .rot{display:block;font-weight:800;font-size:var(--t-sm);margin:var(--e-4) 0 var(--e-2)}
+#qr-form .opcional{font-weight:600;color:var(--suave)}
+#qr-form input:not([type=checkbox]),#qr-form textarea{width:100%;min-height:48px;padding:var(--e-3);border:1.5px solid transparent;border-radius:var(--raio-sm);background:var(--areia);color:var(--tinta);font:inherit;font-size:var(--t-corpo)}
+#qr-form textarea{resize:vertical;line-height:1.5}
+#qr-form input:focus,#qr-form textarea:focus{outline:none;border-color:var(--marca);background:var(--superficie);box-shadow:0 0 0 4px var(--marca-clara)}
+.qr-check{display:flex;gap:var(--e-3);align-items:flex-start;margin:var(--e-4) 0 0;line-height:1.5;font-size:var(--t-sm);cursor:pointer}
+.qr-check input{flex:none;width:22px;height:22px;margin-top:1px;accent-color:var(--marca)}
+#qr-form .btn-grande{margin-top:var(--e-6)}
+.qr-previa{display:grid;place-items:center;padding:var(--e-4);border-radius:var(--raio-md);background:var(--areia)}
+.qr-canvas{width:100%;max-width:300px;height:auto;filter:drop-shadow(0 14px 22px rgba(120,20,60,.22))}
+.qr-botoes{display:flex;flex-wrap:wrap;gap:var(--e-2);margin-top:var(--e-4)}
+.qr-botoes .btn{width:auto;margin:0;gap:var(--e-2)}
+.qr-botoes .btn svg,.qr-acao svg{width:18px;height:18px}
+.qr-acao{display:inline-flex;align-items:center;gap:var(--e-2);min-height:44px;padding:0 var(--e-4);border:0;border-radius:var(--raio-pill);background:var(--areia);color:var(--tinta);font:inherit;font-size:var(--t-sm);font-weight:800;text-decoration:none;cursor:pointer}
+.qr-dicas{margin:var(--e-4) 0 0;padding-left:1.1em;display:grid;gap:var(--e-1);font-size:var(--t-sm);color:var(--suave);line-height:1.5}
+
+/* Quem escaneou: tela pensada para o celular */
+.qr-pub{max-width:520px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:var(--e-8) var(--e-6);border-radius:var(--raio-lg);background:var(--superficie);box-shadow:var(--sombra)}
+.qr-perdido{display:flex;flex-direction:column;gap:2px;width:100%;margin-bottom:var(--e-5);padding:var(--e-4);border-radius:var(--raio-md);background:#E5484D;color:#fff;text-decoration:none;animation:qr-pulsa 2s ease-in-out infinite}
+.qr-perdido b{font-size:var(--t-xl);font-weight:900}
+.qr-perdido span{font-size:var(--t-sm)}
+@keyframes qr-pulsa{50%{box-shadow:0 0 0 8px rgba(229,72,77,.18)}}
+.qr-pub-foto{display:grid;place-items:center;width:180px;height:180px;border-radius:50%;overflow:hidden;background:var(--degrade-forte);color:#fff;font-size:72px;font-weight:900;box-shadow:0 0 0 6px var(--superficie),0 0 0 9px var(--marca)}
+.qr-pub-foto img{width:100%;height:100%;object-fit:cover}
+.qr-pub h1{font-size:clamp(28px,7vw,40px);line-height:1.1;font-weight:900;letter-spacing:-.03em;margin:var(--e-6) 0 var(--e-1)}
+.qr-pub h1 em{font-style:normal;color:var(--marca)}
+.qr-pub-info{margin:0;color:var(--suave)}
+.qr-pub-msg{margin:var(--e-4) 0 0;font-size:var(--t-lg);line-height:1.5;font-weight:700}
+.qr-pub-acoes{display:flex;flex-direction:column;gap:var(--e-3);width:100%;margin-top:var(--e-6)}
+.qr-pub-acoes .btn{width:100%;margin:0;gap:var(--e-2)}
+.qr-pub-acoes .btn svg{width:22px;height:22px}
+.qr-zap{background:#1FAF5A}
+.qr-zap:hover{background:#178A47}
+.qr-pub-tel{margin:0;font-size:var(--t-sm);color:var(--suave)}
+.qr-pub-saude{display:flex;gap:var(--e-3);align-items:flex-start;width:100%;margin-top:var(--e-5);padding:var(--e-4);border-radius:var(--raio-md);background:color-mix(in srgb,#E5484D 9%,var(--superficie));text-align:left}
+.qr-pub-saude svg{width:24px;height:24px;flex:none;color:#E5484D}
+.qr-pub-saude p{margin:0;line-height:1.5}
+.qr-pub-saude b{display:block}
+.qr-pub-tutor{display:flex;gap:var(--e-2);align-items:center;justify-content:center;margin:var(--e-5) 0 0;font-weight:700}
+.qr-pub-tutor svg{width:20px;height:20px;color:var(--marca);flex:none}
+.qr-pub-dica{margin:var(--e-2) 0 0;font-size:var(--t-sm);color:var(--suave);line-height:1.5}
+
+@media (max-width:900px){
+  .qr-hero{grid-template-columns:1fr;padding:var(--e-6)}
+  .qr-gerencia{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  .qr{padding-top:var(--e-6)}
+  .qr-acoes .btn{width:100%}
+  .qr-pub{padding:var(--e-6) var(--e-4)}
+  .qr-botoes .btn{width:100%}
+}
+@media (prefers-reduced-motion:reduce){.qr-perdido{animation:none}}

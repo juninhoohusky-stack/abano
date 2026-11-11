@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Perfil do pet com QR | Abanô</title>
-<meta name="description" content="Um QR code na coleira: quem encontrar o seu pet fala com você na hora. Em breve no Abanô.">
+<title>Perfil do pet com QR Code grátis | Abanô</title>
+<meta name="description" content="Crie grátis o perfil do seu pet com QR Code e imprima a plaquinha. Se ele se perder, quem encontrar avisa você na hora, com a localização.">
+<meta property="og:title" content="Perfil do pet com QR Code grátis">
+<meta property="og:description" content="Crie grátis o perfil do seu pet com QR Code e imprima a plaquinha. Se ele se perder, quem encontrar avisa você na hora, com a localização.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -15,41 +17,25 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="https://abano.com.br/perfil-qr.html">
 <meta property="og:image" content="https://abano.com.br/compartilhar.png">
-<meta property="og:title" content="Perfil do pet com QR | Abanô">
-<meta property="og:description" content="Um QR code na coleira: quem encontrar o seu pet fala com você na hora. Em breve no Abanô.">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261111g">
+<link rel="stylesheet" href="site.css?v=20261111h">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261111g" defer></script>
+<script src="site.js?v=20261111h" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
+<script src="lista.js?v=20261111h" defer></script>
+<script src="conta.js?v=20261111h" defer></script>
+<link rel="stylesheet" href="perdidos.css?v=20261111h">
+<link rel="stylesheet" href="qr.css?v=20261111h">
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
+<script src="qr.js?v=20261111h" defer></script>
 <style>
-  .leitura{max-width:760px;margin:0 auto;padding:var(--e-14) var(--e-6) 0}
-  .migalha{font-size:var(--t-sm);color:var(--suave);margin-bottom:var(--e-5)}
-  .migalha a{color:var(--suave);text-decoration:none}
-  .migalha a:hover{color:var(--tinta)}
-  .cabeca-servico{display:flex;align-items:center;gap:var(--e-3);margin-bottom:var(--e-1)}
-  .cabeca-servico .ico{width:52px;height:52px;border-radius:var(--raio-sm);display:grid;place-items:center;background:var(--marca-clara);color:var(--marca);flex:none}
-  .cabeca-servico .ico svg{width:26px;height:26px}
-  .tag{display:inline-flex;align-items:center;gap:var(--e-1);font-size:var(--t-xs);font-weight:600;color:var(--suave);background:var(--areia);padding:var(--e-1) var(--e-3);border-radius:var(--raio-pill)}
-  .tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
-  h1{font-size:var(--t-h1);margin:var(--e-4) 0 var(--e-3)}
-  .lead{font-size:var(--t-lg);color:var(--suave);margin-bottom:var(--e-8)}
-  .bloco{background:var(--superficie);border-radius:var(--raio-md);padding:var(--e-8) var(--e-8);box-shadow:var(--sombra);margin-bottom:var(--e-5)}
-  .bloco h2{font-size:var(--t-2xl);margin-bottom:var(--e-3)}
-  .itens{list-style:none;display:grid;gap:var(--e-3)}
-  .itens li{display:flex;gap:var(--e-3);align-items:flex-start;font-size:var(--t-corpo)}
-  .itens svg{width:20px;height:20px;flex:none;margin-top:var(--e-1);color:var(--marca)}
-  .avise{background:var(--faixa);color:var(--sobre-faixa);border-radius:var(--raio-md);padding:var(--e-8);margin-bottom:var(--e-5)}
-  .avise h2{color:#fff;font-size:var(--t-3xl);margin-bottom:var(--e-2)}
-  .avise p{opacity:.9;margin-bottom:var(--e-5)}
-  .avise .btn{background:#fff;color:var(--faixa)}
-  .avise .btn:hover{background:var(--sobre-faixa)}
-  .extra{display:flex;align-items:center;justify-content:space-between;gap:var(--e-3) var(--e-5);flex-wrap:wrap;padding:var(--e-4) var(--e-6);border-radius:var(--raio);background:var(--acento-claro);color:var(--tinta);text-decoration:none;font-size:var(--t-base)}
-  .extra strong{font-weight:600}
-  .extra span:last-child{color:var(--acento);font-weight:600;white-space:nowrap}
-  @media (max-width:600px){.bloco,.avise{padding:var(--e-6)}}
+
 </style>
 </head>
 <body>
@@ -62,7 +48,7 @@
       <a href="index.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5"/><path d="M6 9v10.5a.5.5 0 0 0 .5.5H10v-5.5h4V20h3.5a.5.5 0 0 0 .5-.5V9"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.4 3.2a1 1 0 0 1 1.2 0l8 6.4a.8.8 0 0 1-1 1.3l-.4-.3v9.2a1.4 1.4 0 0 1-1.4 1.4h-3.6v-5.6h-4.4v5.6H6.2a1.4 1.4 0 0 1-1.4-1.4v-9.2l-.4.3a.8.8 0 0 1-1-1.3z"/></svg><span>Início</span></a>
       <a href="comunidade/" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-3.5 3v-3H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/><path d="M17 9.5h3a2 2 0 0 1 2 2v5.5a2 2 0 0 1-2 2h-1v2.5L16 19h-3.5"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 5h11a2.5 2.5 0 0 1 2.5 2.5v6A2.5 2.5 0 0 1 15 16H9.3l-3.6 3.1a.6.6 0 0 1-1-.45V16H4a2.5 2.5 0 0 1-2.5-2.5v-6A2.5 2.5 0 0 1 4 5z"/><path d="M19 9a2.5 2.5 0 0 1 2.5 2.5V17a2.5 2.5 0 0 1-2.5 2.5h-.6v2a.6.6 0 0 1-1 .45L14.6 19.5H12a2.5 2.5 0 0 1-2-1h5a3.5 3.5 0 0 0 3.5-3.5V9z"/></svg><span>Comunidade</span></a>
       <div class="grupo-menu">
-        <button type="button" class="aba aba-menu" aria-expanded="false" aria-controls="menu-servicos" aria-current="page"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="3.5" y="12.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="12.5" width="8" height="8" rx="2.2"/></svg><span>Serviços</span><svg class="seta" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></button>
+        <button type="button" class="aba aba-menu" aria-expanded="false" aria-controls="menu-servicos"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg><svg class="ico-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="3.5" width="8" height="8" rx="2.2"/><rect x="3.5" y="12.5" width="8" height="8" rx="2.2"/><rect x="12.5" y="12.5" width="8" height="8" rx="2.2"/></svg><span>Serviços</span><svg class="seta" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></button>
         <div class="submenu" id="menu-servicos">
           <p class="submenu-titulo">Serviços</p>
           <a href="eventos.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2a4.5 4.5 0 0 1 5 4.8"/></svg></span>Eventos pet<small>Em breve</small></a>
@@ -73,7 +59,7 @@
           <a href="hospedagem.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/></svg></span>Hospedagem</a>
           <a href="adocao.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></span>Adoção<small>Novo</small></a>
           <a href="perdidos.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></span>Pet desaparecido<small>Novo</small></a>
-          <a href="perfil-qr.html" aria-current="page"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2M20 14v.01M14 20h.01M18 18h2v2h-2z"/></svg></span>Perfil do pet com QR<small>Em breve</small></a>
+          <a href="perfil-qr.html" aria-current="page"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2M20 14v.01M14 20h.01M18 18h2v2h-2z"/></svg></span>Perfil do pet com QR<small>Novo</small></a>
           <a href="doador-de-sangue.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5s6 6.4 6 10.7a6 6 0 0 1-12 0C6 9.9 12 3.5 12 3.5z"/><path d="M12 11v5M9.5 13.5h5"/></svg></span>Doador de sangue<small>Novo</small></a>
         </div>
       </div>
@@ -96,31 +82,21 @@
   </div>
 </header>
 
-<main class="leitura">
-  <p class="migalha"><a href="index.html">Início</a> / Perfil do pet com QR</p>
-  <div class="cabeca-servico">
-    <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2M20 14v.01M14 20h.01M18 18h2v2h-2z"/></svg></span>
-    <span class="tag">Em breve</span>
+<main class="qr">
+  <div class="wrap">
+    <p class="migalha"><a href="index.html">Início</a> / Perfil do pet com QR</p>
+    <section class="qr-hero" id="qr-hero">
+      <div class="qr-hero-txt">
+        <span class="qr-selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.3"/><rect x="14" y="4" width="6" height="6" rx="1.3"/><rect x="4" y="14" width="6" height="6" rx="1.3"/><path d="M14 14h2.5v2.5H14zM18.5 18.5H20V20h-1.5zM18.5 14H20v1.5M14 19.5h2"/></svg>Grátis no Abanô</span>
+        <h1>Uma plaquinha que <em>leva o seu pet de volta.</em></h1>
+        <p class="qr-lead">Crie o perfil do seu pet com QR Code. Se ele se perder, quem encontrar aponta a câmera do celular e avisa você na hora, com a localização.</p>
+        <div class="qr-acoes"><a class="btn btn-grande" href="conta.html#pets">Criar o QR do meu pet</a></div>
+      </div>
+      <ol class="qr-passos"><li><span class="qr-passo-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></span><b>Ative o QR do seu pet</b><span>Em Minha conta, escolha o pet e decida o que mostrar: seu WhatsApp, um recado e cuidados de saúde.</span></li><li><span class="qr-passo-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-6h16v6h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg></span><b>Imprima a plaquinha</b><span>Baixe a plaquinha com o QR e a foto do pet. Cole numa tag de coleira ou leve a uma loja de gravação.</span></li><li><span class="qr-passo-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg></span><b>Quem achar, avisa na hora</b><span>Com a câmera do celular, a pessoa abre o perfil do pet e manda a localização para o seu WhatsApp, sem precisar de app.</span></li></ol>
+    </section>
+    <div id="qr-centro" aria-live="polite"></div>
   </div>
-  <h1>Perfil do pet com QR</h1>
-  <p class="lead">Um QR code na coleira: quem encontrar o seu pet escaneia com o celular e fala com você na hora, sem precisar de aplicativo.</p>
-
-  <div class="bloco">
-    <h2>O que vai ter aqui</h2>
-    <ul class="itens">
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Perfil do pet com foto, nome e cuidados especiais</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Botão para ligar ou mandar WhatsApp para o tutor</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Você escolhe o que fica visível</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span>Aviso para você quando o QR for escaneado</span></li>
-    </ul>
-  </div>
-
-  <div class="avise">
-    <h2>Quer ser avisado quando abrir?</h2>
-    <p>Crie sua conta grátis e marque a opção de receber as novidades por e-mail: avisamos quando <b>Pet desaparecido</b> abrir. Enquanto isso, a Comunidade já está aberta.</p>
-    <a href="cadastro.html?volta=%2Fcomunidade%2F" class="btn">Participar da Comunidade</a>
-  </div>
-
+  <div class="toast-per" id="toast-qr" role="status" aria-live="polite"></div>
 </main>
 
 <footer class="rodape">
@@ -146,10 +122,11 @@
         <li><a href="https://www.instagram.com/juninhoohusky/" target="_blank" rel="noopener">Instagram @juninhoohusky</a></li>
         <li><a href="https://www.youtube.com/@JuninhoOhusky" target="_blank" rel="noopener">YouTube Juninho O Husky</a></li>
         <li><a href="privacidade.html">Política de privacidade</a></li>
+        <li><a href="seus-dados.html">Seus dados (LGPD)</a></li>
       </ul>
     </div>
   </div>
-  <div class="rodape-base"><span>© 2026 Abanô</span><span>Tem pet? Tem no Abanô.</span></div>
+  <div class="rodape-base"><span>© 2026 Abanô</span><span>Feito em Maricá (RJ), com quatro huskies supervisionando.</span></div>
 </footer>
 
 </body>
