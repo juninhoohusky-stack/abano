@@ -23,14 +23,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261111c">
+<link rel="stylesheet" href="site.css?v=20261111d">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261111c" defer></script>
+<script src="site.js?v=20261111d" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261111c" defer></script>
-<script src="conta.js?v=20261111c" defer></script>
+<script src="lista.js?v=20261111d" defer></script>
+<script src="conta.js?v=20261111d" defer></script>
 <style>
   .pagina-conta{padding:var(--e-12) 0 var(--e-14)}
   .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:var(--e-16);align-items:start}
@@ -110,6 +110,34 @@
   .ado-links{display:flex;flex-wrap:wrap;gap:var(--e-2);margin-top:var(--e-4)}
   .fc .ado-links .btn{width:auto;margin:0;min-height:44px;padding:0 var(--e-4);font-size:var(--t-ui)}
 
+  .doacao{margin:var(--e-5) 0 var(--e-2);padding:var(--e-5);border:0;border-radius:var(--raio-md);background:linear-gradient(135deg,color-mix(in srgb,#E5484D 9%,var(--superficie)),color-mix(in srgb,var(--marca) 6%,var(--superficie)))}
+  .doacao legend{display:flex;align-items:center;gap:var(--e-2);float:left;width:100%;margin-bottom:var(--e-2);font-size:var(--t-base);font-weight:900}
+  .doacao legend + *{clear:both}
+  .doacao-gota{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#E5484D,var(--marca));color:#E5484D;box-shadow:0 6px 14px -6px rgba(229,72,77,.7)}
+  .doacao-gota svg{width:20px;height:20px;color:#fff}
+  .doacao-gota svg path:first-child{fill:#fff}
+  .doacao-gota svg path:last-child{stroke:#E5484D}
+  .doacao-intro{font-size:var(--t-sm);color:var(--suave);line-height:1.5;margin:0 0 var(--e-3)}
+  .doacao-opcoes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--e-2)}
+  .doacao-op{position:relative;display:flex;cursor:pointer}
+  .doacao-op input{position:absolute;opacity:0;width:1px;height:1px}
+  .doacao-op span{flex:1;display:flex;flex-direction:column;gap:2px;padding:var(--e-3);border-radius:var(--raio-sm);background:var(--superficie);box-shadow:inset 0 0 0 1.5px var(--linha);transition:box-shadow .2s,background-color .2s}
+  .doacao-op b{font-size:var(--t-sm);font-weight:800}
+  .doacao-op small{font-size:var(--t-xs);color:var(--suave);line-height:1.35}
+  .doacao-op input:checked + span{box-shadow:inset 0 0 0 2px #E5484D;background:color-mix(in srgb,#E5484D 7%,var(--superficie))}
+  .doacao-op input:focus-visible + span{outline:3px solid var(--marca);outline-offset:2px}
+  #pet-doacao-extra{margin-top:var(--e-3)}
+  .doacao-req{margin:var(--e-3) 0 0;padding:var(--e-3);border-radius:var(--raio-sm);background:var(--superficie);font-size:var(--t-xs);line-height:1.5;color:var(--tinta)}
+  .doacao-pub{margin:var(--e-2) 0 0;font-size:var(--t-xs);color:var(--suave);line-height:1.5}
+  .selo-doador{display:inline-flex;align-items:center;gap:5px;margin-top:4px;padding:3px 10px 3px 4px;border-radius:var(--raio-pill);background:linear-gradient(135deg,#E5484D,var(--marca));color:#fff;font-size:var(--t-xs);font-weight:800;line-height:1.2}
+  .selo-doador svg{width:16px;height:16px;padding:2px;border-radius:50%;background:#fff;color:#E5484D}
+  .selo-doador svg path:last-child{stroke:#fff}
+  .selo-doador.quer{background:var(--superficie);color:#C2373C;box-shadow:inset 0 0 0 1.5px #E5484D}
+  .selo-doador.quer svg{background:#E5484D;color:#fff}
+  .selo-doador.quer svg path:first-child{fill:#fff}
+  .selo-doador.quer svg path:last-child{stroke:#E5484D}
+  @media (max-width:600px){.doacao{padding:var(--e-4)}.doacao-opcoes{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -134,7 +162,7 @@
           <a href="adocao.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></span>Adoção<small>Novo</small></a>
           <a href="perdidos.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></span>Pet desaparecido<small>Em breve</small></a>
           <a href="perfil-qr.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2M20 14v.01M14 20h.01M18 18h2v2h-2z"/></svg></span>Perfil do pet com QR<small>Em breve</small></a>
-          <a href="doador-de-sangue.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5s6 6.4 6 10.7a6 6 0 0 1-12 0C6 9.9 12 3.5 12 3.5z"/><path d="M12 11v5M9.5 13.5h5"/></svg></span>Doador de sangue<small>Em breve</small></a>
+          <a href="doador-de-sangue.html"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5s6 6.4 6 10.7a6 6 0 0 1-12 0C6 9.9 12 3.5 12 3.5z"/><path d="M12 11v5M9.5 13.5h5"/></svg></span>Doador de sangue<small>Novo</small></a>
         </div>
       </div>
       <a href="calculadora.html" class="aba"><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.2" y="2.2" width="15.6" height="19.6" rx="3.6" fill="currentColor"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01" fill="none" stroke-width="2" stroke-linecap="round" style="stroke:var(--superficie)"/></svg><span>Calculadora</span></a>
@@ -331,6 +359,21 @@
           <input id="pet-perso" name="personalidade" type="text" maxlength="120" placeholder="Ex.: brincalhão, falante">
         </div>
       </div>
+      <fieldset class="doacao" id="pet-doacao" hidden>
+        <legend><span class="doacao-gota"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8s6.6 7 6.6 11.7a6.6 6.6 0 0 1-13.2 0C5.4 9.8 12 2.8 12 2.8z" fill="currentColor"/><path d="M12 10.6v6.2M8.9 13.7h6.2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></span>Doação de sangue</legend>
+        <p class="doacao-intro">Uma doação de sangue pode salvar a vida de outro pet. Se o seu pet doa ou topa doar, ele ganha um selo no perfil e aparece para quem precisa na página de doadores.</p>
+        <div class="doacao-opcoes" role="radiogroup" aria-label="Doação de sangue">
+          <label class="doacao-op"><input type="radio" name="doador" value="" checked><span><b>Não agora</b></span></label>
+          <label class="doacao-op"><input type="radio" name="doador" value="doador"><span><b>Já é doador</b><small>Já doou ou está num banco de sangue</small></span></label>
+          <label class="doacao-op"><input type="radio" name="doador" value="quer_ser"><span><b>Quer ser doador</b><small>Ainda não doou, mas topa ajudar</small></span></label>
+        </div>
+        <div id="pet-doacao-extra" hidden>
+          <label class="rot" for="pet-tipo">Tipo sanguíneo <span class="opcional">(opcional)</span></label>
+          <select id="pet-tipo" name="tipo_sanguineo"></select>
+          <p class="doacao-req" id="pet-doacao-req"></p>
+          <p class="doacao-pub">O pet aparece na página <a href="doador-de-sangue.html" target="_blank" rel="noopener">Doador de sangue</a> com a cidade do seu perfil e o link para o seu perfil na Comunidade.</p>
+        </div>
+      </fieldset>
       <label class="rot" for="pet-desc">Sobre o pet <span class="opcional">(opcional)</span></label>
       <textarea id="pet-desc" name="descricao" maxlength="500"></textarea>
       <p class="aviso-conta" id="aviso-pet" role="alert" hidden></p>

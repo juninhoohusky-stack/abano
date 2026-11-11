@@ -1,0 +1,84 @@
+/* Abanô — Página Doador de sangue (usa também servicos.css para a chamada final) */
+.doa{--sangue:#E5484D;--sangue-esc:#C2373C;padding:var(--e-10) 0 var(--e-16)}
+.doa .migalha{font-size:var(--t-sm);color:var(--suave);margin:0 0 var(--e-5)}
+.doa .migalha a{color:var(--suave);text-decoration:none}
+
+.doa-hero{position:relative;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:var(--e-8);align-items:center;padding:var(--e-10);border-radius:var(--raio-lg);overflow:hidden;isolation:isolate;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--sangue) 10%,var(--superficie)),color-mix(in srgb,var(--marca) 7%,var(--superficie)));box-shadow:var(--sombra);margin-bottom:var(--e-12)}
+.doa-hero::after{content:"";position:absolute;right:-90px;top:-110px;z-index:-1;width:340px;height:340px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;rotate:45deg;
+  background:radial-gradient(circle at 35% 35%,color-mix(in srgb,var(--sangue) 30%,transparent),transparent 70%)}
+.doa-selo{display:inline-flex;align-items:center;gap:var(--e-2);padding:5px 14px 5px 5px;border-radius:var(--raio-pill);background:var(--superficie);color:var(--sangue-esc);font-size:var(--t-sm);font-weight:800;box-shadow:var(--sombra)}
+.doa-selo svg{width:26px;height:26px;padding:4px;border-radius:50%;background:linear-gradient(135deg,var(--sangue),var(--marca));color:#fff}
+.doa-selo svg path:last-child{stroke:var(--sangue)}
+.doa-hero h1{font-size:clamp(34px,5vw,62px);line-height:1.04;letter-spacing:-.04em;font-weight:900;margin:var(--e-5) 0 var(--e-4)}
+.doa-hero h1 em{font-style:normal;color:var(--sangue)}
+.doa-lead{font-size:var(--t-lead);line-height:1.55;color:var(--tinta);max-width:36em;margin:0}
+.doa-acoes{display:flex;flex-wrap:wrap;gap:var(--e-3);margin-top:var(--e-8)}
+.doa-acoes .btn{margin:0;width:auto;gap:var(--e-2)}
+.doa-btn{background:linear-gradient(135deg,var(--sangue),var(--marca));box-shadow:0 14px 28px -14px rgba(229,72,77,.9)}
+.doa-btn svg{width:22px;height:22px;color:#fff}
+.doa-btn svg path:last-child{stroke:var(--sangue)}
+.doa-acoes .btn-sec{background:var(--superficie);color:var(--marca);box-shadow:inset 0 0 0 1.5px var(--marca)}
+.doa-numeros{display:grid;gap:var(--e-4)}
+.doa-numeros div{display:flex;flex-direction:column;padding:var(--e-5) var(--e-6);border-radius:var(--raio-md);background:var(--superficie);box-shadow:var(--sombra)}
+.doa-numeros b{font-size:clamp(36px,4vw,52px);line-height:1;font-weight:900;letter-spacing:-.03em;color:var(--sangue);font-variant-numeric:tabular-nums}
+.doa-numeros span{margin-top:var(--e-1);font-size:var(--t-sm);font-weight:700;color:var(--suave)}
+
+.doa-cab{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--e-3) var(--e-6);margin-bottom:var(--e-5)}
+.doa-cab h2,.doa-info h2{font-size:clamp(26px,3vw,38px);line-height:1.1;font-weight:900;letter-spacing:-.03em;margin:0}
+.doa-filtros{display:flex;flex-wrap:wrap;gap:var(--e-2);align-items:center}
+.doa-filtros select{min-height:44px;padding:0 var(--e-4);border:0;border-radius:var(--raio-pill);background:var(--superficie);box-shadow:var(--sombra);color:var(--tinta);font:inherit;font-size:var(--t-sm);font-weight:700}
+.doa-especie{display:flex;gap:var(--e-1);padding:3px;border-radius:var(--raio-pill);background:var(--areia)}
+.doa-especie button{min-height:38px;padding:0 var(--e-4);border:0;border-radius:var(--raio-pill);background:transparent;color:var(--tinta);font:inherit;font-size:var(--t-sm);font-weight:700;cursor:pointer}
+.doa-especie button[aria-pressed="true"]{background:var(--sangue);color:#fff}
+.doa-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--e-4)}
+.doa-pet{display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--e-1);padding:var(--e-5) var(--e-4);border-radius:var(--raio-lg);background:var(--superficie);box-shadow:var(--sombra)}
+.doa-pet.eh-doador{box-shadow:var(--sombra),inset 0 0 0 2px color-mix(in srgb,var(--sangue) 50%,transparent)}
+.doa-foto{display:grid;place-items:center;width:96px;height:96px;margin-bottom:var(--e-2);border-radius:50%;overflow:hidden;background:var(--degrade-forte);color:#fff;font-size:36px;font-weight:900;box-shadow:0 0 0 4px var(--superficie),0 0 0 6px color-mix(in srgb,var(--sangue) 60%,transparent)}
+.doa-foto img{width:100%;height:100%;object-fit:cover}
+.doa-pet h3{font-size:var(--t-xl);font-weight:900;margin:var(--e-1) 0 0}
+.doa-meta,.doa-local{margin:0;font-size:var(--t-sm);color:var(--suave)}
+.doa-tipo{margin:0;font-size:var(--t-sm);font-weight:800;color:var(--sangue-esc)}
+.doa-perfil{margin-top:var(--e-3);min-height:44px;width:auto}
+.doa-carregando{color:var(--suave)}
+.doa-vazio{grid-column:1 / -1;display:flex;flex-direction:column;align-items:center;gap:var(--e-3);padding:var(--e-8);text-align:center;border-radius:var(--raio-lg);background:color-mix(in srgb,var(--sangue) 5%,var(--superficie))}
+.doa-vazio > svg{width:48px;height:48px;color:var(--sangue)}
+.doa-vazio > svg path:last-child{stroke:color-mix(in srgb,var(--sangue) 5%,var(--superficie))}
+.doa-vazio p{margin:0;max-width:34em;line-height:1.5}
+.doa-vazio .btn{width:auto;margin:0}
+.doa-aviso{margin:var(--e-4) 0 0;font-size:var(--t-sm);color:var(--suave);line-height:1.5}
+
+.doa-info{margin-top:var(--e-12)}
+.doa-sub{margin:var(--e-2) 0 var(--e-5);color:var(--suave)}
+.doa-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--e-4)}
+.doa-cards article{padding:var(--e-6);border-radius:var(--raio-lg);background:var(--superficie);box-shadow:var(--sombra)}
+.doa-ico{display:grid;place-items:center;width:56px;height:56px;border-radius:var(--raio-md);background:color-mix(in srgb,var(--sangue) 12%,var(--superficie));color:var(--sangue)}
+.doa-ico svg{width:30px;height:30px}
+.doa-cards h3{font-size:var(--t-xl);font-weight:900;margin:var(--e-3) 0 var(--e-2)}
+.doa-cards ul{margin:0;padding-left:1.1em;display:grid;gap:var(--e-1);font-size:var(--t-sm);line-height:1.5}
+.doa-cards li::marker{color:var(--sangue)}
+.doa-cta{margin-bottom:0}
+
+/* Selo (igual ao da Comunidade) */
+.selo-doador{display:inline-flex;align-items:center;gap:5px;margin-top:var(--e-1);padding:3px 10px 3px 4px;border-radius:var(--raio-pill);background:linear-gradient(135deg,var(--sangue),var(--marca));color:#fff;font-size:var(--t-xs);font-weight:800;line-height:1.2;box-shadow:0 6px 14px -8px rgba(229,72,77,.8)}
+.selo-doador svg{width:18px;height:18px;padding:2px;border-radius:50%;background:#fff;color:var(--sangue)}
+.selo-doador.quer{background:var(--superficie);color:var(--sangue-esc);box-shadow:inset 0 0 0 1.5px var(--sangue)}
+.selo-doador.quer svg{background:var(--sangue);color:#fff}
+.selo-doador.quer svg path:last-child{stroke:var(--sangue)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .doa{--sangue-esc:#FF8A8F}}
+
+@media (max-width:900px){
+  .doa-hero{grid-template-columns:1fr;padding:var(--e-6)}
+  .doa-numeros{grid-template-columns:1fr 1fr}
+  .doa-cards{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .doa{padding-top:var(--e-6)}
+  .doa-acoes .btn{width:100%}
+  .doa-numeros div{padding:var(--e-4)}
+  .doa-grade{grid-template-columns:1fr 1fr;gap:var(--e-3)}
+  .doa-pet{padding:var(--e-4) var(--e-2)}
+  .doa-foto{width:72px;height:72px;font-size:28px}
+  .doa-pet h3{font-size:var(--t-base)}
+  .doa-perfil{font-size:var(--t-xs);padding:0 var(--e-3)}
+}

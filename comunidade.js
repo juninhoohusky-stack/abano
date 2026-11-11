@@ -801,6 +801,7 @@
           <h1>${esc(u.nome)}</h1>
           <p class="perfil-user">@${esc(u.usuario)}${local ? " · " + esc(local) : ""}</p>
           ${u.bio ? `<p class="perfil-bio">${esc(u.bio)}</p>` : ""}
+          ${(pets.data || []).some((p) => p.doador_sangue) ? `<a class="perfil-doador" href="doador-de-sangue.html">${GOTA}<span>${(pets.data || []).some((p) => p.doador_sangue === "doador") ? "Família doadora de sangue" : "Família que quer doar sangue"}</span></a>` : ""}
           <p class="perfil-num"><b id="num-seguidores">${num(seg1.count)}</b> ${seg1.count === 1 ? "seguidor" : "seguidores"} · <b>${num(seg2.count)}</b> seguindo</p>
         </div>
         ${ehEu ? '<a class="btn btn-sec" href="conta.html">Editar perfil</a>' : `<div class="perfil-botoes">${est.bloqueados.has(u.id) ? "" : `<button type="button" class="btn${sigo ? " btn-sec" : ""}" data-acao="seguir" data-id="${esc(u.id)}" aria-pressed="${sigo}">${sigo ? "Seguindo" : "Seguir"}</button>`}<button type="button" class="post-mais" data-acao="opcoes-perfil" data-id="${esc(u.id)}" data-usuario="${esc(u.usuario)}" aria-label="Mais opções: denunciar ou bloquear">${ICONE.mais}</button></div>`}
@@ -808,7 +809,7 @@
       ${!ehEu && est.bloqueados.has(u.id) ? `<p class="convite-clube">Você bloqueou este perfil: as publicações e comentários dessa pessoa não aparecem para você. <button type="button" class="link-botao" data-acao="desbloquear" data-id="${esc(u.id)}">Desbloquear</button></p>` : ""}
       <section class="perfil-bloco">
         <h2>Pets</h2>
-        ${(pets.data || []).length ? `<ul class="grade-pets">${pets.data.map((p) => `<li class="pet">${avatar(p, "pet-av")}<b>${esc(p.nome)}</b><small>${esc([ESPECIES[p.especie], p.raca, p.idade, SEXOS[p.sexo]].filter(Boolean).join(" · "))}</small>${p.personalidade ? `<span class="pet-tag">${esc(p.personalidade)}</span>` : ""}${p.descricao ? `<p>${esc(p.descricao)}</p>` : ""}</li>`).join("")}</ul>`
+        ${(pets.data || []).length ? `<ul class="grade-pets">${pets.data.map((p) => `<li class="pet${p.doador_sangue === "doador" ? " pet-doador" : ""}">${avatar(p, "pet-av")}<b>${esc(p.nome)}</b><small>${esc([ESPECIES[p.especie], p.raca, p.idade, SEXOS[p.sexo]].filter(Boolean).join(" · "))}</small>${seloDoador(p)}${p.personalidade ? `<span class="pet-tag">${esc(p.personalidade)}</span>` : ""}${p.descricao ? `<p>${esc(p.descricao)}</p>` : ""}</li>`).join("")}</ul>`
           : `<p class="sub">${ehEu ? 'Você ainda não cadastrou pets. <a href="conta.html#pets">Adicionar pet</a>' : "Nenhum pet cadastrado ainda."}</p>`}
       </section>
       ${(clubes.data || []).length ? `<section class="perfil-bloco"><h2>Clubes</h2><p class="chips-clubes">${clubes.data.filter((x) => x.clubes).map((x) => `<a href="${linkClube(x.clubes.id)}">${esc(x.clubes.nome)}</a>`).join("")}</p></section>` : ""}
@@ -816,6 +817,13 @@
     lista(document.getElementById("feed"), { tipo: "autor", autor: u.id }, vazio(ehEu ? "Você ainda não publicou" : "Nenhuma publicação ainda", ehEu ? "Volte ao feed e compartilhe algo com a comunidade." : "Quando " + esc(u.nome.split(" ")[0]) + " publicar, aparece aqui."));
     if (location.hash === "#publicacoes") setTimeout(() => document.getElementById("publicacoes").scrollIntoView(), 50);
   }
+
+  // Selo de doador de sangue no cartão do pet (incentiva a comunidade a doar)
+  const GOTA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8s6.6 7 6.6 11.7a6.6 6.6 0 0 1-13.2 0C5.4 9.8 12 2.8 12 2.8z" fill="currentColor"/><path d="M12 10.6v6.2M8.9 13.7h6.2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
+  const TIPO_SANGUE = { dea1_positivo: "DEA 1 positivo", dea1_negativo: "DEA 1 negativo", a: "Tipo A", b: "Tipo B", ab: "Tipo AB" };
+  const seloDoador = (p) => !p.doador_sangue ? "" :
+    `<span class="selo-doador${p.doador_sangue === "quer_ser" ? " quer" : ""}">${GOTA}${p.doador_sangue === "doador" ? "Doador de sangue" : "Quer ser doador"}</span>` +
+    (p.tipo_sanguineo ? `<small class="tipo-sangue">${TIPO_SANGUE[p.tipo_sanguineo] || ""}</small>` : "");
 
   const UFS = "AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
   async function telaTutores() {

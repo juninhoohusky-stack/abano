@@ -476,6 +476,37 @@
     var dialogo = $("dialogo-pet"), fpet = $("form-pet"), avisoPet = $("aviso-pet");
     var editando = null, fotoNova = null;
 
+    // Doação de sangue: só para cães e gatos
+    var GOTA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8s6.6 7 6.6 11.7a6.6 6.6 0 0 1-13.2 0C5.4 9.8 12 2.8 12 2.8z" fill="currentColor"/><path d="M12 10.6v6.2M8.9 13.7h6.2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
+    var TIPOS = {
+      cachorro: [["", "Não sei"], ["dea1_positivo", "DEA 1 positivo"], ["dea1_negativo", "DEA 1 negativo"]],
+      gato: [["", "Não sei"], ["a", "Tipo A"], ["b", "Tipo B"], ["ab", "Tipo AB"]]
+    };
+    var REQUISITOS = {
+      cachorro: "Em geral, cães doadores têm de 1 a 8 anos, pesam mais de 25 kg, são saudáveis e estão com vacinas e vermífugo em dia. Quem confirma se o seu cão pode doar é o veterinário.",
+      gato: "Em geral, gatos doadores têm de 1 a 8 anos, pesam mais de 4 kg, são saudáveis, vacinados e vivem dentro de casa. Quem confirma se o seu gato pode doar é o veterinário."
+    };
+    function doadorEscolhido() { var r = fpet.querySelector('input[name="doador"]:checked'); return r ? r.value : ""; }
+    function atualizarDoacao(tipoAtual) {
+      var esp = fpet.especie.value, pode = !!TIPOS[esp];
+      $("pet-doacao").hidden = !pode;
+      if (!pode) return;
+      var sel = fpet.tipo_sanguineo, antes = tipoAtual !== undefined ? tipoAtual : sel.value;
+      sel.innerHTML = TIPOS[esp].map(function (t) { return '<option value="' + t[0] + '">' + t[1] + "</option>"; }).join("");
+      sel.value = TIPOS[esp].some(function (t) { return t[0] === antes; }) ? antes : "";
+      $("pet-doacao-req").textContent = REQUISITOS[esp];
+      $("pet-doacao-extra").hidden = !doadorEscolhido();
+    }
+    fpet.especie.addEventListener("change", function () { atualizarDoacao(); });
+    fpet.querySelectorAll('input[name="doador"]').forEach(function (r) { r.addEventListener("change", function () { atualizarDoacao(); }); });
+    function seloDoador(p) {
+      if (!p.doador_sangue) return null;
+      var s = document.createElement("span");
+      s.className = "selo-doador" + (p.doador_sangue === "quer_ser" ? " quer" : "");
+      s.innerHTML = GOTA + (p.doador_sangue === "doador" ? "Doador de sangue" : "Quer ser doador");
+      return s;
+    }
+
     function carregarPets() {
       sb.from("pets").select("*").eq("dono", conta.id).order("criado_em").then(function (r) {
         if (r.error) { aviso($("aviso-pets"), traduzir(r.error)); return; }
@@ -499,6 +530,7 @@
         meta.textContent = [ESPECIES[p.especie], p.raca, p.idade, SEXOS[p.sexo]].filter(Boolean).join(" · ");
         txt.appendChild(h); txt.appendChild(meta);
         if (p.personalidade) { var pe = document.createElement("p"); pe.className = "pet-perso"; pe.textContent = p.personalidade; txt.appendChild(pe); }
+        var selo = seloDoador(p); if (selo) txt.appendChild(selo);
         var acoes = document.createElement("div");
         acoes.className = "pet-acoes";
         var ed = document.createElement("button"); ed.type = "button"; ed.className = "btn btn-sec"; ed.textContent = "Editar";
@@ -522,6 +554,9 @@
         fpet.idade.value = p.idade || ""; fpet.sexo.value = p.sexo || ""; fpet.personalidade.value = p.personalidade || "";
         fpet.descricao.value = p.descricao || "";
       }
+      var marcado = fpet.querySelector('input[name="doador"][value="' + ((p && p.doador_sangue) || "") + '"]');
+      if (marcado) marcado.checked = true;
+      atualizarDoacao((p && p.tipo_sanguineo) || "");
       avatar($("pet-previa"), p && p.foto_url, p ? p.nome : "+");
       dialogo.showModal();
       fpet.nome.focus();
@@ -546,6 +581,12 @@
         personalidade: fpet.personalidade.value.trim() || null,
         descricao: fpet.descricao.value.trim() || null
       };
+      if (TIPOS[dados.especie]) {
+        dados.doador_sangue = doadorEscolhido() || null;
+        dados.tipo_sanguineo = dados.doador_sangue ? fpet.tipo_sanguineo.value || null : null;
+      } else if (editando && editando.doador_sangue) {
+        dados.doador_sangue = null; dados.tipo_sanguineo = null;
+      }
       marcar(fpet.nome, !dados.nome); marcar(fpet.especie, !dados.especie);
       if (!dados.nome) { aviso(avisoPet, "Digite o nome do pet."); fpet.nome.focus(); return; }
       if (!dados.especie) { aviso(avisoPet, "Escolha a espécie."); fpet.especie.focus(); return; }
@@ -555,10 +596,17 @@
       var foto = fotoNova ? enviarFoto(conta.id, "pet", fotoNova) : Promise.resolve(undefined);
       foto.then(function (url) {
         if (url) dados.foto_url = url;
-        var q = editando
-          ? sb.from("pets").update(dados).eq("id", editando.id)
-          : sb.from("pets").insert(Object.assign({ dono: conta.id }, dados));
-        return q.then(function (r) {
+        function salvar(d) {
+          return editando ? sb.from("pets").update(d).eq("id", editando.id) : sb.from("pets").insert(Object.assign({ dono: conta.id }, d));
+        }
+        // Se o banco ainda não tem os campos de doação, salva o resto do pet mesmo assim
+        return salvar(dados).then(function (r) {
+          if (r.error && /doador_sangue|tipo_sanguineo/.test(r.error.message || "")) {
+            delete dados.doador_sangue; delete dados.tipo_sanguineo;
+            return salvar(dados);
+          }
+          return r;
+        }).then(function (r) {
           if (r.error) { if (url) apagarFoto(url); throw r.error; }
           if (url && antiga) apagarFoto(antiga);
           dialogo.close();
