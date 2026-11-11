@@ -7,9 +7,9 @@
 <title>Moderação | Abanô</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="site.css?v=20261110z">
+<link rel="stylesheet" href="site.css?v=20261111b">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261110u" defer></script>
+<script src="lista.js?v=20261111b" defer></script>
 <style>
   .painel{max-width:980px;margin:0 auto;padding:var(--e-6) var(--e-5) var(--e-12)}
   .topo-admin{display:flex;align-items:center;justify-content:space-between;gap:var(--e-4);max-width:980px;margin:0 auto;padding:var(--e-3) var(--e-5)}
@@ -48,6 +48,12 @@
   .eventos-lista{margin-top:var(--e-4);display:grid;gap:var(--e-2)}
   .eventos-lista li{display:flex;justify-content:space-between;gap:var(--e-2);align-items:center;padding:var(--e-3) var(--e-3);border-radius:var(--raio-sm);background:var(--superficie);box-shadow:var(--sombra)}
   [hidden]{display:none !important}
+  .sub-admin{font-size:var(--t-xl);margin:var(--e-8) 0 var(--e-3)}
+  .marca-linha{display:flex !important;align-items:center;gap:var(--e-2);grid-template-columns:none}
+  .marca-linha input{width:22px;height:22px;min-height:0;accent-color:var(--marca)}
+  .parc-mini{display:flex;gap:var(--e-3);align-items:flex-start}
+  .parc-mini img,.parc-mini .ini{flex:none;width:56px;height:56px;border-radius:var(--raio-sm);object-fit:cover;background:var(--degrade-forte);color:#fff;display:grid;place-items:center;font-weight:900;font-size:22px}
+  .tag.off{background:var(--areia);color:var(--suave)}
   @media (max-width:640px){.duas{grid-template-columns:1fr}}
 </style>
 </head>
@@ -85,6 +91,7 @@
       <button type="button" data-status="fechadas" aria-pressed="false">Resolvidas</button>
       <button type="button" data-status="eventos" aria-pressed="false">Eventos</button>
       <button type="button" data-status="orgs" aria-pressed="false">Organizações <span id="num-orgs"></span></button>
+      <button type="button" data-status="parceiros" aria-pressed="false">Parceiros</button>
     </div>
     <div class="lista" id="lista"></div>
 
@@ -95,6 +102,43 @@
         <button type="button" data-org-status="todas" aria-pressed="false">Todas</button>
       </div>
       <div class="lista" id="lista-orgs"></div>
+    </div>
+    <div id="tela-parceiros" hidden>
+      <form class="evento" id="form-parceiro" novalidate>
+        <h2 id="parc-titulo">Cadastrar parceiro em destaque</h2>
+        <p class="detalhe">Para negócios que pagaram o destaque. Ele aparece na página da categoria até a data escolhida e some sozinho depois.</p>
+        <input type="hidden" name="pid">
+        <div class="duas">
+          <label>Nome do negócio<input name="nome" maxlength="80" required></label>
+          <label>Categoria<select name="categoria" required>
+            <option value="veterinario">Veterinário</option><option value="banho_tosa">Banho e tosa</option><option value="petshop">Pet shop</option>
+            <option value="adestramento">Adestramento</option><option value="hospedagem">Hospedagem</option></select></label>
+        </div>
+        <div class="duas">
+          <label>Cidade<input name="cidade" maxlength="80" required></label>
+          <label>Estado<select name="estado" required><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
+        </div>
+        <label>Endereço (opcional)<input name="endereco" maxlength="160" placeholder="Rua, número, bairro"></label>
+        <div class="duas">
+          <label>WhatsApp com DDD<input name="whatsapp" maxlength="20" inputmode="tel" placeholder="21999999999"></label>
+          <label>Instagram (opcional)<input name="instagram" maxlength="60" placeholder="@negocio"></label>
+        </div>
+        <label>Site (opcional, https://)<input name="site" type="url" maxlength="200" placeholder="https://"></label>
+        <label>Descrição (até 500 letras)<textarea name="descricao" maxlength="500" rows="3"></textarea></label>
+        <div class="duas">
+          <label>Destaque até<input name="destaque_ate" type="date" required></label>
+          <label>Situação<select name="status"><option value="ativo">Ativo</option><option value="pausado">Pausado</option></select></label>
+        </div>
+        <label class="marca-linha"><input name="atende_24h" type="checkbox"> Atende 24 horas</label>
+        <label>Foto ou logo (opcional, até 2 MB)<input name="foto" type="file" accept="image/jpeg,image/png,image/webp"></label>
+        <label>Anotação interna (pagamento, contato; nunca aparece no site)<input name="observacao" maxlength="300"></label>
+        <p class="aviso" id="parc-aviso" hidden></p>
+        <div class="acoes"><button class="btn" type="submit" id="parc-salvar">Salvar parceiro</button><button class="btn btn-sec" type="button" id="parc-limpar">Limpar</button></div>
+      </form>
+      <h2 class="sub-admin">Parceiros cadastrados</h2>
+      <div class="lista" id="lista-parceiros"></div>
+      <h2 class="sub-admin">Avaliações dos tutores</h2>
+      <div class="lista" id="lista-avaliacoes"></div>
     </div>
     <div id="tela-eventos" hidden>
       <form class="evento" id="form-evento" novalidate>
@@ -172,9 +216,11 @@ document.addEventListener("DOMContentLoaded", function () {
   function carregar() {
     $("tela-eventos").hidden = status !== "eventos";
     $("tela-orgs").hidden = status !== "orgs";
-    $("lista").hidden = status === "eventos" || status === "orgs";
+    $("tela-parceiros").hidden = status !== "parceiros";
+    $("lista").hidden = status === "eventos" || status === "orgs" || status === "parceiros";
     if (status === "eventos") { carregarEventos(); return; }
     if (status === "orgs") { carregarOrgs(); return; }
+    if (status === "parceiros") { carregarParceiros(); return; }
     $("lista").innerHTML = '<p class="vazio">Carregando…</p>';
     sb.rpc("moderacao_lista", { p_status: status }).then(function (r) {
       if (r.error) {
@@ -252,6 +298,93 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+
+  // Parceiros em destaque (pagos) e avaliações dos tutores
+  var CATS = { veterinario: "Veterinário", banho_tosa: "Banho e tosa", petshop: "Pet shop", adestramento: "Adestramento", hospedagem: "Hospedagem" };
+  var parceiros = [], meuId = null;
+  function hoje() { return new Date().toISOString().slice(0, 10); }
+  function carregarParceiros() {
+    $("lista-parceiros").innerHTML = '<p class="vazio">Carregando…</p>';
+    sb.rpc("parceiros_admin").then(function (r) {
+      if (r.error) { $("lista-parceiros").innerHTML = '<p class="vazio">' + esc(/parceiros_admin/.test(r.error.message) ? "Rode o arquivo supabase/parceiros.sql no Supabase para ativar os parceiros." : r.error.message) + "</p>"; return; }
+      parceiros = r.data || [];
+      $("lista-parceiros").innerHTML = parceiros.length ? parceiros.map(function (p) {
+        var vencido = p.destaque_ate < hoje(), no_ar = p.status === "ativo" && !vencido;
+        var foto = p.foto_url && p.foto_url.indexOf(PASTA) === 0 ? '<img src="' + esc(p.foto_url) + '" alt="">' : '<span class="ini">' + esc(p.nome.charAt(0).toUpperCase()) + "</span>";
+        return '<article class="den"><div class="den-topo"><span class="tag' + (no_ar ? "" : " off") + '">' + (no_ar ? "No ar" : vencido ? "Vencido" : "Pausado") + '</span><span class="tag n">' + esc(CATS[p.categoria]) +
+          "</span><span>até " + new Date(p.destaque_ate + "T12:00").toLocaleDateString("pt-BR") + "</span></div>" +
+          '<div class="parc-mini">' + foto + '<div class="conteudo" style="flex:1;margin:0"><span class="autor">' + esc(p.nome) + " — " + esc(p.cidade) + "/" + esc(p.estado) + "</span>" +
+          (p.whatsapp ? "WhatsApp: " + esc(p.whatsapp) : "sem WhatsApp") + (p.observacao ? "\nAnotação: " + esc(p.observacao) : "") + "</div></div>" +
+          '<div class="acoes" style="margin-top:12px"><button class="btn btn-sec" data-parc-editar="' + p.id + '">Editar</button><button class="btn btn-perigo" data-parc-apagar="' + p.id + '">Apagar</button></div></article>';
+      }).join("") : '<p class="vazio">Nenhum parceiro ainda. Quando um negócio pagar o destaque, cadastre aqui em cima.</p>';
+    });
+    sb.rpc("avaliacoes_admin").then(function (r) {
+      var l = r.error ? [] : r.data || [];
+      $("lista-avaliacoes").innerHTML = l.length ? l.map(function (a) {
+        return '<article class="den"><div class="den-topo"><span class="tag' + (a.oculta ? " off" : "") + '">' + (a.oculta ? "Oculta" : "Visível") + "</span><span>" + "★".repeat(a.nota) + " · " + esc(a.parceiro) + " · " + esc(a.autor) + " · " + new Date(a.criado_em).toLocaleDateString("pt-BR") + "</span></div>" +
+          (a.comentario ? '<div class="conteudo">' + esc(a.comentario) + "</div>" : "") +
+          '<div class="acoes"><button class="btn btn-sec" data-aval="' + a.id + '" data-ocultar="' + (!a.oculta) + '">' + (a.oculta ? "Mostrar de novo" : "Ocultar") + "</button></div></article>";
+      }).join("") : '<p class="vazio">Nenhuma avaliação ainda.</p>';
+    });
+  }
+  function limparParceiro() {
+    var f = $("form-parceiro"); f.reset(); f.pid.value = "";
+    f.destaque_ate.value = new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10);
+    $("parc-titulo").textContent = "Cadastrar parceiro em destaque"; $("parc-aviso").hidden = true;
+  }
+  $("parc-limpar").addEventListener("click", limparParceiro);
+  $("lista-parceiros").addEventListener("click", function (e) {
+    var ed = e.target.closest("[data-parc-editar]"), ap = e.target.closest("[data-parc-apagar]");
+    if (ed) {
+      var p = parceiros.find(function (x) { return x.id === ed.dataset.parcEditar; }); if (!p) return;
+      var f = $("form-parceiro");
+      f.pid.value = p.id;
+      ["nome", "categoria", "cidade", "estado", "endereco", "whatsapp", "instagram", "site", "descricao", "destaque_ate", "status", "observacao"].forEach(function (k) { f[k].value = p[k] || (k === "status" ? "ativo" : ""); });
+      f.atende_24h.checked = !!p.atende_24h; f.foto.value = "";
+      $("parc-titulo").textContent = "Editar " + p.nome; $("parc-aviso").hidden = true;
+      f.scrollIntoView({ behavior: "smooth" });
+    }
+    if (ap && confirm("Apagar este parceiro e as avaliações dele? Isso não tem volta. Para tirar do ar só por um tempo, edite e escolha Pausado.")) {
+      sb.from("parceiros").delete().eq("id", ap.dataset.parcApagar).then(function (r) { if (r.error) alert(r.error.message); carregarParceiros(); });
+    }
+  });
+  $("lista-avaliacoes").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-aval]"); if (!b) return;
+    b.disabled = true;
+    sb.rpc("ocultar_avaliacao", { p_id: b.dataset.aval, p_ocultar: b.dataset.ocultar === "true" }).then(function (r) { if (r.error) alert(r.error.message); carregarParceiros(); });
+  });
+  $("form-parceiro").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var f = e.target, av = $("parc-aviso"), botao = $("parc-salvar");
+    function erro(m) { av.textContent = m; av.className = "aviso"; av.hidden = false; botao.disabled = false; }
+    if (f.nome.value.trim().length < 2 || f.cidade.value.trim().length < 2 || !f.destaque_ate.value) { erro("Preencha nome, cidade e a data do destaque."); return; }
+    var zap = f.whatsapp.value.replace(/\D/g, "");
+    if (zap && (zap.length < 10 || zap.length > 13)) { erro("WhatsApp com DDD: só números, de 10 a 13 dígitos."); return; }
+    var site = f.site.value.trim();
+    if (site && !/^https:\/\//i.test(site)) { erro("O site precisa começar com https://"); return; }
+    var dados = { nome: f.nome.value.trim(), categoria: f.categoria.value, cidade: f.cidade.value.trim(), estado: f.estado.value,
+      endereco: f.endereco.value.trim() || null, whatsapp: zap || null, instagram: f.instagram.value.trim() || null, site: site || null,
+      descricao: f.descricao.value.trim() || null, destaque_ate: f.destaque_ate.value, status: f.status.value,
+      atende_24h: f.atende_24h.checked, observacao: f.observacao.value.trim() || null };
+    botao.disabled = true;
+    var arq = f.foto.files[0], antes = Promise.resolve(null);
+    if (arq) {
+      if (arq.size > 2 * 1024 * 1024) { erro("A foto precisa ter até 2 MB."); return; }
+      var ext = arq.type === "image/png" ? "png" : arq.type === "image/webp" ? "webp" : "jpg";
+      var caminho = meuId + "/parceiro-" + Date.now() + "." + ext;
+      antes = sb.storage.from("fotos").upload(caminho, arq, { contentType: arq.type, cacheControl: "31536000", upsert: false })
+        .then(function (r) { if (r.error) throw r.error; return PASTA + caminho; });
+    }
+    antes.then(function (url) {
+      if (url) dados.foto_url = url;
+      return f.pid.value ? sb.from("parceiros").update(dados).eq("id", f.pid.value) : sb.from("parceiros").insert(dados);
+    }).then(function (r) {
+      if (r.error) throw r.error;
+      limparParceiro(); av.textContent = "Parceiro salvo."; av.className = "aviso ok"; av.hidden = false; botao.disabled = false; carregarParceiros();
+    }).catch(function (err) { erro(err.message || "Não deu para salvar."); });
+  });
+  limparParceiro();
+
   // Eventos
   function carregarEventos() {
     sb.from("clubes").select("id,nome").order("ordem").then(function (r) {
@@ -295,6 +428,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!s) { mostrar("tela-entrar"); return; }
     $("quem").hidden = false;
     $("quem-email").textContent = s.user.email;
+    meuId = s.user.id;
     carregar();
     sb.rpc("organizacoes_lista", { p_status: "pendente" }).then(function (r) { if (!r.error && r.data && r.data.length) $("num-orgs").textContent = "(" + r.data.length + ")"; });
   });

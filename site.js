@@ -287,7 +287,10 @@
     mapa: '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/>',
     alto: '<path d="M3.5 10.2v3.6a1 1 0 0 0 1 1H7l7 4.4V4.8L7 9.2H4.5a1 1 0 0 0-1 1z"/><path d="M17.6 9.3a3.9 3.9 0 0 1 0 5.4"/>',
     perfil: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>',
-    escudo: '<path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.2 7.5 9.5 4.3-1.3 7.5-4.9 7.5-9.5V6z"/>'
+    escudo: '<path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.2 7.5 9.5 4.3-1.3 7.5-4.9 7.5-9.5V6z"/>',
+    tesoura: '<circle cx="6" cy="6.5" r="2.5"/><circle cx="6" cy="17.5" r="2.5"/><path d="M8.2 7.8 20 17M8.2 16.2 20 7"/>',
+    sacola: '<path d="M5 8h14l-1.2 11.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
+    medalha: '<circle cx="12" cy="9" r="5.5"/><path d="M8.6 13.4 7 21l5-2.5 5 2.5-1.6-7.6"/>'
   };
 
   // url, título, descrição, ícone, situação ("" = no ar), palavras que alguém usaria
@@ -302,11 +305,17 @@
       "adoção adocao adotar adote filhote filhotes cachorro cão cao gato gatinho resgate resgatado ong ongs protetor protetora abrigo lar doação doar ganhar pet"],
     ["ong.html", "Painel da ONG ou protetor", "Cadastre sua ONG, anuncie pets para adoção e veja os pedidos.", "coracao", "",
       "ong ongs protetor protetora anunciar adoção cadastrar ong painel pedidos de adoção abrigo resgate"],
-    ["veterinarios.html", "Veterinários e serviços", "Clínicas 24h, banho e tosa e lugares pet friendly.", "vet", "Em breve",
-      "cachorro cão gato banho e tosa veterinário veterinario vet clínica clinica hospital emergência emergencia urgência 24h 24 horas plantão madrugada doente passou mal vacina consulta banho tosa pet shop petshop pet friendly serviço serviços"],
+    ["veterinarios.html", "Veterinários perto de você", "Clínicas, hospitais e veterinários 24 horas no mapa, e parceiros avaliados.", "vet", "",
+      "cachorro cão gato veterinário veterinario vet clínica clinica hospital emergência emergencia urgência 24h 24 horas plantão madrugada doente passou mal vacina consulta perto de mim mapa"],
+    ["banho-e-tosa.html", "Banho e tosa perto de você", "Banho, tosa higiênica, tosa da raça e leva e traz no mapa.", "tesoura", "",
+      "banho e tosa banho tosa tosador tosadora higiênica higienica leva e traz pet shop perto de mim cachorro gato pelo cheiroso"],
+    ["pet-shop.html", "Pet shops perto de você", "Ração, petiscos, acessórios e farmácia veterinária no mapa.", "sacola", "",
+      "pet shop petshop loja ração racao casa de ração petisco acessório brinquedo coleira caminha areia farmácia veterinária remédio comprar perto de mim"],
+    ["adestramento.html", "Adestradores perto de você", "Filhotes, comportamento e agility no mapa.", "medalha", "",
+      "adestrador adestradora adestramento adestrar treinar treinamento obediência comportamento late muito puxa a guia morde agressivo filhote agility perto de mim"],
     ["eventos.html", "Eventos pet", "Encontros, feiras e passeios perto de você.", "agenda", "Em breve",
       "evento eventos encontro encontros feira feiras passeio passeios cãominhada caominhada agenda programação fim de semana husky experience"],
-    ["hospedagem.html", "Hospedagem", "Hotéis, creches e anfitriões para viajar tranquilo.", "cama", "Em breve",
+    ["hospedagem.html", "Hospedagem pet perto de você", "Hotéis, creches e pet sitters no mapa.", "cama", "",
       "hospedagem hotel hotelzinho creche daycare anfitrião pet sitter babá baba cuidador viagem viajar férias ferias feriado deixar o pet"],
     ["perdidos.html", "Pet desaparecido", "Cartaz pronto e alerta para quem está perto.", "lupa", "Em breve",
       "cachorro cão gato pet perdido perdida desaparecido desaparecida sumiu fugiu fuga fugir achado achei encontrei cartaz alerta procurar procura"],
@@ -320,8 +329,8 @@
       "novidades novidade notícias noticias atualização lançamento lançamentos o que mudou"],
     ["sobre.html", "Nossa história", "Como o Abanô nasceu, numa casa com quatro huskies e dois gatos.", "coracao", "",
       "história historia sobre quem somos juninho família familia fundador abanô abano"],
-    ["anuncie.html", "Divulgue no Abanô", "Para quem organiza eventos ou tem um negócio pet.", "alto", "",
-      "anunciar anuncie divulgar divulgue propaganda publicidade negócio negocio empresa loja pet shop parceiro parceria marca evento"],
+    ["anuncie.html", "Divulgue no Abanô", "Seja parceiro em destaque ou divulgue o seu evento.", "alto", "",
+      "parceiro parceria destaque anunciar anuncie divulgar divulgue propaganda publicidade negócio negocio empresa loja pet shop parceiro parceria marca evento"],
     ["cadastro.html?volta=%2Fcomunidade%2F", "Criar conta", "Grátis: libera a Comunidade e o perfil dos seus pets.", "perfil", "",
       "criar conta cadastro cadastrar cadastre inscrever registrar participar entrar na comunidade grátis gratis"],
     ["entrar.html", "Entrar", "Acesse a sua conta com e-mail ou Google.", "perfil", "",

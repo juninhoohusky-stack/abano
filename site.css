@@ -531,3 +531,6 @@ main:focus{outline:none}
 /* Barra de baixo: os 6 itens sempre dividem a largura da tela, sem empurrar a página */
 @media (max-width:900px){.abas .aba,.abas .grupo-menu{min-width:0;flex:1 1 0}.abas .grupo-menu .aba{width:100%}}
 @media (max-width:900px){.topo-in{gap:var(--e-2)}}
+
+/* Texto só para leitores de tela */
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}

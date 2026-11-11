@@ -19,6 +19,12 @@ const VERSAO_POLITICA = "2026-11-09";
    Vazio = sem verificação. Só ligue o CAPTCHA no Supabase DEPOIS de preencher. */
 const TURNSTILE_CHAVE_SITE = "0x4AAAAAAF6rkLspJ1IFTLYf";
 
+/* Mapa do Google nas páginas de serviços (veterinários, banho e tosa, pet shop,
+   adestramento, hospedagem). Cole aqui a chave da "Maps Embed API" criada no
+   Google Cloud, restrita ao site abano.com.br. Ela é pública por natureza e
+   gratuita (sem limite). Vazio = usa o mapa público do Google, sem chave. */
+const GOOGLE_MAPS_CHAVE = "";
+
 /* ======================= fim da área ===================== */
 
 /* ---------- Formulário "Divulgue no Abanô" (anunciantes) ---------- */
@@ -28,6 +34,10 @@ const TURNSTILE_CHAVE_SITE = "0x4AAAAAAF6rkLspJ1IFTLYf";
   var botao = form.querySelector("button[type=submit]");
   var aviso = document.getElementById("anuncie-aviso");
   var textoBotao = botao.textContent;
+
+  // Vindo de "Quero ser parceiro" numa página de serviço: já escolhe o tipo de negócio
+  var tipoPedido = new URLSearchParams(location.search).get("tipo");
+  if (tipoPedido && form.tipo && form.tipo.querySelector('option[value="' + tipoPedido.replace(/[^a-z_]/g, "") + '"]')) form.tipo.value = tipoPedido;
 
   function mostrarErro(msg) {
     aviso.textContent = msg;
