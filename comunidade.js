@@ -12,7 +12,7 @@
   const POR_PAGINA = 15;
   const SEL = "*, perfil:perfis!posts_autor_fkey(id,usuario,nome,foto_url), clube_info:clubes!posts_clube_fkey(id,nome)";
   const PASTA_FOTOS = SUPABASE_URL + "/storage/v1/object/public/fotos/";
-  const est = { sessao: null, eu: null, curtidas: new Set(), salvos: new Set(), votos: new Map(), clubes: new Set(), seguindo: new Set(), bloqueados: new Set(), posts: new Map(), previas: new Map() };
+  const est = { admin: false, fixados: new Map(), sessao: null, eu: null, curtidas: new Set(), salvos: new Set(), votos: new Map(), clubes: new Set(), seguindo: new Set(), bloqueados: new Set(), posts: new Map(), previas: new Map() };
 
   // ---------- Utilidades ----------
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -145,6 +145,8 @@
     (bl.data || []).forEach((x) => est.bloqueados.add(x.bloqueado));
     (cl.data || []).forEach((x) => est.clubes.add(x.clube));
     (sg.data || []).forEach((x) => est.seguindo.add(x.seguido));
+    const adm = await sb.rpc("eh_admin");
+    est.admin = !adm.error && adm.data === true;
   }
   async function carregarMeusEstados(posts) {
     if (!est.eu || !posts.length) return;
@@ -215,7 +217,7 @@
       ${pergunta ? '<p class="nota-vet">Dúvida de saúde? A comunidade ajuda com experiências, mas só um veterinário pode examinar e tratar o seu pet. Em emergências, procure atendimento na hora.</p>' : ""}
       <footer class="post-acoes">
         <button type="button" class="acao${curtido ? " ativa" : ""}" data-acao="curtir" data-id="${esc(p.id)}" aria-pressed="${curtido}">${ICONE.curtir}<span>${p.total_curtidas ? num(p.total_curtidas) : ""}</span><span class="sr">Curtir</span></button>
-        <a class="acao" href="${linkPost(p.id)}#comentarios">${ICONE.comentar}<span>${p.total_comentarios ? num(p.total_comentarios) : ""}</span><span class="sr">${pergunta ? "Responder" : "Comentar"}</span></a>
+        <a class="acao" href="${linkPost(p.id)}#comentarios" data-abrir-coment="${esc(p.id)}">${ICONE.comentar}<span>${p.total_comentarios ? num(p.total_comentarios) : ""}</span><span class="sr">${pergunta ? "Responder" : "Comentar"}</span></a>
         <button type="button" class="acao${salvo ? " ativa" : ""}" data-acao="salvar" data-id="${esc(p.id)}" aria-pressed="${salvo}">${ICONE.salvar}<span class="sr">Salvar</span></button>
         <button type="button" class="acao" data-acao="compartilhar" data-id="${esc(p.id)}">${ICONE.compartilhar}<span class="sr">Compartilhar</span></button>
       </footer>
@@ -227,7 +229,7 @@
     const n = p.total_comentarios || 0, pergunta = p.tipo === "pergunta";
     const previa = (est.previas.get(p.id) || []).filter((c) => !est.bloqueados.has(c.autor));
     const verTodos = n > previa.length
-      ? `<a class="ver-coment" href="${linkPost(p.id)}#comentarios">${n === 1 ? (pergunta ? "Ver 1 resposta" : "Ver 1 comentário") : `Ver ${n > 2 ? "todos os " : "os "}${num(n)} ${pergunta ? "respostas" : "comentários"}`}</a>` : "";
+      ? `<a class="ver-coment" href="${linkPost(p.id)}#comentarios" data-abrir-coment="${esc(p.id)}">${n === 1 ? (pergunta ? "Ver 1 resposta" : "Ver 1 comentário") : `Ver ${n > 2 ? "todos os " : "os "}${num(n)} ${pergunta ? "respostas" : "comentários"}`}</a>` : "";
     const itens = previa.map((c) => `<li><a href="${linkPerfil((c.perfil || {}).usuario)}"><b>${esc((c.perfil || {}).nome || "Tutor")}</b></a> ${esc(c.texto)}</li>`).join("");
     const campo = est.eu && est.eu.aceitou
       ? `<form class="coment-rapido" data-post="${esc(p.id)}">${avatar(est.eu)}<label class="sr" for="cr-${esc(p.id)}">${pergunta ? "Sua resposta" : "Seu comentário"}</label><input id="cr-${esc(p.id)}" maxlength="2000" autocomplete="off" enterkeyhint="send" placeholder="${pergunta ? "Responda com a sua experiência…" : "Adicione um comentário…"}"><button type="submit" disabled>Publicar</button></form>`
@@ -262,7 +264,7 @@
   // ---------- Lista paginada (rolagem infinita com botão de reserva) ----------
   async function buscar(fonte, cursor) {
     let r;
-    if (fonte.tipo === "para-voce") {
+    if (fonte.tipo === "em-alta") {
       r = await sb.rpc("feed_para_voce", { p_offset: cursor || 0, p_limite: POR_PAGINA }).select(SEL);
       return { erro: r.error, posts: r.data || [], proximo: (cursor || 0) + POR_PAGINA };
     }
@@ -283,8 +285,9 @@
       if (cursor) s = s.lt("criado_em", cursor);
       r = await s;
     }
-    const posts = r.data || [];
-    return { erro: r.error, posts: posts, proximo: posts.length ? posts[posts.length - 1].criado_em : null };
+    const todos = r.data || [];
+    const posts = fonte.excluir ? todos.filter((x) => x.id !== fonte.excluir) : todos;
+    return { erro: r.error, posts: posts, proximo: todos.length ? todos[todos.length - 1].criado_em : null, fim: todos.length < POR_PAGINA };
   }
   function lista(container, fonte, vazio) {
     container.innerHTML = '<div class="posts" aria-live="polite"></div><p class="carregando">Carregando publicações…</p><button type="button" class="btn btn-sec mais-posts" hidden>Carregar mais</button>';
@@ -301,7 +304,7 @@
       previasComentarios(r.posts);
       total += r.posts.length;
       cursor = r.proximo;
-      acabou = r.fim || r.posts.length < POR_PAGINA;
+      acabou = r.fim != null ? r.fim : r.posts.length < POR_PAGINA;
       if (!total) { caixa.innerHTML = vazio; return; }
       if (acabou) { msg.hidden = false; msg.textContent = "Você chegou ao fim."; }
       else { botao.hidden = false; botao.textContent = "Carregar mais"; }
@@ -553,18 +556,26 @@
     });
     d.showModal();
   }
+  async function fixar(p, fixar) {
+    const r = await sb.rpc("fixar_no_clube", { p_clube: p.clube, p_post: fixar ? p.id : null });
+    if (r.error) { toast(/fixar_no_clube/.test(r.error.message || "") ? "Falta ativar a publicação fixada no banco de dados." : erroMsg(r.error)); return; }
+    est.fixados.set(p.clube, fixar ? p.id : null);
+    toast(fixar ? "Publicação fixada no topo do clube." : "Publicação desafixada.");
+    if (q.get("c") === p.clube) telaClube(p.clube);
+  }
   acoes.opcoes = (id) => {
     const p = est.posts.get(id); if (!p) return;
     const u = (p.perfil || {}).usuario;
+    const adm = est.admin && p.clube ? [est.fixados.get(p.clube) === p.id ? ["Desafixar do clube", () => fixar(p, false)] : ["Fixar no topo do clube (regras)", () => fixar(p, true)]] : [];
     if (est.eu && p.autor === est.eu.id) {
-      abrirOpcoes([["Copiar link", () => acoes.compartilhar(id)], ["Apagar publicação", () => acoes.apagar(id), true]]);
+      abrirOpcoes(adm.concat([["Copiar link", () => acoes.compartilhar(id)], ["Apagar publicação", () => acoes.apagar(id), true]]));
       return;
     }
-    abrirOpcoes([
+    abrirOpcoes(adm.concat([
       ["Copiar link", () => acoes.compartilhar(id)],
       ["Denunciar publicação", () => abrirDenuncia({ tipo: "post", id: id }), true],
       ["Bloquear @" + u, () => bloquear(p.autor, u), true]
-    ]);
+    ]));
   };
   acoes["opcoes-perfil"] = (id, _o, el) => {
     const u = el.dataset.usuario;
@@ -733,11 +744,12 @@
   });
 
   // ---------- Telas ----------
-  const ABAS = [["para-voce", "Para você"], ["seguindo", "Seguindo"], ["perguntas", "Perguntas"], ["recentes", "Mais recentes"]];
+  const ABAS = [["recentes", "Mais recentes"], ["seguindo", "Seguindo"], ["perguntas", "Perguntas"], ["em-alta", "Em alta"]];
 
   function telaFeed() {
-    let f = q.get("f") || "para-voce";
-    if (!ABAS.some((a) => a[0] === f)) f = "para-voce";
+    let f = q.get("f") || "recentes";
+    if (f === "para-voce") f = "em-alta";
+    if (!ABAS.some((a) => a[0] === f)) f = "recentes";
     definirMeta(f === "perguntas" ? "Perguntas e respostas | Comunidade Abanô" : "Comunidade Abanô | Tutores de cães, gatos e outros pets",
       "Um espaço para compartilhar experiências, conhecer outros tutores e descobrir o universo pet.", "comunidade/" + (f === "perguntas" ? "?f=perguntas" : ""));
     centro.innerHTML = `
@@ -747,7 +759,7 @@
       </section>
       ${caixaPublicar()}
       <nav class="abas-feed" aria-label="Filtros do feed">
-        ${ABAS.map(([v, t]) => `<a href="comunidade/${v === "para-voce" ? "" : "?f=" + v}"${v === f ? ' aria-current="page"' : ""}>${t}</a>`).join("")}
+        ${ABAS.map(([v, t]) => `<a href="comunidade/${v === "recentes" ? "" : "?f=" + v}"${v === f ? ' aria-current="page"' : ""}>${t}</a>`).join("")}
       </nav>
       <div id="feed"></div>`;
     const feed = document.getElementById("feed");
@@ -757,7 +769,7 @@
       return;
     }
     const vazios = {
-      "para-voce": vazio("A comunidade está começando", "Ainda não há publicações. Que tal ser o primeiro a compartilhar uma foto ou uma história do seu pet?"),
+      "em-alta": vazio("A comunidade está começando", "Ainda não há publicações. Que tal ser o primeiro a compartilhar uma foto ou uma história do seu pet?"),
       "recentes": vazio("A comunidade está começando", "Ainda não há publicações. Que tal ser o primeiro?"),
       "perguntas": vazio("Nenhuma pergunta ainda", "Tem uma dúvida sobre rotina, alimentação ou comportamento? Pergunte para a comunidade."),
       "seguindo": vazio("Nada por aqui ainda", "Você ainda não segue ninguém, ou quem você segue não publicou. Visite perfis e toque em Seguir.")
@@ -778,50 +790,99 @@
     await carregarMeusEstados([p]);
     const resumo = (p.texto || (p.tipo === "foto" ? "Foto" : "Vídeo") + " de " + p.perfil.nome).replace(/\s+/g, " ");
     definirMeta(resumo.slice(0, 60) + (resumo.length > 60 ? "…" : "") + " | Comunidade Abanô", resumo.slice(0, 155), linkPost(p.id));
-    const pergunta = p.tipo === "pergunta";
     centro.innerHTML = `
       ${voltar("comunidade/")}
       <div class="ver-post">${cartao(p, true)}</div>
-      <section class="comentarios" id="comentarios" aria-label="${pergunta ? "Respostas" : "Comentários"}">
-        <h2>${pergunta ? "Respostas" : "Comentários"}${p.total_comentarios ? ` <small id="num-coment">${num(p.total_comentarios)}</small>` : ""}</h2>
-        <ol class="lista-comentarios" id="lista-comentarios"><li class="carregando">Carregando…</li></ol>
-        ${est.eu && est.eu.aceitou
-          ? `<form class="comentar" id="form-comentar" novalidate>${avatar(est.eu)}<label class="sr" for="comentario-texto">${pergunta ? "Sua resposta" : "Seu comentário"}</label><textarea id="comentario-texto" maxlength="2000" rows="2" placeholder="${pergunta ? "Escreva uma resposta com base na sua experiência…" : "Escreva um comentário…"}"></textarea><button type="submit" class="btn">${pergunta ? "Responder" : "Comentar"}</button><p class="aviso-conta" id="comentar-aviso" role="alert" hidden></p></form>`
-          : `<button type="button" class="compor-fake" id="comentar-login">${avatar(null)}<span>${pergunta ? "Entre para responder" : "Entre para comentar"}</span></button>`}
-      </section>`;
+      ${secaoComentarios(p)}`;
     // Dados estruturados para buscadores
     const ld = document.createElement("script");
     ld.type = "application/ld+json";
     ld.textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "DiscussionForumPosting", "headline": resumo.slice(0, 110), "text": p.texto || "", "datePublished": p.criado_em, "url": "https://abano.com.br/" + linkPost(p.id), "author": { "@type": "Person", "name": p.perfil.nome, "url": "https://abano.com.br/" + linkPerfil(p.perfil.usuario) }, "interactionStatistic": [{ "@type": "InteractionCounter", "interactionType": "https://schema.org/LikeAction", "userInteractionCount": p.total_curtidas }, { "@type": "InteractionCounter", "interactionType": "https://schema.org/CommentAction", "userInteractionCount": p.total_comentarios }] });
     document.head.appendChild(ld);
 
+    ligarComentarios(p);
+    if (location.hash === "#comentarios") setTimeout(() => document.getElementById("comentarios").scrollIntoView(), 50);
+  }
+  // Seção de comentários (lista + campo de comentar), usada na página do post e na janela do feed
+  function secaoComentarios(p) {
+    const pergunta = p.tipo === "pergunta";
+    return `<section class="comentarios" id="comentarios" aria-label="${pergunta ? "Respostas" : "Comentários"}">
+        <h2>${pergunta ? "Respostas" : "Comentários"} <small id="num-coment">${p.total_comentarios ? num(p.total_comentarios) : ""}</small></h2>
+        <ol class="lista-comentarios" id="lista-comentarios"><li class="carregando">Carregando…</li></ol>
+        ${est.eu && est.eu.aceitou
+          ? `<form class="comentar" id="form-comentar" novalidate>${avatar(est.eu)}<label class="sr" for="comentario-texto">${pergunta ? "Sua resposta" : "Seu comentário"}</label><textarea id="comentario-texto" maxlength="2000" rows="1" placeholder="${pergunta ? "Escreva uma resposta…" : "Escreva um comentário…"}"></textarea><button type="submit" class="btn">${pergunta ? "Responder" : "Publicar"}</button><p class="aviso-conta" id="comentar-aviso" role="alert" hidden></p></form>`
+          : `<button type="button" class="compor-fake" id="comentar-login">${avatar(null)}<span>${pergunta ? "Entre para responder" : "Entre para comentar"}</span></button>`}
+      </section>`;
+  }
+  function ligarComentarios(p) {
     const lb = document.getElementById("comentar-login");
     if (lb) lb.addEventListener("click", () => exigir({ tipo: "comentar", id: p.id }));
     carregarComentarios(p);
     const f = document.getElementById("form-comentar");
-    if (f) {
-      const ta = f.querySelector("textarea"), av = document.getElementById("comentar-aviso");
-      f.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const texto = ta.value.trim();
-        av.hidden = true;
-        if (!texto) { ta.focus(); return; }
-        if (pareceVenda(texto)) { av.textContent = "Venda de animais não é permitida na Comunidade Abanô."; av.hidden = false; return; }
-        const b = f.querySelector("button"); b.disabled = true;
-        const r2 = await sb.from("comentarios").insert({ post: p.id, autor: est.eu.id, texto: texto }).select("*, perfil:perfis!comentarios_autor_fkey(id,usuario,nome,foto_url)").single();
-        b.disabled = false;
-        if (r2.error) { av.textContent = erroMsg(r2.error); av.hidden = false; return; }
-        ta.value = "";
-        p.total_comentarios++;
-        const ol = document.getElementById("lista-comentarios");
-        if (ol.querySelector(".vazio-c")) ol.innerHTML = "";
-        ol.insertAdjacentHTML("beforeend", conversa(r2.data, new Map(), p));
-        ol.lastElementChild.scrollIntoView({ block: "nearest" });
-        atualizarNumComentarios(p);
-      });
-    }
-    if (location.hash === "#comentarios") setTimeout(() => document.getElementById("comentarios").scrollIntoView(), 50);
+    if (!f) return;
+    const ta = f.querySelector("textarea"), av = document.getElementById("comentar-aviso");
+    ta.addEventListener("input", () => { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 160) + "px"; });
+    ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && window.matchMedia("(hover: hover)").matches) { e.preventDefault(); f.requestSubmit(); } });
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const texto = ta.value.trim();
+      av.hidden = true;
+      if (!texto) { ta.focus(); return; }
+      if (pareceVenda(texto)) { av.textContent = "Venda de animais não é permitida na Comunidade Abanô."; av.hidden = false; return; }
+      const b = f.querySelector("button"); b.disabled = true;
+      const r2 = await sb.from("comentarios").insert({ post: p.id, autor: est.eu.id, texto: texto }).select("*, perfil:perfis!comentarios_autor_fkey(id,usuario,nome,foto_url)").single();
+      b.disabled = false;
+      if (r2.error) { av.textContent = erroMsg(r2.error); av.hidden = false; return; }
+      ta.value = ""; ta.style.height = "";
+      p.total_comentarios = (p.total_comentarios || 0) + 1;
+      const ol = document.getElementById("lista-comentarios");
+      if (ol.querySelector(".vazio-c")) ol.innerHTML = "";
+      ol.insertAdjacentHTML("beforeend", conversa(r2.data, new Map(), p));
+      ol.lastElementChild.scrollIntoView({ block: "nearest" });
+      atualizarNumComentarios(p);
+    });
   }
+
+  // ---------- Janela de comentários por cima do feed (sem trocar de página) ----------
+  const janelaComentarios = (() => {
+    let d = null, postAtual = null, comHistorico = false;
+    function fechar(peloVoltar) {
+      if (!d || !d.open) return;
+      d.close(); d.remove(); d = null;
+      document.documentElement.classList.remove("sem-rolar");
+      if (comHistorico && !peloVoltar) { comHistorico = false; history.back(); }
+      comHistorico = false;
+      // Atualiza o cartão no feed com o novo número e os comentários mais recentes
+      if (postAtual) { const p = postAtual; postAtual = null; est.previas.delete(p.id); atualizarCartao(p.id); previasComentarios([p]); }
+    }
+    window.addEventListener("popstate", () => { if (d && d.open) fechar(true); });
+    function abrir(id) {
+      const p = est.posts.get(id); if (!p) return false;
+      postAtual = p;
+      d = document.createElement("dialog");
+      d.className = "janela-coment";
+      d.setAttribute("aria-label", p.tipo === "pergunta" ? "Respostas" : "Comentários");
+      d.innerHTML = `<div class="jc-caixa"><div class="jc-topo"><span class="jc-pega" aria-hidden="true"></span><a class="jc-abrir" href="${linkPost(p.id)}">Ver publicação</a><button type="button" class="jc-fechar" aria-label="Fechar">&times;</button></div><div class="jc-corpo">${secaoComentarios(p)}</div></div>`;
+      document.body.appendChild(d);
+      d.querySelector(".jc-fechar").addEventListener("click", () => fechar());
+      d.addEventListener("cancel", (e) => { e.preventDefault(); fechar(); });
+      d.addEventListener("click", (e) => { if (e.target === d) fechar(); });
+      d.showModal();
+      document.documentElement.classList.add("sem-rolar");
+      try { history.pushState({ comentarios: 1 }, ""); comHistorico = true; } catch (e) { comHistorico = false; }
+      ligarComentarios(p);
+      const ta = d.querySelector("#comentario-texto");
+      if (ta && window.matchMedia("(hover: hover)").matches) ta.focus();
+      return true;
+    }
+    return { abrir };
+  })();
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("[data-abrir-coment]");
+    if (!a || e.metaKey || e.ctrlKey || a.closest(".ver-post")) return;
+    if (janelaComentarios.abrir(a.dataset.abrirComent)) e.preventDefault();
+  });
+
   // ---------- Comentários: curtir, responder e conversas (respostas num nível só) ----------
   const CORACAO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-8-4.9-8-10.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.9c0 5.7-8 10.6-8 10.6z"/></svg>';
   const comCurtidos = new Set();
@@ -959,7 +1020,7 @@
   function cartaoClube(c) {
     const dentro = est.clubes.has(c.id);
     return `<article class="clube" data-clube="${esc(c.id)}">
-      <a href="${linkClube(c.id)}" class="clube-link"><span class="clube-ico t-${esc(c.tipo)}" aria-hidden="true">${esc(c.nome.charAt(0))}</span><span><b>${esc(c.nome)}</b><small class="membros">${textoMembros(c.total_membros)}</small></span></a>
+      <a href="${linkClube(c.id)}" class="clube-link"><span class="clube-ico t-${esc(c.tipo)}" aria-hidden="true">${fotoClube(c) ? `<img src="${esc(c.foto_url)}" alt="">` : esc(c.nome.charAt(0))}</span><span><b>${esc(c.nome)}</b><small class="membros">${textoMembros(c.total_membros)}</small></span></a>
       <p>${esc(c.descricao)}</p>
       <button type="button" class="btn${dentro ? " btn-sec" : ""}" data-acao="participar" data-id="${esc(c.id)}" aria-pressed="${dentro}">${dentro ? "Participando" : "Participar"}</button>
     </article>`;
@@ -976,6 +1037,7 @@
     g.innerHTML = lista.length ? lista.map(cartaoClube).join("") : vazio("Você ainda não participa de nenhum clube", "Escolha um clube da sua raça ou da sua cidade.", '<a class="btn" href="comunidade/?v=clubes">Explorar clubes</a>');
   }
 
+  const fotoClube = (c) => c.foto_url && String(c.foto_url).indexOf(PASTA_FOTOS) === 0 ? c.foto_url : null;
   async function telaClube(id) {
     centro.innerHTML = '<p class="carregando">Carregando…</p>';
     const r = await sb.from("clubes").select("*").eq("id", id).maybeSingle();
@@ -983,25 +1045,78 @@
     const c = r.data;
     const aba = q.get("aba") === "perguntas" ? "perguntas" : "posts";
     definirMeta(c.nome + " | Clubes da Comunidade Abanô", c.descricao, linkClube(c.id));
-    const dentro = est.clubes.has(c.id);
+    const dentro = est.clubes.has(c.id), logado = !!est.sessao, foto = fotoClube(c);
+    est.fixados.set(c.id, c.post_fixado || null);
     centro.innerHTML = `
       ${voltar("comunidade/?v=clubes")}
-      <section class="clube-capa t-${esc(c.tipo)}" data-clube="${esc(c.id)}">
-        <h1>${esc(c.nome)}</h1>
-        <p>${esc(c.descricao)}</p>
+      <section class="clube-capa t-${esc(c.tipo)}${foto ? " com-foto" : ""}" data-clube="${esc(c.id)}">
+        <div class="clube-capa-topo">
+          <span class="clube-foto">${foto ? `<img src="${esc(foto)}" alt="">` : esc(c.nome.charAt(0))}</span>
+          <div><h1>${esc(c.nome)}</h1><p>${esc(c.descricao)}</p></div>
+        </div>
         <div class="clube-capa-rodape"><span class="membros">${textoMembros(c.total_membros)}</span>
         <button type="button" class="btn${dentro ? " btn-sec" : ""}" data-acao="participar" data-id="${esc(c.id)}" aria-pressed="${dentro}">${dentro ? "Participando" : "Participar"}</button></div>
+        ${est.admin ? `<div class="clube-admin"><label class="clube-admin-btn">Trocar foto do clube<input type="file" id="foto-clube" accept="image/jpeg,image/png,image/webp,image/heic"></label>${foto ? '<button type="button" class="clube-admin-btn" id="tirar-foto-clube">Tirar foto</button>' : ""}<span>Só a administração vê estes botões.</span></div>` : ""}
       </section>
-      ${dentro ? caixaPublicar({ clube: c.id }) : `<p class="convite-clube">Participe do clube para publicar e perguntar aqui. Ler é livre para todos.</p>`}
-      <nav class="abas-feed" aria-label="Seções do clube">
+      <div id="clube-fixado"></div>
+      ${!logado ? "" : dentro ? caixaPublicar({ clube: c.id }) : `<p class="convite-clube">Participe do clube para publicar e perguntar aqui.</p>`}
+      ${logado ? `<nav class="abas-feed" aria-label="Seções do clube">
         <a href="${linkClube(c.id)}"${aba === "posts" ? ' aria-current="page"' : ""}>Publicações</a>
         <a href="${linkClube(c.id)}&aba=perguntas"${aba === "perguntas" ? ' aria-current="page"' : ""}>Perguntas e respostas</a>
-      </nav>
+      </nav>` : ""}
       <div id="feed"></div>`;
-    const l = lista(document.getElementById("feed"), { tipo: "clube", clube: c.id, soPerguntas: aba === "perguntas" },
+    // Publicação fixada pela administração (regras do clube): aparece para todos, logo abaixo da capa
+    if (c.post_fixado) {
+      const fx = await sb.from("posts").select(SEL).eq("id", c.post_fixado).maybeSingle();
+      if (fx.data && !fx.data.removido) {
+        await carregarMeusEstados([fx.data]);
+        document.getElementById("clube-fixado").innerHTML = `<p class="selo-fixado"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l-1 6 3 3v2h-4v6l-1 1-1-1v-6H7v-2l3-3z"/></svg>Fixado pela administração · regras do clube</p>${cartao(fx.data)}`;
+        previasComentarios([fx.data]);
+      }
+    }
+    ligarAdminClube(c);
+    if (!logado) {
+      // Visitante: vê a apresentação do clube; as publicações ficam para quem entra
+      document.getElementById("feed").innerHTML = `<div class="clube-trancado">
+        <span class="vazio-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></svg></span>
+        <h2>As publicações do clube são para quem faz parte da Comunidade</h2>
+        <p>Entre ou crie sua conta grátis para ver as fotos, as dúvidas e as conversas de ${esc(c.nome)}.</p>
+        <div class="clube-trancado-botoes"><a class="btn" href="entrar.html?volta=${encodeURIComponent(location.pathname + location.search)}">Entrar</a><a class="btn btn-sec" href="cadastro.html?volta=${encodeURIComponent(location.pathname + location.search)}">Criar conta grátis</a></div>
+      </div>`;
+      return;
+    }
+    const l = lista(document.getElementById("feed"), { tipo: "clube", clube: c.id, soPerguntas: aba === "perguntas", excluir: c.post_fixado || null },
       vazio(aba === "perguntas" ? "Nenhuma pergunta no clube ainda" : "O clube está começando", aba === "perguntas" ? "Faça a primeira pergunta para os tutores do clube." : "Ainda não há publicações aqui. Participe e seja o primeiro a publicar!"));
     ligarPublicar((p) => { if (p.clube === c.id && (aba === "posts" || p.tipo === "pergunta")) l.inserirNoTopo(p); });
   }
+  // Administração: trocar a foto do clube
+  function ligarAdminClube(c) {
+    const inp = document.getElementById("foto-clube");
+    if (inp) inp.addEventListener("change", async () => {
+      const arq = inp.files[0]; inp.value = "";
+      if (!arq) return;
+      try {
+        const cortada = await C.enquadrar(arq, { redondo: true });
+        if (!cortada) return;
+        toast("Enviando a foto do clube…");
+        const url = await C.enviarFoto(est.eu.id, "clube", cortada);
+        const r = await sb.rpc("foto_do_clube", { p_clube: c.id, p_foto: url });
+        if (r.error) { C.apagarFoto(url); toast(/foto_do_clube/.test(r.error.message || "") ? "Falta ativar a foto dos clubes no banco de dados." : erroMsg(r.error)); return; }
+        if (fotoClube(c)) C.apagarFoto(c.foto_url);
+        toast("Foto do clube atualizada.");
+        telaClube(c.id);
+      } catch (e) { toast(e.message || "Não deu para trocar a foto."); }
+    });
+    const tirar = document.getElementById("tirar-foto-clube");
+    if (tirar) tirar.addEventListener("click", async () => {
+      if (!confirm("Tirar a foto do clube?")) return;
+      const r = await sb.rpc("foto_do_clube", { p_clube: c.id, p_foto: null });
+      if (r.error) { toast(erroMsg(r.error)); return; }
+      C.apagarFoto(c.foto_url);
+      telaClube(c.id);
+    });
+  }
+
 
   const ESPECIES = { cachorro: "Cachorro", gato: "Gato", ave: "Ave", pequeno_mamifero: "Pequeno mamífero", reptil: "Réptil", peixe: "Peixe", outro: "Outro" };
   const SEXOS = { macho: "Macho", femea: "Fêmea" };
