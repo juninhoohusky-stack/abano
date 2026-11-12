@@ -131,3 +131,20 @@
   .form-ado{padding:var(--e-5)}
   .form-ado .duas{grid-template-columns:1fr}
 }
+
+/* Adoção concluída (ONG) e compartilhar (quem adotou) */
+.concluir-opcoes{display:grid;gap:var(--e-2)}
+.opcao-linha{display:flex;align-items:center;gap:var(--e-3);min-height:56px;padding:var(--e-2) var(--e-4);border-radius:var(--raio-md);background:var(--fundo);box-shadow:inset 0 0 0 1.5px var(--linha);cursor:pointer}
+.opcao-linha:has(input:checked){box-shadow:inset 0 0 0 2px var(--marca);background:var(--marca-clara)}
+.opcao-linha input{width:20px;height:20px;flex:none;accent-color:var(--marca)}
+.opcao-linha span{display:flex;flex-direction:column}
+.opcao-linha small{color:var(--suave);font-size:var(--t-sm)}
+.dialogo-concluir .sub,.dialogo-partilha .sub{color:var(--suave);margin:0 0 var(--e-2)}
+.dialogo-concluir .btn,.dialogo-partilha .btn{width:100%;margin-top:var(--e-5)}
+.partilha-previa{position:relative;margin:var(--e-3) 0 var(--e-4);border-radius:var(--raio);overflow:hidden;background:var(--areia);aspect-ratio:4/3}
+.partilha-previa img{width:100%;height:100%;object-fit:cover;display:block}
+.partilha-selo{position:absolute;left:var(--e-3);top:var(--e-3);padding:var(--e-1) var(--e-3);border-radius:var(--raio-pill);background:var(--degrade-forte);color:#fff;font-weight:800;font-size:var(--t-xs)}
+.partilha-nao{display:block;margin:var(--e-2) auto 0;min-height:44px}
+.adotou{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e-3);padding:var(--e-3) var(--e-4);border-radius:var(--raio-sm);background:color-mix(in srgb,var(--laranja) 14%,var(--superficie));font-weight:700}
+.adotou span{flex:1;min-width:200px}
+.adotou .btn{min-height:42px;width:auto;margin:0}

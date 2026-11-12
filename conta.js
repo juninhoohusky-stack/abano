@@ -480,6 +480,13 @@
         painel.hidden = false;
         preencherPerfil();
         carregarPets();
+        // ONG ou protetor aprovado: o botão vira atalho para os pedidos de adoção
+        sb.rpc("minha_organizacao").then(function (o) {
+          var l = $("link-ong");
+          if (!l || o.error || !o.data) return;
+          if (o.data.status === "aprovada") { l.textContent = "Painel da ONG e pedidos de adoção"; l.href = "ong.html#pedidos"; l.className = "btn"; }
+          else l.textContent = "Painel da ONG ou protetor";
+        });
         if (busca.get("bemvindo") || veioComCodigo) $("conta-boasvindas").hidden = false;
         });
       });

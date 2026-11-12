@@ -31,10 +31,13 @@ insert into public.clubes (id, nome, descricao, tipo, ordem) values
   ('huskies',     'Huskies',            'Tutores de Husky Siberiano: pelagem, energia, uivos e passeios no calor do Brasil.', 'raca', 10),
   ('golden',      'Golden Retrievers',  'Tutores de Golden: rotina, adestramento, saúde e muita foto.', 'raca', 20),
   ('spitz',       'Spitz Alemão',       'Lulus e Spitz de todos os tamanhos: tosa, cuidados e dicas do dia a dia.', 'raca', 30),
-  ('labradores',  'Labradores',         'Tutores de Labrador: energia, alimentação e brincadeiras.', 'raca', 40),
-  ('gatos',       'Gatos',              'Para quem divide a casa com gatos: comportamento, saúde, enriquecimento e adoção.', 'especie', 50),
-  ('tutores-rj',  'Tutores do RJ',      'Tutores do Rio de Janeiro: passeios, serviços, eventos e encontros no estado.', 'local', 60),
-  ('tutores-sp',  'Tutores de SP',      'Tutores de São Paulo: passeios, serviços, eventos e encontros no estado.', 'local', 70)
+  ('shih-tzu',    'Shih Tzu',           'Tutores de Shih Tzu: tosa, pelagem, rotina e muitas fotos para compartilhar.', 'raca', 40),
+  ('border-collie', 'Border Collie',    'Tutores de Border Collie: energia, brincadeiras, passeios e experiências do dia a dia.', 'raca', 42),
+  ('pug',         'Pug',                'Tutores de Pug: rotina, passeios nos dias quentes e muitas fotos para compartilhar.', 'raca', 44),
+  ('bulldog-frances', 'Bulldog Francês', 'Tutores de Bulldog Francês: rotina, passeios nos dias quentes e experiências do dia a dia.', 'raca', 46),
+  ('gatos',       'Gatos',              'Para quem divide a casa com gatos: comportamento, rotina, enriquecimento e muitas fotos.', 'especie', 50),
+  ('tutores-rj',  'Tutores do RJ',      'Tutores do Rio de Janeiro: passeios, eventos, encontros e conexão com quem está perto.', 'local', 60),
+  ('tutores-sp',  'Tutores de SP',      'Tutores de São Paulo: passeios, eventos, encontros e conexão com quem está perto.', 'local', 70)
 on conflict (id) do update set nome = excluded.nome, descricao = excluded.descricao, tipo = excluded.tipo, ordem = excluded.ordem;
 
 create table if not exists public.clube_membros (
@@ -124,6 +127,8 @@ create or replace function public._validar_post() returns trigger
 language plpgsql security definer set search_path = public as $$
 declare v_prefixo text := 'https://igpwzidpiypzukmnskdb.supabase.co/storage/v1/object/public/fotos/' || new.autor::text || '/';
         v_foto text; v_opcao text;
+        -- Publicações automáticas do Abanô (adoção concluída): a foto é a do anúncio e não entram no freio
+        v_sistema boolean := coalesce(current_setting('abano.post_sistema', true), '') = '1';
 begin
   if tg_op = 'UPDATE' then
     if coalesce(btrim(new.texto), '') = '' and new.tipo in ('texto', 'pergunta', 'enquete') then
@@ -159,7 +164,7 @@ begin
   if new.fotos is not null then
     if cardinality(new.fotos) > 4 then raise exception 'Até 4 fotos por publicação.' using errcode = 'P0001'; end if;
     foreach v_foto in array new.fotos loop
-      if v_foto is null or left(v_foto, char_length(v_prefixo)) <> v_prefixo or char_length(v_foto) > 300 then
+      if v_foto is null or (left(v_foto, char_length(v_prefixo)) <> v_prefixo and not v_sistema) or char_length(v_foto) > 300 then
         raise exception 'Foto inválida.' using errcode = 'P0001';
       end if;
     end loop;
@@ -184,16 +189,18 @@ begin
   end if;
 
   -- Publicar num clube: só quem participa dele
-  if new.clube is not null and not exists (select 1 from public.clube_membros m where m.clube = new.clube and m.usuario = new.autor) then
+  if new.clube is not null and not v_sistema and not exists (select 1 from public.clube_membros m where m.clube = new.clube and m.usuario = new.autor) then
     raise exception 'Participe do clube para publicar nele.' using errcode = 'P0001';
   end if;
 
   -- Freio: 1 publicação a cada 20 segundos e no máximo 15 por hora
-  if exists (select 1 from public.posts where autor = new.autor and criado_em > now() - interval '20 seconds') then
-    raise exception 'Espere alguns segundos antes de publicar de novo.' using errcode = 'P0001';
-  end if;
-  if (select count(*) from public.posts where autor = new.autor and criado_em > now() - interval '1 hour') >= 15 then
-    raise exception 'Você atingiu o limite de publicações por hora. Tente mais tarde.' using errcode = 'P0001';
+  if not v_sistema then
+    if exists (select 1 from public.posts where autor = new.autor and criado_em > now() - interval '20 seconds') then
+      raise exception 'Espere alguns segundos antes de publicar de novo.' using errcode = 'P0001';
+    end if;
+    if (select count(*) from public.posts where autor = new.autor and criado_em > now() - interval '1 hour') >= 15 then
+      raise exception 'Você atingiu o limite de publicações por hora. Tente mais tarde.' using errcode = 'P0001';
+    end if;
   end if;
   return new;
 end $$;

@@ -13,7 +13,7 @@
   const PASTA = SUPABASE_URL + "/storage/v1/object/public/fotos/";
   const fotoOk = (u) => String(u || "").indexOf(PASTA) === 0;
   const UFS = "AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
-  const ESPECIES = { cachorro: "Cachorro", gato: "Gato", ave: "Ave", pequeno_mamifero: "Pequeno mamífero", reptil: "Réptil", outro: "Outro" };
+  const ESPECIES = { cachorro: "Cachorro", gato: "Gato", ave: "Ave", pequeno_mamifero: "Pequeno mamífero", reptil: "Réptil", peixe: "Peixe", outro: "Outro" };
   const SEXOS = { macho: "Macho", femea: "Fêmea" };
   const PORTES = { pequeno: "Porte pequeno", medio: "Porte médio", grande: "Porte grande" };
   const ICO = {
@@ -167,7 +167,7 @@
           </div>`}
           <div class="per-partilha">
             <a class="per-acao" href="https://wa.me/?text=${compartilhar}" target="_blank" rel="noopener">${ICO.zap}Compartilhar</a>
-            <button type="button" class="per-acao" id="per-cartaz">${ICO.baixar}Baixar cartaz</button>
+            <button type="button" class="per-acao" id="per-cartaz">${ICO.baixar}${a.status === "resolvido" ? "Card de encontrado" : a.tipo === "perdido" ? "Card de desaparecido" : "Card de encontrado na rua"}</button>
             <button type="button" class="per-acao" id="per-copiar">${ICO.link}Copiar link</button>
           </div>
           ${meu ? `<div class="per-dono">
@@ -188,7 +188,7 @@
         if (u.error) { toast(C.traduzir(u.error)); return; }
         toast(msg); telaDetalhe(a.id);
       };
-      const res = $("per-resolver"); if (res) res.addEventListener("click", () => mudar("resolvido", "Que notícia boa! O alerta foi marcado como resolvido."));
+      const res = $("per-resolver"); if (res) res.addEventListener("click", () => mudar("resolvido", "Que notícia boa! Baixe o card de encontrado e conte para todo mundo."));
       const rea = $("per-reabrir"); if (rea) rea.addEventListener("click", () => mudar("ativo", "Alerta reaberto."));
       $("per-apagar").addEventListener("click", async () => {
         if (!confirm("Apagar este alerta? Ele some do Abanô e não dá para desfazer. Se o pet voltou, prefira marcar como resolvido.")) return;
@@ -345,12 +345,12 @@
       const cor1 = ok ? "#1F9D63" : perdido ? "#E5484D" : "#FF8A1E", cor2 = ok ? "#0E7A4B" : perdido ? "#D10F5E" : "#E8641B";
       ctx.fillStyle = "#FFF7F5"; ctx.fillRect(0, 0, W, H);
       const g = ctx.createLinearGradient(0, 0, W, 220); g.addColorStop(0, cor1); g.addColorStop(1, cor2);
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W, 200);
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, 190);
       ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
       ctx.font = "900 92px Nunito, Arial, sans-serif";
-      ctx.fillText(ok ? "REENCONTRADO!" : perdido ? "PROCURA-SE" : "PET ENCONTRADO", W / 2, 106);
+      ctx.fillText(ok ? "ENCONTRADO! 🎉" : perdido ? "PROCURA-SE" : "PET ENCONTRADO", W / 2, 100);
       // Foto
-      const fx = 60, fy = 240, fw = W - 120, fh = 640;
+      const fx = 60, fy = 225, fw = W - 120, fh = 590;
       ctx.save(); retRed(ctx, fx, fy, fw, fh, 40); ctx.clip();
       ctx.fillStyle = "#F3E3E8"; ctx.fillRect(fx, fy, fw, fh);
       if (fotoOk(a.foto_url)) {
@@ -359,28 +359,38 @@
         ctx.drawImage(img, fx + (fw - iw) / 2, fy + (fh - ih) / 2, iw, ih);
       }
       ctx.restore();
+      // Encontrado: faixa sobre a foto com o crédito do Abanô
+      if (ok) {
+        ctx.fillStyle = "rgba(14,122,75,.92)"; retRed(ctx, fx + 30, fy + fh - 96, fw - 60, 70, 35); ctx.fill();
+        ctx.fillStyle = "#fff"; ctx.font = "900 36px Nunito, Arial, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillText("💛 Encontrado com a ajuda da comunidade Abanô", W / 2, fy + fh - 60);
+      }
       // Nome e dados
       ctx.textAlign = "left"; ctx.textBaseline = "alphabetic"; ctx.fillStyle = "#2B1622";
-      ctx.font = "900 84px Nunito, Arial, sans-serif";
+      ctx.font = "900 80px Nunito, Arial, sans-serif";
       const nome = a.nome || ESPECIES[a.especie] || "Pet";
-      ctx.fillText(quebrar(ctx, nome, W - 120, 1)[0], 60, 980);
-      ctx.font = "700 36px Nunito, Arial, sans-serif"; ctx.fillStyle = "#6B5462";
-      ctx.fillText([ESPECIES[a.especie], a.raca, SEXOS[a.sexo], PORTES[a.porte]].filter(Boolean).join(" · "), 60, 1030);
-      ctx.font = "800 38px Nunito, Arial, sans-serif"; ctx.fillStyle = cor2;
-      const onde = (perdido ? "Visto por último: " : "Encontrado em: ") + local(a) + " · " + dataBR(a.quando);
-      quebrar(ctx, onde, W - 120, 2).forEach((l, i) => ctx.fillText(l, 60, 1092 + i * 46));
+      ctx.fillText(quebrar(ctx, nome, W - 120, 1)[0], 60, 900);
+      ctx.font = "700 34px Nunito, Arial, sans-serif"; ctx.fillStyle = "#6B5462";
+      ctx.fillText([ESPECIES[a.especie], a.raca, SEXOS[a.sexo], PORTES[a.porte]].filter(Boolean).join(" · "), 60, 950);
+      ctx.font = "800 36px Nunito, Arial, sans-serif"; ctx.fillStyle = cor2;
+      const onde = (ok ? (perdido ? "Sumiu em: " : "Encontrado em: ") : perdido ? "Visto por último: " : "Encontrado em: ") + local(a) + " · " + dataBR(a.quando);
+      const linhasOnde = quebrar(ctx, onde, W - 120, 2);
+      linhasOnde.forEach((l, i) => ctx.fillText(l, 60, 1008 + i * 44));
       ctx.font = "600 32px Nunito, Arial, sans-serif"; ctx.fillStyle = "#2B1622";
-      const linhasOnde = quebrar(ctx, onde, W - 120, 2).length;
-      quebrar(ctx, a.descricao, W - 120, 2).forEach((l, i) => ctx.fillText(l, 60, 1092 + linhasOnde * 46 + 12 + i * 40));
-      // Rodapé com contato
-      ctx.fillStyle = cor2; ctx.fillRect(0, H - 130, W, 130);
-      ctx.fillStyle = "#fff"; ctx.textAlign = "center";
-      ctx.font = "900 46px Nunito, Arial, sans-serif";
-      ctx.fillText(ok ? "Obrigado a todos que ajudaram!" : a.whatsapp ? "Viu? Chame: " + zapFmt(a.whatsapp) : "Viu? Fale com @" + a.autor_usuario + " no Abanô", W / 2, H - 70);
-      ctx.font = "700 26px Nunito, Arial, sans-serif";
-      ctx.fillText("Mais alertas em abano.com.br/perdidos.html  ·  Abanô, o universo pet em um só lugar", W / 2, H - 26);
+      quebrar(ctx, a.descricao, W - 120, linhasOnde.length > 1 ? 1 : 2).forEach((l, i) => ctx.fillText(l, 60, 1008 + linhasOnde.length * 44 + 10 + i * 40));
+      // Contato
+      ctx.textAlign = "center"; ctx.fillStyle = cor2; ctx.font = "900 42px Nunito, Arial, sans-serif";
+      const contato = ok ? "Obrigado a todos que compartilharam! 💛" : a.whatsapp ? "Viu? Chame: " + zapFmt(a.whatsapp) : "Viu? Fale com @" + a.autor_usuario + " no Abanô";
+      ctx.fillText(quebrar(ctx, contato, W - 120, 1)[0], W / 2, H - 150);
+      // Rodapé com a marca do Abanô
+      const gm = ctx.createLinearGradient(0, H - 110, W, H); gm.addColorStop(0, "#D10F5E"); gm.addColorStop(1, "#FF8A1E");
+      ctx.fillStyle = gm; ctx.fillRect(0, H - 110, W, 110);
+      if (window.abanoMarca) await window.abanoMarca.desenhar(ctx, 56, H - 87, 64, { claro: true });
+      ctx.fillStyle = "#fff"; ctx.textAlign = "right"; ctx.textBaseline = "middle";
+      ctx.font = "800 30px Nunito, Arial, sans-serif";
+      ctx.fillText(ok ? "Pets reencontrados em abano.com.br" : "Mais alertas em abano.com.br", W - 56, H - 55);
       const blob = await new Promise((ok2) => c.toBlob(ok2, "image/png"));
-      const nomeArq = "alerta-" + (a.nome || a.especie).toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-") + ".png";
+      const nomeArq = (ok ? "encontrado-" : "alerta-") + (a.nome || a.especie).toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-") + ".png";
       const arquivo = new File([blob], nomeArq, { type: "image/png" });
       if (navigator.canShare && navigator.canShare({ files: [arquivo] })) {
         try { await navigator.share({ files: [arquivo], title: titulo(a), text: titulo(a) + " — " + linkAlerta(a) }); return; } catch (err) { if (err && err.name === "AbortError") return; }
@@ -389,7 +399,7 @@
       link.href = URL.createObjectURL(blob); link.download = nomeArq;
       document.body.appendChild(link); link.click(); link.remove();
       setTimeout(() => URL.revokeObjectURL(link.href), 4000);
-      toast("Cartaz baixado! Compartilhe nos grupos do bairro.");
+      toast(a.status === "resolvido" ? "Card baixado! Poste no Instagram e conte a boa notícia." : "Card baixado! Poste no Instagram e nos grupos do bairro.");
     } catch (err) {
       toast("Não deu para gerar o cartaz agora. Tente de novo.");
     } finally {

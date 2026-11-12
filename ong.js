@@ -159,6 +159,7 @@
   $("lista-pets-ong").addEventListener("change", async (e) => {
     const sel = e.target.closest("[data-status]"); if (!sel) return;
     const id = sel.closest("[data-id]").dataset.id;
+    if (sel.value === "adotado") { abrirConcluir(petsPorId.get(id), sel); return; }
     const r = await sb.from("pets_adocao").update({ status: sel.value }).eq("id", id);
     if (r.error) { toast(C.traduzir(r.error)); carregarPets(); return; }
     toast(sel.value === "adotado" ? "Que alegria! Marcado como adotado." : "Situação atualizada.");
@@ -179,6 +180,48 @@
       toast("Anúncio apagado."); carregarPets(); carregarPedidos();
     }
   });
+
+  // ---------- Adoção concluída: a ONG diz quem adotou ----------
+  async function abrirConcluir(p, sel) {
+    const r = await sb.from("pedidos_adocao")
+      .select("id, adotante:perfis!pedidos_adocao_adotante_fkey(nome,usuario,foto_url)")
+      .eq("pet", p.id).eq("status", "aceito").order("respondido_em", { ascending: false });
+    const aceitos = r.data || [];
+    const d = document.createElement("dialog");
+    d.className = "dialogo-ado dialogo-concluir";
+    d.setAttribute("aria-labelledby", "concluir-titulo");
+    d.innerHTML = `<form class="form-ado" novalidate>
+      <div class="cab"><h2 id="concluir-titulo">${esc(p.nome)} foi ${p.sexo === "femea" ? "adotada" : "adotado"}? 🎉</h2><button type="button" class="fechar" data-fechar aria-label="Fechar">&times;</button></div>
+      <p class="sub">Conte quem adotou para concluir a adoção. Assim temos certeza de que ${esc(p.nome)} já foi entregue, a família recebe um aviso para compartilhar a novidade e a Comunidade comemora junto no feed.</p>
+      <fieldset class="concluir-opcoes"><legend class="rot">Quem adotou?</legend>
+        ${aceitos.map((x, i) => `<label class="opcao-linha"><input type="radio" name="pedido" value="${esc(x.id)}"${i === 0 ? " checked" : ""}><span><b>${esc((x.adotante || {}).nome || "Tutor")}</b><small>@${esc((x.adotante || {}).usuario || "")} · pedido aceito</small></span></label>`).join("")}
+        <label class="opcao-linha"><input type="radio" name="pedido" value=""${aceitos.length ? "" : " checked"}><span><b>Foi adotado fora do Abanô</b><small>Marca como adotado, sem publicação no feed</small></span></label>
+      </fieldset>
+      ${aceitos.length ? "" : '<p class="ajuda">Nenhum pedido aceito para este pet. Se a família pediu pelo Abanô, aceite o pedido na aba Pedidos antes de concluir.</p>'}
+      <p class="aviso-conta" data-aviso role="alert" hidden></p>
+      <button type="submit" class="btn">Concluir adoção</button>
+    </form>`;
+    document.body.appendChild(d);
+    let concluiu = false;
+    const fechar = () => { d.close(); d.remove(); if (!concluiu) sel.value = p.status; };
+    d.querySelector("[data-fechar]").addEventListener("click", fechar);
+    d.addEventListener("cancel", (e) => { e.preventDefault(); fechar(); });
+    d.querySelector("form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const pedido = (d.querySelector('input[name="pedido"]:checked') || {}).value || null;
+      const b = d.querySelector("[type=submit]"); b.disabled = true; b.textContent = "Concluindo…";
+      const c = await sb.rpc("concluir_adocao", { p_pet: p.id, p_pedido: pedido });
+      if (c.error) {
+        b.disabled = false; b.textContent = "Concluir adoção";
+        aviso(d.querySelector("[data-aviso]"), /concluir_adocao/.test(c.error.message || "") ? "Falta ativar a adoção concluída no banco de dados do Abanô." : C.traduzir(c.error));
+        return;
+      }
+      concluiu = true; fechar();
+      toast(pedido ? "Adoção concluída! A comemoração já está no feed da Comunidade. 🎉" : "Que alegria! Marcado como adotado.");
+      carregarPets(); carregarPedidos();
+    });
+    d.showModal();
+  }
 
   // Formulário do pet
   const dp = $("dialogo-pet-ado"), fp = $("form-pet-ado");
@@ -202,7 +245,13 @@
     desenharFotos();
     dp.showModal();
   }
-  $("btn-anunciar").addEventListener("click", () => abrirPet(null));
+  $("btn-anunciar").addEventListener("click", () => {
+    if (!eu.foto_url) {
+      if (confirm("Para anunciar pets para adoção, coloque uma foto sua no perfil. Ela traz mais segurança para quem vai adotar.\n\nIr para Minha conta agora?")) location.href = "conta.html?volta=" + encodeURIComponent("/ong.html");
+      return;
+    }
+    abrirPet(null);
+  });
   $("fechar-pet-ado").addEventListener("click", () => dp.close());
   $("pa-fotos").addEventListener("change", function () {
     const cabe = 6 - fotosAtuais.length - fotosNovas.length;
@@ -274,7 +323,7 @@
     const novos = lista.filter((x) => x.status === "enviado").length;
     $("num-pedidos").textContent = novos ? "(" + novos + ")" : "";
     if (!lista.length) { box.innerHTML = '<div class="vazio-ado"><h3>Nenhum pedido ainda</h3><p>Quando alguém pedir para adotar um dos seus pets, o pedido aparece aqui e você recebe um e-mail.</p></div>'; return; }
-    const ROT = { enviado: "Aguardando sua resposta", aceito: "Aceito", recusado: "Recusado", cancelado: "Cancelado pela pessoa" };
+    const ROT = { enviado: "Aguardando sua resposta", aceito: "Aceito", recusado: "Recusado", cancelado: "Cancelado pela pessoa", adotado: "Adoção concluída 🎉" };
     box.innerHTML = lista.map((pd) => {
       const pet = pd.pet || {}, ad = pd.adotante || {};
       const resp = A.PERGUNTAS.map((q) => pd.respostas && pd.respostas[q.id] ? `<li><b>${esc(q.rotulo)}</b>${esc(pd.respostas[q.id])}</li>` : "").join("");
@@ -284,7 +333,7 @@
           <p class="meta">${esc([pd.cidade, pd.estado].filter(Boolean).join(" / "))} · ${data(pd.criado_em)} · <b>${ROT[pd.status]}</b> · <a href="comunidade/?u=${encodeURIComponent(ad.usuario || "")}" target="_blank" rel="noopener">ver perfil</a></p></div></div>
         <ul class="respostas">${resp}</ul>
         ${pd.status === "enviado" ? '<div class="ado-acoes"><button type="button" class="btn" data-aceitar>Aceitar e liberar WhatsApp</button><button type="button" class="btn btn-sec" data-recusar>Recusar</button></div>' : ""}
-        ${pd.status === "aceito" ? '<div class="contato" data-contato><span>Contato liberado.</span><button type="button" class="btn btn-sec" data-ver-contato>Ver WhatsApp</button></div>' : ""}
+        ${pd.status === "aceito" ? '<div class="contato" data-contato><span>Contato liberado. Quando entregar o pet, marque a adoção como concluída na aba Pets.</span><button type="button" class="btn btn-sec" data-ver-contato>Ver WhatsApp</button></div>' : ""}
       </article>`;
     }).join("");
   }

@@ -507,3 +507,32 @@
   document.addEventListener("visibilitychange", function () { if (!document.hidden) contar(); });
   setInterval(function () { if (!document.hidden) contar(); }, 120000);
 })();
+
+/* ---------- Marca do Abanô em imagens geradas (cards e plaquinha QR) ----------
+   abanoMarca.desenhar(ctx, x, y, altura, { claro, alinhar: "centro" | "direita" })
+   desenha a patinha e o nome "abanô" (com o ô laranja). Devolve a largura usada. */
+window.abanoMarca = (function () {
+  var pata = null;
+  function carregarPata() {
+    if (!pata) pata = new Promise(function (ok) { var i = new Image(); i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = "/logo-pata.svg"; });
+    return pata;
+  }
+  function desenhar(ctx, x, y, h, op) {
+    op = op || {};
+    return carregarPata().then(function (img) {
+      ctx.save();
+      ctx.font = "900 " + Math.round(h * 0.84) + "px Nunito, Arial, sans-serif";
+      ctx.textBaseline = "middle"; ctx.textAlign = "left";
+      var w1 = ctx.measureText("aban").width, w2 = ctx.measureText("ô").width, gap = h * 0.2, total = h + gap + w1 + w2;
+      var x0 = op.alinhar === "centro" ? x - total / 2 : op.alinhar === "direita" ? x - total : x;
+      if (op.claro) { ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(x0 + h / 2, y + h / 2, h / 2, 0, Math.PI * 2); ctx.fill(); }
+      if (img) { var m = op.claro ? h * 0.14 : 0; ctx.drawImage(img, x0 + m, y + m, h - 2 * m, h - 2 * m); }
+      var ty = y + h * 0.5;
+      ctx.fillStyle = op.claro ? "#fff" : "#D10F5E"; ctx.fillText("aban", x0 + h + gap, ty);
+      ctx.fillStyle = op.claro ? "#FFD7A8" : "#FF8A1E"; ctx.fillText("ô", x0 + h + gap + w1, ty);
+      ctx.restore();
+      return total;
+    });
+  }
+  return { desenhar: desenhar };
+})();

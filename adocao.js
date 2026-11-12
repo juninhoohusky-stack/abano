@@ -152,7 +152,14 @@
       centro.querySelectorAll("[data-foto]").forEach((x) => x.setAttribute("aria-current", x === b ? "true" : "false"));
     }));
     const ba = $("btn-adotar");
-    if (ba) ba.addEventListener("click", () => { if (exigirConta()) abrirQuestionario(p); });
+    if (ba) ba.addEventListener("click", () => {
+      if (!exigirConta()) return;
+      if (!eu.foto_url) {
+        if (confirm("Para pedir para adotar, coloque uma foto sua no perfil. Ela traz mais segurança para a ONG e para você.\n\nIr para Minha conta agora?")) location.href = "conta.html?volta=" + encodeURIComponent(location.pathname + location.search);
+        return;
+      }
+      abrirQuestionario(p);
+    });
     $("btn-compartilhar-ado").addEventListener("click", async () => {
       const url = "https://abano.com.br/adocao.html?pet=" + encodeURIComponent(p.id);
       if (navigator.share) { try { await navigator.share({ title: p.nome + " para adoção", url: url }); } catch (e) {} return; }
@@ -223,12 +230,13 @@
     if (!sessao) { centro.innerHTML = voltar("adocao.html") + '<div class="vazio-ado"><h3>Seus pedidos de adoção</h3><p>Entre na sua conta para acompanhar seus pedidos.</p><a class="btn" href="entrar.html?volta=%2Fadocao.html%3Fv%3Dpedidos">Entrar</a></div>'; return; }
     centro.innerHTML = voltar("adocao.html") + '<header class="ado-topo"><div><h1>Meus pedidos de adoção</h1></div><p>Quando a ONG aceita, o WhatsApp dela aparece aqui.</p></header><div class="lista-ong" id="meus-pedidos"><p class="carregando">Carregando…</p></div>';
     const r = await sb.from("pedidos_adocao")
-      .select("id, status, criado_em, respondido_em, pet:pets_adocao!pedidos_adocao_pet_fkey(id,nome,fotos,cidade,estado), org:organizacoes!pedidos_adocao_org_fkey(nome,tipo)")
+      .select("id, status, criado_em, respondido_em, post_compartilhado, pet:pets_adocao!pedidos_adocao_pet_fkey(id,nome,fotos,cidade,estado), org:organizacoes!pedidos_adocao_org_fkey(nome,tipo)")
       .eq("adotante", eu ? eu.id : sessao.user.id).order("criado_em", { ascending: false });
     const box = $("meus-pedidos");
     if (r.error) { box.innerHTML = '<p class="carregando">' + esc(C.traduzir(r.error)) + "</p>"; return; }
     if (!r.data.length) { box.innerHTML = '<div class="vazio-ado"><h3>Você ainda não pediu para adotar</h3><p>Veja os pets esperando por uma família.</p><a class="btn" href="adocao.html">Ver pets para adoção</a></div>'; return; }
-    const ROT = { enviado: "Aguardando a resposta da ONG", aceito: "Aceito!", recusado: "Não seguiu desta vez", cancelado: "Cancelado por você" };
+    const ROT = { enviado: "Aguardando a resposta da ONG", aceito: "Aceito!", recusado: "Não seguiu desta vez", cancelado: "Cancelado por você", adotado: "Adoção concluída! 🎉" };
+    const porId = new Map(r.data.map((pd) => [pd.id, pd]));
     box.innerHTML = r.data.map((pd) => {
       const pet = pd.pet || {}, o = pd.org || {};
       return `<article class="pedido" data-pedido="${esc(pd.id)}">
@@ -236,12 +244,18 @@
           <div><h3><a href="adocao.html?pet=${encodeURIComponent(pet.id || "")}">${esc(pet.nome || "Pet")}</a> · ${esc(o.nome || "")}</h3>
           <p class="meta">Pedido de ${new Date(pd.criado_em).toLocaleDateString("pt-BR")} · <b>${ROT[pd.status]}</b></p></div></div>
         ${pd.status === "aceito" ? '<div class="contato" data-contato><span>A ONG aceitou seu pedido.</span><button type="button" class="btn btn-sec" data-ver-contato>Ver WhatsApp da ONG</button></div>' : ""}
+        ${pd.status === "adotado" ? `<div class="adotou">${pd.post_compartilhado
+          ? `<span>Você compartilhou essa alegria com a Comunidade. 💛</span><a class="btn btn-sec" href="comunidade/?p=${encodeURIComponent(pd.post_compartilhado)}">Ver a publicação</a>`
+          : `<span>Bem-vindo à família, ${esc(pet.nome || "pet")}! Quer contar para a Comunidade? Só publica se você quiser.</span><button type="button" class="btn" data-compartilhar>Compartilhar com a Comunidade</button>`}</div>` : ""}
         ${pd.status === "enviado" || pd.status === "aceito" ? '<div class="ado-acoes"><button type="button" class="link-botao" data-cancelar style="min-height:44px">Cancelar pedido</button></div>' : ""}
       </article>`;
     }).join("");
+    const abrirPartilha = q.get("compartilhar");
+    if (abrirPartilha && porId.get(abrirPartilha) && porId.get(abrirPartilha).status === "adotado" && !porId.get(abrirPartilha).post_compartilhado) compartilharAdocao(porId.get(abrirPartilha));
     box.addEventListener("click", async (e) => {
       const card = e.target.closest("[data-pedido]"); if (!card) return;
       const id = card.dataset.pedido;
+      if (e.target.closest("[data-compartilhar]")) { compartilharAdocao(porId.get(id)); return; }
       if (e.target.closest("[data-ver-contato]")) {
         const c = await sb.rpc("contato_pedido", { p_pedido: id });
         if (c.error || !c.data) { toast("Não deu para abrir o contato agora."); return; }
@@ -253,6 +267,40 @@
         toast("Pedido cancelado."); telaPedidos();
       }
     });
+  }
+
+  // ---------- Compartilhar a adoção (opcional, o texto vem pronto) ----------
+  function compartilharAdocao(pd) {
+    const pet = pd.pet || {}, o = pd.org || {};
+    const foto = pet.fotos && fotoOk(pet.fotos[0]) ? pet.fotos[0] : "";
+    const texto = `🏡💛 Hoje é dia de festa: ${pet.nome || "meu novo pet"} chegou para fazer parte da família! Adotei pelo Abanô${o.nome ? ", com a ajuda de " + o.nome : ""}. Adotar é um ato de amor! 🐾🎉`;
+    const d = document.createElement("dialog");
+    d.className = "dialogo-ado dialogo-partilha";
+    d.setAttribute("aria-labelledby", "partilha-titulo");
+    d.innerHTML = `<form class="form-ado" novalidate>
+      <div class="cab"><h2 id="partilha-titulo">Comemore com a Comunidade</h2><button type="button" class="fechar" data-fechar aria-label="Fechar">&times;</button></div>
+      <p class="sub">Montamos a publicação para você. Mude o texto como quiser, ou feche se preferir não compartilhar.</p>
+      <div class="partilha-previa">${foto ? `<img src="${esc(foto)}" alt="Foto de ${esc(pet.nome || "pet")}">` : ""}<span class="partilha-selo">Adotou pelo Abanô</span></div>
+      <label class="rot" for="partilha-texto">Texto da publicação</label>
+      <textarea id="partilha-texto" maxlength="2000" rows="4">${esc(texto)}</textarea>
+      <p class="aviso-conta" data-aviso role="alert" hidden></p>
+      <button type="submit" class="btn">Publicar no feed</button>
+      <button type="button" class="link-botao partilha-nao" data-fechar>Agora não</button>
+    </form>`;
+    document.body.appendChild(d);
+    const fechar = () => { d.close(); d.remove(); };
+    d.querySelectorAll("[data-fechar]").forEach((b) => b.addEventListener("click", fechar));
+    d.addEventListener("cancel", (e) => { e.preventDefault(); fechar(); });
+    d.querySelector("form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const b = d.querySelector("[type=submit]"); b.disabled = true; b.textContent = "Publicando…";
+      const r = await sb.rpc("compartilhar_adocao", { p_pedido: pd.id, p_texto: d.querySelector("textarea").value.trim() });
+      if (r.error) { b.disabled = false; b.textContent = "Publicar no feed"; aviso(d.querySelector("[data-aviso]"), C.traduzir(r.error)); return; }
+      fechar();
+      toast("Publicado! A Comunidade vai adorar. 💛");
+      setTimeout(() => { location.href = "comunidade/?p=" + encodeURIComponent(r.data); }, 1200);
+    });
+    d.showModal();
   }
 
   (async function iniciar() {

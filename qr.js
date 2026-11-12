@@ -84,11 +84,13 @@
     let nome = String(pet.nome);
     while (ctx.measureText(nome).width > W - 180 && nome.length > 3) nome = nome.slice(0, -1);
     ctx.fillText(nome, W / 2, 500);
-    desenharQR(ctx, qr, W / 2 - 300, 560, 600, "#2B1622");
-    ctx.fillStyle = "#D10F5E"; ctx.font = "900 44px Nunito, Arial, sans-serif";
-    ctx.fillText("Aponte a câmera e avise meu tutor", W / 2, 1240);
-    ctx.fillStyle = "#6B5462"; ctx.font = "700 32px Nunito, Arial, sans-serif";
-    ctx.fillText("abano.com.br  ·  código " + codigo, W / 2, 1300);
+    desenharQR(ctx, qr, W / 2 - 280, 545, 560, "#2B1622");
+    ctx.fillStyle = "#D10F5E"; ctx.font = "900 42px Nunito, Arial, sans-serif";
+    ctx.fillText("Aponte a câmera e avise meu tutor", W / 2, 1165);
+    // Marca do Abanô, para quem achar saber de onde é a plaquinha
+    if (window.abanoMarca) await window.abanoMarca.desenhar(ctx, W / 2, 1200, 70, { alinhar: "centro" });
+    ctx.fillStyle = "#6B5462"; ctx.font = "700 28px Nunito, Arial, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+    ctx.fillText("abano.com.br  ·  código " + codigo, W / 2, 1316);
     return c;
   }
   async function baixar(canvas, nome) {
