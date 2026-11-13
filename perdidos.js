@@ -51,12 +51,12 @@
   function titulo(a) {
     if (a.status === "resolvido") return a.tipo === "perdido" ? `${a.nome} voltou para casa!` : "Pet devolvido ao tutor!";
     if (a.tipo === "perdido") return `${a.nome} está ${a.sexo === "femea" ? "desaparecida" : "desaparecido"}`;
-    return a.nome ? `Encontrado: ${a.nome}?` : `${ESPECIES[a.especie] || "Pet"} encontrado`;
+    return a.nome ? `Procura-se o dono: ${a.nome}` : `Procura-se o dono deste ${(ESPECIES[a.especie] || "pet").toLowerCase()}`;
   }
   const local = (a) => `${a.bairro}, ${a.cidade} / ${a.estado}`;
   const selo = (a) => a.status === "resolvido"
     ? `<span class="per-selo ok">${ICO.coracao}Reencontrado</span>`
-    : `<span class="per-selo ${a.tipo}">${a.tipo === "perdido" ? "Perdido" : "Encontrado"}</span>`;
+    : `<span class="per-selo ${a.tipo}">${a.tipo === "perdido" ? "Perdido" : "Procura-se o dono"}</span>`;
 
   async function carregarEu() {
     const s = await sb.auth.getSession();
@@ -91,7 +91,7 @@
     return `<a class="per-card ${a.status === "resolvido" ? "resolvido" : a.tipo}" href="perdidos.html?a=${a.id}" data-nav>
       <span class="per-card-foto">${fotoOk(a.foto_url) ? `<img src="${esc(a.foto_url)}" alt="" loading="lazy" decoding="async">` : ""}${selo(a)}</span>
       <span class="per-card-txt">
-        <b>${esc(a.nome || (ESPECIES[a.especie] || "Pet") + (a.tipo === "encontrado" ? " encontrado" : ""))}</b>
+        <b>${esc(a.nome || (a.tipo === "encontrado" ? "Procura-se o dono" : ESPECIES[a.especie] || "Pet"))}</b>
         <small>${esc(info)}</small>
         <span class="per-card-local">${ICO.pin}${esc(local(a))}</span>
         <span class="per-card-quando">${ICO.cal}${esc(quando)}</span>
@@ -110,7 +110,7 @@
             <label class="sr" for="per-uf">Estado</label>
             <select id="per-uf"><option value="">Todos os estados</option>${UFS.map((u) => `<option${u === filtro.uf ? " selected" : ""}>${u}</option>`).join("")}</select>
             <div class="per-chips" role="group" aria-label="Tipo de alerta">
-              ${[["", "ativo", "Todos"], ["perdido", "ativo", "Perdidos"], ["encontrado", "ativo", "Encontrados"], ["", "resolvido", "Reencontrados"]].map(([t, s, r]) =>
+              ${[["", "ativo", "Todos"], ["perdido", "ativo", "Perdidos"], ["encontrado", "ativo", "Procura-se o dono"], ["", "resolvido", "Reencontrados"]].map(([t, s, r]) =>
                 `<button type="button" data-tipo="${t}" data-status="${s}" aria-pressed="${filtro.tipo === t && filtro.status === s}">${r}</button>`).join("")}
             </div>
           </form>
@@ -161,13 +161,13 @@
           <p class="per-det-desc">${esc(a.descricao)}</p>
           ${a.status === "resolvido" ? `<p class="per-feliz">${ICO.coracao}<span>Final feliz! Obrigado a todos que compartilharam.</span></p>` : `
           <div class="per-contato">
-            <h2>${a.tipo === "perdido" ? `Viu ${a.sexo === "femea" ? "a" : "o"} ${esc(a.nome)}?` : "É o seu pet?"}</h2>
+            <h2>${a.tipo === "perdido" ? `Viu ${a.sexo === "femea" ? "a" : "o"} ${esc(a.nome)}?` : "É o seu pet ou conhece o dono?"}</h2>
             ${a.whatsapp ? `<a class="btn per-zap" href="https://wa.me/${zapNum(a.whatsapp)}?text=${msgZap}" target="_blank" rel="noopener">${ICO.zap}Chamar no WhatsApp</a>` : ""}
             <a class="btn btn-sec" href="comunidade/?u=${encodeURIComponent(a.autor_usuario)}">Ver o perfil de ${esc(String(a.autor_nome || "").split(" ")[0] || "quem publicou")}</a>
           </div>`}
           <div class="per-partilha">
             <a class="per-acao" href="https://wa.me/?text=${compartilhar}" target="_blank" rel="noopener">${ICO.zap}Compartilhar</a>
-            <button type="button" class="per-acao" id="per-cartaz">${ICO.baixar}${a.status === "resolvido" ? "Card de encontrado" : a.tipo === "perdido" ? "Card de desaparecido" : "Card de encontrado na rua"}</button>
+            <button type="button" class="per-acao" id="per-cartaz">${ICO.baixar}${a.status === "resolvido" ? "Card de encontrado" : a.tipo === "perdido" ? "Card de desaparecido" : "Card procura-se o dono"}</button>
             <button type="button" class="per-acao" id="per-copiar">${ICO.link}Copiar link</button>
           </div>
           ${meu ? `<div class="per-dono">
@@ -229,8 +229,8 @@
     app.innerHTML = `
       <a class="per-voltar" href="${a ? "perdidos.html?a=" + a.id : "perdidos.html"}" data-nav>${ICO.voltar}<span>Voltar</span></a>
       <form class="per-form" id="per-form" novalidate>
-        <h1>${a ? "Editar alerta" : tipo === "perdido" ? "Meu pet sumiu" : "Encontrei um pet"}</h1>
-        <p class="per-form-sub">${tipo === "perdido" ? "Quanto antes o alerta sair, maiores as chances. Depois de publicar, baixe o cartaz e compartilhe nos grupos do seu bairro." : "Obrigado por ajudar! Publique a foto e onde o pet foi encontrado para o tutor achar."}</p>
+        <h1>${a ? "Editar alerta" : tipo === "perdido" ? "Meu pet sumiu" : "Encontrei um pet: procura-se o dono"}</h1>
+        <p class="per-form-sub">${tipo === "perdido" ? "Quanto antes o alerta sair, maiores as chances. Depois de publicar, baixe o cartaz e compartilhe nos grupos do seu bairro." : "Obrigado por ajudar! Publique a foto e onde o pet foi encontrado. O alerta aparece como \"Procura-se o dono\" para quem está na região, e você baixa um card pronto para espalhar."}</p>
         ${meusPets.length ? `<label class="rot" for="f-pet">Qual dos seus pets?</label>
           <select id="f-pet" name="pet"><option value="">Outro pet (preencher abaixo)</option>${meusPets.map((p) => `<option value="${p.id}"${a && a.pet === p.id ? " selected" : ""}>${esc(p.nome)}</option>`).join("")}</select>` : ""}
         <div class="per-foto-linha">
@@ -348,7 +348,8 @@
       ctx.fillStyle = g; ctx.fillRect(0, 0, W, 190);
       ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
       ctx.font = "900 92px Nunito, Arial, sans-serif";
-      ctx.fillText(ok ? "ENCONTRADO! 🎉" : perdido ? "PROCURA-SE" : "PET ENCONTRADO", W / 2, 100);
+      ctx.font = (ok || perdido ? "900 92px" : "900 80px") + " Nunito, Arial, sans-serif";
+      ctx.fillText(ok ? "ENCONTRADO! 🎉" : perdido ? "PROCURA-SE" : "PROCURA-SE O DONO", W / 2, 100);
       // Foto
       const fx = 60, fy = 225, fw = W - 120, fh = 590;
       ctx.save(); retRed(ctx, fx, fy, fw, fh, 40); ctx.clip();
@@ -380,7 +381,7 @@
       quebrar(ctx, a.descricao, W - 120, linhasOnde.length > 1 ? 1 : 2).forEach((l, i) => ctx.fillText(l, 60, 1008 + linhasOnde.length * 44 + 10 + i * 40));
       // Contato
       ctx.textAlign = "center"; ctx.fillStyle = cor2; ctx.font = "900 42px Nunito, Arial, sans-serif";
-      const contato = ok ? "Obrigado a todos que compartilharam! 💛" : a.whatsapp ? "Viu? Chame: " + zapFmt(a.whatsapp) : "Viu? Fale com @" + a.autor_usuario + " no Abanô";
+      const contato = ok ? "Obrigado a todos que compartilharam! 💛" : a.whatsapp ? (perdido ? "Viu? Chame: " : "É seu? Chame: ") + zapFmt(a.whatsapp) : (perdido ? "Viu? Fale com @" : "É seu? Fale com @") + a.autor_usuario + " no Abanô";
       ctx.fillText(quebrar(ctx, contato, W - 120, 1)[0], W / 2, H - 150);
       // Rodapé com a marca do Abanô
       const gm = ctx.createLinearGradient(0, H - 110, W, H); gm.addColorStop(0, "#D10F5E"); gm.addColorStop(1, "#FF8A1E");

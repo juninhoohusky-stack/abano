@@ -47,6 +47,9 @@
     estrela: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z" fill="currentColor"/></svg>',
     insta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".6" fill="currentColor"/></svg>',
     mensagem: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.4 7.6L3.5 20.5l1.4-4.4A8.5 8.5 0 1 1 20.5 11.5z"/></svg>',
+    convidar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9.5" cy="8" r="3.5"/><path d="M3 20a6.5 6.5 0 0 1 11.5-4.2M18.5 13v6M15.5 16h6"/></svg>',
+    zap: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.3 21.7l5-1.3A9.7 9.7 0 1 0 12 2.2zm0 17.7a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 19.9zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.7-1.2.2-.6.2-1 .1-1.1l-.5-.3z"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg>',
     verificado: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.4 1.8 3-.2.9 2.9 2.5 1.7-1 2.8 1 2.8-2.5 1.7-.9 2.9-3-.2L12 21.5l-2.4-1.8-3 .2-.9-2.9-2.5-1.7 1-2.8-1-2.8 2.5-1.7.9-2.9 3 .2z" fill="currentColor"/><path d="m8.4 12.2 2.4 2.4 4.8-4.9" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
   };
 
@@ -101,7 +104,7 @@
     curtir: "Gostou dessa publicação?", comentar: "Quer participar da conversa?", salvar: "Quer guardar essa publicação?",
     votar: "Quer votar nessa enquete?", publicar: "Quer compartilhar com a comunidade?", participar: "Quer participar desse clube?",
     seguir: "Quer acompanhar esse tutor?", denunciar: "Viu algo errado?", bloquear: "Quer bloquear alguém?", salvos: "Quer ver suas publicações salvas?", perfil: "Quer montar seu perfil?",
-    membros: "Quer conhecer os membros do clube?", mensagem: "Quer conversar com esse tutor?", mensagens: "Quer ver suas conversas?"
+    membros: "Quer conhecer os membros do clube?", convidar: "Quer chamar amigos para o clube?", mensagem: "Quer conversar com esse tutor?", mensagens: "Quer ver suas conversas?"
   };
   function abrirLogin(acao) {
     const d = document.getElementById("dialogo-login");
@@ -199,11 +202,40 @@
     }).join("");
     return `<div class="enquete"><ul>${itens}</ul><p class="enq-total">${plural(total, "voto", "votos")}${mostrar ? "" : " · vote para ver o resultado"}</p></div>`;
   }
+  // *negrito* e _itálico_, no estilo do WhatsApp. Recebe texto já escapado.
+  function formatar(h) {
+    return String(h)
+      .replace(/(^|[\s(>"“'])\*(?=\S)([^*\n]*?\S)\*(?=[\s.,!?;:)"”'<]|$)/g, "$1<strong>$2</strong>")
+      .replace(/(^|[\s(>"“'])_(?=\S)([^_\n]*?\S)_(?=[\s.,!?;:)"”'<]|$)/g, "$1<em>$2</em>");
+  }
+  const fmt = (t) => formatar(esc(t));
+  // Botões de negrito e itálico: marcam o trecho selecionado no campo de texto
+  document.addEventListener("mousedown", (e) => { if (e.target.closest("[data-fmt]")) e.preventDefault(); });
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-fmt]"); if (!b) return;
+    const ta = document.getElementById(b.dataset.alvo); if (!ta) return;
+    const m = b.dataset.fmt === "b" ? "*" : "_";
+    const ini = ta.selectionStart, fim = ta.selectionEnd, v = ta.value;
+    let sel = v.slice(ini, fim);
+    const espacoFim = /\s$/.test(sel) ? sel.match(/\s+$/)[0] : "";
+    sel = sel.replace(/\s+$/, "");
+    if (!sel) {
+      ta.setRangeText(m + m, ini, fim, "end"); ta.selectionStart = ta.selectionEnd = ini + 1;
+    } else if (sel.length > 1 && sel.startsWith(m) && sel.endsWith(m)) {
+      ta.setRangeText(sel.slice(1, -1) + espacoFim, ini, fim, "select");
+    } else {
+      ta.setRangeText(m + sel + m + espacoFim, ini, fim, "select");
+    }
+    ta.focus();
+    ta.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  const barraFmt = (alvo) => `<span class="barra-fmt" role="group" aria-label="Formatar o texto"><button type="button" data-fmt="b" data-alvo="${alvo}" aria-label="Negrito" title="Negrito: *texto*"><b>N</b></button><button type="button" data-fmt="i" data-alvo="${alvo}" aria-label="Itálico" title="Itálico: _texto_"><i>I</i></button></span>`;
+
   function textoPost(p, completo) {
     if (!p.texto) return "";
     const limite = 480;
-    if (completo || p.texto.length <= limite) return `<p class="txt">${esc(p.texto)}</p>`;
-    return `<p class="txt">${esc(p.texto.slice(0, limite).replace(/\s+\S*$/, ""))}… <a href="${linkPost(p.id)}" class="ver-mais">ver mais</a></p>`;
+    if (completo || p.texto.length <= limite) return `<p class="txt">${fmt(p.texto)}</p>`;
+    return `<p class="txt">${fmt(p.texto.slice(0, limite).replace(/\s+\S*$/, ""))}… <a href="${linkPost(p.id)}" class="ver-mais">ver mais</a></p>`;
   }
   function cartao(p, completo) {
     est.posts.set(p.id, p);
@@ -240,7 +272,7 @@
     const previa = (est.previas.get(p.id) || []).filter((c) => !est.bloqueados.has(c.autor));
     const verTodos = n > previa.length
       ? `<a class="ver-coment" href="${linkPost(p.id)}#comentarios" data-abrir-coment="${esc(p.id)}">${n === 1 ? (pergunta ? "Ver 1 resposta" : "Ver 1 comentário") : `Ver ${n > 2 ? "todos os " : "os "}${num(n)} ${pergunta ? "respostas" : "comentários"}`}</a>` : "";
-    const itens = previa.map((c) => `<li><a href="${linkPerfil((c.perfil || {}).usuario)}"><b>${esc((c.perfil || {}).nome || "Tutor")}</b></a> ${esc(c.texto)}</li>`).join("");
+    const itens = previa.map((c) => `<li><a href="${linkPerfil((c.perfil || {}).usuario)}"><b>${esc((c.perfil || {}).nome || "Tutor")}</b></a> ${fmt(c.texto)}</li>`).join("");
     const campo = est.eu && est.eu.aceitou
       ? `<form class="coment-rapido" data-post="${esc(p.id)}">${avatar(est.eu)}<label class="sr" for="cr-${esc(p.id)}">${pergunta ? "Sua resposta" : "Seu comentário"}</label><input id="cr-${esc(p.id)}" maxlength="2000" autocomplete="off" enterkeyhint="send" placeholder="${pergunta ? "Responda com a sua experiência…" : "Adicione um comentário…"}"><button type="submit" disabled>Publicar</button></form>`
       : `<button type="button" class="coment-rapido coment-login" data-acao="comentar-login" data-id="${esc(p.id)}">${avatar(null)}<span>${pergunta ? "Entre para responder…" : "Entre para comentar…"}</span></button>`;
@@ -350,6 +382,7 @@
         <label class="sr" for="compor-texto">Sua publicação</label>
         <textarea id="compor-texto" name="texto" maxlength="5000" rows="2" placeholder="Compartilhe algo com a comunidade…"></textarea>
       </div>
+      <div class="compor-fmt">${barraFmt("compor-texto")}<small>Selecione um trecho para deixar em <b>negrito</b> ou <i>itálico</i></small></div>
       <div class="compor-extra" data-para="foto" hidden>
         <label class="btn btn-sec arquivo">Escolher fotos (até 4)<input type="file" id="compor-fotos" accept="image/jpeg,image/png,image/webp" multiple></label>
         <div class="previas" id="compor-previas"></div>
@@ -554,6 +587,54 @@
         return `<li><a class="pessoa" href="${linkPerfil(u.usuario)}">${avatar(u)}<span><b>${esc(u.nome)}</b><small>@${esc(u.usuario)}${local ? " · " + esc(local) : ""}</small></span></a>${ehEu ? '<span class="pessoa-eu">Você</span>' : `<button type="button" class="btn btn-peq${sigo ? " btn-sec" : ""}" data-acao="seguir" data-id="${esc(u.id)}" aria-pressed="${sigo}">${sigo ? "Seguindo" : "Seguir"}</button>`}</li>`;
       }).join("")}</ul>` : vazio("Ainda sem membros", "Seja o primeiro a participar deste clube.");
     },
+    async convidar(clube) {
+      const nome = nomesClubes[clube] || "o clube";
+      const url = "https://abano.com.br/comunidade/?c=" + encodeURIComponent(clube);
+      const texto = `Vem participar do clube ${nome} na Comunidade Abanô! Lá a gente troca fotos, dicas e experiências com outros tutores 🐾 ${url}`;
+      const j = janelaSimples("Convidar para " + nome);
+      const dentro = est.clubes.has(clube);
+      j.corpo.innerHTML = `<div class="convite-links">
+          <a class="btn convite-zap" href="https://wa.me/?text=${encodeURIComponent(texto)}" target="_blank" rel="noopener">${ICONE.zap}<span>WhatsApp</span></a>
+          <button type="button" class="btn btn-sec" id="convite-copiar">${ICONE.link}<span>Copiar link</span></button>
+          ${navigator.share ? `<button type="button" class="btn btn-sec" id="convite-partilhar">${ICONE.compartilhar}<span>Outros apps</span></button>` : ""}
+        </div>
+        <h3 class="convite-sub">Convide tutores da Comunidade</h3>
+        <div id="convite-pessoas">${dentro ? '<p class="carregando">Carregando…</p>' : `<p class="convite-nota">Participe do clube para convidar quem você segue. O convite chega no sininho da pessoa.</p>`}</div>`;
+      j.corpo.querySelector("#convite-copiar").addEventListener("click", async () => {
+        try { await navigator.clipboard.writeText(url); toast("Link do clube copiado!"); } catch (e) { prompt("Copie o link:", url); }
+      });
+      const ps = j.corpo.querySelector("#convite-partilhar");
+      if (ps) ps.addEventListener("click", async () => { try { await navigator.share({ title: "Clube " + nome + " no Abanô", text: texto, url: url }); } catch (e) {} });
+      if (!dentro) return;
+      const [seg, segMe, ja] = await Promise.all([
+        sb.from("seguidores").select("perfil:perfis!seguidores_seguido_fkey(id,usuario,nome,foto_url)").eq("seguidor", est.eu.id).limit(300),
+        sb.from("seguidores").select("perfil:perfis!seguidores_seguidor_fkey(id,usuario,nome,foto_url)").eq("seguido", est.eu.id).limit(300),
+        sb.rpc("meus_convites_clube", { p_clube: clube })
+      ]);
+      if (!j.aberta()) return;
+      const mapa = new Map();
+      [...(seg.data || []), ...(segMe.data || [])].forEach((x) => { if (x.perfil && !est.bloqueados.has(x.perfil.id)) mapa.set(x.perfil.id, x.perfil); });
+      const ids = [...mapa.keys()];
+      const membros = ids.length ? await sb.from("clube_membros").select("usuario").eq("clube", clube).in("usuario", ids) : { data: [] };
+      const jaMembro = new Set((membros.data || []).map((x) => x.usuario));
+      const convidados = new Set((ja.data || []).map((x) => typeof x === "string" ? x : x.meus_convites_clube || x));
+      const lista = [...mapa.values()].filter((u) => !jaMembro.has(u.id)).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+      const box = j.corpo.querySelector("#convite-pessoas");
+      box.innerHTML = lista.length ? `<ul class="lista-pessoas">${lista.map((u) => `<li><a class="pessoa" href="${linkPerfil(u.usuario)}">${avatar(u)}<span><b>${esc(u.nome)}</b><small>@${esc(u.usuario)}</small></span></a>${convidados.has(u.id) ? '<span class="pessoa-eu">Convidado</span>' : `<button type="button" class="btn btn-peq" data-convidar-id="${esc(u.id)}">Convidar</button>`}</li>`).join("")}</ul>`
+        : '<p class="convite-nota">Quem você segue (e quem segue você) já está no clube, ou você ainda não segue ninguém. Use o link acima para chamar amigos de fora da Comunidade.</p>';
+      box.addEventListener("click", async (e) => {
+        const b = e.target.closest("[data-convidar-id]"); if (!b) return;
+        b.disabled = true;
+        const r = await sb.rpc("convidar_para_clube", { p_clube: clube, p_para: b.dataset.convidarId });
+        if (r.error) {
+          b.disabled = false;
+          toast(/convidar_para_clube/.test(r.error.message || "") ? "Os convites ainda estão sendo ativados no Abanô." : erroMsg(r.error));
+          if (!/já convidou|já participa/i.test(r.error.message || "")) return;
+        }
+        b.outerHTML = '<span class="pessoa-eu">Convidado</span>';
+        if (!r.error) toast("Convite enviado!");
+      });
+    },
     async mensagem(perfilId, _o, b) {
       const usuario = (b && b.dataset.usuario) || "";
       if (b) b.disabled = true;
@@ -667,7 +748,7 @@
     });
   })();
 
-  const PRECISA_LOGIN = { membros: 1, mensagem: 1, curtir: 1, salvar: 1, votar: 1, apagar: 1, participar: 1, seguir: 1, publicar: 1, desbloquear: 1, "comentar-login": 1 };
+  const PRECISA_LOGIN = { convidar: 1, membros: 1, mensagem: 1, curtir: 1, salvar: 1, votar: 1, apagar: 1, participar: 1, seguir: 1, publicar: 1, desbloquear: 1, "comentar-login": 1 };
 
   // ---------- Visualizador de fotos (tela cheia, sem sair da página) ----------
   const galeria = (() => {
@@ -844,7 +925,7 @@
         <h2>${pergunta ? "Respostas" : "Comentários"} <small id="num-coment">${p.total_comentarios ? num(p.total_comentarios) : ""}</small></h2>
         <ol class="lista-comentarios" id="lista-comentarios"><li class="carregando">Carregando…</li></ol>
         ${est.eu && est.eu.aceitou
-          ? `<form class="comentar" id="form-comentar" novalidate>${avatar(est.eu)}<label class="sr" for="comentario-texto">${pergunta ? "Sua resposta" : "Seu comentário"}</label><textarea id="comentario-texto" maxlength="2000" rows="1" placeholder="${pergunta ? "Escreva uma resposta…" : "Escreva um comentário…"}"></textarea><button type="submit" class="btn">${pergunta ? "Responder" : "Publicar"}</button><p class="aviso-conta" id="comentar-aviso" role="alert" hidden></p></form>`
+          ? `<form class="comentar" id="form-comentar" novalidate>${avatar(est.eu)}<label class="sr" for="comentario-texto">${pergunta ? "Sua resposta" : "Seu comentário"}</label><textarea id="comentario-texto" maxlength="2000" rows="1" placeholder="${pergunta ? "Escreva uma resposta…" : "Escreva um comentário…"}"></textarea>${barraFmt("comentario-texto")}<button type="submit" class="btn">${pergunta ? "Responder" : "Publicar"}</button><p class="aviso-conta" id="comentar-aviso" role="alert" hidden></p></form>`
           : `<button type="button" class="compor-fake" id="comentar-login">${avatar(null)}<span>${pergunta ? "Entre para responder" : "Entre para comentar"}</span></button>`}
       </section>`;
   }
@@ -969,8 +1050,8 @@
   // "@usuario" no começo da resposta vira link para o perfil
   function textoComMencao(t) {
     const m = /^@([a-z0-9_]{3,30})\b/.exec(t || "");
-    if (!m) return esc(t);
-    return `<a class="c-mencao" href="${linkPerfil(m[1])}">@${esc(m[1])}</a>${esc(t.slice(m[0].length))}`;
+    if (!m) return fmt(t);
+    return `<a class="c-mencao" href="${linkPerfil(m[1])}">@${esc(m[1])}</a>${fmt(t.slice(m[0].length))}`;
   }
   function conversa(c, respostas, p) {
     const filhas = respostas.get(c.id) || [];
@@ -1117,7 +1198,7 @@
           <div><h1>${esc(c.nome)}</h1><p>${esc(c.descricao)}</p></div>
         </div>
         <div class="clube-capa-rodape"><button type="button" class="membros-ver" data-acao="membros" data-id="${esc(c.id)}"><span class="membros">${textoMembros(c.total_membros)}</span><span class="membros-link">Ver membros</span></button>
-        <button type="button" class="btn${dentro ? " btn-sec" : ""}" data-acao="participar" data-id="${esc(c.id)}" aria-pressed="${dentro}">${dentro ? "Participando" : "Participar"}</button></div>
+        <span class="clube-botoes"><button type="button" class="btn btn-sec btn-convidar" data-acao="convidar" data-id="${esc(c.id)}">${ICONE.convidar}<span>Convidar</span></button><button type="button" class="btn${dentro ? " btn-sec" : ""}" data-acao="participar" data-id="${esc(c.id)}" aria-pressed="${dentro}">${dentro ? "Participando" : "Participar"}</button></span></div>
         ${est.admin ? `<div class="clube-admin"><label class="clube-admin-btn">Trocar foto do clube<input type="file" id="foto-clube" accept="image/jpeg,image/png,image/webp,image/heic"></label>${foto ? '<button type="button" class="clube-admin-btn" id="tirar-foto-clube">Tirar foto</button>' : ""}<span>Só a administração vê estes botões.</span></div>` : ""}
       </section>
       <div id="clube-fixado"></div>
@@ -1330,6 +1411,7 @@
     seguidor: () => "começou a seguir você",
     pedido_adocao: (n, g) => `enviou um pedido para adotar <b>${esc(g.pet_nome || "um dos seus pets")}</b>. Toque para ver as respostas`,
     pedido_aceito: (n, g) => `aceitou seu pedido para adotar <b>${esc(g.pet_nome || "o pet")}</b>! O WhatsApp está liberado`,
+    convite_clube: (n, g) => `convidou você para participar do clube <b>${esc(g.clube_nome || "da Comunidade")}</b>`,
     adocao_concluida: (n, g) => `concluiu a adoção de <b>${esc(g.pet_nome || "seu novo pet")}</b> 🎉 Que tal compartilhar essa alegria com a Comunidade?`
   };
   const ICONE_AVISO = {
@@ -1340,6 +1422,7 @@
     seguidor: '<circle cx="10" cy="8" r="3.6"/><path d="M3.5 20a6.5 6.5 0 0 1 11.2-4.5M18.5 13v6M15.5 16h6"/>',
     pedido_adocao: '<path d="M3.5 11 12 4l8.5 7v8.5a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/>',
     pedido_aceito: '<path d="M3.5 11 12 4l8.5 7v8.5a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/>',
+    convite_clube: '<circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2a4.5 4.5 0 0 1 5 4.8"/>',
     adocao_concluida: '<path d="M12 20.5s-8-4.9-8-10.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.9c0 5.7-8 10.6-8 10.6z"/>'
   };
   function agruparAvisos(lista) {
@@ -1360,6 +1443,7 @@
     const daOng = g.tipo === "pedido_aceito" || g.tipo === "adocao_concluida";
     const nomes = `<b>${esc(daOng ? (g.org_nome || quem.de_nome) : quem.de_nome)}</b>${outros ? ` e mais ${outros === 1 ? "1 pessoa" : outros + " pessoas"}` : ""}`;
     const link = g.tipo === "seguidor" ? linkPerfil(quem.de_usuario)
+      : g.tipo === "convite_clube" ? linkClube(g.clube || "")
       : g.tipo === "pedido_adocao" ? "ong.html#pedidos"
       : g.tipo === "pedido_aceito" ? "adocao.html?v=pedidos"
       : g.tipo === "adocao_concluida" ? "adocao.html?v=pedidos&compartilhar=" + encodeURIComponent(g.pedido || "")
@@ -1480,7 +1564,7 @@
       ]);
     });
     let primeiro = null, ultimo = 0, timer = null;
-    const item = (m) => `<li class="msg${m.autor === est.eu.id ? " minha" : ""}" data-id="${m.id}"><p>${esc(m.texto)}</p><time datetime="${esc(m.criado_em)}">${horaMsg(m.criado_em)}</time></li>`;
+    const item = (m) => `<li class="msg${m.autor === est.eu.id ? " minha" : ""}" data-id="${m.id}"><p>${fmt(m.texto)}</p><time datetime="${esc(m.criado_em)}">${horaMsg(m.criado_em)}</time></li>`;
     function noFim() { corpo.scrollTop = corpo.scrollHeight; }
     async function carregar(antes) {
       let qy = sb.from("mensagens").select("*").eq("conversa", id).order("id", { ascending: false }).limit(50);
@@ -1623,7 +1707,7 @@
     caixa.className = "lado-caixa lado-perdidos";
     caixa.id = "lado-perdidos";
     caixa.innerHTML = `<h2>Pets desaparecidos${uf ? " em " + esc(uf) : ""}</h2><ul class="lado-alertas">${r.data.slice(0, 3).map((x) =>
-      `<li><a href="perdidos.html?a=${esc(x.id)}">${String(x.foto_url || "").indexOf(pasta) === 0 ? `<img src="${esc(x.foto_url)}" alt="" loading="lazy">` : "<span></span>"}<span><b>${esc(x.nome || (x.tipo === "encontrado" ? "Pet encontrado" : "Pet"))}</b><small><em class="${x.tipo}">${x.tipo === "perdido" ? "Perdido" : "Encontrado"}</em> · ${esc(x.bairro)}, ${esc(x.cidade)}</small></span></a></li>`).join("")}</ul>
+      `<li><a href="perdidos.html?a=${esc(x.id)}">${String(x.foto_url || "").indexOf(pasta) === 0 ? `<img src="${esc(x.foto_url)}" alt="" loading="lazy">` : "<span></span>"}<span><b>${esc(x.nome || (x.tipo === "encontrado" ? "Procura-se o dono" : "Pet"))}</b><small><em class="${x.tipo}">${x.tipo === "perdido" ? "Perdido" : "Procura o dono"}</em> · ${esc(x.bairro)}, ${esc(x.cidade)}</small></span></a></li>`).join("")}</ul>
       <a class="ver-todos" href="perdidos.html">Ver todos os alertas</a>`;
     const pesquisa = lado.querySelector(".lado-pesquisa");
     lado.insertBefore(caixa, pesquisa ? pesquisa.nextSibling : lado.firstChild);
