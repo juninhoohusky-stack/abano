@@ -550,6 +550,7 @@
       fp.bio.value = conta.bio || "";
       fp.cidade.value = conta.cidade || "";
       fp.estado.value = conta.estado || "";
+      if (fp.instagram) fp.instagram.value = conta.instagram ? "@" + conta.instagram : "";
       contar(fp.bio, $("bio-conta"), 300);
       $("pref-novidades").checked = !!conta.novidades;
       $("bloco-senha").hidden = conta.provedor !== "email";
@@ -600,6 +601,12 @@
         cidade: fp.cidade.value.trim() || null,
         estado: fp.estado.value || null
       };
+      if (fp.instagram) {
+        var ig = fp.instagram.value.trim().replace(/^@+/, "").replace(/^https?:\/\/(www\.)?instagram\.com\//i, "").replace(/[/?#].*$/, "");
+        if (ig && !/^[A-Za-z0-9._]{1,30}$/.test(ig)) { marcar(fp.instagram, true); aviso(avisoPerfil, "Confira o Instagram: só letras, números, ponto e _ (até 30)."); fp.instagram.focus(); return; }
+        marcar(fp.instagram, false);
+        if (ig || conta.instagram) dados.instagram = ig || null;
+      }
       marcar(fp.nome, dados.nome.length < 2); marcar(fp.usuario, !/^[a-z0-9][a-z0-9_]{2,29}$/.test(dados.usuario));
       if (dados.nome.length < 2) { aviso(avisoPerfil, "O nome precisa ter pelo menos 2 letras."); fp.nome.focus(); return; }
       marcar(fp.estado, !dados.estado);

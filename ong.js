@@ -48,16 +48,26 @@
     if (!org) {
       st.hidden = true; form.hidden = false; $("ong-painel").hidden = true;
       $("o-estado").value = eu.estado || ""; $("o-cidade").value = eu.cidade || "";
+      const pre = new URLSearchParams(location.search).get("tipo");
+      const rp = pre && fo.querySelector(`input[name="tipo"][value="${pre}"]`); if (rp) rp.checked = true;
+      trocarTipo();
       return;
     }
     preencherForm();
     if (org.status === "aprovada") {
-      $("ong-titulo").textContent = org.nome;
+      $("ong-titulo").textContent = org.tipo === "pessoa" ? "Seus anúncios de adoção" : org.nome;
+      $("btn-anunciar").textContent = org.tipo === "pessoa" ? "Anunciar um animal para adoção" : "Anunciar pet para adoção";
+      if (org.tipo === "pessoa" && !org.telefone_confirmado && eu.telefone_confirmado) {
+        const c = await sb.rpc("confirmar_telefone");
+        if (!c.error && c.data) org.telefone_confirmado = true;
+      }
+      $("tel-box").hidden = !(org.tipo === "pessoa" && !org.telefone_confirmado);
+      if (!$("tel-box").hidden && !$("tel-num").value) $("tel-num").value = A.formatarWhatsapp(org.whatsapp || "");
       st.hidden = true;
       $("ong-painel").hidden = false;
       $("aba-dados").appendChild(form);
       form.hidden = false;
-      $("org-form-titulo").textContent = "Dados da organização";
+      $("org-form-titulo").textContent = org.tipo === "pessoa" ? "Seus dados de anunciante" : "Dados da organização";
       $("org-enviar").textContent = "Salvar dados";
       carregarPets();
       carregarPedidos();
@@ -87,7 +97,21 @@
     fo.site.value = org.site || ""; fo.cnpj.value = org.cnpj || ""; fo.descricao.value = org.descricao || "";
     trocarTipo();
   }
-  function trocarTipo() { $("o-cnpj-box").hidden = fo.querySelector('input[name="tipo"]:checked').value !== "ong"; }
+  const TEXTOS_TIPO = {
+    ong: ["Nome da ONG ou instituição", "Conte sobre o trabalho", "A equipe do Abanô confere os dados (redes sociais, CNPJ, site) e libera os anúncios. Seu WhatsApp e CNPJ não aparecem no site."],
+    protetor: ["Nome do seu trabalho de proteção (ou o seu nome)", "Conte sobre o trabalho", "A equipe do Abanô confere seus dados e redes sociais e libera os anúncios. Seu WhatsApp não aparece no site."],
+    pessoa: ["Seu nome", "Conte um pouco sobre você", "Depois de salvar, você confirma seu telefone por código. Cada anúncio é revisado pela equipe antes de aparecer. Seu WhatsApp só é mostrado para quem tiver o pedido aceito por você."]
+  };
+  function trocarTipo() {
+    const tipo = fo.querySelector('input[name="tipo"]:checked').value, tx = TEXTOS_TIPO[tipo];
+    $("o-cnpj-box").hidden = tipo !== "ong";
+    $("o-site-box").hidden = tipo === "pessoa";
+    $("o-nome-rot").textContent = tx[0];
+    $("o-descricao-rot").innerHTML = tx[1] + ' <span class="opcional">(opcional)</span>';
+    $("org-sub").textContent = tx[2];
+    if (tipo === "pessoa" && !fo.nome.value && eu) fo.nome.value = eu.nome || "";
+    if (!org) $("org-enviar").textContent = tipo === "pessoa" ? "Salvar e continuar" : "Enviar para análise";
+  }
   fo.addEventListener("change", (e) => { if (e.target.name === "tipo") trocarTipo(); });
   fo.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -100,7 +124,8 @@
       descricao: fo.descricao.value.trim() || null
     };
     const erros = [];
-    if (dados.nome.length < 2) erros.push([fo.nome, "Digite o nome da ONG ou do trabalho de proteção."]);
+    if (tipo === "pessoa") dados.site = null;
+    if (dados.nome.length < 2) erros.push([fo.nome, tipo === "pessoa" ? "Digite o seu nome." : "Digite o nome da ONG ou do trabalho de proteção."]);
     if (dados.cidade.length < 2) erros.push([fo.cidade, "Digite a cidade."]);
     if (!dados.estado) erros.push([fo.estado, "Escolha o estado."]);
     if (!A.whatsappValido(dados.whatsapp)) erros.push([fo.whatsapp, "Digite o WhatsApp com DDD, por exemplo (21) 99999-9999."]);
@@ -115,9 +140,48 @@
     b.disabled = false; b.textContent = txt;
     if (r.error) { aviso(av, C.traduzir(r.error)); return; }
     aviso(av, "");
-    toast(org ? "Dados salvos." : "Enviado para análise! Você recebe um e-mail quando for aprovado.");
+    toast(org ? "Dados salvos." : tipo === "pessoa" ? "Pronto! Agora confirme seu telefone para anunciar." : "Enviado para análise! Você recebe um e-mail quando for aprovado.");
     await carregarOrg();
   });
+
+  // ---------- Confirmação do telefone por código (SMS) ----------
+  let telE164 = "";
+  function erroSms(e) {
+    const m = String((e && e.message) || "");
+    if (/provider|sms|twilio|disabled|not enabled|unsupported/i.test(m)) return "A confirmação por SMS ainda está sendo ativada no Abanô. Tente de novo em breve.";
+    if (/rate|seconds|too many/i.test(m)) return "Espere um pouco antes de pedir outro código.";
+    if (/already|registered|exists/i.test(m)) return "Este número já está confirmado em outra conta do Abanô.";
+    if (/expired|invalid|token/i.test(m)) return "Código incorreto ou vencido. Confira ou peça outro.";
+    return C.traduzir(e);
+  }
+  $("tel-form-num").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const av = $("tel-aviso"), d = A.soDigitos($("tel-num").value).replace(/^55(?=\d{10,11}$)/, "");
+    if (d.length < 10 || d.length > 11) { aviso(av, "Digite o celular com DDD, por exemplo (21) 99999-9999."); $("tel-num").focus(); return; }
+    telE164 = "+55" + d;
+    const b = e.target.querySelector("button"); b.disabled = true; b.textContent = "Enviando…";
+    const r = await sb.auth.updateUser({ phone: telE164 });
+    b.disabled = false; b.textContent = "Enviar código";
+    if (r.error) { aviso(av, erroSms(r.error)); return; }
+    aviso(av, "");
+    $("tel-form-num").hidden = true; $("tel-form-cod").hidden = false; $("tel-cod").focus();
+    toast("Código enviado por SMS para " + A.formatarWhatsapp(d) + ".");
+  });
+  $("tel-form-cod").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const av = $("tel-aviso"), cod = $("tel-cod").value.replace(/\D/g, "");
+    if (cod.length < 6) { aviso(av, "Digite o código de 6 números que chegou por SMS."); return; }
+    const b = e.target.querySelector("button[type=submit]"); b.disabled = true; b.textContent = "Confirmando…";
+    const r = await sb.auth.verifyOtp({ phone: telE164, token: cod, type: "phone_change" });
+    if (r.error) { b.disabled = false; b.textContent = "Confirmar"; aviso(av, erroSms(r.error)); return; }
+    const c = await sb.rpc("confirmar_telefone");
+    b.disabled = false; b.textContent = "Confirmar";
+    if (c.error || !c.data) { aviso(av, "Telefone confirmado, mas não deu para atualizar o selo agora. Recarregue a página."); return; }
+    toast("Telefone confirmado! Agora você já pode anunciar.");
+    eu.telefone_confirmado = true;
+    await carregarOrg();
+  });
+  $("tel-trocar").addEventListener("click", () => { $("tel-form-cod").hidden = true; $("tel-form-num").hidden = false; $("tel-num").focus(); });
 
   // ---------- Abas ----------
   function abrirAba(nome) {
@@ -145,7 +209,9 @@
         <img src="${fotoOk(p.fotos[0]) ? esc(p.fotos[0]) : ""}" alt="" loading="lazy">
         <div><h3>${esc(p.nome)}</h3>
           <p class="meta">${esc([A.ESPECIES[p.especie], A.SEXOS[p.sexo], A.IDADES[p.idade]].join(" · "))}</p>
-          <p class="meta">${vencido ? "<b>Anúncio vencido</b> em " : "Fica no ar até "}${data(p.expira_em)}</p></div>
+          ${p.moderacao === "pendente" ? '<p class="moderacao pendente">Em análise pela equipe do Abanô. Ainda não aparece no site.</p>'
+            : p.moderacao === "recusado" ? `<p class="moderacao recusado"><b>Precisa de ajustes.</b> ${esc(p.moderacao_motivo || "Confira as regras e edite o anúncio.")} Ao salvar, ele volta para a análise.</p>`
+            : `<p class="meta">${vencido ? "<b>Anúncio vencido</b> em " : "Fica no ar até "}${data(p.expira_em)}</p>`}</div>
         <div class="acoes-item">
           <label class="sr" for="st-${esc(p.id)}">Situação de ${esc(p.nome)}</label>
           <select id="st-${esc(p.id)}" data-status>${Object.keys(A.STATUS).map((k) => `<option value="${k}"${k === p.status ? " selected" : ""}>${A.STATUS[k]}</option>`).join("")}</select>
@@ -242,10 +308,25 @@
     } else {
       fp.cidade.value = org.cidade; fp.estado.value = org.estado;
     }
+    const pessoa = org.tipo === "pessoa";
+    $("pa-pessoa").hidden = !pessoa;
+    if (pessoa) {
+      fp.regiao.value = (p && p.regiao) || ""; fp.motivo.value = (p && p.motivo) || ""; fp.saude.value = (p && p.saude) || "";
+      fp.querySelectorAll('input[name="onde_esta"]').forEach((r) => { r.checked = !!p && p.onde_esta === r.value; });
+      fp.por_terceiros.checked = !!(p && p.por_terceiros); fp.autorizado.checked = !!(p && p.autorizado);
+      fp.declarou.checked = false;
+      $("pa-autorizado-box").hidden = !fp.por_terceiros.checked;
+    }
     desenharFotos();
     dp.showModal();
   }
+  $("pa-terceiros").addEventListener("change", (e) => { $("pa-autorizado-box").hidden = !e.target.checked; });
   $("btn-anunciar").addEventListener("click", () => {
+    if (org.tipo === "pessoa" && !org.telefone_confirmado) {
+      toast("Confirme seu telefone por código antes de anunciar.");
+      $("tel-box").scrollIntoView({ behavior: "smooth", block: "center" }); $("tel-num").focus();
+      return;
+    }
     if (!eu.foto_url) {
       if (confirm("Para anunciar pets para adoção, coloque uma foto sua no perfil. Ela traz mais segurança para quem vai adotar.\n\nIr para Minha conta agora?")) location.href = "conta.html?volta=" + encodeURIComponent("/ong.html");
       return;
@@ -291,7 +372,21 @@
     if (!dados.idade) erros.push([fp.idade, "Escolha a idade."]);
     if (dados.cidade.length < 2) erros.push([fp.cidade, "Digite a cidade."]);
     if (!dados.estado) erros.push([fp.estado, "Escolha o estado."]);
-    if (A.temValorEmReais([dados.descricao, dados.necessidades, dados.compromissos].join(" "))) erros.push([fp.compromissos, "Tire os valores em reais do anúncio: eles são combinados direto com quem quiser adotar."]);
+    if (org.tipo === "pessoa") {
+      Object.assign(dados, {
+        regiao: fp.regiao.value.trim() || null, motivo: fp.motivo.value.trim() || null, saude: fp.saude.value.trim() || null,
+        onde_esta: (fp.querySelector('input[name="onde_esta"]:checked') || {}).value || null,
+        por_terceiros: fp.por_terceiros.checked, autorizado: fp.por_terceiros.checked ? fp.autorizado.checked : null, declarou: fp.declarou.checked
+      });
+      if (!dados.regiao) erros.push([fp.regiao, "Informe o bairro ou a região."]);
+      if (!dados.motivo || dados.motivo.length < 10) erros.push([fp.motivo, "Conte o motivo de colocar o animal para adoção."]);
+      if (!dados.saude) erros.push([fp.saude, "Conte as informações de saúde que você conhece (ou escreva \"nenhuma conhecida\")."]);
+      if (!dados.onde_esta) erros.push([fp.querySelector('input[name="onde_esta"]'), "Diga se o animal está com você ou em lar temporário."]);
+      if (dados.por_terceiros && !dados.autorizado) erros.push([fp.autorizado, "Para divulgar por outra pessoa, você precisa ter a autorização do responsável."]);
+      if (!dados.declarou) erros.push([fp.declarou, "Marque a declaração do anunciante para continuar."]);
+      if (!dados.descricao) erros.push([fp.descricao, "Conte um pouco sobre o animal: personalidade, rotina, como convive."]);
+    }
+    if (A.temValorEmReais([dados.descricao, dados.necessidades, dados.compromissos, dados.motivo, dados.saude].join(" "))) erros.push([fp.compromissos, "Tire os valores em reais do anúncio: eles são combinados direto com quem quiser adotar."]);
     if (erros.length) { aviso(av, erros[0][1]); erros[0][0].focus(); return; }
     const b = $("pa-salvar"), txt = b.textContent; b.disabled = true; b.textContent = "Salvando…";
     const enviadas = [];
@@ -304,7 +399,7 @@
       if (r.error) throw r.error;
       if (editando) (editando.fotos || []).filter((u) => dados.fotos.indexOf(u) < 0).forEach((u) => C.apagarFoto(u));
       dp.close();
-      toast(editando ? "Anúncio atualizado." : "Anúncio publicado!");
+      toast(org.tipo === "pessoa" ? "Anúncio enviado para análise! Você recebe um e-mail quando for aprovado." : editando ? "Anúncio atualizado." : "Anúncio publicado!");
       carregarPets();
     } catch (err) {
       enviadas.forEach((u) => C.apagarFoto(u));

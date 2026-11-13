@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Painel da ONG | Abanô</title>
+<title>Painel de adoção | Abanô</title>
 <meta name="description" content="Cadastre sua ONG ou trabalho de proteção, anuncie pets para adoção e acompanhe os pedidos no Abanô.">
 <meta property="og:title" content="Painel da ONG">
 <meta property="og:description" content="Cadastre sua ONG ou trabalho de proteção, anuncie pets para adoção e acompanhe os pedidos no Abanô.">
@@ -23,17 +23,17 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261112c">
+<link rel="stylesheet" href="site.css?v=20261113a">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261112c" defer></script>
+<script src="site.js?v=20261113a" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261112c" defer></script>
-<script src="conta.js?v=20261112c" defer></script>
-<link rel="stylesheet" href="adocao.css?v=20261112c">
-<script src="adocao-comum.js?v=20261112c" defer></script>
-<script src="ong.js?v=20261112c" defer></script>
+<script src="lista.js?v=20261113a" defer></script>
+<script src="conta.js?v=20261113a" defer></script>
+<link rel="stylesheet" href="adocao.css?v=20261113a">
+<script src="adocao-comum.js?v=20261113a" defer></script>
+<script src="ong.js?v=20261113a" defer></script>
 <style>
   .pagina-conta{padding:var(--e-12) 0 var(--e-14)}
   .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:var(--e-16);align-items:start}
@@ -107,25 +107,42 @@
   <header class="ado-topo">
     <div>
       <span class="eyebrow">Adoção</span>
-      <h1 id="ong-titulo">Painel da ONG</h1>
+      <h1 id="ong-titulo">Painel de adoção</h1>
     </div>
-    <p>Anuncie pets para adoção, leia os pedidos e, quando aceitar, combine os próximos passos pelo WhatsApp.</p>
+    <p>Anuncie animais para adoção, leia os pedidos e, quando aceitar, combine os próximos passos pelo WhatsApp.</p>
   </header>
   <p class="carregando" id="ong-carregando">Carregando…</p>
   <p class="aviso-conta" id="ong-erro" role="alert" hidden></p>
   <div class="status-org" id="ong-status" hidden></div>
+  <section class="tel-box" id="tel-box" hidden aria-labelledby="tel-titulo">
+    <h2 id="tel-titulo">Confirme seu telefone para anunciar</h2>
+    <p>Enviamos um código por SMS. O número confirmado gera o selo <b>Telefone confirmado</b> no seu perfil de anunciante e não aparece no site.</p>
+    <form class="tel-linha" id="tel-form-num" novalidate>
+      <label class="sr" for="tel-num">Celular com DDD</label>
+      <input id="tel-num" type="tel" inputmode="tel" autocomplete="tel" placeholder="(21) 99999-9999">
+      <button type="submit" class="btn">Enviar código</button>
+    </form>
+    <form class="tel-linha" id="tel-form-cod" novalidate hidden>
+      <label class="sr" for="tel-cod">Código recebido por SMS</label>
+      <input id="tel-cod" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="Código de 6 números">
+      <button type="submit" class="btn">Confirmar</button>
+      <button type="button" class="link-botao" id="tel-trocar">Trocar número</button>
+    </form>
+    <p class="aviso-conta" id="tel-aviso" role="alert" hidden></p>
+  </section>
 
   <form class="fc form-ado" id="form-org" novalidate hidden>
-    <h2 id="org-form-titulo">Cadastre sua ONG ou trabalho de proteção</h2>
-    <p class="sub">Depois de enviar, a equipe do Abanô confere os dados e libera os anúncios. Seu WhatsApp e CNPJ não aparecem no site: o WhatsApp só é mostrado para quem tiver o pedido de adoção aceito por você.</p>
+    <h2 id="org-form-titulo">Como você quer anunciar?</h2>
+    <p class="sub" id="org-sub">Seu WhatsApp e CNPJ não aparecem no site: o WhatsApp só é mostrado para quem tiver o pedido de adoção aceito por você.</p>
     <fieldset>
-      <legend>Você é</legend>
-      <div class="opcoes">
-        <label class="opcao"><input type="radio" name="tipo" value="ong" checked><span>ONG</span></label>
-        <label class="opcao"><input type="radio" name="tipo" value="protetor"><span>Protetor independente</span></label>
+      <legend>Escolha o seu caminho</legend>
+      <div class="caminhos">
+        <label class="caminho"><input type="radio" name="tipo" value="ong" checked><span><b>Sou ONG ou instituição</b><small>Para organizações de proteção animal, com dados institucionais. A equipe do Abanô confere antes de liberar os anúncios.</small></span></label>
+        <label class="caminho"><input type="radio" name="tipo" value="protetor"><span><b>Sou protetor independente</b><small>Para quem resgata, acolhe e ajuda animais, mesmo sem uma ONG formalizada. Também passa pela análise da equipe.</small></span></label>
+        <label class="caminho"><input type="radio" name="tipo" value="pessoa"><span><b>Quero colocar um animal para adoção</b><small>Para tutores e pessoas comuns que precisam encontrar um lar responsável. Você confirma o telefone por código e cada anúncio é revisado antes de aparecer.</small></span></label>
       </div>
     </fieldset>
-    <label class="rot" for="o-nome">Nome da ONG ou do trabalho de proteção</label>
+    <label class="rot" for="o-nome" id="o-nome-rot">Nome da ONG ou do trabalho de proteção</label>
     <input id="o-nome" name="nome" type="text" maxlength="80" required>
     <div class="duas">
       <div><label class="rot" for="o-cidade">Cidade</label><input id="o-cidade" name="cidade" type="text" maxlength="80" autocomplete="address-level2" required></div>
@@ -135,23 +152,23 @@
     <input id="o-whatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="(21) 99999-9999" required>
     <div class="duas">
       <div><label class="rot" for="o-instagram">Instagram <span class="opcional">(opcional)</span></label><input id="o-instagram" name="instagram" type="text" maxlength="60" placeholder="@suaong" autocapitalize="none"></div>
-      <div><label class="rot" for="o-site">Site <span class="opcional">(opcional)</span></label><input id="o-site" name="site" type="url" maxlength="200" placeholder="https://" autocapitalize="none"></div>
+      <div id="o-site-box"><label class="rot" for="o-site">Site <span class="opcional">(opcional)</span></label><input id="o-site" name="site" type="url" maxlength="200" placeholder="https://" autocapitalize="none"></div>
     </div>
     <div id="o-cnpj-box">
       <label class="rot" for="o-cnpj">CNPJ <span class="opcional">(opcional, ajuda na verificação)</span></label>
       <input id="o-cnpj" name="cnpj" type="text" inputmode="numeric" maxlength="18" placeholder="00.000.000/0000-00">
     </div>
-    <label class="rot" for="o-descricao">Conte sobre o trabalho <span class="opcional">(opcional)</span></label>
+    <label class="rot" for="o-descricao" id="o-descricao-rot">Conte sobre o trabalho <span class="opcional">(opcional)</span></label>
     <textarea id="o-descricao" name="descricao" maxlength="600" placeholder="Há quanto tempo resgata, quantos animais cuida, como é o processo de adoção…"></textarea>
     <p class="aviso-conta" id="org-aviso" role="alert" hidden></p>
     <button type="submit" class="btn" id="org-enviar">Enviar para análise</button>
   </form>
 
   <div id="ong-painel" hidden>
-    <div class="abas-ong" role="tablist" aria-label="Painel da ONG">
+    <div class="abas-ong" role="tablist" aria-label="Painel de adoção">
       <button type="button" role="tab" id="tab-pets" aria-selected="true" aria-controls="aba-pets">Pets para adoção</button>
       <button type="button" role="tab" id="tab-pedidos" aria-selected="false" aria-controls="aba-pedidos">Pedidos <span id="num-pedidos"></span></button>
-      <button type="button" role="tab" id="tab-dados" aria-selected="false" aria-controls="aba-dados">Dados da organização</button>
+      <button type="button" role="tab" id="tab-dados" aria-selected="false" aria-controls="aba-dados">Seus dados</button>
     </div>
     <section id="aba-pets" role="tabpanel" aria-labelledby="tab-pets">
       <div class="ado-acoes" style="margin:0 0 var(--e-5)"><button type="button" class="btn" id="btn-anunciar">Anunciar pet para adoção</button><a class="btn btn-sec" id="link-publico" href="adocao.html">Ver a página de adoção</a></div>
@@ -191,6 +208,35 @@
       </div>
       <label class="rot" for="pa-cidade">Cidade</label>
       <input id="pa-cidade" name="cidade" type="text" maxlength="80" required>
+      <div id="pa-pessoa" hidden>
+        <label class="rot" for="pa-regiao">Bairro ou região</label>
+        <input id="pa-regiao" name="regiao" type="text" maxlength="80" placeholder="Ex.: Centro, Itaipuaçu">
+        <label class="rot" for="pa-motivo">Por que o animal está para adoção?</label>
+        <textarea id="pa-motivo" name="motivo" maxlength="500" placeholder="Ex.: vou me mudar para um lugar que não aceita pets; resgatei na rua e não posso ficar"></textarea>
+        <label class="rot" for="pa-saude">Informações de saúde que você conhece</label>
+        <textarea id="pa-saude" name="saude" maxlength="500" placeholder="Doenças, alergias, remédios, cirurgias. Se não souber de nada, escreva &quot;nenhuma conhecida&quot;."></textarea>
+        <span class="ajuda">Marque acima a vacinação e a vermifugação só se tiver certeza.</span>
+        <fieldset><legend>Onde o animal está agora?</legend>
+          <div class="opcoes">
+            <label class="opcao"><input type="radio" name="onde_esta" value="comigo"><span>Comigo</span></label>
+            <label class="opcao"><input type="radio" name="onde_esta" value="lar_temporario"><span>Em lar temporário</span></label>
+          </div>
+        </fieldset>
+        <label class="check-ado"><input type="checkbox" name="por_terceiros" id="pa-terceiros"><span>Estou divulgando por outra pessoa (o animal não é meu)</span></label>
+        <label class="check-ado" id="pa-autorizado-box" hidden><input type="checkbox" name="autorizado"><span>Tenho a autorização do responsável pelo animal para divulgar</span></label>
+        <div class="regras-ado">
+          <h3>Regras para anunciar</h3>
+          <ul>
+            <li>Venda de animais não é permitida na área de adoção.</li>
+            <li>Nada de cobrança disfarçada de taxa de adoção: custos como castração ou vacinas são combinados com transparência, direto com o adotante.</li>
+            <li>Use fotos atuais e reais do animal. Fotos de outras pessoas ou anúncios repetidos sem justificativa são retirados.</li>
+            <li>Só anuncie animais que você tem autorização para encaminhar.</li>
+            <li>Anúncios e perfis suspeitos podem ser denunciados e retirados pela equipe do Abanô.</li>
+          </ul>
+        </div>
+        <label class="check-ado declaracao"><input type="checkbox" name="declarou"><span>Confirmo que tenho autorização e informações verdadeiras para divulgar este animal para adoção. Estou ciente de que o Abanô poderá revisar e retirar anúncios que descumpram as regras da plataforma.</span></label>
+        <p class="ajuda">Seu anúncio passa pela revisão da equipe antes de aparecer no site. Você recebe um e-mail quando ele for aprovado.</p>
+      </div>
       <label class="rot" for="pa-descricao">Sobre o pet</label>
       <textarea id="pa-descricao" name="descricao" maxlength="1000" placeholder="Personalidade, história do resgate, rotina…"></textarea>
       <label class="rot" for="pa-necessidades">Necessidades especiais <span class="opcional">(opcional)</span></label>

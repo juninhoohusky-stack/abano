@@ -7,9 +7,9 @@
 <title>Moderação | Abanô</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="site.css?v=20261112c">
+<link rel="stylesheet" href="site.css?v=20261113a">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261112c" defer></script>
+<script src="lista.js?v=20261113a" defer></script>
 <style>
   .painel{max-width:980px;margin:0 auto;padding:var(--e-6) var(--e-5) var(--e-12)}
   .topo-admin{display:flex;align-items:center;justify-content:space-between;gap:var(--e-4);max-width:980px;margin:0 auto;padding:var(--e-3) var(--e-5)}
@@ -120,6 +120,7 @@
       <button type="button" data-status="fechadas" aria-pressed="false">Resolvidas</button>
       <button type="button" data-status="eventos" aria-pressed="false">Eventos</button>
       <button type="button" data-status="orgs" aria-pressed="false">Organizações <span id="num-orgs"></span></button>
+      <button type="button" data-status="anuncios" aria-pressed="false">Anúncios de adoção <span id="num-anuncios"></span></button>
       <button type="button" data-status="parceiros" aria-pressed="false">Parceiros</button>
       <button type="button" data-status="alertas" aria-pressed="false">Desaparecidos</button>
     </div>
@@ -144,6 +145,15 @@
         <div class="cad-tabela-caixa"><table class="cad-tabela"><thead><tr><th>Tutor</th><th>E-mail</th><th>Local</th><th>Pets</th><th>Cadastro</th><th>Último acesso</th></tr></thead><tbody id="cad-lista"></tbody></table></div>
         <p class="detalhe" style="margin-top:12px">Mostra os 100 mais recentes. "Incompleto" é quem criou a conta mas ainda não aceitou a política (não aparece na Comunidade). Os e-mails são dados pessoais: use só para falar com o próprio tutor.</p>
       </section>
+    </div>
+    <div id="tela-anuncios" hidden>
+      <div class="abas" role="group" aria-label="Situação dos anúncios" style="margin-bottom:12px">
+        <button type="button" data-anuncio-status="pendente" aria-pressed="true">Aguardando</button>
+        <button type="button" data-anuncio-status="recusado" aria-pressed="false">Recusados</button>
+        <button type="button" data-anuncio-status="aprovado" aria-pressed="false">Aprovados</button>
+      </div>
+      <p class="detalhe" style="margin:0 0 12px">Anúncios de pessoas físicas ("Quero colocar um animal para adoção") só aparecem no site depois de aprovados aqui. Confira se as fotos parecem reais e atuais, se não há venda ou cobrança disfarçada e se os dados fazem sentido.</p>
+      <div class="lista" id="lista-anuncios"></div>
     </div>
     <div id="tela-alertas" hidden>
       <p class="detalhe">Alertas de pets perdidos e encontrados. Tire do ar o que for golpe, pedido de dinheiro ou conteúdo falso; o autor não consegue colocar de volta no ar.</p>
@@ -259,15 +269,68 @@ document.addEventListener("DOMContentLoaded", function () {
         blocoConteudo(d) + (d.detalhe ? '<p class="detalhe">“' + esc(d.detalhe) + "”</p>" : "") + botoes(d) + "</article>";
     }).join("") : '<p class="vazio">' + (status === "aberta" ? "Nenhuma denúncia aberta. Tudo tranquilo por aqui." : "Nenhuma denúncia resolvida ainda.") + "</p>";
   }
+  // ---------- Anúncios de adoção (pessoas físicas) ----------
+  var anuncioStatus = "pendente";
+  var ESP = { cachorro: "Cachorro", gato: "Gato", ave: "Ave", pequeno_mamifero: "Pequeno mamífero", reptil: "Réptil", peixe: "Peixe", outro: "Outro" };
+  var TIPO_AN = { ong: "ONG", protetor: "Protetor", pessoa: "Pessoa física" };
+  function carregarAnuncios() {
+    $("lista-anuncios").innerHTML = '<p class="vazio">Carregando…</p>';
+    sb.rpc("anuncios_moderacao", { p_status: anuncioStatus }).then(function (r) {
+      if (r.error) { $("lista-anuncios").innerHTML = '<p class="vazio">' + esc(/anuncios_moderacao/.test(r.error.message) ? "Rode o arquivo supabase/destaques_adocao_pessoas.sql no Supabase para ativar a moderação dos anúncios." : r.error.message) + "</p>"; return; }
+      var l = r.data || [];
+      if (anuncioStatus === "pendente") $("num-anuncios").textContent = l.length ? "(" + l.length + ")" : "";
+      $("lista-anuncios").innerHTML = l.length ? l.map(function (a) {
+        var fotos = (a.fotos || []).filter(function (f) { return String(f).indexOf(PASTA) === 0; });
+        var saude = [a.vacinado ? "vacinado" : "", a.vermifugado ? "vermifugado" : "", a.castrado ? "castrado" : ""].filter(Boolean).join(", ") || "nada marcado";
+        return '<article class="den"><div class="den-topo"><span class="tag">' + esc(TIPO_AN[a.tipo_anunciante] || a.tipo_anunciante) + '</span>' +
+          (a.telefone_confirmado ? '<span class="tag n">Telefone confirmado</span>' : '<span class="tag off">Telefone não confirmado</span>') +
+          "<span>" + new Date(a.criado_em).toLocaleString("pt-BR") + " · @" + esc(a.usuario) + " · " + esc(a.email || "") + " · " + a.total_anuncios + " anúncio(s)</span></div>" +
+          '<div class="conteudo"><span class="autor">' + esc(a.nome) + " · " + esc(ESP[a.especie] || a.especie) + " · " + esc([a.regiao, a.cidade, a.estado].filter(Boolean).join(", ")) +
+          ' · <a href="adocao.html?pet=' + encodeURIComponent(a.id) + '" target="_blank" rel="noopener">abrir</a></span>' +
+          (a.descricao ? "<b>Sobre:</b> " + esc(a.descricao) + "<br>" : "") +
+          (a.motivo ? "<b>Motivo:</b> " + esc(a.motivo) + "<br>" : "") +
+          (a.saude ? "<b>Saúde conhecida:</b> " + esc(a.saude) + "<br>" : "") +
+          "<b>Marcado:</b> " + esc(saude) + " · <b>Está:</b> " + (a.onde_esta === "lar_temporario" ? "em lar temporário" : a.onde_esta === "comigo" ? "com o anunciante" : "—") +
+          (a.por_terceiros ? " · <b>Divulga por terceiros</b> (" + (a.autorizado ? "com autorização" : "SEM autorização") + ")" : "") +
+          (fotos.length ? "<br>" + fotos.map(function (f) { return '<a href="' + esc(f) + '" target="_blank" rel="noopener"><img src="' + esc(f) + '" alt=""></a>'; }).join("") : "") + "</div>" +
+          (a.moderacao_motivo ? '<p class="detalhe">Motivo da recusa: “' + esc(a.moderacao_motivo) + "”</p>" : "") +
+          '<div class="acoes">' + (a.moderacao !== "aprovado" ? '<button class="btn" data-anuncio="' + a.id + '" data-acao-anuncio="aprovar">Aprovar e publicar</button>' : "") +
+          (a.moderacao !== "recusado" ? '<button class="btn btn-sec" data-anuncio="' + a.id + '" data-acao-anuncio="recusar">Recusar (pedir ajustes)</button>' : "") + "</div></article>";
+      }).join("") : '<p class="vazio">' + (anuncioStatus === "pendente" ? "Nenhum anúncio esperando revisão." : "Nada por aqui.") + "</p>";
+    });
+  }
+  document.querySelectorAll("[data-anuncio-status]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      anuncioStatus = b.getAttribute("data-anuncio-status");
+      document.querySelectorAll("[data-anuncio-status]").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      carregarAnuncios();
+    });
+  });
+  $("lista-anuncios").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-acao-anuncio]"); if (!b) return;
+    var acao = b.getAttribute("data-acao-anuncio"), motivo = null;
+    if (acao === "recusar") {
+      motivo = prompt("O que o anunciante precisa ajustar? (vai no e-mail para ele)", "");
+      if (motivo === null) return;
+    }
+    b.disabled = true;
+    sb.rpc("moderar_anuncio", { p_pet: b.getAttribute("data-anuncio"), p_acao: acao, p_motivo: motivo }).then(function (r) {
+      if (r.error) { b.disabled = false; alert(r.error.message); return; }
+      carregarAnuncios();
+    });
+  });
+
   function carregar() {
     $("tela-eventos").hidden = status !== "eventos";
     $("tela-orgs").hidden = status !== "orgs";
     $("tela-parceiros").hidden = status !== "parceiros";
     $("tela-alertas").hidden = status !== "alertas";
+    $("tela-anuncios").hidden = status !== "anuncios";
     $("tela-cadastros").hidden = status !== "cadastros";
-    $("lista").hidden = status === "eventos" || status === "orgs" || status === "parceiros" || status === "alertas" || status === "cadastros";
+    $("lista").hidden = status === "eventos" || status === "orgs" || status === "parceiros" || status === "alertas" || status === "cadastros" || status === "anuncios";
     if (status === "cadastros") { carregarCadastros(); return; }
     if (status === "alertas") { carregarAlertas(); return; }
+    if (status === "anuncios") { carregarAnuncios(); return; }
     if (status === "eventos") { carregarEventos(); return; }
     if (status === "orgs") { carregarOrgs(); return; }
     if (status === "parceiros") { carregarParceiros(); return; }
@@ -550,6 +613,7 @@ document.addEventListener("DOMContentLoaded", function () {
     meuId = s.user.id;
     carregar();
     sb.rpc("organizacoes_lista", { p_status: "pendente" }).then(function (r) { if (!r.error && r.data && r.data.length) $("num-orgs").textContent = "(" + r.data.length + ")"; });
+    sb.rpc("anuncios_moderacao", { p_status: "pendente" }).then(function (r) { if (!r.error && r.data && r.data.length) $("num-anuncios").textContent = "(" + r.data.length + ")"; });
   });
 });
 </script>

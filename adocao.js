@@ -12,7 +12,7 @@
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const PASTA = SUPABASE_URL + "/storage/v1/object/public/fotos/";
   const fotoOk = (u) => String(u || "").indexOf(PASTA) === 0;
-  const ORG = "org:organizacoes!pets_adocao_org_fkey(id,nome,tipo,cidade,estado,instagram,site,descricao)";
+  const ORG = "org:organizacoes!pets_adocao_org_fkey(id,nome,tipo,cidade,estado,instagram,site,descricao,telefone_confirmado)";
   const SVG_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
   const SVG_VOLTAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
   let eu = null, sessao = null;
@@ -25,7 +25,29 @@
     const d = document.querySelector('meta[name="description"]'); if (d && desc) d.setAttribute("content", desc);
     const c = document.querySelector('link[rel="canonical"]'); if (c) c.setAttribute("href", "https://abano.com.br/" + canon);
   }
-  const selo = (o) => o ? `<span class="verificada">${SVG_OK}${o.tipo === "ong" ? "ONG verificada" : "Protetor verificado"}</span>` : "";
+  // Selos: cada um diz exatamente o que o Abanô conferiu (veja SELOS_EXPLICA)
+  const selo = (o) => {
+    if (!o) return "";
+    if (o.tipo === "ong") return `<span class="verificada">${SVG_OK}ONG verificada</span>`;
+    if (o.tipo === "protetor") return `<span class="verificada">${SVG_OK}Protetor verificado</span>`;
+    return (o.telefone_confirmado ? `<span class="verificada">${SVG_OK}Telefone confirmado</span> ` : "") + '<span class="selo-neutro">Pessoa física</span>';
+  };
+  const TIPO_ANUNCIANTE = { ong: "ONG", protetor: "Protetor independente", pessoa: "Pessoa física" };
+  const SVG_ESCUDO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.2 7.5 9.5 4.3-1.3 7.5-4.9 7.5-9.5V6z"/><path d="m8.8 12.2 2.3 2.3 4.2-4.4"/></svg>';
+  const SELOS_EXPLICA = `<details class="selos-explica"><summary>${SVG_ESCUDO}Saiba o que cada selo significa</summary>
+    <dl>
+      <dt>ONG verificada</dt><dd>A equipe do Abanô conferiu os dados da organização, como redes sociais, site e CNPJ, antes de liberar os anúncios.</dd>
+      <dt>Protetor verificado</dt><dd>A equipe conferiu as redes sociais e o histórico de resgate de quem atua de forma independente.</dd>
+      <dt>Telefone confirmado</dt><dd>A pessoa confirmou o número de celular com um código enviado por SMS. O número não aparece no site.</dd>
+      <dt>Pessoa física</dt><dd>Tutor ou pessoa comum que precisa encontrar um lar para um animal. Cada anúncio é revisado pela equipe antes de aparecer.</dd>
+    </dl>
+    <p>Os selos indicam quais dados foram confirmados pelo Abanô. Eles não representam garantia absoluta sobre o anunciante ou o animal: converse, conheça o animal e confira as informações antes de concluir a adoção.</p></details>`;
+  const SEGURANCA = `<aside class="seguranca-ado">${SVG_ESCUDO}<div><h2>Adoção com segurança</h2><ul>
+      <li>Não faça pagamentos antecipados para reservar animais.</li>
+      <li>Não envie documentos pessoais a desconhecidos.</li>
+      <li>Combine encontros em locais seguros e movimentados.</li>
+      <li>Conheça o animal e confira as informações antes de concluir a adoção.</li>
+      <li>Quem doa: não entregue o animal sem conversar e avaliar as condições do futuro lar.</li></ul></div></aside>`;
   const voltar = (destino) => `<a class="voltar-ado" href="${destino}" data-voltar>${SVG_VOLTAR}<span>Voltar</span></a>`;
   document.addEventListener("click", (e) => {
     const v = e.target.closest("[data-voltar]"); if (!v) return;
@@ -72,12 +94,22 @@
       <div class="corpo"><h3>${esc(p.nome)}</h3>
         <p class="meta">${esc([A.ESPECIES[p.especie], A.SEXOS[p.sexo], A.IDADES[p.idade], p.porte ? A.PORTES[p.porte] : ""].filter(Boolean).join(" · "))}</p>
         <p class="meta">${esc(p.cidade)} / ${esc(p.estado)}</p>
-        <span class="org">${esc(o.nome || "")}</span></div></a>`;
+        <span class="org">${esc(o.tipo === "pessoa" ? TIPO_ANUNCIANTE.pessoa : o.nome || "")}</span></div></a>`;
   }
   async function telaLista() {
-    meta("Adoção de cães, gatos e outros pets | Abanô", "Adote um cão, gato ou outro pet de ONGs e protetores verificados pelo Abanô. Veja fotos, saúde e temperamento e peça para adotar.", "adocao.html");
-    centro.innerHTML = `<header class="ado-topo"><div><span class="eyebrow">Adoção</span><h1>Adote um amigo</h1></div>
-      <p>Cães, gatos e outros bichos de ONGs e protetores verificados pelo Abanô, esperando por uma família.${sessao ? ' <a href="adocao.html?v=pedidos">Ver meus pedidos</a>' : ""}</p></header>
+    meta("Adoção de cães, gatos e outros pets | Abanô", "Adote um cão, gato ou outro pet de ONGs, protetores e tutores, com anúncios revisados pelo Abanô. Veja fotos, saúde e temperamento e peça para adotar.", "adocao.html");
+    centro.innerHTML = `<section class="ado-hero" aria-labelledby="ado-hero-t">
+        <h1 id="ado-hero-t">Adoção no Abanô</h1>
+        <p class="ado-hero-lead">Um novo lar começa com uma conexão responsável.</p>
+        <p>Um espaço para ONGs, protetores independentes e pessoas que desejam encontrar um lar para um animal.${sessao ? ' <a href="adocao.html?v=pedidos">Ver meus pedidos</a>' : ""}</p>
+        <ul class="ado-quem">
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20.5V8l8-4.5L20 8v12.5M9 20.5v-6h6v6M3 20.5h18"/></svg><b>ONGs</b><small>Organizações de proteção animal.</small></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-8-4.9-8-10.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.9c0 5.7-8 10.6-8 10.6z"/><path d="m9.5 12 2 2 3.5-3.6"/></svg><b>Protetores</b><small>Quem atua no resgate e acolhimento.</small></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><b>Pessoas</b><small>Quem precisa encaminhar um animal.</small></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.2 7.5 9.5 4.3-1.3 7.5-4.9 7.5-9.5V6z"/><path d="m8.8 12.2 2.3 2.3 4.2-4.4"/></svg><b>Segurança</b><small>Perfis identificados e anúncios moderados.</small></li>
+        </ul>
+        <div class="ado-hero-botoes"><a class="btn" href="#grade">Ver animais para adoção</a><a class="btn btn-sec" href="ong.html">Quero anunciar um animal</a></div>
+      </section>
       ${filtrosHTML()}<div id="grade" class="grade-ado"><p class="carregando">Carregando os pets…</p></div>`;
     const f = $("filtros");
     f.addEventListener("change", () => {
@@ -103,7 +135,7 @@
     const filtrando = ["especie", "porte", "idade", "sexo", "estado"].some((k) => q.get(k));
     g.innerHTML = lista.length ? lista.map(cartao).join("")
       : `<div class="vazio-ado" style="grid-column:1/-1"><h3>${filtrando ? "Nenhum pet com esses filtros" : "Os primeiros pets chegam em breve"}</h3>
-         <p>${filtrando ? "Tente outro estado ou tire algum filtro." : "Estamos cadastrando ONGs e protetores verificados. Volte logo, ou avise uma ONG que você conhece."}</p></div>`;
+         <p>${filtrando ? "Tente outro estado ou tire algum filtro." : "Volte logo, ou anuncie um animal que precisa de um lar."}</p></div>`;
   }
 
   // ---------- Página do pet ----------
@@ -138,13 +170,18 @@
           ${p.descricao ? `<div class="caixa-ado"><h2>Sobre ${esc(p.nome)}</h2><p>${esc(p.descricao)}</p></div>` : ""}
           ${p.necessidades ? `<div class="caixa-ado"><h2>Necessidades especiais</h2><p>${esc(p.necessidades)}</p></div>` : ""}
           ${p.compromissos ? `<div class="caixa-ado assumir"><h2>O que o adotante vai precisar assumir</h2><p>${esc(p.compromissos)}</p></div>` : ""}
-          <div class="caixa-ado"><h2>${esc(o.nome)}</h2><p>${selo(o)} ${esc(o.cidade)} / ${esc(o.estado)}${o.instagram ? " · " + esc(o.instagram) : ""}</p>${o.descricao ? `<p style="margin-top:var(--e-2)">${esc(o.descricao)}</p>` : ""}</div>
+          ${p.motivo ? `<div class="caixa-ado"><h2>Por que está para adoção</h2><p>${esc(p.motivo)}</p></div>` : ""}
+          ${p.saude ? `<div class="caixa-ado"><h2>Saúde que o anunciante conhece</h2><p>${esc(p.saude)}</p></div>` : ""}
+          ${p.onde_esta || p.regiao ? `<p class="meta">${[p.regiao ? esc(p.regiao) + ", " + esc(p.cidade) : "", p.onde_esta === "lar_temporario" ? "Está em lar temporário" : p.onde_esta === "comigo" ? "Está com o anunciante" : ""].filter(Boolean).join(" · ")}</p>` : ""}
+          <a class="caixa-ado anunciante-mini" href="adocao.html?anunciante=${encodeURIComponent(o.id)}"><h2>Quem anuncia</h2><p><b>${esc(o.tipo === "pessoa" ? o.nome.split(" ")[0] : o.nome)}</b> · ${esc(TIPO_ANUNCIANTE[o.tipo] || "")} · ${esc(o.cidade)} / ${esc(o.estado)}</p><p class="selos-linha">${selo(o)}</p><span class="link-anunciante">Ver perfil e histórico de anúncios</span></a>
+          ${SEGURANCA}
           <div class="cta-ado">
-            ${podePedir ? `<button type="button" class="btn" id="btn-adotar">Quero adotar ${esc(p.nome)}</button><small>Você responde algumas perguntas e a ONG avalia. Se ela aceitar, vocês trocam o WhatsApp.</small>`
+            ${podePedir ? `<button type="button" class="btn" id="btn-adotar">Quero adotar ${esc(p.nome)}</button><small>Você responde algumas perguntas e quem anuncia avalia. Se aceitar, vocês trocam o WhatsApp.</small>`
               : `<p class="caixa-ado">${p.status === "adotado" ? esc(p.nome) + " já encontrou uma família!" : "Este anúncio venceu."} <a href="adocao.html">Ver outros pets</a></p>`}
             <button type="button" class="link-botao" id="btn-compartilhar-ado" style="min-height:44px">Compartilhar</button>
             <button type="button" class="link-botao" id="btn-denunciar-ado" style="min-height:44px;color:var(--suave)">Denunciar este anúncio</button>
           </div>
+          ${SELOS_EXPLICA}
         </div>
       </div>`;
     centro.querySelectorAll("[data-foto]").forEach((b) => b.addEventListener("click", () => {
@@ -172,6 +209,63 @@
       const r2 = await sb.from("denuncias").insert({ denunciante: eu.id, alvo_tipo: "perfil", perfil: p.autor, motivo: "outro", detalhe: ("Anúncio de adoção de " + p.nome + ": " + detalhe).slice(0, 500) });
       if (r2.error && r2.error.code !== "23505") { toast(C.traduzir(r2.error)); return; }
       toast("Denúncia enviada. Obrigado por cuidar dos pets!");
+    });
+  }
+
+  // ---------- Perfil do anunciante: quem é, selos e histórico de anúncios ----------
+  async function telaAnunciante(id) {
+    centro.innerHTML = '<p class="carregando">Carregando…</p>';
+    const r = await sb.from("organizacoes").select("id,nome,tipo,cidade,estado,instagram,site,descricao,telefone_confirmado,criado_em,dono,status").eq("id", id).maybeSingle();
+    const o = r.data;
+    if (r.error || !o || o.status !== "aprovada") {
+      centro.innerHTML = voltar("adocao.html") + '<div class="vazio-ado"><h3>Anunciante não encontrado</h3><p>Este perfil não está disponível.</p><a class="btn" href="adocao.html">Ver animais para adoção</a></div>';
+      return;
+    }
+    const [pf, an] = await Promise.all([
+      sb.from("perfis").select("nome,usuario,foto_url,criado_em").eq("id", o.dono).maybeSingle(),
+      sb.from("pets_adocao").select("id,nome,fotos,status,cidade,estado,criado_em,especie").eq("org", o.id).eq("removido", false).order("criado_em", { ascending: false }).limit(60)
+    ]);
+    const u = pf.data || {};
+    const pessoa = o.tipo === "pessoa";
+    const nome = pessoa ? (u.nome || o.nome) : o.nome;
+    const desde = new Date(u.criado_em || o.criado_em).toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+    meta(nome + " | Anunciante de adoção no Abanô", "Perfil de anunciante de adoção no Abanô: selos, cidade e histórico de anúncios.", "adocao.html?anunciante=" + encodeURIComponent(o.id));
+    const fotoU = fotoOk(u.foto_url) ? `<img src="${esc(u.foto_url)}" alt="">` : esc(nome.charAt(0).toUpperCase());
+    const ROT = { disponivel: "Disponível", em_processo: "Em processo", adotado: "Adotado" };
+    const lista = an.data || [];
+    const tempoAtras = (iso) => { const d = Math.round((Date.now() - new Date(iso)) / 864e5); return d <= 0 ? "hoje" : d === 1 ? "há 1 dia" : d < 30 ? "há " + d + " dias" : new Date(iso).toLocaleDateString("pt-BR", { day: "numeric", month: "short", year: "numeric" }); };
+    centro.innerHTML = `${voltar("adocao.html")}
+      <section class="anunciante">
+        <header class="anunciante-topo"><span class="anunciante-foto" aria-hidden="true">${fotoU}</span>
+          <div><h1>${esc(nome)}</h1>
+            <p class="meta">${esc(o.cidade)}, ${esc(o.estado)} · No Abanô desde ${esc(desde)}</p>
+            <p class="selos-linha">${selo(o)}</p>
+            ${!pessoa && o.instagram ? `<p class="meta">${esc(o.instagram)}</p>` : ""}</div></header>
+        ${o.descricao ? `<p class="anunciante-sobre">${esc(o.descricao)}</p>` : ""}
+        <div class="anunciante-botoes">
+          <button type="button" class="btn btn-sec" id="anun-compartilhar">Compartilhar perfil</button>
+          ${u.usuario ? `<a class="btn btn-sec" href="comunidade/?u=${encodeURIComponent(u.usuario)}">Ver na Comunidade</a>` : ""}
+          <button type="button" class="link-botao" id="anun-denunciar">Denunciar perfil</button>
+        </div>
+        <h2>Anúncios de adoção</h2>
+        ${lista.length ? `<ul class="anuncios-hist">${lista.map((x) => `<li><a href="adocao.html?pet=${encodeURIComponent(x.id)}">
+            <span class="hist-foto">${x.fotos && fotoOk(x.fotos[0]) ? `<img src="${esc(x.fotos[0])}" alt="" loading="lazy">` : ""}</span>
+            <span><b>${esc(x.nome)}</b><small>Publicado ${tempoAtras(x.criado_em)} · ${esc(x.cidade)}, ${esc(x.estado)}</small><span class="selo-hist ${x.status}">${ROT[x.status] || ""}</span></span></a></li>`).join("")}</ul>`
+          : '<p class="meta">Nenhum anúncio publicado ainda.</p>'}
+        ${SELOS_EXPLICA.replace("<details", "<details open")}
+      </section>`;
+    $("anun-compartilhar").addEventListener("click", async () => {
+      const url = "https://abano.com.br/adocao.html?anunciante=" + encodeURIComponent(o.id);
+      if (navigator.share) { try { await navigator.share({ title: nome + " no Abanô", url: url }); } catch (e) {} return; }
+      try { await navigator.clipboard.writeText(url); toast("Link copiado!"); } catch (e) { prompt("Copie o link:", url); }
+    });
+    $("anun-denunciar").addEventListener("click", async () => {
+      if (!exigirConta()) return;
+      const detalhe = prompt("O que há de errado com este perfil? (venda disfarçada, golpe, fotos roubadas, anúncio falso…)");
+      if (detalhe === null) return;
+      const r2 = await sb.from("denuncias").insert({ denunciante: eu.id, alvo_tipo: "perfil", perfil: o.dono, motivo: "outro", detalhe: ("Perfil de anunciante de adoção (" + nome + "): " + detalhe).slice(0, 500) });
+      if (r2.error && r2.error.code !== "23505") { toast(C.traduzir(r2.error)); return; }
+      toast("Denúncia enviada. A equipe do Abanô vai analisar.");
     });
   }
 
@@ -306,6 +400,7 @@
   (async function iniciar() {
     await carregarEu();
     if (q.get("pet")) return telaPet(q.get("pet"));
+    if (q.get("anunciante")) return telaAnunciante(q.get("anunciante"));
     if (q.get("v") === "pedidos") return telaPedidos();
     return telaLista();
   })();

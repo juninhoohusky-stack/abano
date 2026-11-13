@@ -43,6 +43,9 @@
     salvar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4.2-6.5 4.2v-16a1 1 0 0 1 1-1z"/></svg>',
     compartilhar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3.5M7.5 8 12 3.5 16.5 8"/><path d="M5 12.5v6A2 2 0 0 0 7 20.5h10a2 2 0 0 0 2-2v-6"/></svg>',
     mais: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg>',
+    mudo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 9.6-4.8M18 11v5l1.6 2.4H8M10 21a2.2 2.2 0 0 0 4 0M3.5 3.5l17 17"/></svg>',
+    estrela: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z" fill="currentColor"/></svg>',
+    insta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".6" fill="currentColor"/></svg>',
     mensagem: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.4 7.6L3.5 20.5l1.4-4.4A8.5 8.5 0 1 1 20.5 11.5z"/></svg>',
     verificado: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.4 1.8 3-.2.9 2.9 2.5 1.7-1 2.8 1 2.8-2.5 1.7-.9 2.9-3-.2L12 21.5l-2.4-1.8-3 .2-.9-2.9-2.5-1.7 1-2.8-1-2.8 2.5-1.7.9-2.9 3 .2z" fill="currentColor"/><path d="m8.4 12.2 2.4 2.4 4.8-4.9" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
   };
@@ -1118,6 +1121,7 @@
         ${est.admin ? `<div class="clube-admin"><label class="clube-admin-btn">Trocar foto do clube<input type="file" id="foto-clube" accept="image/jpeg,image/png,image/webp,image/heic"></label>${foto ? '<button type="button" class="clube-admin-btn" id="tirar-foto-clube">Tirar foto</button>' : ""}<span>Só a administração vê estes botões.</span></div>` : ""}
       </section>
       <div id="clube-fixado"></div>
+      <div id="clube-destaque"></div>
       ${!logado ? "" : dentro ? caixaPublicar({ clube: c.id }) : `<p class="convite-clube">Participe do clube para publicar e perguntar aqui.</p>`}
       ${logado ? `<nav class="abas-feed" aria-label="Seções do clube">
         <a href="${linkClube(c.id)}"${aba === "posts" ? ' aria-current="page"' : ""}>Publicações</a>
@@ -1134,6 +1138,7 @@
       }
     }
     ligarAdminClube(c);
+    destaqueNoClube(c);
     if (!logado) {
       // Visitante: vê a apresentação do clube; as publicações ficam para quem entra
       document.getElementById("feed").innerHTML = `<div class="clube-trancado">
@@ -1186,18 +1191,22 @@
       usuario = est.eu.usuario;
     }
     centro.innerHTML = '<p class="carregando">Carregando…</p>';
-    const r = await sb.from("perfis").select("id,usuario,nome,bio,cidade,estado,foto_url,criado_em").eq("usuario", usuario.toLowerCase()).maybeSingle();
+    let r = await sb.from("perfis").select("id,usuario,nome,bio,cidade,estado,foto_url,criado_em,instagram").eq("usuario", usuario.toLowerCase()).maybeSingle();
+    if (r.error && /instagram/.test(r.error.message || "")) r = await sb.from("perfis").select("id,usuario,nome,bio,cidade,estado,foto_url,criado_em").eq("usuario", usuario.toLowerCase()).maybeSingle();
     if (r.error || !r.data) { centro.innerHTML = vazio("Perfil não encontrado", "Esse tutor pode ter mudado o nome de usuário ou excluído a conta.", '<a class="btn" href="comunidade/">Voltar para a Comunidade</a>'); return; }
     const u = r.data;
     const ehEu = est.eu && est.eu.id === u.id;
     definirMeta(u.nome + " (@" + u.usuario + ") | Comunidade Abanô", u.bio || ("Perfil de " + u.nome + " na Comunidade Abanô."), linkPerfil(u.usuario));
-    const [pets, clubes, seg1, seg2, orgR] = await Promise.all([
+    const [pets, clubes, seg1, seg2, orgR, dest] = await Promise.all([
       sb.from("pets").select("*").eq("dono", u.id).order("criado_em"),
       sb.from("clube_membros").select("clube, clubes(id,nome)").eq("usuario", u.id),
       sb.from("seguidores").select("seguidor", { count: "exact", head: true }).eq("seguido", u.id),
       sb.from("seguidores").select("seguido", { count: "exact", head: true }).eq("seguidor", u.id),
-      sb.from("organizacoes").select("id,nome,tipo,status").eq("dono", u.id).eq("status", "aprovada").maybeSingle()
+      sb.from("organizacoes").select("id,nome,tipo,status").eq("dono", u.id).eq("status", "aprovada").maybeSingle(),
+      sb.rpc("membros_destaque", { p_dias: 30, p_clube: null, p_limite: 24 })
     ]);
+    const posDestaque = dest && !dest.error && dest.data ? dest.data.findIndex((m) => m.id === u.id) : -1;
+    const seloDestaque = posDestaque >= 0 ? `<a class="selo-destaque" href="comunidade/?v=destaques">${ICONE.estrela}<span>Membro destaque · ${posDestaque + 1}º do mês</span></a>` : "";
     const sigo = est.seguindo.has(u.id);
     const org = orgR && !orgR.error ? orgR.data : null;
     let pedidosNovos = 0;
@@ -1205,7 +1214,7 @@
       const pn = await sb.from("pedidos_adocao").select("id", { count: "exact", head: true }).eq("org", org.id).eq("status", "enviado");
       pedidosNovos = pn.count || 0;
     }
-    const seloOrg = org ? `<a class="selo-ong" href="adocao.html" title="${esc(org.nome)}: verificada pela equipe do Abanô">${ICONE.verificado}<span>${org.tipo === "ong" ? "ONG verificada" : "Protetor verificado"}</span></a>` : "";
+    const seloOrg = org && org.tipo !== "pessoa" ? `<a class="selo-ong" href="adocao.html" title="${esc(org.nome)}: verificada pela equipe do Abanô">${ICONE.verificado}<span>${org.tipo === "ong" ? "ONG verificada" : "Protetor verificado"}</span></a>` : "";
     const botoesEu = `<div class="perfil-botoes">${org ? `<a class="btn" href="ong.html#pedidos">Pedidos de adoção${pedidosNovos ? ` <b class="menu-num">${pedidosNovos > 99 ? "99+" : pedidosNovos}</b>` : ""}</a>` : ""}<a class="btn btn-sec" href="conta.html">Editar perfil</a></div>`;
     const local = [u.cidade, u.estado].filter(Boolean).join(" / ");
     centro.innerHTML = `
@@ -1215,7 +1224,8 @@
         <div class="perfil-info">
           <h1>${esc(u.nome)}</h1>
           <p class="perfil-user">@${esc(u.usuario)}${local ? " · " + esc(local) : ""}</p>
-          ${seloOrg}
+          ${seloOrg}${seloDestaque}
+          ${u.instagram ? `<p class="perfil-insta">${linkInsta(u.instagram)}</p>` : ""}
           ${u.bio ? `<p class="perfil-bio">${esc(u.bio)}</p>` : ""}
           ${(pets.data || []).some((p) => p.doador_sangue) ? `<a class="perfil-doador" href="doador-de-sangue.html">${GOTA}<span>${(pets.data || []).some((p) => p.doador_sangue === "doador") ? "Família doadora de sangue" : "Família que quer doar sangue"}</span></a>` : ""}
           <p class="perfil-num"><b id="num-seguidores">${num(seg1.count)}</b> ${seg1.count === 1 ? "seguidor" : "seguidores"} · <b>${num(seg2.count)}</b> seguindo</p>
@@ -1412,7 +1422,7 @@
     const lista = (r.data || []).filter((c) => !est.bloqueados.has(c.outro));
     ul.innerHTML = lista.length ? lista.map((c) => `<li><a class="conversa-item${c.nao_lidas ? " nova" : ""}" href="comunidade/?v=mensagens&conversa=${encodeURIComponent(c.id)}">
         ${avatar({ nome: c.outro_nome, foto_url: c.outro_foto })}
-        <span class="conversa-txt"><b>${esc(c.outro_nome)}</b><small>${c.ultima_texto ? (c.ultima_minha ? "Você: " : "") + esc(c.ultima_texto) : "Conversa iniciada"}</small></span>
+        <span class="conversa-txt"><b>${esc(c.outro_nome)}${c.silenciada ? `<span class="mudo" title="Conversa silenciada">${ICONE.mudo}</span>` : ""}</b><small>${c.ultima_texto ? (c.ultima_minha ? "Você: " : "") + esc(c.ultima_texto) : "Conversa iniciada"}</small></span>
         <span class="conversa-meta"><small>${tempo(c.ultima_em)}</small>${c.nao_lidas ? `<b class="menu-num">${c.nao_lidas}</b>` : ""}</span></a></li>`).join("")
       : `<li class="avisos-vazio">${vazio("Nenhuma conversa ainda", "Siga um tutor e toque em Mensagem no perfil dele para começar.", '<a class="btn" href="comunidade/?v=tutores">Encontrar tutores</a>')}</li>`;
   }
@@ -1427,7 +1437,8 @@
     const bloqueado = est.bloqueados.has(o.id);
     centro.innerHTML = `<section class="chat">
       <header class="chat-topo"><a class="chat-voltar" href="comunidade/?v=mensagens" aria-label="Voltar para as mensagens"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
-        <a class="chat-quem" href="${linkPerfil(o.usuario)}">${avatar(o)}<span><b>${esc(o.nome)}</b><small>@${esc(o.usuario)}</small></span></a></header>
+        <a class="chat-quem" href="${linkPerfil(o.usuario)}">${avatar(o)}<span><b>${esc(o.nome)}</b><small>@${esc(o.usuario)}<span id="chat-mudo"></span></small></span></a>
+        <button type="button" class="post-mais chat-mais" id="chat-mais" aria-label="Opções da conversa: silenciar, marcar como não lida, bloquear ou denunciar">${ICONE.mais}</button></header>
       <div class="chat-corpo" id="chat-corpo"><button type="button" class="link-botao chat-antigas" id="chat-antigas" hidden>Carregar mensagens anteriores</button><ol class="chat-lista" id="chat-lista" aria-live="polite"></ol></div>
       ${bloqueado ? '<p class="convite-clube">Você bloqueou este perfil. Desbloqueie para voltar a conversar.</p>' : `<form class="chat-form" id="chat-form">
         <label class="sr" for="chat-texto">Mensagem para ${esc(o.nome)}</label>
@@ -1437,7 +1448,38 @@
       <p class="chat-nota">Nunca envie senhas ou pague nada a quem você não conhece. Viu algo estranho? Bloqueie ou denuncie pelo perfil.</p>
     </section>`;
     const ol = document.getElementById("chat-lista"), corpo = document.getElementById("chat-corpo");
-    let primeiro = null, ultimo = 0;
+    // Opções da conversa
+    let silenciada = false;
+    const sil = await sb.from("conversas_silenciadas").select("conversa").eq("conversa", id).eq("usuario", est.eu.id).maybeSingle();
+    silenciada = !sil.error && !!sil.data;
+    const mostrarMudo = () => { document.getElementById("chat-mudo").innerHTML = silenciada ? ` · ${ICONE.mudo}<span>silenciada</span>` : ""; };
+    mostrarMudo();
+    document.getElementById("chat-mais").addEventListener("click", () => {
+      abrirOpcoes([
+        ["Marcar como não lida", async () => {
+          const r = await sb.rpc("marcar_conversa_nao_lida", { p_conversa: id });
+          if (r.error) { toast(/marcar_conversa/.test(r.error.message || "") ? "Essa opção ainda está sendo ativada no Abanô." : erroMsg(r.error)); return; }
+          clearInterval(timer); location.href = "comunidade/?v=mensagens";
+        }],
+        [silenciada ? "Reativar notificações desta conversa" : "Silenciar conversa", async () => {
+          const r = await sb.rpc("silenciar_conversa", { p_conversa: id, p_silenciar: !silenciada });
+          if (r.error) { toast(/silenciar_conversa/.test(r.error.message || "") ? "Essa opção ainda está sendo ativada no Abanô." : erroMsg(r.error)); return; }
+          silenciada = !silenciada; mostrarMudo(); contarAvisos();
+          toast(silenciada ? "Conversa silenciada. As mensagens chegam, mas não contam no sininho." : "Notificações reativadas.");
+        }],
+        ["Denunciar @" + o.usuario, () => {
+          abrirDenuncia({ tipo: "perfil", id: o.id });
+          const f = document.getElementById("form-denuncia");
+          if (f && f.detalhe && !f.detalhe.value) f.detalhe.value = "Mensagens na conversa privada: ";
+        }, true],
+        [est.bloqueados.has(o.id) ? "Desbloquear @" + o.usuario : "Bloquear @" + o.usuario, async () => {
+          if (est.bloqueados.has(o.id)) { await desbloquear(o.id); return; }
+          await bloquear(o.id, o.usuario);
+          if (est.bloqueados.has(o.id)) telaConversa(id);
+        }, !est.bloqueados.has(o.id)]
+      ]);
+    });
+    let primeiro = null, ultimo = 0, timer = null;
     const item = (m) => `<li class="msg${m.autor === est.eu.id ? " minha" : ""}" data-id="${m.id}"><p>${esc(m.texto)}</p><time datetime="${esc(m.criado_em)}">${horaMsg(m.criado_em)}</time></li>`;
     function noFim() { corpo.scrollTop = corpo.scrollHeight; }
     async function carregar(antes) {
@@ -1467,7 +1509,7 @@
     await carregar();
     await sb.rpc("ler_conversa", { p_conversa: id }); contarAvisos();
     document.getElementById("chat-antigas").addEventListener("click", () => carregar(primeiro));
-    const timer = setInterval(novas, 4000);
+    clearInterval(window.__chatTimer); timer = window.__chatTimer = setInterval(novas, 4000);
     window.addEventListener("pagehide", () => clearInterval(timer));
     const f = document.getElementById("chat-form");
     if (!f) return;
@@ -1488,6 +1530,50 @@
       noFim(); ta.focus();
     });
     if (window.matchMedia("(hover: hover)").matches) ta.focus();
+  }
+
+  // ---------- Membros destaque (mural) ----------
+  const linkInsta = (h) => h ? `<a class="destaque-insta" href="https://www.instagram.com/${encodeURIComponent(h)}/" target="_blank" rel="noopener nofollow">${ICONE.insta}<span>@${esc(h)}</span></a>` : "";
+  const COMO_DESTAQUE = `<ul class="como-destaque">
+      <li><b>Publique</b> fotos, dicas e histórias do seu pet</li>
+      <li><b>Responda perguntas</b> de outros tutores com a sua experiência</li>
+      <li><b>Comente e incentive</b> as publicações da comunidade</li>
+      <li><b>Receba curtidas</b> pelo que você compartilha</li></ul>
+    <p class="destaque-nota">O ranking soma a participação dos últimos 30 dias e é atualizado o tempo todo. Coloque seu Instagram em <a href="conta.html">Minha conta</a> para ele aparecer embaixo da sua foto no mural.</p>`;
+  function cartaoDestaque(m, i) {
+    const local = [m.cidade, m.estado].filter(Boolean).join(" / ");
+    const numeros = [[m.publicacoes, "publicação", "publicações"], [m.respostas, "resposta", "respostas"], [m.comentarios, "comentário", "comentários"]]
+      .filter((x) => x[0]).map((x) => plural(x[0], x[1], x[2])).join(" · ");
+    return `<li class="destaque${i < 3 ? " top" + (i + 1) : ""}">
+      <span class="destaque-pos" aria-label="${i + 1}º lugar">${i + 1}º</span>
+      <a href="${linkPerfil(m.usuario)}" class="destaque-quem">${avatar(m, "grande")}<b>${esc(m.nome)}</b><small>@${esc(m.usuario)}${local ? " · " + esc(local) : ""}</small></a>
+      ${linkInsta(m.instagram)}
+      <span class="destaque-num">${numeros || plural(m.curtidas, "curtida recebida", "curtidas recebidas")}</span>
+    </li>`;
+  }
+  async function telaDestaques() {
+    definirMeta("Membros destaque | Comunidade Abanô", "Os tutores que mais participam da Comunidade Abanô: publicam, respondem, comentam e ajudam outros tutores.", "comunidade/?v=destaques");
+    centro.innerHTML = `${voltar("comunidade/")}<header class="tela-topo destaque-topo"><span class="destaque-ico" aria-hidden="true">${ICONE.estrela}</span><h1>Membros destaque</h1><p>Os tutores que mais participaram da Comunidade nos últimos 30 dias: publicando, respondendo, comentando e ajudando outros tutores.</p></header>
+      <ol class="mural-destaques" id="mural"><li class="carregando">Carregando…</li></ol>
+      <section class="caixa-destaque"><h2>Como virar destaque</h2>${COMO_DESTAQUE}</section>`;
+    const r = await sb.rpc("membros_destaque", { p_dias: 30, p_clube: null, p_limite: 24 });
+    const ol = document.getElementById("mural");
+    if (r.error) { ol.outerHTML = vazio("Mural quase pronto", /membros_destaque/.test(r.error.message || "") ? "Falta ativar os destaques no banco de dados do Abanô." : erroMsg(r.error)); return; }
+    const lista = (r.data || []).filter((m) => !est.bloqueados.has(m.id));
+    ol.innerHTML = lista.length ? lista.map(cartaoDestaque).join("")
+      : `<li class="avisos-vazio">${vazio("O mural está esperando você", "Ainda ninguém somou pontos suficientes este mês. Publique, comente e responda para aparecer aqui primeiro!", '<a class="btn" href="comunidade/">Ir para o feed</a>')}</li>`;
+  }
+  // Caixa no clube: chama para virar destaque e mostra os 3 que mais participam ali
+  async function destaqueNoClube(c) {
+    const caixa = document.getElementById("clube-destaque");
+    if (!caixa) return;
+    const r = await sb.rpc("membros_destaque", { p_dias: 30, p_clube: c.id, p_limite: 3 });
+    const top = (!r.error && r.data) ? r.data : [];
+    caixa.innerHTML = `<div class="caixa-destaque compacta">
+      <h2>${ICONE.estrela}Torne-se um membro destaque</h2>
+      <p>Quem mais participa em ${esc(c.nome)} e na Comunidade ganha espaço no <a href="comunidade/?v=destaques">mural de destaques</a>, com o @ do Instagram embaixo da foto.</p>
+      ${top.length ? `<ul class="top-clube">${top.map((m, i) => `<li><a href="${linkPerfil(m.usuario)}">${avatar(m)}<span><b>${i + 1}º ${esc(m.nome.split(" ")[0])}</b>${m.instagram ? `<small>@${esc(m.instagram)}</small>` : ""}</span></a></li>`).join("")}</ul>` : ""}
+      <details><summary>Como virar destaque</summary>${COMO_DESTAQUE}</details></div>`;
   }
 
   function telaSalvos() {
@@ -1511,6 +1597,18 @@
       ? `<ul class="lado-lista">${c.data.map((x) => `<li data-clube="${esc(x.id)}"><a href="${linkClube(x.id)}"><b>${esc(x.nome)}</b></a><small class="membros">${textoMembros(x.total_membros)}</small></li>`).join("")}</ul><a class="ver-todos" href="comunidade/?v=clubes">Ver todos os clubes</a>`
       : '<p class="sub">Não deu para carregar os clubes.</p>';
     alertasPerto();
+    destaquesLado();
+  }
+  async function destaquesLado() {
+    const lado = document.querySelector(".com-lado");
+    if (!lado || document.getElementById("lado-destaques")) return;
+    const r = await sb.rpc("membros_destaque", { p_dias: 30, p_clube: null, p_limite: 3 });
+    if (r.error || !r.data || !r.data.length) return;
+    const caixa = document.createElement("section");
+    caixa.className = "lado-caixa lado-destaques"; caixa.id = "lado-destaques";
+    caixa.innerHTML = `<h2>${ICONE.estrela}Membros destaque</h2><ul class="lado-lista">${r.data.map((m, i) => `<li><a href="${linkPerfil(m.usuario)}" class="lado-pessoa">${avatar(m)}<span><b>${i + 1}º ${esc(m.nome)}</b>${m.instagram ? `<small>@${esc(m.instagram)}</small>` : `<small>@${esc(m.usuario)}</small>`}</span></a></li>`).join("")}</ul><a class="ver-todos" href="comunidade/?v=destaques">Ver o mural</a>`;
+    const ref = document.getElementById("lado-perdidos") || lado.querySelector(".lado-pesquisa");
+    lado.insertBefore(caixa, ref ? ref.nextSibling : lado.firstChild);
   }
 
   // Pets desaparecidos no estado de quem está vendo (ou no Brasil todo, para visitantes)
@@ -1553,6 +1651,7 @@
     if (v === "salvos") return telaSalvos();
     if (v === "notificacoes") return telaNotificacoes();
     if (v === "mensagens") return telaMensagens();
+    if (v === "destaques") return telaDestaques();
     return telaFeed();
   }
 
@@ -1565,6 +1664,8 @@
       const aviso = document.getElementById("com-aviso-suspenso");
       if (aviso) aviso.hidden = false;
     }
+    // Quem entrou na conta precisa aceitar a política antes de usar a Comunidade
+    if (est.eu && !est.eu.aceitou) { location.replace("conta.html?volta=" + encodeURIComponent(aqui())); return; }
     if (est.eu && (!est.eu.aceitou || !est.eu.estado)) {
       const aviso = document.getElementById("com-aviso-conta");
       if (aviso) {
