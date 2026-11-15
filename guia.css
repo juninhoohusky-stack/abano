@@ -1,0 +1,49 @@
+/* Abanô — Guia pet (guia/*.html) */
+.guia-pg{padding:var(--e-10) var(--e-5) var(--e-16)}
+.guia-wrap{max-width:740px;margin:0 auto}
+.guia-pg .migalha{font-size:var(--t-sm);color:var(--suave);margin:0 0 var(--e-4)}
+.guia-pg .migalha a{color:var(--suave);text-decoration:none}
+.guia-pg .migalha a:hover{color:var(--tinta)}
+.guia-pg h1{font-size:var(--t-h2,clamp(30px,4.6vw,44px));line-height:1.12;margin:0 0 var(--e-3);text-wrap:balance}
+.guia-pg .sub{font-size:var(--t-lead);line-height:1.55;color:var(--suave);margin:0 0 var(--e-5)}
+.guia-pg .autora{display:inline-flex;align-items:center;gap:var(--e-2);padding:var(--e-2) var(--e-4);border-radius:var(--raio-pill);background:var(--superficie);box-shadow:var(--sombra);font-size:var(--t-sm);color:var(--suave);margin:0 0 var(--e-6)}
+.guia-pg .autora b{color:var(--tinta)}
+.guia-pg .video{position:relative;aspect-ratio:16/9;border-radius:var(--raio);overflow:hidden;background:var(--tinta);margin:0 0 var(--e-6);box-shadow:var(--sombra)}
+.guia-pg .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.guia-pg .resumo{margin:0 0 var(--e-8);padding:var(--e-5) var(--e-6);border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra),inset 4px 0 0 var(--marca)}
+.guia-pg .resumo h2{font-size:var(--t-xl);color:var(--marca);margin:0 0 var(--e-2)}
+.guia-pg .resumo ul{margin:0;padding-left:var(--e-5);display:grid;gap:6px;line-height:1.55}
+.guia-pg article h2{font-size:var(--t-h4);line-height:1.2;margin:var(--e-10) 0 var(--e-3)}
+.guia-pg article h3{font-size:var(--t-xl);margin:var(--e-6) 0 var(--e-2)}
+.guia-pg article p,.guia-pg article li{font-size:var(--t-corpo);line-height:1.7}
+.guia-pg article p{margin:0 0 var(--e-4)}
+.guia-pg article ul,.guia-pg article ol{margin:0 0 var(--e-4);padding-left:var(--e-6)}
+.guia-pg article a{color:var(--marca);font-weight:700}
+.guia-pg .alerta{margin:var(--e-5) 0;padding:var(--e-4) var(--e-5);border-radius:var(--raio-md);background:color-mix(in srgb,var(--perigo) 7%,var(--superficie));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--perigo) 28%,transparent)}
+.guia-pg .alerta p{margin:0}
+.guia-pg .alerta strong{color:var(--perigo)}
+.guia-pg .dica-lua{margin:var(--e-5) 0;padding:var(--e-4) var(--e-5);border-radius:var(--raio-md);background:var(--acento-claro)}
+.guia-pg .dica-lua p:last-child{margin:0}
+.guia-pg table{width:100%;border-collapse:collapse;margin:var(--e-3) 0 var(--e-5);border-radius:var(--raio-md);overflow:hidden;background:var(--superficie);box-shadow:var(--sombra);font-size:var(--t-sm)}
+.guia-pg th,.guia-pg td{padding:var(--e-3);text-align:left;vertical-align:top;border-bottom:1px solid var(--linha)}
+.guia-pg th{background:var(--marca-clara);color:var(--marca);font-weight:800}
+.guia-pg .produtos{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--e-3);margin:var(--e-3) 0 var(--e-2)}
+.guia-pg .produto{display:flex;flex-direction:column;padding:var(--e-4);border-radius:var(--raio-md);background:var(--superficie);box-shadow:var(--sombra)}
+.guia-pg .produto h3{font-size:var(--t-base);margin:0 0 4px}
+.guia-pg .produto p{flex:1;font-size:var(--t-sm);color:var(--suave);margin:0 0 var(--e-3)}
+.guia-pg .produto .btn{width:auto;margin:0}
+.guia-pg .aviso{font-size:var(--t-xs);color:var(--suave)}
+.guia-pg .proximo{margin:var(--e-12) 0 0;padding:var(--e-8) var(--e-6);border-radius:var(--raio-lg);background:var(--degrade-forte);color:#fff;text-align:center;box-shadow:var(--sombra-marca)}
+.guia-pg .proximo h2{color:#fff;font-size:var(--t-h4);margin:0 0 var(--e-2)}
+.guia-pg .proximo p{margin:0 0 var(--e-4);opacity:.95}
+.guia-pg .proximo .btn{width:auto;margin:0;background:#fff;color:var(--marca-sobre-branco)}
+/* Página inicial do guia */
+.guia-pg .secao{font-size:var(--t-xl);font-weight:900;margin:var(--e-8) 0 var(--e-3)}
+.guia-pg .lista-guias{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr));gap:var(--e-3)}
+.guia-pg .guia-card{display:flex;flex-direction:column;gap:4px;padding:var(--e-4) var(--e-5);border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra);color:var(--tinta);text-decoration:none;transition:transform var(--dur-rapida),box-shadow var(--dur-rapida)}
+.guia-pg .guia-card:hover{transform:translateY(-3px);box-shadow:var(--sombra),inset 0 0 0 2px var(--marca-clara)}
+.guia-pg .guia-card .ico{font-size:28px;line-height:1}
+.guia-pg .guia-card h3{font-size:var(--t-lg);margin:var(--e-1) 0 0}
+.guia-pg .guia-card p{font-size:var(--t-sm);color:var(--suave);margin:0;line-height:1.5}
+@media (max-width:600px){.guia-pg{padding:var(--e-6) var(--e-4) var(--e-14)}}
+@media (prefers-reduced-motion:reduce){.guia-pg .guia-card{transition:none}}

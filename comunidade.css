@@ -688,3 +688,13 @@ html.sem-rolar{overflow:hidden}
 }
 @media (max-width:900px){.btn-lado{bottom:calc(84px + env(safe-area-inset-bottom))}}
 @media print{.btn-lado{display:none}}
+
+/* Cartão "Comunidade Abanô" mais compacto */
+.com-capa{padding:var(--e-4) var(--e-6);border-radius:var(--raio);margin-bottom:var(--e-3)}
+.com-capa::after{width:96px;height:96px;right:-40px;top:-52px}
+.com-capa h1{font-size:var(--t-2xl);margin:0 0 2px}
+.com-capa p{font-size:var(--t-sm);line-height:1.45;max-width:none}
+@media (max-width:900px){.com-capa{padding:var(--e-3) var(--e-4)}}
+@media (max-width:600px){.com-capa::after{width:72px;height:72px;right:-30px;top:-38px}.com-capa h1{font-size:var(--t-xl);padding-right:var(--e-6)}}
+.posts{grid-template-columns:minmax(0,1fr)}
+.posts > .post{min-width:0}

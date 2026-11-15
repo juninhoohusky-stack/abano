@@ -301,6 +301,8 @@
       "pessoa pessoas buscar pessoa encontrar tutor tutores perfil seguir amigo amiga usuário usuario nome procurar alguém alguem"],
     ["calculadora.html", "Calculadora de custos", "Quanto custa manter um cachorro ou um gato por mês e por ano.", "calc", "",
       "calculadora custo custos gasto gastos quanto custa preço preços valor dinheiro orçamento mensal anual ração racao petisco antipulgas vermífugo vacina veterinário areia banho conta economizar"],
+    ["guia/", "Guia pet", "Guias para cães e gatos: comportamento, saúde, casa e rotina.", "livro", "Novo",
+      "guia guias dicas gato gatos cachorro cão caixa de areia arranha sofá xixi miando bola de pelo castração água ração plantas tóxicas convivência"],
     ["husky-solta-muito-pelo.html", "Guia pet: husky solta muito pelo?", "O que fazer com a queda de pelo do husky, de quem tem quatro.", "livro", "",
       "guia artigo dica dicas husky pelo pelos queda troca muda escovar escova escovação rasqueadeira soprador banho tosa calor alimentação cuidado cuidados raça siberiano"],
     ["adocao.html", "Adoção", "Cães, gatos e outros pets de ONGs e protetores verificados.", "coracao", "Novo",
