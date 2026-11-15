@@ -315,7 +315,7 @@
       "pet shop petshop loja ração racao casa de ração petisco acessório brinquedo coleira caminha areia farmácia veterinária remédio comprar perto de mim"],
     ["adestramento.html", "Adestradores perto de você", "Filhotes, comportamento e agility no mapa.", "medalha", "",
       "adestrador adestradora adestramento adestrar treinar treinamento obediência comportamento late muito puxa a guia morde agressivo filhote agility perto de mim"],
-    ["eventos.html", "Eventos pet", "Encontros, feiras e passeios perto de você.", "agenda", "Em breve",
+    ["eventos.html", "Agenda Pet", "Encontros, feiras de adoção e cãominhadas em todo o Brasil.", "agenda", "Novo",
       "evento eventos encontro encontros feira feiras passeio passeios cãominhada caominhada agenda programação fim de semana husky experience"],
     ["hospedagem.html", "Hospedagem pet perto de você", "Hotéis, creches e pet sitters no mapa.", "cama", "",
       "hospedagem hotel hotelzinho creche daycare anfitrião pet sitter babá baba cuidador viagem viajar férias ferias feriado deixar o pet"],

@@ -1,0 +1,54 @@
+/* Abanô — Agenda Pet (eventos.html e Comunidade ?v=agenda) */
+.agenda-topo h1{font-size:var(--t-h2,clamp(30px,4vw,44px));line-height:1.1;margin:0 0 var(--e-2)}
+.agenda-topo p{color:var(--suave);max-width:60ch;margin:0 0 var(--e-5)}
+.agenda-filtros{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e-2);margin-bottom:var(--e-5)}
+.agenda-filtros select{min-height:44px;padding:0 var(--e-4);border:0;border-radius:var(--raio-pill);background:var(--superficie);box-shadow:var(--sombra);font:inherit;font-weight:800;color:var(--tinta)}
+.agenda-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.agenda-chips::-webkit-scrollbar{display:none}
+.agenda-chips button{flex:none;min-height:40px;padding:0 var(--e-4);border:0;border-radius:var(--raio-pill);background:var(--superficie);box-shadow:inset 0 0 0 1.5px var(--linha);color:var(--tinta);font:inherit;font-weight:700;font-size:var(--t-sm);cursor:pointer;white-space:nowrap}
+.agenda-chips button[aria-pressed=true]{background:var(--marca);color:var(--sobre-marca);box-shadow:none}
+.agenda-mes{font-size:var(--t-xl);margin:var(--e-6) 0 var(--e-3)}
+.agenda-lista > .agenda-mes:first-child{margin-top:0}
+.agenda-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:var(--e-4)}
+.ev{display:flex;flex-direction:column;border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra);overflow:hidden}
+.ev-destaque{box-shadow:var(--sombra),0 0 0 3px var(--marca)}
+.ev-foto{position:relative;aspect-ratio:4/3;background:var(--areia);overflow:hidden}
+.ev-foto a{display:block;height:100%}
+.ev-foto img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;transition:transform .3s}
+.ev-foto a:hover img{transform:scale(1.03)}
+.ev-sem-foto{display:block;height:100%;background:var(--degrade)}
+.ev-sem-foto.adocao{background:linear-gradient(120deg,#E5157A,#FF6FA3)}
+.ev-sem-foto.caminhada{background:linear-gradient(120deg,#1F9D63,#7BD389)}
+.ev-sem-foto.feira{background:linear-gradient(120deg,#FF8A1E,#FFC15E)}
+.ev-sem-foto.profissional{background:linear-gradient(120deg,#3B3F8F,#6E74D6)}
+.ev-sem-foto.saude{background:linear-gradient(120deg,#0E8C9A,#5AC8D6)}
+.ev-data{position:absolute;left:var(--e-3);top:var(--e-3);display:flex;flex-direction:column;align-items:center;min-width:64px;padding:6px 10px;border-radius:16px;background:var(--superficie);box-shadow:0 6px 18px -8px rgba(43,22,34,.45);line-height:1.05}
+.ev-data b{font-size:22px;font-weight:900;color:var(--marca);font-variant-numeric:tabular-nums}
+.ev-data small{font-size:12px;font-weight:900;letter-spacing:.04em;color:var(--tinta)}
+.ev-txt{display:flex;flex-direction:column;gap:var(--e-2);padding:var(--e-4)}
+.ev-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0}
+.ev-cat,.ev-gratis{padding:2px 10px;border-radius:var(--raio-pill);font-size:var(--t-xs);font-weight:800;background:var(--marca-clara);color:var(--marca)}
+.ev-cat.caminhada{background:color-mix(in srgb,#1F9D63 14%,transparent);color:#0E7A4B}
+.ev-cat.feira{background:var(--acento-claro);color:var(--acento)}
+.ev-cat.profissional{background:color-mix(in srgb,#3B3F8F 14%,transparent);color:#3B3F8F}
+.ev-cat.saude{background:color-mix(in srgb,#0E8C9A 14%,transparent);color:#0B6F7A}
+.ev-gratis{background:var(--lima-clara);color:var(--sobre-lima)}
+.ev h3{font-size:var(--t-lg);line-height:1.25;margin:0}
+.ev-info{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:var(--t-sm);color:var(--tinta)}
+.ev-info li{display:flex;gap:8px;align-items:flex-start;line-height:1.4}
+.ev-info li.sr{display:none}
+.ev-info svg,.ev-acoes svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ev-info svg{margin-top:1px;color:var(--marca)}
+.ev-info a{color:var(--tinta);font-weight:800}
+.ev-desc{margin:0;color:var(--suave);font-size:var(--t-sm);line-height:1.5}
+.ev-acoes{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:var(--e-2)}
+.ev-acoes .btn{display:inline-flex;align-items:center;gap:6px;width:auto;margin:0;min-height:40px;padding:0 var(--e-3);font-size:var(--t-sm)}
+.agenda-vazio{padding:var(--e-6);border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra);text-align:center}
+.agenda-vazio .btn{width:auto;margin:var(--e-3) 0 0}
+.agenda-nota{margin:var(--e-5) 0 0;color:var(--suave);font-size:var(--t-sm);text-align:center}
+.agenda-divulgue{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--e-3);margin-top:var(--e-8);padding:var(--e-5);border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra)}
+.agenda-divulgue div{display:flex;flex-direction:column;gap:2px;max-width:46ch}
+.agenda-divulgue span{color:var(--suave);font-size:var(--t-sm)}
+.agenda-divulgue .btn{width:auto;margin:0}
+@media (prefers-reduced-motion:reduce){.ev-foto img{transition:none}}
+.leitura.agenda-pagina{max-width:var(--largura);width:100%}

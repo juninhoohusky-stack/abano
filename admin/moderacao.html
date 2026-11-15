@@ -7,9 +7,9 @@
 <title>Moderação | Abanô</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="site.css?v=20261115a">
+<link rel="stylesheet" href="site.css?v=20261115b">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261115a" defer></script>
+<script src="lista.js?v=20261115b" defer></script>
 <style>
   .painel{max-width:980px;margin:0 auto;padding:var(--e-6) var(--e-5) var(--e-12)}
   .topo-admin{display:flex;align-items:center;justify-content:space-between;gap:var(--e-4);max-width:980px;margin:0 auto;padding:var(--e-3) var(--e-5)}
@@ -46,6 +46,14 @@
   .aviso{padding:var(--e-3) var(--e-3);border-radius:var(--raio-sm);background:var(--marca-clara);color:var(--marca-esc);font-weight:700}
   .aviso.ok{background:var(--lima-clara);color:var(--sobre-lima)}
   .eventos-lista{margin-top:var(--e-4);display:grid;gap:var(--e-2)}
+  .eventos-lista img{width:56px;height:56px;border-radius:var(--raio-xs);object-fit:cover;flex:none}
+  .eventos-lista li > span{flex:1;min-width:0}
+  .ev-foto-adm{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e-2)}
+  .ev-foto-adm img{width:120px;height:150px;object-fit:cover;border-radius:var(--raio-sm)}
+  .checks-ev{display:flex;flex-wrap:wrap;gap:var(--e-3);align-items:center;padding-top:var(--e-5)}
+  .check-ev{display:flex !important;align-items:center;gap:6px}
+  .check-ev input{min-height:0 !important;width:20px;height:20px}
+  .ev-passado{opacity:.55}
   .eventos-lista li{display:flex;justify-content:space-between;gap:var(--e-2);align-items:center;padding:var(--e-3) var(--e-3);border-radius:var(--raio-sm);background:var(--superficie);box-shadow:var(--sombra)}
   [hidden]{display:none !important}
   .cad-numeros{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
@@ -198,21 +206,37 @@
     </div>
     <div id="tela-eventos" hidden>
       <form class="evento" id="form-evento" novalidate>
-        <h2>Cadastrar evento</h2>
+        <h2 id="evento-titulo">Cadastrar evento na Agenda Pet</h2>
+        <div class="ev-foto-adm"><img id="evento-previa" alt="" hidden><label class="btn btn-sec">Escolher foto ou cartaz<input type="file" id="evento-foto" accept="image/jpeg,image/png,image/webp" hidden></label><button type="button" class="btn btn-sec" id="evento-tirar-foto" hidden>Tirar foto</button></div>
         <label>Título<input name="titulo" maxlength="120" required></label>
         <div class="duas">
-          <label>Data e hora<input name="inicio" type="datetime-local" required></label>
-          <label>Clube (opcional)<select name="clube" id="evento-clube"><option value="">Nenhum</option></select></label>
+          <label>Data (início)<input name="inicio" type="date" required></label>
+          <label>Data final (se durar mais de um dia)<input name="fim" type="date"></label>
+        </div>
+        <div class="duas">
+          <label>Horário<input name="horario" maxlength="80" placeholder="Ex.: Das 9h às 12h"></label>
+          <label>Tipo<select name="categoria"><option value="encontro">Encontro</option><option value="adocao">Adoção</option><option value="caminhada">Cãominhada</option><option value="feira">Feira ou festival</option><option value="saude">Saúde (vacinação, castração…)</option><option value="profissional">Para profissionais</option><option value="outro">Outro</option></select></label>
         </div>
         <div class="duas">
           <label>Cidade<input name="cidade" maxlength="80"></label>
           <label>Estado<input name="estado" maxlength="2" placeholder="RJ"></label>
         </div>
-        <label>Local<input name="local" maxlength="160"></label>
-        <label>Link com mais informações (https://)<input name="link" type="url" placeholder="https://"></label>
+        <label>Local / endereço<input name="local" maxlength="160"></label>
+        <div class="duas">
+          <label>Preço<input name="preco" maxlength="80" placeholder="Ex.: Entrada gratuita · R$ 60 por pessoa"></label>
+          <label>Contato (WhatsApp ou telefone)<input name="contato" maxlength="120" placeholder="(21) 99999-9999"></label>
+        </div>
+        <div class="duas">
+          <label>Instagram do organizador<input name="instagram" maxlength="60" placeholder="@perfil"></label>
+          <label>Link com mais informações (https://)<input name="link" type="url" placeholder="https://"></label>
+        </div>
+        <div class="duas">
+          <label>Clube (opcional)<select name="clube" id="evento-clube"><option value="">Nenhum</option></select></label>
+          <span class="checks-ev"><label class="check-ev"><input type="checkbox" name="gratuito"> Gratuito</label><label class="check-ev"><input type="checkbox" name="profissional"> Só para profissionais</label></span>
+        </div>
         <label>Descrição<textarea name="descricao" maxlength="2000" rows="3"></textarea></label>
         <p class="aviso" id="evento-aviso" hidden></p>
-        <button class="btn" type="submit">Publicar evento</button>
+        <div class="acoes"><button class="btn" type="submit" id="evento-salvar">Publicar evento</button><button class="btn btn-sec" type="button" id="evento-cancelar" hidden>Cancelar edição</button></div>
       </form>
       <ul class="eventos-lista" id="eventos-lista"></ul>
     </div>
@@ -567,38 +591,108 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   limparParceiro();
 
-  // Eventos
+  // Eventos (Agenda Pet): criar, editar, trocar foto e apagar
+  var eventos = [], editandoEv = null, fotoEvNova = null, fotoEvAtual = null, euAdminId = null;
+  var CAT_EV = { encontro: "Encontro", adocao: "Adoção", caminhada: "Cãominhada", feira: "Feira", saude: "Saúde", profissional: "Profissional", outro: "Outro" };
+  var diaBR = function (iso) { return iso ? new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(iso)) : ""; };
+  var paraData = function (iso) { if (!iso) return ""; var p = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(iso)); return p; };
+  var fotoEvOk = function (u) { return !!u && (String(u).indexOf(PASTA) === 0 || /^imagens\/eventos\//.test(u)); };
+  var srcEv = function (u) { return u; };
   function carregarEventos() {
     sb.from("clubes").select("id,nome").order("ordem").then(function (r) {
       var sel = $("evento-clube");
       if (sel.options.length < 2) (r.data || []).forEach(function (c) { var o = document.createElement("option"); o.value = c.id; o.textContent = c.nome; sel.appendChild(o); });
     });
-    sb.from("eventos").select("*").order("inicio", { ascending: false }).limit(50).then(function (r) {
-      $("eventos-lista").innerHTML = (r.data || []).map(function (e) {
-        return "<li><span><b>" + esc(e.titulo) + "</b><br><small>" + new Date(e.inicio).toLocaleString("pt-BR") + (e.cidade ? " · " + esc(e.cidade) : "") + '</small></span><button class="btn btn-sec" data-ev="' + esc(e.id) + '">Apagar</button></li>';
+    sb.from("eventos").select("*").order("inicio", { ascending: true }).limit(500).then(function (r) {
+      eventos = r.data || [];
+      var ontem = Date.now() - 864e5;
+      $("eventos-lista").innerHTML = eventos.map(function (e) {
+        var passado = new Date(e.fim || e.inicio).getTime() < ontem;
+        return '<li class="' + (passado ? "ev-passado" : "") + '">' + (fotoEvOk(e.foto_url) ? '<img src="' + esc(srcEv(e.foto_url)) + '" alt="">' : "") +
+          "<span><b>" + esc(e.titulo) + "</b><br><small>" + diaBR(e.inicio) + (e.fim ? " a " + diaBR(e.fim) : "") + (e.cidade ? " · " + esc(e.cidade) + (e.estado ? "/" + esc(e.estado) : "") : "") +
+          " · " + esc(CAT_EV[e.categoria] || e.categoria || "") + (passado ? " · já passou" : "") + "</small></span>" +
+          '<button class="btn btn-sec" data-ev-editar="' + esc(e.id) + '">Editar</button><button class="btn btn-sec" data-ev="' + esc(e.id) + '">Apagar</button></li>';
       }).join("") || '<li><span>Nenhum evento cadastrado.</span></li>';
     });
   }
+  function previaEv(url) { var i = $("evento-previa"); i.hidden = !url; if (url) i.src = url; $("evento-tirar-foto").hidden = !url; }
+  function limparEvento() {
+    editandoEv = null; fotoEvNova = null; fotoEvAtual = null;
+    $("form-evento").reset(); previaEv(null);
+    $("evento-titulo").textContent = "Cadastrar evento na Agenda Pet"; $("evento-salvar").textContent = "Publicar evento"; $("evento-cancelar").hidden = true;
+  }
+  $("evento-cancelar").addEventListener("click", limparEvento);
+  $("evento-foto").addEventListener("change", function () {
+    fotoEvNova = this.files[0] || null; this.value = "";
+    if (fotoEvNova) previaEv(URL.createObjectURL(fotoEvNova));
+  });
+  $("evento-tirar-foto").addEventListener("click", function () { fotoEvNova = null; fotoEvAtual = null; previaEv(null); });
   $("eventos-lista").addEventListener("click", function (e) {
-    var b = e.target.closest("[data-ev]"); if (!b || !confirm("Apagar este evento?")) return;
+    var ed = e.target.closest("[data-ev-editar]");
+    if (ed) {
+      var ev = eventos.find(function (x) { return x.id === ed.getAttribute("data-ev-editar"); }); if (!ev) return;
+      var f = $("form-evento");
+      limparEvento(); editandoEv = ev; fotoEvAtual = fotoEvOk(ev.foto_url) ? ev.foto_url : null;
+      ["titulo", "horario", "cidade", "estado", "local", "preco", "contato", "link", "descricao"].forEach(function (k) { f[k].value = ev[k] || ""; });
+      f.instagram.value = ev.instagram ? "@" + ev.instagram : "";
+      f.inicio.value = paraData(ev.inicio); f.fim.value = paraData(ev.fim);
+      f.categoria.value = ev.categoria || "encontro"; f.clube.value = ev.clube || "";
+      f.gratuito.checked = !!ev.gratuito; f.profissional.checked = !!ev.profissional;
+      previaEv(fotoEvAtual ? srcEv(fotoEvAtual) : null);
+      $("evento-titulo").textContent = "Editar: " + ev.titulo; $("evento-salvar").textContent = "Salvar alterações"; $("evento-cancelar").hidden = false;
+      f.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    var b = e.target.closest("[data-ev]"); if (!b || !confirm("Apagar este evento da Agenda Pet?")) return;
     sb.from("eventos").delete().eq("id", b.dataset.ev).then(function (r) { if (r.error) alert(r.error.message); carregarEventos(); });
   });
+  // Foto: reduz no navegador (até 1400 px) e guarda na pasta da conta de quem está administrando
+  function enviarFotoEvento(arq) {
+    return new Promise(function (ok, falha) {
+      var img = new Image(), url = URL.createObjectURL(arq);
+      img.onload = function () {
+        var e = Math.min(1, 1400 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement("canvas");
+        c.width = Math.round(img.naturalWidth * e); c.height = Math.round(img.naturalHeight * e);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        c.toBlob(function (b) {
+          if (!b) { falha(new Error("Não deu para ler a foto.")); return; }
+          var caminho = euAdminId + "/evento-" + Date.now().toString(36) + ".jpg";
+          sb.storage.from("fotos").upload(caminho, b, { contentType: "image/jpeg", upsert: false }).then(function (r) {
+            if (r.error) falha(new Error("Não deu para enviar a foto: " + r.error.message)); else ok(PASTA + caminho);
+          });
+        }, "image/jpeg", 0.86);
+      };
+      img.onerror = function () { falha(new Error("Não deu para abrir essa imagem.")); };
+      img.src = url;
+    });
+  }
   $("form-evento").addEventListener("submit", function (e) {
     e.preventDefault();
     var f = e.target, av = $("evento-aviso");
-    var link = f.link.value.trim();
-    if (f.titulo.value.trim().length < 3 || !f.inicio.value) { av.textContent = "Preencha o título e a data."; av.className = "aviso"; av.hidden = false; return; }
-    if (link && !/^https:\/\//i.test(link)) { av.textContent = "O link precisa começar com https://"; av.className = "aviso"; av.hidden = false; return; }
-    var uf = f.estado.value.trim().toUpperCase();
-    sb.from("eventos").insert({
-      titulo: f.titulo.value.trim(), inicio: new Date(f.inicio.value).toISOString(), clube: f.clube.value || null,
+    var erro = function (m) { av.textContent = m; av.className = "aviso"; av.hidden = false; };
+    var link = f.link.value.trim(), uf = f.estado.value.trim().toUpperCase();
+    if (f.titulo.value.trim().length < 3 || !f.inicio.value) return erro("Preencha o título e a data.");
+    if (link && !/^https:\/\//i.test(link)) return erro("O link precisa começar com https://");
+    if (f.fim.value && f.fim.value < f.inicio.value) return erro("A data final precisa ser depois da data de início.");
+    var dados = {
+      titulo: f.titulo.value.trim(), inicio: f.inicio.value + "T12:00:00-03:00", fim: f.fim.value ? f.fim.value + "T12:00:00-03:00" : null,
+      horario: f.horario.value.trim() || null, categoria: f.categoria.value, clube: f.clube.value || null,
       cidade: f.cidade.value.trim() || null, estado: uf || null, local: f.local.value.trim() || null,
-      link: link || null, descricao: f.descricao.value.trim() || null
+      preco: f.preco.value.trim() || null, contato: f.contato.value.trim() || null, instagram: f.instagram.value.trim() || null,
+      link: link || null, descricao: f.descricao.value.trim() || null,
+      gratuito: f.gratuito.checked ? true : (editandoEv && editandoEv.gratuito === false ? false : null), profissional: f.profissional.checked
+    };
+    var botao = $("evento-salvar"); botao.disabled = true;
+    var foto = fotoEvNova ? enviarFotoEvento(fotoEvNova) : Promise.resolve(fotoEvAtual);
+    foto.then(function (url) {
+      dados.foto_url = url || null;
+      return editandoEv ? sb.from("eventos").update(dados).eq("id", editandoEv.id) : sb.from("eventos").insert(dados);
     }).then(function (r) {
-      av.hidden = false;
-      if (r.error) { av.textContent = r.error.message; av.className = "aviso"; return; }
-      av.textContent = "Evento publicado."; av.className = "aviso ok"; f.reset(); carregarEventos();
-    });
+      botao.disabled = false;
+      if (r.error) return erro(/foto_url|categoria|horario/.test(r.error.message) ? "Rode o arquivo supabase/agenda_pet.sql no Supabase para ativar a Agenda Pet." : r.error.message);
+      av.textContent = editandoEv ? "Evento atualizado." : "Evento publicado na Agenda Pet."; av.className = "aviso ok"; av.hidden = false;
+      limparEvento(); carregarEventos();
+    }).catch(function (err) { botao.disabled = false; erro(err.message); });
   });
 
   $("entrar").addEventListener("click", function () {
@@ -608,6 +702,7 @@ document.addEventListener("DOMContentLoaded", function () {
   sb.auth.getSession().then(function (r) {
     var s = r.data.session;
     if (!s) { mostrar("tela-entrar"); return; }
+    euAdminId = s.user.id;
     $("quem").hidden = false;
     $("quem-email").textContent = s.user.email;
     meuId = s.user.id;

@@ -1671,11 +1671,11 @@
   async function lateral() {
     const ev = document.getElementById("lado-eventos"), cl = document.getElementById("lado-clubes");
     const [e, c] = await Promise.all([
-      sb.from("eventos").select("*").gte("inicio", new Date().toISOString()).order("inicio").limit(3),
+      sb.from("eventos").select("*").gte("inicio", new Date(Date.now() - 864e5).toISOString()).eq("profissional", false).order("inicio").limit(3),
       sb.from("clubes").select("*").order("total_membros", { ascending: false }).order("ordem").limit(7)
     ]);
     if (ev) ev.innerHTML = (e.data || []).length
-      ? `<ul class="lado-lista">${e.data.map((x) => `<li><b>${esc(x.titulo)}</b><small>${new Date(x.inicio).toLocaleDateString("pt-BR", { weekday: "short", day: "numeric", month: "short" })}${x.cidade ? " · " + esc(x.cidade) + (x.estado ? "/" + esc(x.estado) : "") : ""}</small>${x.link ? `<a href="${esc(x.link)}" target="_blank" rel="noopener">Saiba mais</a>` : ""}</li>`).join("")}</ul>`
+      ? `<ul class="lado-lista">${e.data.map((x) => `<li><b>${esc(x.titulo)}</b><small>${new Date(x.inicio).toLocaleDateString("pt-BR", { weekday: "short", day: "numeric", month: "short" })}${x.cidade ? " · " + esc(x.cidade) + (x.estado ? "/" + esc(x.estado) : "") : ""}</small><a href="comunidade/?v=agenda">Ver na agenda</a></li>`).join("")}</ul><a class="ver-todos" href="comunidade/?v=agenda">Ver a Agenda Pet</a>`
       : '<p class="sub">Nenhum evento marcado ainda. Organiza um encontro pet? <a href="anuncie.html">Divulgue no Abanô</a>.</p>';
     if (cl) cl.innerHTML = (c.data || []).length
       ? `<ul class="lado-lista">${c.data.map((x) => `<li data-clube="${esc(x.id)}"><a href="${linkClube(x.id)}"><b>${esc(x.nome)}</b></a><small class="membros">${textoMembros(x.total_membros)}</small></li>`).join("")}</ul><a class="ver-todos" href="comunidade/?v=clubes">Ver todos os clubes</a>`
@@ -1736,6 +1736,10 @@
     if (v === "notificacoes") return telaNotificacoes();
     if (v === "mensagens") return telaMensagens();
     if (v === "destaques") return telaDestaques();
+    if (v === "agenda" && window.abanoAgenda) {
+      definirMeta("Agenda Pet | Comunidade Abanô", null, "comunidade/?v=agenda");
+      return window.abanoAgenda.mostrar(centro, { sb, estado: (est.eu && est.eu.estado) || "", voltar: voltar("comunidade/") });
+    }
     return telaFeed();
   }
 
