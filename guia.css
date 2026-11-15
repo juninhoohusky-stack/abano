@@ -47,3 +47,12 @@
 .guia-pg .guia-card p{font-size:var(--t-sm);color:var(--suave);margin:0;line-height:1.5}
 @media (max-width:600px){.guia-pg{padding:var(--e-6) var(--e-4) var(--e-14)}}
 @media (prefers-reduced-motion:reduce){.guia-pg .guia-card{transition:none}}
+.guia-pg .guia-foto{margin:0 0 var(--e-6);border-radius:var(--raio-lg);overflow:hidden;background:var(--areia);box-shadow:var(--sombra);aspect-ratio:3/2}
+.guia-pg .guia-foto img{width:100%;height:100%;max-height:none;object-fit:cover;display:block}
+.guia-pg .guia-card{padding:0;overflow:hidden}
+.guia-pg .guia-card > :not(.guia-card-foto){margin-left:var(--e-5);margin-right:var(--e-5)}
+.guia-pg .guia-card .ico{margin-top:var(--e-4)}
+.guia-pg .guia-card p{margin-bottom:var(--e-4)}
+.guia-pg .guia-card-foto{order:-1;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;display:block;background:var(--areia)}
+.guia-pg .guia-card:has(.guia-card-foto) .ico{display:none}
+.guia-pg .guia-card:has(.guia-card-foto) h3{margin-top:var(--e-3)}
