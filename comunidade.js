@@ -1671,18 +1671,67 @@
   async function lateral() {
     const ev = document.getElementById("lado-eventos"), cl = document.getElementById("lado-clubes");
     const [e, c] = await Promise.all([
-      sb.from("eventos").select("*").gte("inicio", new Date(Date.now() - 864e5).toISOString()).eq("profissional", false).order("inicio").limit(3),
+      Promise.resolve(null),
       sb.from("clubes").select("*").order("total_membros", { ascending: false }).order("ordem").limit(7)
     ]);
-    if (ev) ev.innerHTML = (e.data || []).length
-      ? `<ul class="lado-lista">${e.data.map((x) => `<li><b>${esc(x.titulo)}</b><small>${new Date(x.inicio).toLocaleDateString("pt-BR", { weekday: "short", day: "numeric", month: "short" })}${x.cidade ? " · " + esc(x.cidade) + (x.estado ? "/" + esc(x.estado) : "") : ""}</small><a href="comunidade/?v=agenda">Ver na agenda</a></li>`).join("")}</ul><a class="ver-todos" href="comunidade/?v=agenda">Ver a Agenda Pet</a>`
-      : '<p class="sub">Nenhum evento marcado ainda. Organiza um encontro pet? <a href="anuncie.html">Divulgue no Abanô</a>.</p>';
+    if (ev) calendarioLado(ev);
     if (cl) cl.innerHTML = (c.data || []).length
       ? `<ul class="lado-lista">${c.data.map((x) => `<li data-clube="${esc(x.id)}"><a href="${linkClube(x.id)}"><b>${esc(x.nome)}</b></a><small class="membros">${textoMembros(x.total_membros)}</small></li>`).join("")}</ul><a class="ver-todos" href="comunidade/?v=clubes">Ver todos os clubes</a>`
       : '<p class="sub">Não deu para carregar os clubes.</p>';
     alertasPerto();
     destaquesLado();
   }
+  // ---------- Calendário da Agenda Pet (lateral) ----------
+  // Os dias com evento ficam marcados; tocar no dia abre a Agenda Pet do site naquele dia.
+  const diaBR = (iso) => new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(iso));
+  const MESES_CAL = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  async function calendarioLado(caixa) {
+    const hoje = diaBR(new Date().toISOString());
+    let ano = +hoje.slice(0, 4), mes = +hoje.slice(5, 7) - 1;
+    const primeiro = `${ano}-${String(mes + 1).padStart(2, "0")}-01T03:00:00Z`;
+    const r = await sb.from("eventos").select("id,titulo,inicio,fim,cidade,estado,profissional").or(`inicio.gte.${primeiro},fim.gte.${primeiro}`).order("inicio").limit(500);
+    const porDia = new Map();
+    (r.data || []).forEach((e) => {
+      const ini = diaBR(e.inicio), fim = e.fim ? diaBR(e.fim) : ini;
+      for (let d = new Date(ini + "T12:00:00Z"); d.toISOString().slice(0, 10) <= fim; d.setUTCDate(d.getUTCDate() + 1)) {
+        const k = d.toISOString().slice(0, 10);
+        if (!porDia.has(k)) porDia.set(k, []);
+        porDia.get(k).push(e);
+      }
+    });
+    const proximos = (r.data || []).filter((e) => !e.profissional && (e.fim ? diaBR(e.fim) : diaBR(e.inicio)) >= hoje);
+    function desenhar() {
+      const inicioMes = new Date(Date.UTC(ano, mes, 1)), dias = new Date(Date.UTC(ano, mes + 1, 0)).getUTCDate();
+      const vazios = inicioMes.getUTCDay();
+      const ehMesAtual = ano === +hoje.slice(0, 4) && mes === +hoje.slice(5, 7) - 1;
+      let celulas = "";
+      for (let i = 0; i < vazios; i++) celulas += '<span class="cal-vazio"></span>';
+      for (let d = 1; d <= dias; d++) {
+        const k = `${ano}-${String(mes + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+        const evs = porDia.get(k) || [], passado = k < hoje;
+        const cls = ["cal-dia", evs.length ? "tem" : "", k === hoje ? "hoje" : "", passado ? "passado" : ""].filter(Boolean).join(" ");
+        const nomes = evs.map((e) => e.titulo + (e.cidade ? " (" + e.cidade + (e.estado ? "/" + e.estado : "") + ")" : "")).join(" · ");
+        celulas += evs.length
+          ? `<a class="${cls}" href="eventos.html?d=${k}" title="${esc(nomes)}" aria-label="${d} de ${MESES_CAL[mes]}: ${evs.length === 1 ? "1 evento" : evs.length + " eventos"}. ${esc(nomes)}"><span>${d}</span><i aria-hidden="true">${evs.length > 1 ? evs.length : ""}</i></a>`
+          : `<span class="${cls}">${d}</span>`;
+      }
+      const prox = proximos[0];
+      caixa.innerHTML = `<div class="cal">
+          <div class="cal-topo"><button type="button" class="cal-seta" data-cal="-1" aria-label="Mês anterior"${ehMesAtual ? " disabled" : ""}>‹</button><b>${MESES_CAL[mes]} ${ano}</b><button type="button" class="cal-seta" data-cal="1" aria-label="Próximo mês">›</button></div>
+          <div class="cal-sem" aria-hidden="true"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
+          <div class="cal-grade">${celulas}</div>
+        </div>
+        ${prox ? `<p class="cal-prox"><small>Próximo evento</small><a href="eventos.html?e=${esc(prox.id)}"><b>${esc(prox.titulo)}</b></a><small>${new Date(prox.inicio).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo", weekday: "short", day: "numeric", month: "short" })}${prox.cidade ? " · " + esc(prox.cidade) + (prox.estado ? "/" + esc(prox.estado) : "") : ""}</small></p>` : ""}
+        <a class="ver-todos" href="eventos.html">Ver a Agenda Pet</a>`;
+      caixa.querySelectorAll("[data-cal]").forEach((b) => b.addEventListener("click", () => {
+        mes += +b.dataset.cal;
+        if (mes < 0) { mes = 11; ano--; } else if (mes > 11) { mes = 0; ano++; }
+        desenhar();
+      }));
+    }
+    desenhar();
+  }
+
   async function destaquesLado() {
     const lado = document.querySelector(".com-lado");
     if (!lado || document.getElementById("lado-destaques")) return;
@@ -1736,10 +1785,7 @@
     if (v === "notificacoes") return telaNotificacoes();
     if (v === "mensagens") return telaMensagens();
     if (v === "destaques") return telaDestaques();
-    if (v === "agenda" && window.abanoAgenda) {
-      definirMeta("Agenda Pet | Comunidade Abanô", null, "comunidade/?v=agenda");
-      return window.abanoAgenda.mostrar(centro, { sb, estado: (est.eu && est.eu.estado) || "", voltar: voltar("comunidade/") });
-    }
+    if (v === "agenda") { location.replace("eventos.html"); return; }
     return telaFeed();
   }
 

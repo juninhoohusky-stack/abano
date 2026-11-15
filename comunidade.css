@@ -652,3 +652,23 @@ html.sem-rolar{overflow:hidden}
 
 .perfil-bloco-cab{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--e-2)}
 .perfil-bloco-cab .btn{width:auto;margin:0;font-size:var(--t-sm)}
+
+/* ---------- Calendário da Agenda Pet (lateral) ---------- */
+.cal-topo{display:flex;align-items:center;justify-content:space-between;gap:var(--e-2);margin-bottom:var(--e-2)}
+.cal-topo b{font-size:var(--t-base)}
+.cal-seta{display:grid;place-items:center;width:36px;height:36px;border:0;border-radius:50%;background:var(--areia);color:var(--tinta);font:inherit;font-size:22px;line-height:1;cursor:pointer}
+.cal-seta:hover:not(:disabled){background:var(--marca-clara);color:var(--marca)}
+.cal-seta:disabled{opacity:.35;cursor:default}
+.cal-sem,.cal-grade{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.cal-sem span{font-size:11px;font-weight:900;color:var(--suave);padding:2px 0}
+.cal-dia{position:relative;display:grid;place-items:center;aspect-ratio:1;border-radius:10px;font-size:var(--t-sm);font-weight:700;color:var(--tinta);text-decoration:none;font-variant-numeric:tabular-nums}
+.cal-dia.passado{color:var(--suave);opacity:.6}
+.cal-dia.hoje{box-shadow:inset 0 0 0 2px var(--marca)}
+.cal-dia.tem{background:var(--marca-clara);color:var(--marca);font-weight:900;cursor:pointer;transition:background-color var(--dur-rapida),color var(--dur-rapida)}
+.cal-dia.tem:hover,.cal-dia.tem:focus-visible{background:var(--marca);color:#fff}
+.cal-dia.tem.passado{opacity:.55}
+.cal-dia i{position:absolute;bottom:3px;left:50%;translate:-50% 0;min-width:6px;height:6px;border-radius:999px;background:var(--laranja);font-style:normal;font-size:0}
+.cal-prox{display:flex;flex-direction:column;gap:2px;margin:var(--e-3) 0 0;padding-top:var(--e-3);border-top:1px solid var(--linha)}
+.cal-prox small{color:var(--suave);font-size:var(--t-xs)}
+.cal-prox a{color:var(--tinta);text-decoration:none}
+.cal-prox a:hover b{color:var(--marca)}

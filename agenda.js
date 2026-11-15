@@ -72,7 +72,9 @@ window.abanoAgenda = (function () {
 
   function mostrar(el, op) {
     op = op || {};
-    var filtro = { uf: op.estado || "", cat: "", prof: false };
+    var diaPedido = /^\d{4}-\d{2}-\d{2}$/.test(new URLSearchParams(location.search).get("d") || "") ? new URLSearchParams(location.search).get("d") : "";
+    var filtro = { uf: diaPedido ? "" : (op.estado || ""), cat: "", prof: false, dia: diaPedido };
+    var chave = function (iso) { return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(iso)); };
     var todos = [];
     el.innerHTML = '<section class="agenda">' +
       (op.voltar || "") +
@@ -83,12 +85,23 @@ window.abanoAgenda = (function () {
           [["", "Todos"]].concat(Object.keys(CATEGORIAS).filter(function (k) { return k !== "outro"; }).map(function (k) { return [k, CATEGORIAS[k]]; }))
             .map(function (c) { return '<button type="button" data-cat="' + c[0] + '" aria-pressed="' + (c[0] === "") + '">' + c[1] + "</button>"; }).join("") +
         "</div></div>" +
+      '<div id="ag-dia" class="agenda-dia" hidden></div>' +
       '<div id="ag-lista" class="agenda-lista"><p class="carregando">Carregando a agenda…</p></div>' +
       '<aside class="agenda-divulgue"><div><b>Organiza um evento pet?</b><span>Encontro, feira de adoção, cãominhada: mande para a gente colocar na Agenda Pet.</span></div><a class="btn btn-sec" href="anuncie.html?tipo=evento">Divulgar meu evento</a></aside>' +
       "</section>";
     var lista = el.querySelector("#ag-lista");
     function desenhar() {
+      var caixaDia = el.querySelector("#ag-dia");
+      if (filtro.dia) {
+        var dt = new Date(filtro.dia + "T12:00:00-03:00");
+        caixaDia.hidden = false;
+        caixaDia.innerHTML = "<span>Eventos de <b>" + esc(dt.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo", weekday: "long", day: "numeric", month: "long" })) + '</b></span><button type="button" class="btn btn-sec" id="ag-ver-todos">Ver todos os eventos</button>';
+        caixaDia.querySelector("#ag-ver-todos").addEventListener("click", function () {
+          filtro.dia = ""; history.replaceState(null, "", location.pathname); desenhar();
+        });
+      } else caixaDia.hidden = true;
       var vis = todos.filter(function (e) {
+        if (filtro.dia) return chave(e.inicio) <= filtro.dia && chave(e.fim || e.inicio) >= filtro.dia;
         if (filtro.uf && e.estado !== filtro.uf) return false;
         if (filtro.cat) return filtro.cat === "profissional" ? e.profissional || e.categoria === "profissional" : e.categoria === filtro.cat && !e.profissional;
         return !e.profissional && e.categoria !== "profissional";
