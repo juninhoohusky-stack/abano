@@ -959,13 +959,13 @@
   }
 
   // ---------- Janela simples por cima da página (membros do clube, avisos) ----------
-  function janelaSimples(titulo) {
+  function janelaSimples(titulo, aoFechar) {
     const d = document.createElement("dialog");
     d.className = "janela-coment janela-simples";
     d.setAttribute("aria-label", titulo);
     d.innerHTML = `<div class="jc-caixa"><div class="jc-topo"><span class="jc-pega" aria-hidden="true"></span><h2 class="js-titulo">${esc(titulo)}</h2><button type="button" class="jc-fechar" aria-label="Fechar">&times;</button></div><div class="jc-corpo"><p class="carregando">Carregando…</p></div></div>`;
     document.body.appendChild(d);
-    const fechar = () => { if (!d.open) return; d.close(); d.remove(); document.documentElement.classList.remove("sem-rolar"); };
+    const fechar = () => { if (!d.open) return; if (aoFechar) aoFechar(); d.close(); d.remove(); document.documentElement.classList.remove("sem-rolar"); };
     d.querySelector(".jc-fechar").addEventListener("click", fechar);
     d.addEventListener("cancel", (e) => { e.preventDefault(); fechar(); });
     d.addEventListener("click", (e) => { if (e.target === d) fechar(); });
@@ -1680,6 +1680,27 @@
       : '<p class="sub">Não deu para carregar os clubes.</p>';
     alertasPerto();
     destaquesLado();
+    botaoLado();
+  }
+  // Telas menores: a coluna da direita fica no fim da página. Um botão fixo abre
+  // a agenda, os destaques e os clubes por cima, sem precisar passar por todo o feed.
+  function botaoLado() {
+    const lado = document.querySelector(".com-lado");
+    if (!lado || document.querySelector(".btn-lado") || q.get("v") === "mensagens") return;
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "btn-lado";
+    b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg><span>Agenda e destaques</span>';
+    document.body.appendChild(b);
+    b.addEventListener("click", () => {
+      const filhos = [...lado.children];
+      const j = janelaSimples("Agenda e destaques", () => { filhos.forEach((f) => lado.appendChild(f)); });
+      j.d.classList.add("janela-lado");
+      j.corpo.innerHTML = "";
+      // A agenda vem primeiro; ao fechar, tudo volta para a ordem original da coluna
+      [...filhos].sort((x, y) => (y.classList.contains("lado-cal") ? 1 : 0) - (x.classList.contains("lado-cal") ? 1 : 0)).forEach((f) => j.corpo.appendChild(f));
+      // Tocar num link leva para outra página: fecha a janela antes
+      j.corpo.addEventListener("click", (e) => { if (e.target.closest("a[href]")) j.fechar(); });
+    });
   }
   // ---------- Calendário da Agenda Pet (lateral) ----------
   // Os dias com evento ficam marcados; tocar no dia abre a Agenda Pet do site naquele dia.

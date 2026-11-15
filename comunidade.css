@@ -672,3 +672,19 @@ html.sem-rolar{overflow:hidden}
 .cal-prox small{color:var(--suave);font-size:var(--t-xs)}
 .cal-prox a{color:var(--tinta);text-decoration:none}
 .cal-prox a:hover b{color:var(--marca)}
+
+/* ---------- Coluna da direita: rolagem própria no computador e botão nas telas menores ---------- */
+@media (min-width:1181px){
+  .com-lado{max-height:calc(100dvh - 100px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--linha) transparent;margin:-6px -8px;padding:6px 8px 12px}
+  .com-lado::-webkit-scrollbar{width:6px}
+  .com-lado::-webkit-scrollbar-thumb{background:var(--linha);border-radius:6px}
+}
+.btn-lado{display:none}
+@media (max-width:1180px){
+  .btn-lado{position:fixed;right:var(--e-4);bottom:calc(var(--e-4) + env(safe-area-inset-bottom));z-index:60;display:inline-flex;align-items:center;gap:var(--e-2);min-height:48px;padding:0 var(--e-4) 0 var(--e-3);border:0;border-radius:var(--raio-pill);background:var(--marca);color:var(--sobre-marca);font:inherit;font-weight:800;font-size:var(--t-sm);box-shadow:var(--sombra-botao);cursor:pointer}
+  .btn-lado svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .janela-lado .jc-corpo{display:grid;gap:var(--e-3);background:var(--fundo)}
+  .janela-lado .lado-caixa{box-shadow:var(--sombra)}
+}
+@media (max-width:900px){.btn-lado{bottom:calc(84px + env(safe-area-inset-bottom))}}
+@media print{.btn-lado{display:none}}
