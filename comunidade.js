@@ -1315,7 +1315,7 @@
       </section>
       ${!ehEu && est.bloqueados.has(u.id) ? `<p class="convite-clube">Você bloqueou este perfil: as publicações e comentários dessa pessoa não aparecem para você. <button type="button" class="link-botao" data-acao="desbloquear" data-id="${esc(u.id)}">Desbloquear</button></p>` : ""}
       <section class="perfil-bloco">
-        <h2>Pets</h2>
+        <h2 class="perfil-bloco-cab">Pets${ehEu && (pets.data || []).length ? '<a class="btn btn-sec btn-peq" href="card-pet.html">Criar card para compartilhar</a>' : ""}</h2>
         ${(pets.data || []).length ? `<ul class="grade-pets">${pets.data.map((p) => `<li class="pet${p.doador_sangue === "doador" ? " pet-doador" : ""}">${avatar(p, "pet-av")}<b>${esc(p.nome)}</b><small>${esc([ESPECIES[p.especie], p.raca, p.idade, SEXOS[p.sexo]].filter(Boolean).join(" · "))}</small>${seloDoador(p)}${p.personalidade ? `<span class="pet-tag">${esc(p.personalidade)}</span>` : ""}${p.descricao ? `<p>${esc(p.descricao)}</p>` : ""}</li>`).join("")}</ul>`
           : `<p class="sub">${ehEu ? 'Você ainda não cadastrou pets. <a href="conta.html#pets">Adicionar pet</a>' : "Nenhum pet cadastrado ainda."}</p>`}
       </section>

@@ -649,3 +649,6 @@ html.sem-rolar{overflow:hidden}
 .convite-sub{font-size:var(--t-base);margin:0 0 var(--e-2)}
 .convite-nota{margin:0;color:var(--suave);line-height:1.5}
 .convite-links #convite-partilhar svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.perfil-bloco-cab{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--e-2)}
+.perfil-bloco-cab .btn{width:auto;margin:0;font-size:var(--t-sm)}

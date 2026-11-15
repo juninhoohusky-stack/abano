@@ -695,7 +695,9 @@
         rm.addEventListener("click", function () { removerPet(p); });
         var qr = document.createElement("a"); qr.className = "link-botao pet-qr"; qr.href = "perfil-qr.html?pet=" + encodeURIComponent(p.id); qr.textContent = "Perfil QR";
         qr.setAttribute("aria-label", "Perfil com QR Code de " + p.nome);
-        acoes.appendChild(ed); acoes.appendChild(qr); acoes.appendChild(rm);
+        var cd = document.createElement("a"); cd.className = "link-botao pet-qr"; cd.href = "card-pet.html?pet=" + encodeURIComponent(p.id); cd.textContent = "Criar card";
+        cd.setAttribute("aria-label", "Criar card para compartilhar " + p.nome);
+        acoes.appendChild(ed); acoes.appendChild(cd); acoes.appendChild(qr); acoes.appendChild(rm);
         li.appendChild(foto); li.appendChild(txt); li.appendChild(acoes);
         lista.appendChild(li);
       });
