@@ -91,7 +91,7 @@
     el.hidden = false;
     carregarTurnstile().then(function () {
       widgets[id] = window.turnstile.render(el, { sitekey: CAPTCHA, language: "pt-br", theme: "auto", size: "flexible" });
-    }, function () { el.textContent = "Não deu para carregar a verificação. Recarregue a página."; });
+    }, function () { el.textContent = "Não deu para carregar a verificação contra robôs. Recarregue a página. Se estiver abrindo pelo Instagram ou outro app, abra o site no Chrome ou no Safari, ou use o botão do Google."; });
   }
   function tokenCaptcha(id) {
     if (!CAPTCHA) return undefined;
@@ -145,6 +145,7 @@
 
     $("btn-google").addEventListener("click", function () { entrarComGoogle(this, avisoEntrar); });
     prepararCaptcha("captcha-entrar");
+    ligarReenvio("btn-reenviar-entrar", "captcha-entrar", "aviso-reenviar-entrar", function () { return formEntrar.email.value.trim().toLowerCase(); });
 
     formEntrar.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -158,7 +159,13 @@
       var botao = formEntrar.querySelector("button[type=submit]");
       ocupado(botao, true, "Entrando…");
       sb.auth.signInWithPassword({ email: email, password: senha, options: { captchaToken: tkE } }).then(function (r) {
-        if (r.error) { renovarCaptcha("captcha-entrar"); ocupado(botao, false); aviso(avisoEntrar, erroCaptcha(r.error)); return; }
+        if (r.error) {
+          renovarCaptcha("captcha-entrar"); ocupado(botao, false);
+          var naoConf = r.error.code === "email_not_confirmed" || /not confirmed/i.test(r.error.message || "");
+          $("entrar-nao-confirmado").hidden = !naoConf;
+          aviso(avisoEntrar, naoConf ? "" : erroCaptcha(r.error));
+          return;
+        }
         ir(destino());
       });
     });
@@ -187,6 +194,32 @@
         if (r.error) { aviso(avisoRec, erroCaptcha(r.error)); return; }
         // Mesma resposta exista ou não a conta, para não revelar quem tem cadastro
         aviso(avisoRec, "Se houver uma conta com " + email + ", você vai receber um link para criar uma nova senha. Confira também o spam.", true);
+      });
+    });
+  }
+
+  // ---------- Reenviar o e-mail de confirmação do cadastro ----------
+  function ligarReenvio(botaoId, captchaId, avisoId, pegarEmail) {
+    var b = $(botaoId), av = $(avisoId);
+    if (!b) return;
+    b.addEventListener("click", function () {
+      var email = pegarEmail();
+      if (!emailValido(email)) { aviso(av, "Digite o seu e-mail no campo acima."); return; }
+      var tk = tokenCaptcha(captchaId);
+      if (tk === "") { aviso(av, MSG_CAPTCHA); return; }
+      ocupado(b, true, "Enviando…");
+      sb.auth.resend({ type: "signup", email: email, options: { emailRedirectTo: location.origin + "/entrar.html?volta=" + encodeURIComponent(destino()), captchaToken: tk } }).then(function (r) {
+        renovarCaptcha(captchaId);
+        if (r.error) { ocupado(b, false); aviso(av, erroCaptcha(r.error)); return; }
+        aviso(av, "Pronto! Enviamos de novo para " + email + ". Pode levar alguns minutos: confira também o Spam e a aba Promoções.", true);
+        // Espera um minuto antes de liberar outro reenvio
+        var falta = 60;
+        b.textContent = "Reenviar de novo em " + falta + "s";
+        var t = setInterval(function () {
+          falta--;
+          if (falta <= 0) { clearInterval(t); ocupado(b, false); return; }
+          b.textContent = "Reenviar de novo em " + falta + "s";
+        }, 1000);
       });
     });
   }
@@ -246,6 +279,8 @@
         var ok = $("criar-ok");
         ok.hidden = false;
         ok.focus();
+        prepararCaptcha("captcha-reenviar");
+        ligarReenvio("btn-reenviar", "captcha-reenviar", "aviso-reenviar", function () { return email; });
       });
     });
   }

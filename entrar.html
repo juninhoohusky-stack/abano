@@ -23,14 +23,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115f">
+<link rel="stylesheet" href="site.css?v=20261116a">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261115f" defer></script>
+<script src="site.js?v=20261116a" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261115f" defer></script>
-<script src="conta.js?v=20261115f" defer></script>
+<script src="lista.js?v=20261116a" defer></script>
+<script src="conta.js?v=20261116a" defer></script>
 <style>
   .pagina-conta{padding:var(--e-12) 0 var(--e-14)}
   .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:var(--e-16);align-items:start}
@@ -46,6 +46,11 @@
   .escondido{display:none}
   .fc h1{font-size:var(--t-h4);line-height:1.15;margin-bottom:var(--e-1)}
   .captcha{margin-top:var(--e-4);min-height:65px}
+  .dicas-email{margin:var(--e-3) 0 var(--e-2);padding-left:var(--e-5);display:grid;gap:6px;font-size:var(--t-sm);color:var(--suave);text-align:left}
+  .dicas-email b{color:var(--tinta)}
+  #btn-reenviar,#btn-reenviar-entrar{width:100%;margin-top:var(--e-3)}
+  .nao-confirmado{margin-top:var(--e-3);padding:var(--e-3) var(--e-4);border-radius:var(--raio-sm);background:var(--acento-claro);font-size:var(--t-sm)}
+  .nao-confirmado p{margin:0}
   .conta-ok{text-align:center}
   .conta-ok .selo{width:68px;height:68px;margin:0 auto var(--e-4);border-radius:50%;display:grid;place-items:center;background:var(--lima);color:var(--sobre-lima)}
   .conta-ok .selo svg{width:32px;height:32px}
@@ -129,6 +134,11 @@
 
           <div class="captcha" id="captcha-entrar" hidden></div>
           <p class="aviso-conta" id="aviso-entrar" role="alert" hidden></p>
+          <div class="nao-confirmado" id="entrar-nao-confirmado" hidden>
+            <p>Ainda falta confirmar o seu e-mail. Procure o e-mail do Abanô na caixa de entrada, no Spam e na aba Promoções, ou peça outro:</p>
+            <button type="button" class="btn btn-sec" id="btn-reenviar-entrar">Reenviar e-mail de confirmação</button>
+            <p class="aviso-conta" id="aviso-reenviar-entrar" role="status" hidden></p>
+          </div>
           <button type="submit" class="btn">Entrar</button>
           <p class="mini">Ainda não tem conta? <a href="cadastro.html" id="link-criar">Criar conta grátis</a></p>
         </form>

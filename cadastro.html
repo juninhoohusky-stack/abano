@@ -22,14 +22,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115f">
+<link rel="stylesheet" href="site.css?v=20261116a">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="site.js?v=20261115f" defer></script>
+<script src="site.js?v=20261116a" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261115f" defer></script>
-<script src="conta.js?v=20261115f" defer></script>
+<script src="lista.js?v=20261116a" defer></script>
+<script src="conta.js?v=20261116a" defer></script>
 <style>
   .pagina-conta{padding:var(--e-12) 0 var(--e-14)}
   .conta-grade{display:grid;grid-template-columns:1fr minmax(0,480px);gap:var(--e-16);align-items:start}
@@ -45,6 +45,11 @@
   .escondido{display:none}
   .fc h1{font-size:var(--t-h4);line-height:1.15;margin-bottom:var(--e-1)}
   .captcha{margin-top:var(--e-4);min-height:65px}
+  .dicas-email{margin:var(--e-3) 0 var(--e-2);padding-left:var(--e-5);display:grid;gap:6px;font-size:var(--t-sm);color:var(--suave);text-align:left}
+  .dicas-email b{color:var(--tinta)}
+  #btn-reenviar,#btn-reenviar-entrar{width:100%;margin-top:var(--e-3)}
+  .nao-confirmado{margin-top:var(--e-3);padding:var(--e-3) var(--e-4);border-radius:var(--raio-sm);background:var(--acento-claro);font-size:var(--t-sm)}
+  .nao-confirmado p{margin:0}
   .conta-ok{text-align:center}
   .conta-ok .selo{width:68px;height:68px;margin:0 auto var(--e-4);border-radius:50%;display:grid;place-items:center;background:var(--lima);color:var(--sobre-lima)}
   .conta-ok .selo svg{width:32px;height:32px}
@@ -161,6 +166,15 @@
           <h2>Confira seu e-mail</h2>
           <p class="sub">Enviamos um link para <b id="criar-confirme-email"></b>. Abra o link para ativar sua conta. Se não aparecer em alguns minutos, confira o spam.</p>
           <p class="mini">Se esse e-mail já tinha conta, é só <a href="entrar.html">entrar</a> ou recuperar a senha.</p>
+          <ul class="dicas-email">
+            <li>Procure na caixa de entrada, no <b>Spam</b> e na aba <b>Promoções</b> (Gmail) por um e-mail do <b>Abanô</b>.</li>
+            <li>Confira se o e-mail acima está escrito certinho.</li>
+            <li>O link vale por 24 horas. Se demorar, peça outro abaixo.</li>
+          </ul>
+          <div class="captcha" id="captcha-reenviar" hidden></div>
+          <button type="button" class="btn btn-sec" id="btn-reenviar">Reenviar e-mail de confirmação</button>
+          <p class="aviso-conta" id="aviso-reenviar" role="status" hidden></p>
+          <p class="mini">Preferir não esperar? <a href="entrar.html">Entre com o Google</a>, sem precisar confirmar e-mail.</p>
         </div>
       </div>
     </div>
