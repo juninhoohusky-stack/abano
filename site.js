@@ -473,6 +473,16 @@
   });
 })();
 
+/* ---------- Número no ícone do app ----------
+   Quem adicionou o Abanô na tela inicial (celular ou computador) vê no ícone
+   quantos avisos e mensagens novas tem, como nos apps. */
+window.abanoIcone = function (n) {
+  try {
+    if (!("setAppBadge" in navigator)) return;
+    if (n > 0) navigator.setAppBadge(n).catch(function () {}); else navigator.clearAppBadge().catch(function () {});
+  } catch (e) {}
+};
+
 /* ---------- Sininho de notificações (só para quem está logado) ----------
    Mostra quantos avisos novos a pessoa tem na Comunidade (curtidas, comentários,
    respostas e seguidores). A lista fica em comunidade/?v=notificacoes. */
@@ -495,12 +505,17 @@
     var s = null;
     try { s = JSON.parse(localStorage.getItem("sb-igpwzidpiypzukmnskdb-auth-token") || "null"); } catch (e) {}
     if (!s || !s.access_token || (s.expires_at && s.expires_at * 1000 < Date.now() + 30000)) return;
-    fetch("https://igpwzidpiypzukmnskdb.supabase.co/rest/v1/rpc/notificacoes_nao_lidas", {
-      method: "POST",
-      headers: { "apikey": "sb_publishable_PRC9f8FexEHaH6ZGNCaGig_EVXz8JcY", "Authorization": "Bearer " + s.access_token, "Content-Type": "application/json" },
-      body: "{}"
-    }).then(function (r) { return r.ok ? r.json() : null; }).then(function (n) {
+    var pedir = function (rpc) {
+      return fetch("https://igpwzidpiypzukmnskdb.supabase.co/rest/v1/rpc/" + rpc, {
+        method: "POST",
+        headers: { "apikey": "sb_publishable_PRC9f8FexEHaH6ZGNCaGig_EVXz8JcY", "Authorization": "Bearer " + s.access_token, "Content-Type": "application/json" },
+        body: "{}"
+      }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    };
+    Promise.all([pedir("notificacoes_nao_lidas"), pedir("mensagens_nao_lidas")]).then(function (res) {
+      var n = res[0], msgs = res[1];
       if (typeof n !== "number") return;
+      window.abanoIcone(n + (typeof msgs === "number" ? msgs : 0));
       document.querySelectorAll("[data-sino-num]").forEach(function (el) { el.textContent = n > 99 ? "99+" : String(n || ""); el.hidden = !n; });
       a.setAttribute("aria-label", n ? "Notificações: " + n + (n === 1 ? " nova" : " novas") : "Notificações");
     }).catch(function () {});

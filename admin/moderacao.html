@@ -7,9 +7,9 @@
 <title>Moderação | Abanô</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="site.css?v=20261116a">
+<link rel="stylesheet" href="site.css?v=20261118a">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261116a" defer></script>
+<script src="lista.js?v=20261118a" defer></script>
 <style>
   .painel{max-width:980px;margin:0 auto;padding:var(--e-6) var(--e-5) var(--e-12)}
   .topo-admin{display:flex;align-items:center;justify-content:space-between;gap:var(--e-4);max-width:980px;margin:0 auto;padding:var(--e-3) var(--e-5)}
@@ -46,6 +46,8 @@
   .aviso{padding:var(--e-3) var(--e-3);border-radius:var(--raio-sm);background:var(--marca-clara);color:var(--marca-esc);font-weight:700}
   .aviso.ok{background:var(--lima-clara);color:var(--sobre-lima)}
   .eventos-lista{margin-top:var(--e-4);display:grid;gap:var(--e-2)}
+  .nota-of{font-size:var(--t-sm);color:var(--suave);margin:0 0 var(--e-3)}
+  #ofertas-lista img{object-fit:contain;background:#fff}
   .eventos-lista img{width:56px;height:56px;border-radius:var(--raio-xs);object-fit:cover;flex:none}
   .eventos-lista li > span{flex:1;min-width:0}
   .ev-foto-adm{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e-2)}
@@ -127,6 +129,7 @@
       <button type="button" data-status="aberta" aria-pressed="true">Abertas</button>
       <button type="button" data-status="fechadas" aria-pressed="false">Resolvidas</button>
       <button type="button" data-status="eventos" aria-pressed="false">Eventos</button>
+      <button type="button" data-status="ofertas" aria-pressed="false">Ofertas</button>
       <button type="button" data-status="orgs" aria-pressed="false">Organizações <span id="num-orgs"></span></button>
       <button type="button" data-status="anuncios" aria-pressed="false">Anúncios de adoção <span id="num-anuncios"></span></button>
       <button type="button" data-status="parceiros" aria-pressed="false">Parceiros</button>
@@ -240,6 +243,34 @@
       </form>
       <ul class="eventos-lista" id="eventos-lista"></ul>
     </div>
+    <div id="tela-ofertas" hidden>
+      <form class="evento" id="form-oferta" novalidate>
+        <h2 id="oferta-titulo">Cadastrar oferta</h2>
+        <p class="nota-of">Cole o seu link de afiliado. A oferta aparece na hora em <a href="/ofertas.html" target="_blank" rel="noopener">abano.com.br/ofertas.html</a>. O robô de ofertas, quando estiver ligado, também cadastra aqui sozinho.</p>
+        <label>Nome do produto<input name="titulo" maxlength="160" required placeholder="Ex.: Ração Golden Gatos Castrados Salmão 10,1 kg"></label>
+        <label>Link de afiliado (https://)<input name="link" type="url" required placeholder="https://amzn.to/…"></label>
+        <label>Link da foto do produto (https://)<input name="imagem_url" type="url" placeholder="Na loja: botão direito na foto, Copiar endereço da imagem"></label>
+        <div class="duas">
+          <label>Loja<select name="loja"><option value="amazon">Amazon</option><option value="mercadolivre">Mercado Livre</option><option value="shopee">Shopee</option><option value="magalu">Magalu</option><option value="petz">Petz</option><option value="cobasi">Cobasi</option><option value="petlove">Petlove</option><option value="outra">Outra</option></select></label>
+          <label>Para<select name="pet"><option value="ambos">Cães e gatos</option><option value="cao">Cães</option><option value="gato">Gatos</option></select></label>
+        </div>
+        <div class="duas">
+          <label>Preço agora (R$)<input name="preco" inputmode="decimal" placeholder="89,90"></label>
+          <label>Preço antes (R$, opcional)<input name="preco_antigo" inputmode="decimal" placeholder="129,90"></label>
+        </div>
+        <div class="duas">
+          <label>Categoria<select name="categoria"><option value="racao">Ração</option><option value="petiscos">Petiscos</option><option value="brinquedos">Brinquedos</option><option value="higiene">Higiene</option><option value="saude">Saúde</option><option value="acessorios">Acessórios</option><option value="camas">Camas</option><option value="passeio">Passeio</option><option value="outros">Outros</option></select></label>
+          <label>Cupom (opcional)<input name="cupom" maxlength="40" placeholder="PET10"></label>
+        </div>
+        <div class="duas">
+          <label>Vale até (opcional)<input name="valido_ate" type="date"></label>
+          <span class="checks-ev"><label class="check-ev"><input type="checkbox" name="destaque"> Destaque do dia</label><label class="check-ev"><input type="checkbox" name="ativo" checked> Aparecendo no site</label></span>
+        </div>
+        <p class="aviso" id="oferta-aviso" hidden></p>
+        <div class="acoes"><button class="btn" type="submit" id="oferta-salvar">Publicar oferta</button><button class="btn btn-sec" type="button" id="oferta-cancelar" hidden>Cancelar edição</button></div>
+      </form>
+      <ul class="eventos-lista" id="ofertas-lista"></ul>
+    </div>
   </section>
 </main>
 
@@ -346,16 +377,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function carregar() {
     $("tela-eventos").hidden = status !== "eventos";
+    $("tela-ofertas").hidden = status !== "ofertas";
     $("tela-orgs").hidden = status !== "orgs";
     $("tela-parceiros").hidden = status !== "parceiros";
     $("tela-alertas").hidden = status !== "alertas";
     $("tela-anuncios").hidden = status !== "anuncios";
     $("tela-cadastros").hidden = status !== "cadastros";
-    $("lista").hidden = status === "eventos" || status === "orgs" || status === "parceiros" || status === "alertas" || status === "cadastros" || status === "anuncios";
+    $("lista").hidden = status === "ofertas" || status === "eventos" || status === "orgs" || status === "parceiros" || status === "alertas" || status === "cadastros" || status === "anuncios";
     if (status === "cadastros") { carregarCadastros(); return; }
     if (status === "alertas") { carregarAlertas(); return; }
     if (status === "anuncios") { carregarAnuncios(); return; }
     if (status === "eventos") { carregarEventos(); return; }
+    if (status === "ofertas") { carregarOfertas(); return; }
     if (status === "orgs") { carregarOrgs(); return; }
     if (status === "parceiros") { carregarParceiros(); return; }
     $("lista").innerHTML = '<p class="vazio">Carregando…</p>';
@@ -693,6 +726,74 @@ document.addEventListener("DOMContentLoaded", function () {
       av.textContent = editandoEv ? "Evento atualizado." : "Evento publicado na Agenda Pet."; av.className = "aviso ok"; av.hidden = false;
       limparEvento(); carregarEventos();
     }).catch(function (err) { botao.disabled = false; erro(err.message); });
+  });
+
+  // Ofertas (produtos de afiliado): criar, editar, pausar e apagar
+  var ofertas = [], editandoOf = null;
+  var LOJAS_OF = { amazon: "Amazon", mercadolivre: "Mercado Livre", shopee: "Shopee", magalu: "Magalu", petz: "Petz", cobasi: "Cobasi", petlove: "Petlove", outra: "Outra loja" };
+  var reais = function (v) { return v == null ? "" : Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); };
+  var numero = function (t) { t = String(t || "").replace(/[^0-9,.]/g, ""); if (!t) return null; if (t.indexOf(",") >= 0) t = t.replace(/\./g, "").replace(",", "."); var n = Number(t); return isFinite(n) ? Math.round(n * 100) / 100 : NaN; };
+  function carregarOfertas() {
+    sb.from("ofertas").select("*").order("atualizado_em", { ascending: false }).limit(500).then(function (r) {
+      if (r.error) { $("ofertas-lista").innerHTML = '<li><span>Rode o arquivo supabase/editar_boasvindas_ofertas.sql no Supabase para ativar as ofertas.</span></li>'; return; }
+      ofertas = r.data || [];
+      var agora = Date.now();
+      $("ofertas-lista").innerHTML = ofertas.map(function (o) {
+        var vencida = o.valido_ate && new Date(o.valido_ate).getTime() < agora;
+        return '<li class="' + (!o.ativo || vencida ? "ev-passado" : "") + '">' + (o.imagem_url ? '<img src="' + esc(o.imagem_url) + '" alt="" referrerpolicy="no-referrer">' : "") +
+          "<span><b>" + esc(o.titulo) + "</b><br><small>" + esc(LOJAS_OF[o.loja] || o.loja) + " · " + (o.preco != null ? reais(o.preco) : "sem preço") + (o.preco_antigo ? " (antes " + reais(o.preco_antigo) + ")" : "") +
+          (o.destaque ? " · destaque" : "") + (o.origem === "robo" ? " · pelo robô" : "") + (!o.ativo ? " · pausada" : vencida ? " · vencida" : "") + "</small></span>" +
+          '<button class="btn btn-sec" data-of-editar="' + esc(o.id) + '">Editar</button><button class="btn btn-sec" data-of-pausar="' + esc(o.id) + '">' + (o.ativo ? "Pausar" : "Ativar") + '</button><button class="btn btn-sec" data-of-apagar="' + esc(o.id) + '">Apagar</button></li>';
+      }).join("") || '<li><span>Nenhuma oferta cadastrada ainda.</span></li>';
+    });
+  }
+  function limparOferta() {
+    editandoOf = null; $("form-oferta").reset(); $("form-oferta").ativo.checked = true;
+    $("oferta-titulo").textContent = "Cadastrar oferta"; $("oferta-salvar").textContent = "Publicar oferta"; $("oferta-cancelar").hidden = true;
+  }
+  $("oferta-cancelar").addEventListener("click", limparOferta);
+  $("ofertas-lista").addEventListener("click", function (e) {
+    var ed = e.target.closest("[data-of-editar]"), pa = e.target.closest("[data-of-pausar]"), ap = e.target.closest("[data-of-apagar]");
+    if (ed) {
+      var o = ofertas.find(function (x) { return x.id === ed.getAttribute("data-of-editar"); }); if (!o) return;
+      var f = $("form-oferta"); limparOferta(); editandoOf = o;
+      ["titulo", "link", "imagem_url", "cupom"].forEach(function (k) { f[k].value = o[k] || ""; });
+      f.preco.value = o.preco != null ? String(o.preco).replace(".", ",") : ""; f.preco_antigo.value = o.preco_antigo != null ? String(o.preco_antigo).replace(".", ",") : "";
+      f.loja.value = o.loja; f.pet.value = o.pet; f.categoria.value = o.categoria; f.destaque.checked = !!o.destaque; f.ativo.checked = !!o.ativo;
+      f.valido_ate.value = o.valido_ate ? paraData(o.valido_ate) : "";
+      $("oferta-titulo").textContent = "Editar: " + o.titulo; $("oferta-salvar").textContent = "Salvar alterações"; $("oferta-cancelar").hidden = false;
+      f.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    if (pa) {
+      var of = ofertas.find(function (x) { return x.id === pa.getAttribute("data-of-pausar"); }); if (!of) return;
+      sb.from("ofertas").update({ ativo: !of.ativo }).eq("id", of.id).then(function (r) { if (r.error) alert(r.error.message); carregarOfertas(); });
+      return;
+    }
+    if (ap && confirm("Apagar esta oferta?")) sb.from("ofertas").delete().eq("id", ap.getAttribute("data-of-apagar")).then(function (r) { if (r.error) alert(r.error.message); carregarOfertas(); });
+  });
+  $("form-oferta").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var f = e.target, av = $("oferta-aviso");
+    var erro = function (m) { av.textContent = m; av.className = "aviso"; av.hidden = false; };
+    var link = f.link.value.trim(), img = f.imagem_url.value.trim(), preco = numero(f.preco.value), antes = numero(f.preco_antigo.value);
+    if (f.titulo.value.trim().length < 3) return erro("Escreva o nome do produto.");
+    if (!/^https:\/\//i.test(link)) return erro("O link de afiliado precisa começar com https://");
+    if (img && !/^https:\/\//i.test(img)) return erro("O link da foto precisa começar com https://");
+    if (Number.isNaN(preco) || Number.isNaN(antes)) return erro("Confira os preços. Use só números, como 89,90.");
+    if (preco != null && antes != null && antes <= preco) return erro("O preço de antes precisa ser maior que o preço de agora (ou deixe em branco).");
+    var dados = {
+      titulo: f.titulo.value.trim(), link: link, imagem_url: img || null, loja: f.loja.value, pet: f.pet.value, categoria: f.categoria.value,
+      preco: preco, preco_antigo: antes, cupom: f.cupom.value.trim() || null, destaque: f.destaque.checked, ativo: f.ativo.checked,
+      valido_ate: f.valido_ate.value ? f.valido_ate.value + "T23:59:00-03:00" : null
+    };
+    var botao = $("oferta-salvar"); botao.disabled = true;
+    (editandoOf ? sb.from("ofertas").update(dados).eq("id", editandoOf.id) : sb.from("ofertas").insert(dados)).then(function (r) {
+      botao.disabled = false;
+      if (r.error) return erro(/ofertas/.test(r.error.message) && /exist|find/i.test(r.error.message) ? "Rode o arquivo supabase/editar_boasvindas_ofertas.sql no Supabase para ativar as ofertas." : r.error.message);
+      av.textContent = editandoOf ? "Oferta atualizada." : "Oferta publicada."; av.className = "aviso ok"; av.hidden = false;
+      limparOferta(); carregarOfertas();
+    });
   });
 
   $("entrar").addEventListener("click", function () {

@@ -229,13 +229,69 @@
     ta.focus();
     ta.dispatchEvent(new Event("input", { bubbles: true }));
   });
-  const barraFmt = (alvo) => `<span class="barra-fmt" role="group" aria-label="Formatar o texto"><button type="button" data-fmt="b" data-alvo="${alvo}" aria-label="Negrito" title="Negrito: *texto*"><b>N</b></button><button type="button" data-fmt="i" data-alvo="${alvo}" aria-label="Itálico" title="Itálico: _texto_"><i>I</i></button></span>`;
+  const barraFmt = (alvo) => `<span class="barra-fmt" role="group" aria-label="Formatar o texto"><button type="button" data-fmt="b" data-alvo="${alvo}" aria-label="Negrito" title="Negrito: *texto*"><b>N</b></button><button type="button" data-fmt="i" data-alvo="${alvo}" aria-label="Itálico" title="Itálico: _texto_"><i>I</i></button>${botaoEmoji(alvo)}</span>`;
 
+  // ---------- Emojis: um painel único que insere o emoji onde o cursor está ----------
+  const EMOJIS = ("🐶 🐱 🐾 🐕 🐈 🐩 🦮 🐕‍🦺 🐈‍⬛ 🐺 🐰 🐹 🐦 🐠 🐢 🦴 🎾 🧸 🏠 🛁 ✂️ 🍖 🥩 🐟 🩺 💉 💊 " +
+    "❤️ 🧡 💛 💚 💙 💜 🩷 🤍 💕 😍 🥰 😘 😊 😄 😁 😂 🤣 😅 😉 😎 🤩 🥳 😇 🤗 🤔 🙄 😴 😢 😭 🥺 😮 😱 😡 " +
+    "🙏 👏 👍 👎 🙌 💪 👀 ✨ 🔥 🎉 🎂 🎁 🌟 ☀️ 🌈 🌸 🌻 🍀 🎄 📸 📍 🚗 ✅ ❌ ⚠️ ❓ ❗ 💬").split(" ");
+  function botaoEmoji(alvo) {
+    return `<button type="button" class="btn-emoji" data-emoji-alvo="${alvo}" aria-label="Inserir emoji" aria-haspopup="dialog" aria-expanded="false" title="Emoji"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.6 14.2a4.2 4.2 0 0 0 6.8 0"/><path d="M9.2 9.8h.01M14.8 9.8h.01" stroke-width="2.6"/></svg></button>`;
+  }
+  let painelEmoji = null, botaoEmojiAtual = null;
+  function fecharEmoji() {
+    if (painelEmoji && !painelEmoji.hidden) { if (painelEmoji.hidePopover && painelEmoji.matches(":popover-open")) painelEmoji.hidePopover(); painelEmoji.hidden = true; }
+    if (botaoEmojiAtual) botaoEmojiAtual.setAttribute("aria-expanded", "false");
+    botaoEmojiAtual = null;
+  }
+  function abrirEmoji(b) {
+    if (botaoEmojiAtual === b) { fecharEmoji(); return; }
+    fecharEmoji();
+    if (!painelEmoji) {
+      painelEmoji = document.createElement("div");
+      painelEmoji.className = "painel-emoji"; painelEmoji.hidden = true;
+      painelEmoji.setAttribute("role", "dialog"); painelEmoji.setAttribute("aria-label", "Escolha um emoji");
+      if ("popover" in painelEmoji) painelEmoji.setAttribute("popover", "manual");   // fica por cima até das janelas abertas
+      painelEmoji.innerHTML = EMOJIS.map((e) => `<button type="button" data-emoji="${e}">${e}</button>`).join("");
+      document.body.appendChild(painelEmoji);
+    }
+    botaoEmojiAtual = b; b.setAttribute("aria-expanded", "true");
+    painelEmoji.hidden = false;
+    if (painelEmoji.showPopover) painelEmoji.showPopover();
+    const r = b.getBoundingClientRect(), w = painelEmoji.offsetWidth, h = painelEmoji.offsetHeight;
+    let top = r.bottom + 6;
+    if (top + h > innerHeight - 8) top = Math.max(8, r.top - h - 6);
+    painelEmoji.style.left = Math.round(Math.min(Math.max(8, r.right - w), innerWidth - w - 8)) + "px";
+    painelEmoji.style.top = Math.round(top) + "px";
+  }
+  document.addEventListener("mousedown", (e) => { if (e.target.closest("[data-emoji], .btn-emoji")) e.preventDefault(); });
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest(".btn-emoji");
+    if (b) { abrirEmoji(b); return; }
+    const em = e.target.closest("[data-emoji]");
+    if (em && botaoEmojiAtual) {
+      const campo = document.getElementById(botaoEmojiAtual.dataset.emojiAlvo); if (!campo) return;
+      const ini = campo.selectionStart != null ? campo.selectionStart : campo.value.length, fim = campo.selectionEnd != null ? campo.selectionEnd : ini;
+      if (campo.maxLength > 0 && campo.value.length - (fim - ini) + em.dataset.emoji.length > campo.maxLength) return;
+      campo.setRangeText(em.dataset.emoji, ini, fim, "end");
+      campo.focus();
+      campo.dispatchEvent(new Event("input", { bubbles: true }));
+      return;
+    }
+    if (painelEmoji && !painelEmoji.hidden && !e.target.closest(".painel-emoji")) fecharEmoji();
+  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && botaoEmojiAtual) { const b = botaoEmojiAtual; fecharEmoji(); b.focus(); } });
+  window.addEventListener("resize", fecharEmoji);
+
+  // "@usuario" em qualquer parte do texto vira link para o perfil
+  const comMencoes = (h) => h.replace(/(^|[\s(>,.!?])@([a-z0-9_]{3,30})\b/g, (m, antes, u) => `${antes}<a class="c-mencao" href="${linkPerfil(u)}">@${u}</a>`);
+  const expandidos = new Set();
   function textoPost(p, completo) {
     if (!p.texto) return "";
     const limite = 480;
-    if (completo || p.texto.length <= limite) return `<p class="txt">${fmt(p.texto)}</p>`;
-    return `<p class="txt">${fmt(p.texto.slice(0, limite).replace(/\s+\S*$/, ""))}… <a href="${linkPost(p.id)}" class="ver-mais">ver mais</a></p>`;
+    if (completo || expandidos.has(p.id) || p.texto.length <= limite) return `<p class="txt">${comMencoes(fmt(p.texto))}</p>`;
+    // "mais" abre o resto do texto ali mesmo, como no Instagram
+    return `<p class="txt">${comMencoes(fmt(p.texto.slice(0, limite).replace(/\s+\S*$/, "")))}… <button type="button" class="ver-mais" data-acao="expandir" data-id="${esc(p.id)}">mais</button></p>`;
   }
   function cartao(p, completo) {
     est.posts.set(p.id, p);
@@ -274,7 +330,7 @@
       ? `<a class="ver-coment" href="${linkPost(p.id)}#comentarios" data-abrir-coment="${esc(p.id)}">${n === 1 ? (pergunta ? "Ver 1 resposta" : "Ver 1 comentário") : `Ver ${n > 2 ? "todos os " : "os "}${num(n)} ${pergunta ? "respostas" : "comentários"}`}</a>` : "";
     const itens = previa.map((c) => `<li><a href="${linkPerfil((c.perfil || {}).usuario)}"><b>${esc((c.perfil || {}).nome || "Tutor")}</b></a> ${fmt(c.texto)}</li>`).join("");
     const campo = est.eu && est.eu.aceitou
-      ? `<form class="coment-rapido" data-post="${esc(p.id)}">${avatar(est.eu)}<label class="sr" for="cr-${esc(p.id)}">${pergunta ? "Sua resposta" : "Seu comentário"}</label><input id="cr-${esc(p.id)}" maxlength="2000" autocomplete="off" enterkeyhint="send" placeholder="${pergunta ? "Responda com a sua experiência…" : "Adicione um comentário…"}"><button type="submit" disabled>Publicar</button></form>`
+      ? `<form class="coment-rapido" data-post="${esc(p.id)}">${avatar(est.eu)}<label class="sr" for="cr-${esc(p.id)}">${pergunta ? "Sua resposta" : "Seu comentário"}</label><input id="cr-${esc(p.id)}" maxlength="2000" autocomplete="off" enterkeyhint="send" placeholder="${pergunta ? "Responda com a sua experiência…" : "Adicione um comentário…"}">${botaoEmoji("cr-" + esc(p.id))}<button type="submit" disabled>Publicar</button></form>`
       : `<button type="button" class="coment-rapido coment-login" data-acao="comentar-login" data-id="${esc(p.id)}">${avatar(null)}<span>${pergunta ? "Entre para responder…" : "Entre para comentar…"}</span></button>`;
     return `<div class="post-coment" data-coment="${esc(p.id)}">${verTodos}${itens ? `<ul class="previa-coment">${itens}</ul>` : ""}${campo}</div>`;
   }
@@ -547,6 +603,30 @@
       if (navigator.share) { try { await navigator.share({ title: titulo, url: url }); } catch (e) {} return; }
       try { await navigator.clipboard.writeText(url); toast("Link copiado!"); } catch (e) { prompt("Copie o link:", url); }
     },
+    expandir(id, _o, b) {
+      const p = est.posts.get(id), t = b.closest(".txt"); if (!p || !t) return;
+      expandidos.add(id);
+      t.outerHTML = `<p class="txt">${comMencoes(fmt(p.texto))}</p>`;
+    },
+    editar(id) {
+      const p = est.posts.get(id); if (!p) return;
+      document.querySelectorAll(`article[data-post="${id}"]`).forEach((art, i) => {
+        if (art.querySelector(".form-editar")) return;
+        const tid = "editar-" + id + "-" + i;
+        const html = `<form class="form-editar" data-editar-post="${esc(id)}" novalidate><label class="sr" for="${tid}">Editar o texto da publicação</label>
+          <textarea id="${tid}" maxlength="5000" rows="3">${esc(p.texto || "")}</textarea>
+          <div class="editar-rodape">${barraFmt(tid)}<span class="editar-botoes"><button type="button" class="btn btn-sec" data-cancelar-edicao="${esc(id)}">Cancelar</button><button type="submit" class="btn">Salvar</button></span></div>
+          <p class="aviso-conta" role="alert" hidden></p></form>`;
+        const txt = art.querySelector(":scope > .txt");
+        if (txt) { txt.hidden = true; txt.insertAdjacentHTML("afterend", html); }
+        else art.querySelector(".post-topo").insertAdjacentHTML("afterend", html);
+        if (i === 0) {
+          const ta = art.querySelector(".form-editar textarea");
+          ta.style.height = Math.min(ta.scrollHeight + 4, 360) + "px";
+          ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+        }
+      });
+    },
     async apagar(id) {
       const p = est.posts.get(id); if (!p) return;
       if (!confirm("Apagar esta publicação? Isso não pode ser desfeito.")) return;
@@ -683,7 +763,8 @@
     const u = (p.perfil || {}).usuario;
     const adm = est.admin && p.clube ? [est.fixados.get(p.clube) === p.id ? ["Desafixar do clube", () => fixar(p, false)] : ["Fixar no topo do clube (regras)", () => fixar(p, true)]] : [];
     if (est.eu && p.autor === est.eu.id) {
-      abrirOpcoes(adm.concat([["Copiar link", () => acoes.compartilhar(id)], ["Apagar publicação", () => acoes.apagar(id), true]]));
+      const editavel = p.especial !== "adocao_abano";
+      abrirOpcoes(adm.concat(editavel ? [["Editar publicação", () => acoes.editar(id)]] : [], [["Copiar link", () => acoes.compartilhar(id)], ["Apagar publicação", () => acoes.apagar(id), true]]));
       return;
     }
     abrirOpcoes(adm.concat([
@@ -818,13 +899,36 @@
   // ---------- Comentar direto do feed ----------
   document.addEventListener("input", (e) => {
     const f = e.target.closest(".coment-rapido");
-    if (f && f.tagName === "FORM") f.querySelector("button").disabled = !e.target.value.trim();
+    if (f && f.tagName === "FORM") f.querySelector("button[type=submit]").disabled = !e.target.value.trim();
+  });
+  document.addEventListener("click", (e) => {
+    const c = e.target.closest("[data-cancelar-edicao]"); if (!c) return;
+    atualizarCartao(c.dataset.cancelarEdicao);
+  });
+  document.addEventListener("submit", async (e) => {
+    const f = e.target.closest("form[data-editar-post]"); if (!f) return;
+    e.preventDefault();
+    const id = f.dataset.editarPost, p = est.posts.get(id); if (!p) return;
+    const ta = f.querySelector("textarea"), av = f.querySelector(".aviso-conta"), bt = f.querySelector("button[type=submit]");
+    const texto = ta.value.trim();
+    av.hidden = true;
+    if (!texto && ["texto", "pergunta", "enquete"].includes(p.tipo)) { av.textContent = "A publicação precisa de um texto."; av.hidden = false; ta.focus(); return; }
+    if (pareceVenda(texto)) { av.textContent = "Venda de animais não é permitida na Comunidade Abanô."; av.hidden = false; return; }
+    if (texto === (p.texto || "")) { atualizarCartao(id); return; }
+    bt.disabled = true;
+    const r = await sb.from("posts").update({ texto: texto || null }).eq("id", id).select("texto,editado_em").single();
+    bt.disabled = false;
+    if (r.error) { av.textContent = erroMsg(r.error); av.hidden = false; return; }
+    p.texto = r.data.texto; p.editado_em = r.data.editado_em || new Date().toISOString();
+    expandidos.add(id);
+    atualizarCartao(id);
+    toast("Publicação editada.");
   });
   document.addEventListener("submit", async (e) => {
     const f = e.target.closest("form.coment-rapido");
     if (!f) return;
     e.preventDefault();
-    const id = f.dataset.post, campo = f.querySelector("input"), botao = f.querySelector("button"), texto = campo.value.trim();
+    const id = f.dataset.post, campo = f.querySelector("input"), botao = f.querySelector("button[type=submit]"), texto = campo.value.trim();
     if (!texto || !exigir({ tipo: "comentar", id: id })) return;
     if (pareceVenda(texto)) { toast("Venda de animais não é permitida na Comunidade Abanô."); return; }
     botao.disabled = true; campo.disabled = true;
@@ -944,7 +1048,7 @@
       av.hidden = true;
       if (!texto) { ta.focus(); return; }
       if (pareceVenda(texto)) { av.textContent = "Venda de animais não é permitida na Comunidade Abanô."; av.hidden = false; return; }
-      const b = f.querySelector("button"); b.disabled = true;
+      const b = f.querySelector("button[type=submit]"); b.disabled = true;
       const r2 = await sb.from("comentarios").insert({ post: p.id, autor: est.eu.id, texto: texto }).select("*, perfil:perfis!comentarios_autor_fkey(id,usuario,nome,foto_url)").single();
       b.disabled = false;
       if (r2.error) { av.textContent = erroMsg(r2.error); av.hidden = false; return; }
@@ -1029,8 +1133,10 @@
   // ---------- Comentários: curtir, responder e conversas (respostas num nível só) ----------
   const CORACAO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-8-4.9-8-10.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.9c0 5.7-8 10.6-8 10.6z"/></svg>';
   const comCurtidos = new Set();
+  const textosComentarios = new Map();
   function itemComentario(c, p, resposta, extra) {
     const a = c.perfil || {};
+    textosComentarios.set(c.id, c.texto);
     const posso = est.eu && (c.autor === est.eu.id || p.autor === est.eu.id);
     const meu = est.eu && c.autor === est.eu.id;
     const curti = comCurtidos.has(c.id), n = c.total_curtidas || 0;
@@ -1039,10 +1145,10 @@
       <div class="c-corpo">
         <div class="c-balao"><a class="c-nome" href="${linkPerfil(a.usuario)}">${esc(a.nome || "Tutor")}</a><p class="c-txt">${textoComMencao(c.texto)}</p>
           ${n ? `<span class="c-curtidas" aria-label="${plural(n, "curtida", "curtidas")}">${CORACAO}${num(n)}</span>` : ""}</div>
-        <p class="c-meta"><time datetime="${esc(c.criado_em)}">${tempo(c.criado_em)}</time>
+        <p class="c-meta"><time datetime="${esc(c.criado_em)}">${tempo(c.criado_em)}</time>${c.editado_em ? '<span class="c-editado">editado</span>' : ""}
           <button type="button" class="c-curtir${curti ? " ativa" : ""}" data-c="${esc(c.id)}" aria-pressed="${curti}">${curti ? "Curtido" : "Curtir"}</button>
           <button type="button" class="c-responder" data-c="${esc(c.id)}" data-pai="${esc(c.resposta_a || c.id)}">Responder</button>
-          ${posso ? `<button type="button" class="c-apagar" data-c="${esc(c.id)}">Apagar</button>` : ""}${meu ? "" : `<button type="button" class="c-denunciar" data-c="${esc(c.id)}">Denunciar</button>`}</p>
+          ${meu ? `<button type="button" class="c-editar" data-c="${esc(c.id)}">Editar</button>` : ""}${posso ? `<button type="button" class="c-apagar" data-c="${esc(c.id)}">Apagar</button>` : ""}${meu ? "" : `<button type="button" class="c-denunciar" data-c="${esc(c.id)}">Denunciar</button>`}</p>
         ${extra || ""}
       </div>
     </li>`;
@@ -1080,6 +1186,10 @@
       if (cu) { curtirComentario(cu); return; }
       const re = e.target.closest(".c-responder");
       if (re) { abrirResposta(re, p); return; }
+      const ed = e.target.closest(".c-editar");
+      if (ed) { editarComentario(ed); return; }
+      const ca = e.target.closest("[data-cancelar-c]");
+      if (ca) { fecharEdicaoComentario(ca.closest(".comentario")); return; }
       const b = e.target.closest(".c-apagar"); if (!b) return;
       if (!confirm("Apagar este comentário? As respostas a ele também somem.")) return;
       const r2 = await sb.from("comentarios").delete().eq("id", b.dataset.c);
@@ -1092,10 +1202,49 @@
       toast("Comentário apagado.");
     });
     ol.addEventListener("submit", (e) => {
+      const fe = e.target.closest(".form-editar-c");
+      if (fe) { e.preventDefault(); salvarComentario(fe); return; }
       const f = e.target.closest(".form-resposta"); if (!f) return;
       e.preventDefault();
       enviarResposta(f, p);
     });
+  }
+  // ---------- Editar o próprio comentário ----------
+  function editarComentario(b) {
+    const li = b.closest(".comentario"), id = b.dataset.c;
+    const balao = li.querySelector(":scope > .c-corpo > .c-balao");
+    if (li.querySelector(":scope > .c-corpo > .form-editar-c")) return;
+    const tid = "editar-c-" + id;
+    balao.hidden = true;
+    balao.insertAdjacentHTML("afterend", `<form class="form-editar form-editar-c" data-c="${esc(id)}" novalidate><label class="sr" for="${tid}">Editar comentário</label>
+      <textarea id="${tid}" maxlength="2000" rows="2">${esc(textosComentarios.get(id) || "")}</textarea>
+      <div class="editar-rodape">${barraFmt(tid)}<span class="editar-botoes"><button type="button" class="btn btn-sec btn-peq" data-cancelar-c>Cancelar</button><button type="submit" class="btn btn-peq">Salvar</button></span></div>
+      <p class="aviso-conta" role="alert" hidden></p></form>`);
+    const ta = li.querySelector(".form-editar-c textarea");
+    ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+  }
+  function fecharEdicaoComentario(li) {
+    const f = li.querySelector(":scope > .c-corpo > .form-editar-c"); if (f) f.remove();
+    li.querySelector(":scope > .c-corpo > .c-balao").hidden = false;
+  }
+  async function salvarComentario(f) {
+    const id = f.dataset.c, ta = f.querySelector("textarea"), av = f.querySelector(".aviso-conta"), bt = f.querySelector("button[type=submit]");
+    const texto = ta.value.trim();
+    av.hidden = true;
+    if (!texto) { av.textContent = "O comentário não pode ficar vazio."; av.hidden = false; ta.focus(); return; }
+    if (pareceVenda(texto)) { av.textContent = "Venda de animais não é permitida na Comunidade Abanô."; av.hidden = false; return; }
+    const li = f.closest(".comentario");
+    if (texto === textosComentarios.get(id)) { fecharEdicaoComentario(li); return; }
+    bt.disabled = true;
+    const r = await sb.from("comentarios").update({ texto: texto }).eq("id", id).select("texto,editado_em").single();
+    bt.disabled = false;
+    if (r.error) { av.textContent = /editado_em|permission|policy/i.test(r.error.message || "") ? "Editar comentários fica disponível em instantes." : erroMsg(r.error); av.hidden = false; return; }
+    textosComentarios.set(id, r.data.texto);
+    li.querySelector(":scope > .c-corpo > .c-balao > .c-txt").innerHTML = textoComMencao(r.data.texto);
+    const meta = li.querySelector(":scope > .c-corpo > .c-meta");
+    if (!meta.querySelector(".c-editado")) meta.querySelector("time").insertAdjacentHTML("afterend", '<span class="c-editado">editado</span>');
+    fecharEdicaoComentario(li);
+    toast("Comentário editado.");
   }
   function atualizarNumComentarios(p) {
     const n = document.getElementById("num-coment");
@@ -1131,7 +1280,7 @@
     if (!lista) return;
     let f = lista.parentElement.querySelector(":scope > .form-resposta");
     if (!f) {
-      lista.insertAdjacentHTML("afterend", `<form class="form-resposta" data-pai="${esc(pai)}">${avatar(est.eu)}<label class="sr" for="resp-${esc(pai)}">Sua resposta</label><input id="resp-${esc(pai)}" maxlength="2000" autocomplete="off" enterkeyhint="send" placeholder="Escreva uma resposta…"><button type="submit">Enviar</button></form>`);
+      lista.insertAdjacentHTML("afterend", `<form class="form-resposta" data-pai="${esc(pai)}">${avatar(est.eu)}<label class="sr" for="resp-${esc(pai)}">Sua resposta</label><input id="resp-${esc(pai)}" maxlength="2000" autocomplete="off" enterkeyhint="send" placeholder="Escreva uma resposta…">${botaoEmoji("resp-" + esc(pai))}<button type="submit">Enviar</button></form>`);
       f = lista.parentElement.querySelector(":scope > .form-resposta");
     }
     const campo = f.querySelector("input");
@@ -1142,7 +1291,7 @@
     campo.setSelectionRange(campo.value.length, campo.value.length);
   }
   async function enviarResposta(f, p) {
-    const campo = f.querySelector("input"), botao = f.querySelector("button"), texto = campo.value.trim();
+    const campo = f.querySelector("input"), botao = f.querySelector("button[type=submit]"), texto = campo.value.trim();
     if (!texto) { campo.focus(); return; }
     if (pareceVenda(texto)) { toast("Venda de animais não é permitida na Comunidade Abanô."); return; }
     botao.disabled = true;
@@ -1412,6 +1561,7 @@
     pedido_adocao: (n, g) => `enviou um pedido para adotar <b>${esc(g.pet_nome || "um dos seus pets")}</b>. Toque para ver as respostas`,
     pedido_aceito: (n, g) => `aceitou seu pedido para adotar <b>${esc(g.pet_nome || "o pet")}</b>! O WhatsApp está liberado`,
     convite_clube: (n, g) => `convidou você para participar do clube <b>${esc(g.clube_nome || "da Comunidade")}</b>`,
+    boas_vindas: () => "deu as boas-vindas a você na Comunidade 🐾 Toque para ver",
     adocao_concluida: (n, g) => `concluiu a adoção de <b>${esc(g.pet_nome || "seu novo pet")}</b> 🎉 Que tal compartilhar essa alegria com a Comunidade?`
   };
   const ICONE_AVISO = {
@@ -1423,7 +1573,8 @@
     pedido_adocao: '<path d="M3.5 11 12 4l8.5 7v8.5a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/>',
     pedido_aceito: '<path d="M3.5 11 12 4l8.5 7v8.5a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/>',
     convite_clube: '<circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2a4.5 4.5 0 0 1 5 4.8"/>',
-    adocao_concluida: '<path d="M12 20.5s-8-4.9-8-10.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.9c0 5.7-8 10.6-8 10.6z"/>'
+    adocao_concluida: '<path d="M12 20.5s-8-4.9-8-10.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.9c0 5.7-8 10.6-8 10.6z"/>',
+    boas_vindas: '<circle cx="7.5" cy="9" r="1.8"/><circle cx="12" cy="6.8" r="1.8"/><circle cx="16.5" cy="9" r="1.8"/><path d="M12 12c-3 0-5.5 3.2-5.5 5.4 0 1.5 1.3 2.3 2.8 1.8l1.4-.5a4 4 0 0 1 2.6 0l1.4.5c1.5.5 2.8-.3 2.8-1.8C17.5 15.2 15 12 12 12z"/>'
   };
   function agruparAvisos(lista) {
     // Curtidas no mesmo post (ou no mesmo comentário) viram um aviso só: "Fulana e mais 3 pessoas curtiram"
@@ -1448,7 +1599,7 @@
       : g.tipo === "pedido_aceito" ? "adocao.html?v=pedidos"
       : g.tipo === "adocao_concluida" ? "adocao.html?v=pedidos&compartilhar=" + encodeURIComponent(g.pedido || "")
       : linkPost(g.post) + (g.comentario ? "#comentarios" : "");
-    const trecho = g.tipo === "comentario" || g.tipo === "resposta" ? g.trecho_comentario : g.tipo === "curtida_comentario" ? g.trecho_comentario : g.tipo === "curtida" ? g.trecho_post : "";
+    const trecho = g.tipo === "boas_vindas" ? "" : g.tipo === "comentario" || g.tipo === "resposta" ? g.trecho_comentario : g.tipo === "curtida_comentario" ? g.trecho_comentario : g.tipo === "curtida" ? g.trecho_post : "";
     return `<li><a class="aviso${g.lida ? "" : " novo"}" href="${link}">
       <span class="aviso-av">${avatar({ nome: quem.de_nome, foto_url: quem.de_foto })}<span class="aviso-ico t-${g.tipo}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONE_AVISO[g.tipo] || ICONE_AVISO.curtida}</svg></span></span>
       <span class="aviso-txt">${nomes} ${(TEXTO_AVISO[g.tipo] || (() => "mandou um aviso"))(g.pessoas.length, g)}${trecho ? `: <span class="aviso-trecho">“${esc(trecho)}”</span>` : g.tipo === "adocao_concluida" ? "" : "."}<small>${tempo(g.criado_em)}</small></span>
@@ -1481,6 +1632,7 @@
     if (!est.eu) return;
     const [r, m] = await Promise.all([sb.rpc("notificacoes_nao_lidas"), sb.rpc("mensagens_nao_lidas")]);
     if (!r.error) atualizarSino(r.data || 0);
+    if (window.abanoIcone) window.abanoIcone((r.error ? 0 : r.data || 0) + (m.error ? 0 : m.data || 0));
     const item = document.querySelector('.com-menu [data-rota="mensagens"]');
     if (item && !m.error) {
       let b = item.querySelector("[data-msg-num]");
@@ -1526,7 +1678,7 @@
       <div class="chat-corpo" id="chat-corpo"><button type="button" class="link-botao chat-antigas" id="chat-antigas" hidden>Carregar mensagens anteriores</button><ol class="chat-lista" id="chat-lista" aria-live="polite"></ol></div>
       ${bloqueado ? '<p class="convite-clube">Você bloqueou este perfil. Desbloqueie para voltar a conversar.</p>' : `<form class="chat-form" id="chat-form">
         <label class="sr" for="chat-texto">Mensagem para ${esc(o.nome)}</label>
-        <textarea id="chat-texto" rows="1" maxlength="2000" placeholder="Escreva uma mensagem…" enterkeyhint="send"></textarea>
+        ${botaoEmoji("chat-texto")}<textarea id="chat-texto" rows="1" maxlength="2000" placeholder="Escreva uma mensagem…" enterkeyhint="send"></textarea>
         <button type="submit" class="btn" disabled aria-label="Enviar">${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 20 4l-5 16-3.5-6.5z"/></svg>'}</button>
       </form>`}
       <p class="chat-nota">Nunca envie senhas ou pague nada a quem você não conhece. Viu algo estranho? Bloqueie ou denuncie pelo perfil.</p>
@@ -1597,7 +1749,7 @@
     window.addEventListener("pagehide", () => clearInterval(timer));
     const f = document.getElementById("chat-form");
     if (!f) return;
-    const ta = f.querySelector("textarea"), bt = f.querySelector("button");
+    const ta = f.querySelector("textarea"), bt = f.querySelector("button[type=submit]");
     const ajustar = () => { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 140) + "px"; bt.disabled = !ta.value.trim(); };
     ta.addEventListener("input", ajustar);
     ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && window.matchMedia("(hover: hover)").matches) { e.preventDefault(); f.requestSubmit(); } });

@@ -565,3 +565,36 @@ html.sem-rolar{overflow:hidden}
 .enq-girar:hover{background:var(--marca-clara);color:var(--marca)}
 .enq-botoes{display:grid;grid-template-columns:1fr 1fr;gap:var(--e-2)}
 .enq-botoes .btn{width:100%;margin:0}
+/* Notebooks (até 1440px): o topo tem muitos itens; aperta os espaços para nada passar da borda */
+@media (min-width:1200px) and (max-width:1440px){
+  .topo-in{gap:12px}
+  .aba{padding:6px 10px}
+  .topo-busca{box-shadow:none;padding:0 var(--e-2)}
+  .topo-busca-txt{display:none}
+  .topo-entrar{padding:0 18px}
+  .topo-cta{padding:0 16px}
+}
+@media (min-width:901px) and (max-width:1199px){
+  .topo-in{gap:10px}
+  .aba{padding:6px 7px}
+  .logo-frase{display:none}
+  .topo-entrar,.topo-cta{padding:0 12px}
+}
+
+/* Chamadas para as ofertas em outras páginas (início e Comunidade) */
+.chamada-ofertas{display:flex;align-items:center;gap:var(--e-3);padding:var(--e-4);border-radius:var(--raio);background:linear-gradient(115deg,#D10F5E,#FF7A1A);color:#fff;text-decoration:none;box-shadow:var(--sombra-marca)}
+.chamada-ofertas .ico{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2)}
+.chamada-ofertas .ico svg{width:24px;height:24px}
+.chamada-ofertas span{display:block}
+.chamada-ofertas b{display:block;font-size:var(--t-corpo)}
+.chamada-ofertas span{font-size:var(--t-sm);opacity:.95}
+.convite-ofertas{background:linear-gradient(115deg,#D10F5E 0%,#E8326B 40%,#FF7A1A 100%);margin-bottom:var(--e-4)}
+.convite-ofertas::after{background:#B7E12F}
+/* Celulares pequenos (360px): a barra de baixo com 6 itens e o formulário com a verificação contra robôs (300px) cabem sem rolar para o lado */
+@media (max-width:380px){
+  .abas > .grupo-menu{min-width:0}
+  .abas > .grupo-menu > .aba{width:100%;min-width:0}
+  .aba span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .wrap.conta-grade{padding-left:12px;padding-right:12px}
+  .conta-grade .fc{padding-left:14px;padding-right:14px}
+}
