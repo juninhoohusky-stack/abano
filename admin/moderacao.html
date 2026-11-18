@@ -2,14 +2,16 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <base href="/">
 <title>Moderação | Abanô</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="site.css?v=20261118d">
+<link rel="stylesheet" href="site.css?v=20261118e">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261118d" defer></script>
+<script src="lista.js?v=20261118e" defer></script>
 <style>
   .painel{max-width:980px;margin:0 auto;padding:var(--e-6) var(--e-5) var(--e-12)}
   .topo-admin{display:flex;align-items:center;justify-content:space-between;gap:var(--e-4);max-width:980px;margin:0 auto;padding:var(--e-3) var(--e-5)}
@@ -94,6 +96,7 @@
   .tag.off{background:var(--areia);color:var(--suave)}
   @media (max-width:640px){.duas{grid-template-columns:1fr}}
 </style>
+<script>if (window.top !== window.self) { document.documentElement.style.visibility = "hidden"; try { window.top.location.href = window.location.href; } catch (e) {} }</script>
 </head>
 <body>
 <header class="topo">

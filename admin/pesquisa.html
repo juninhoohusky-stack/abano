@@ -2,14 +2,16 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <base href="/">
 <title>Painel da pesquisa | Abanô</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="site.css?v=20261118d">
+<link rel="stylesheet" href="site.css?v=20261118e">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
-<script src="lista.js?v=20261118d" defer></script>
+<script src="lista.js?v=20261118e" defer></script>
 <style>
   .painel{max-width:1120px;margin:0 auto;padding:var(--e-8) var(--e-6) var(--e-10)}
   .topo-admin{display:flex;align-items:center;justify-content:space-between;gap:var(--e-4);max-width:1120px;margin:0 auto;padding:var(--e-3) var(--e-6)}
@@ -40,6 +42,7 @@
   [hidden]{display:none !important}
   @media (max-width:800px){.grade{grid-template-columns:1fr}.kpi{padding:var(--e-4)}.kpi b{font-size:var(--t-h4)}.painel{padding:var(--e-6) var(--e-4) var(--e-8)}.topo-admin{padding:var(--e-3) var(--e-4)}}
 </style>
+<script>if (window.top !== window.self) { document.documentElement.style.visibility = "hidden"; try { window.top.location.href = window.location.href; } catch (e) {} }</script>
 </head>
 <body>
 <header class="topo">
@@ -102,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
     encontro: "Encontro e fotos", atividades: "Atividades para os cães", veterinarios: "Veterinários e adestradores",
     feira: "Feira pet", concursos: "Concursos", descanso: "Sombra, água e descanso"
   };
-  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
   var num = function (n) { return Number(n || 0).toLocaleString("pt-BR"); };
 
   function barras(id, itens) {

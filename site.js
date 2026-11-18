@@ -1,4 +1,16 @@
 /* Abanô — comportamento compartilhado do topo */
+
+// Segurança: o Abanô não pode ser aberto escondido dentro de outro site (golpe de "clique falso")
+(function () {
+  if (window.top === window.self) return;
+  var mesmoSite = false;
+  try { mesmoSite = window.top.location.origin === window.location.origin; } catch (e) { mesmoSite = false; }
+  if (!mesmoSite) {
+    document.documentElement.style.visibility = "hidden";
+    try { window.top.location.href = window.location.href; } catch (e) {}
+  }
+})();
+
 (function () {
   var topo = document.querySelector('.topo');
   var nav = document.querySelector('.abas');
@@ -422,7 +434,7 @@
   function svg(nome, classe) {
     return '<svg' + (classe ? ' class="' + classe + '"' : "") + ' viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICO[nome] + "</svg>";
   }
-  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 
   // Botão da lupa no topo, antes de "Entrar"/"Participar"
   var botao = document.createElement("button");
