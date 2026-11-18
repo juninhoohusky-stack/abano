@@ -592,9 +592,32 @@
     }
     function contar(campo, el, max) { el.textContent = campo.value.length + " de " + max; }
     fp.bio.addEventListener("input", function () { contar(fp.bio, $("bio-conta"), 300); });
+    // @ único, como no Instagram: confere enquanto a pessoa digita
+    var ajudaUsuario = $("p-usuario-ajuda"), textoAjudaUsuario = ajudaUsuario.textContent, timerUsuario = 0, situacaoUsuario = "ok";
+    function mostrarSituacaoUsuario(u, sit) {
+      situacaoUsuario = sit;
+      var msg = sit === "em_uso" ? "@" + u + " já está em uso. Escolha outro."
+        : sit === "reservado" ? "@" + u + " é reservado. Escolha outro."
+        : sit === "ok" && u !== conta.usuario ? "@" + u + " está disponível." : textoAjudaUsuario;
+      ajudaUsuario.textContent = msg;
+      ajudaUsuario.className = "ajuda" + (sit === "em_uso" || sit === "reservado" ? " ajuda-erro" : sit === "ok" && u !== conta.usuario ? " ajuda-ok" : "");
+      marcar(fp.usuario, sit === "em_uso" || sit === "reservado");
+    }
     fp.usuario.addEventListener("input", function () {
       var limpo = fp.usuario.value.toLowerCase().replace(/[^a-z0-9_]/g, "");
       if (limpo !== fp.usuario.value) fp.usuario.value = limpo;
+      clearTimeout(timerUsuario);
+      if (limpo === conta.usuario || !/^[a-z0-9][a-z0-9_]{2,29}$/.test(limpo)) { mostrarSituacaoUsuario(limpo, "ok"); return; }
+      timerUsuario = setTimeout(function () {
+        sb.rpc("usuario_disponivel", { p_usuario: limpo }).then(function (r) {
+          if (fp.usuario.value !== limpo) return;
+          if (!r.error) { mostrarSituacaoUsuario(limpo, r.data); return; }
+          // Antes de rodar o SQL novo: confere direto na lista de perfis
+          sb.from("perfis").select("id").eq("usuario", limpo).neq("id", conta.id).limit(1).then(function (q) {
+            if (fp.usuario.value === limpo) mostrarSituacaoUsuario(limpo, q.data && q.data.length ? "em_uso" : "ok");
+          });
+        });
+      }, 350);
     });
 
     $("foto-perfil").addEventListener("change", function () {
@@ -647,6 +670,7 @@
       marcar(fp.estado, !dados.estado);
       if (!dados.estado) { aviso(avisoPerfil, "Escolha o estado onde você mora."); fp.estado.focus(); return; }
       if (!/^[a-z0-9][a-z0-9_]{2,29}$/.test(dados.usuario)) { aviso(avisoPerfil, "O nome de usuário precisa ter de 3 a 30 caracteres: letras minúsculas, números ou _."); fp.usuario.focus(); return; }
+      if (dados.usuario !== conta.usuario && (situacaoUsuario === "em_uso" || situacaoUsuario === "reservado")) { marcar(fp.usuario, true); aviso(avisoPerfil, situacaoUsuario === "em_uso" ? "Esse nome de usuário já está em uso. Escolha outro." : "Esse nome de usuário é reservado. Escolha outro."); fp.usuario.focus(); return; }
       var botao = fp.querySelector("button[type=submit]");
       ocupado(botao, true, "Salvando…");
       sb.from("perfis").update(dados).eq("id", conta.id).then(function (r) {
@@ -655,6 +679,7 @@
         Object.keys(dados).forEach(function (k) { conta[k] = dados[k]; });
         $("conta-nome").textContent = conta.nome;
         $("conta-usuario").textContent = "@" + conta.usuario;
+        mostrarSituacaoUsuario(conta.usuario, "ok");
         aviso(avisoPerfil, "Perfil salvo.", true);
       });
     });

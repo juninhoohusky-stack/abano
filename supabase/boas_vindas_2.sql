@@ -53,7 +53,7 @@ begin
     'subject', 'Boas-vindas ao Abanô! Veja tudo o que você encontra aqui',
     'html', public._email_html(
       'Que bom ter você aqui' || case when coalesce(new.nome,'') <> '' then ', ' || public._esc(split_part(new.nome, ' ', 1)) else '' end || '!',
-      'O Abanô reúne num lugar só tudo o que faz bem para quem vive com cães e gatos.'
+      'O Abanô reúne num lugar só tudo o que faz bem para quem vive com pets, seja cão, gato, ave, coelho, peixe ou réptil.'
         || case when coalesce(new.nome_pet,'') <> '' then ' Mande um carinho pro(a) <b>' || public._esc(new.nome_pet) || '</b> por nós.' else '' end
         || ' Olha o que já está esperando por você:'
         || '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:14px;">'

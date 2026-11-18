@@ -1,6 +1,7 @@
 -- =========================================================
 -- Abanô — marcar pessoas com @ em publicações e comentários.
 -- Quem é marcado recebe um aviso no sininho: "marcou você".
+-- E o @ de cada pessoa continua único, com nomes reservados.
 -- Como usar: copie em texto puro (link "raw" do GitHub, com a
 -- tradução do navegador DESLIGADA), cole no SQL Editor e clique
 -- em "Run". Pode rodar de novo. Não publica nada ao rodar.
@@ -62,6 +63,43 @@ drop trigger if exists comentarios_mencoes on public.comentarios;
 create trigger comentarios_mencoes after insert or update of texto on public.comentarios
   for each row execute function public._mencoes_comentario();
 
+-- ---------- @ único, como no Instagram ----------
+-- O @ já não se repete (a coluna é "unique" e só aceita minúsculas). Aqui entram:
+-- 1) a checagem na hora, enquanto a pessoa digita o novo @ em "Minha conta";
+-- 2) nomes reservados que ninguém pode pegar para se passar pelo Abanô.
+create or replace function public._usuario_reservado(p text) returns boolean
+language sql immutable as $$
+  select p ~ '^(abano|abanooficial|oficial|admin|administrador|adm|suporte|ajuda|moderador|moderacao|equipe|comunidade|sistema|root)[0-9_]*$'
+      or p ~ '^(abano_|abanooficial_|oficial_|admin_|suporte_|moderador_|equipe_)';
+$$;
+
+create or replace function public.usuario_disponivel(p_usuario text) returns text
+language plpgsql stable security definer set search_path = public as $$
+declare v text := lower(btrim(coalesce(p_usuario, '')));
+begin
+  if v !~ '^[a-z0-9][a-z0-9_]{2,29}$' then return 'invalido'; end if;
+  if exists (select 1 from public.perfis where usuario = v and id is distinct from auth.uid()) then return 'em_uso'; end if;
+  if public._usuario_reservado(v) and not public.eh_admin()
+     and not exists (select 1 from public.perfis where usuario = v and id = auth.uid()) then return 'reservado'; end if;
+  return 'ok';
+end $$;
+revoke all on function public.usuario_disponivel(text) from public;
+grant execute on function public.usuario_disponivel(text) to authenticated;
+
+create or replace function public._trocar_usuario() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  if new.usuario is distinct from old.usuario and auth.uid() is not null
+     and public._usuario_reservado(lower(new.usuario)) and not public.eh_admin() then
+    raise exception 'Esse nome de usuário é reservado. Escolha outro.' using errcode = 'P0001';
+  end if;
+  return new;
+end $$;
+drop trigger if exists perfis_trocar_usuario on public.perfis;
+create trigger perfis_trocar_usuario before update of usuario on public.perfis
+  for each row execute function public._trocar_usuario();
+
 -- ---------- Conferência: tudo deve mostrar "ok" ----------
 select 'marcar em publicações' as item, case when exists (select 1 from pg_trigger where tgname = 'posts_mencoes') then 'ok' else 'FALTA' end as situacao
-union all select 'marcar em comentários', case when exists (select 1 from pg_trigger where tgname = 'comentarios_mencoes') then 'ok' else 'FALTA' end;
+union all select 'marcar em comentários', case when exists (select 1 from pg_trigger where tgname = 'comentarios_mencoes') then 'ok' else 'FALTA' end
+union all select '@ único e nomes reservados', case when exists (select 1 from pg_trigger where tgname = 'perfis_trocar_usuario') then 'ok' else 'FALTA' end;

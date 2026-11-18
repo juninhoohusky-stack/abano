@@ -18,7 +18,7 @@ partes as (   -- até 200 marcações por post (o post aceita até 5.000 letras)
   select (n - 1) / 200 + 1 as parte, string_agg('@' || usuario, ', ' order by n) as lista
     from membros group by 1
 ),
-total as (select count(*) as membros, max(parte) as posts from membros, partes)
+total as (select (select count(*) from membros) as membros, (select max(parte) from partes) as posts)
 select t.membros as membros_marcados,
        t.posts as quantidade_de_posts,
        (select count(*) from abano) as perfil_abano_existe,
@@ -26,7 +26,7 @@ select t.membros as membros_marcados,
        '🐾 Um abraço de boas-vindas a todo mundo que já faz parte da Comunidade Abanô!'
        || case when t.posts > 1 then ' (' || pa.parte || ' de ' || t.posts || ')' else '' end || E'\n\n'
        || pa.lista || '.' || E'\n\n'
-       || 'Obrigado por chegarem cedo e ajudarem a construir este cantinho de quem ama cães e gatos. '
+       || 'Obrigado por chegarem cedo e ajudarem a construir este cantinho de quem ama pets: cães, gatos, aves, coelhos, peixes, répteis e todos os bichos de estimação. '
        || 'Por aqui vocês podem apresentar o seu pet com foto, entrar no clube da sua raça ou do seu estado, '
        || 'tirar dúvidas com outros tutores e ajudar na adoção e na busca por pets desaparecidos.' || E'\n\n'
        || 'A partir de agora, toda segunda-feira damos as boas-vindas a quem chegou na semana. '
