@@ -283,6 +283,81 @@
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && botaoEmojiAtual) { const b = botaoEmojiAtual; fecharEmoji(); b.focus(); } });
   window.addEventListener("resize", fecharEmoji);
 
+  // ---------- Marcar pessoas: ao digitar @, sugere perfis da Comunidade ----------
+  let painelMarca = null, campoMarca = null, marcaIni = 0, marcaOpcoes = [], marcaSel = 0, marcaTimer = 0, marcaSeq = 0;
+  function fecharMarca() {
+    clearTimeout(marcaTimer); marcaSeq++;
+    if (painelMarca && !painelMarca.hidden) { if (painelMarca.hidePopover && painelMarca.matches(":popover-open")) painelMarca.hidePopover(); painelMarca.hidden = true; }
+    if (campoMarca) { campoMarca.removeAttribute("aria-activedescendant"); campoMarca.setAttribute("aria-expanded", "false"); }
+    campoMarca = null; marcaOpcoes = [];
+  }
+  function termoMarca(ta) {
+    if (ta.selectionStart !== ta.selectionEnd) return null;
+    const ate = ta.value.slice(0, ta.selectionStart);
+    const m = /(^|[\s(])@([a-zA-Z0-9_]{1,30})$/.exec(ate);
+    return m ? { ini: ate.length - m[2].length - 1, termo: m[2].toLowerCase() } : null;
+  }
+  function desenharMarca() {
+    painelMarca.innerHTML = marcaOpcoes.map((p, i) => `<li role="option" id="marca-${i}" data-marca="${esc(p.usuario)}" aria-selected="${i === marcaSel}">${avatar(p)}<span><b>${esc(p.nome || p.usuario)}</b><small>@${esc(p.usuario)}</small></span></li>`).join("");
+    campoMarca.setAttribute("aria-activedescendant", "marca-" + marcaSel);
+  }
+  function mostrarMarca(ta, lista) {
+    if (!painelMarca) {
+      painelMarca = document.createElement("ul");
+      painelMarca.className = "painel-marca"; painelMarca.hidden = true; painelMarca.id = "painel-marca";
+      painelMarca.setAttribute("role", "listbox"); painelMarca.setAttribute("aria-label", "Marcar uma pessoa");
+      if ("popover" in painelMarca) painelMarca.setAttribute("popover", "manual");   // fica por cima até das janelas abertas
+      painelMarca.addEventListener("mousedown", (e) => e.preventDefault());
+      painelMarca.addEventListener("click", (e) => { const li = e.target.closest("[data-marca]"); if (li) escolherMarca(li.dataset.marca); });
+      document.body.appendChild(painelMarca);
+    }
+    campoMarca = ta; marcaOpcoes = lista; marcaSel = 0;
+    ta.setAttribute("aria-controls", "painel-marca"); ta.setAttribute("aria-expanded", "true");
+    desenharMarca();
+    painelMarca.hidden = false;
+    if (painelMarca.showPopover && !painelMarca.matches(":popover-open")) painelMarca.showPopover();
+    const r = ta.getBoundingClientRect(), w = Math.min(300, innerWidth - 16);
+    painelMarca.style.width = w + "px";
+    const h = painelMarca.offsetHeight;
+    let top = r.bottom + 4;
+    if (top + h > innerHeight - 8) top = Math.max(8, r.top - h - 4);
+    painelMarca.style.left = Math.round(Math.min(Math.max(8, r.left), innerWidth - w - 8)) + "px";
+    painelMarca.style.top = Math.round(top) + "px";
+  }
+  function escolherMarca(usuario) {
+    const ta = campoMarca; if (!ta) return;
+    const fim = ta.selectionStart, ins = "@" + usuario + " ";
+    if (ta.maxLength > 0 && ta.value.length - (fim - marcaIni) + ins.length > ta.maxLength) { fecharMarca(); return; }
+    ta.setRangeText(ins, marcaIni, fim, "end");
+    fecharMarca(); ta.focus();
+    ta.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+  document.addEventListener("input", (e) => {
+    const ta = e.target;
+    if (!(ta instanceof HTMLTextAreaElement) || ta.dataset.semMarca != null) return;
+    const t = termoMarca(ta);
+    if (!t) { if (campoMarca === ta || (painelMarca && !painelMarca.hidden)) fecharMarca(); return; }
+    clearTimeout(marcaTimer);
+    const seq = ++marcaSeq;
+    marcaTimer = setTimeout(async () => {
+      const r = await sb.from("perfis").select("id,usuario,nome,foto_url").or(`usuario.ilike.${t.termo}*,nome.ilike.*${t.termo}*`).order("usuario").limit(8);
+      if (seq !== marcaSeq || document.activeElement !== ta) return;
+      const lista = (r.data || []).filter((p) => !(est.eu && p.id === est.eu.id) && !est.bloqueados.has(p.id)).slice(0, 6);
+      if (!lista.length) { fecharMarca(); return; }
+      marcaIni = t.ini; mostrarMarca(ta, lista);
+    }, 180);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (!campoMarca || e.target !== campoMarca || !marcaOpcoes.length || painelMarca.hidden) return;
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { marcaSel = (marcaSel + (e.key === "ArrowDown" ? 1 : marcaOpcoes.length - 1)) % marcaOpcoes.length; desenharMarca(); }
+    else if (e.key === "Enter" || e.key === "Tab") escolherMarca(marcaOpcoes[marcaSel].usuario);
+    else if (e.key === "Escape") fecharMarca();
+    else return;
+    e.preventDefault(); e.stopImmediatePropagation();
+  }, true);
+  document.addEventListener("focusout", (e) => { if (e.target === campoMarca) setTimeout(() => { if (campoMarca && document.activeElement !== campoMarca) fecharMarca(); }, 120); });
+  window.addEventListener("resize", fecharMarca);
+
   // "@usuario" em qualquer parte do texto vira link para o perfil
   const comMencoes = (h) => h.replace(/(^|[\s(>,.!?])@([a-z0-9_]{3,30})\b/g, (m, antes, u) => `${antes}<a class="c-mencao" href="${linkPerfil(u)}">@${u}</a>`);
   const expandidos = new Set();
@@ -1154,11 +1229,7 @@
     </li>`;
   }
   // "@usuario" no começo da resposta vira link para o perfil
-  function textoComMencao(t) {
-    const m = /^@([a-z0-9_]{3,30})\b/.exec(t || "");
-    if (!m) return fmt(t);
-    return `<a class="c-mencao" href="${linkPerfil(m[1])}">@${esc(m[1])}</a>${fmt(t.slice(m[0].length))}`;
-  }
+  function textoComMencao(t) { return comMencoes(fmt(t || "")); }
   function conversa(c, respostas, p) {
     const filhas = respostas.get(c.id) || [];
     return itemComentario(c, p, false, `<ol class="c-respostas" data-respostas="${esc(c.id)}">${filhas.map((r) => itemComentario(r, p, true)).join("")}</ol>`);
@@ -1562,6 +1633,7 @@
     pedido_aceito: (n, g) => `aceitou seu pedido para adotar <b>${esc(g.pet_nome || "o pet")}</b>! O WhatsApp está liberado`,
     convite_clube: (n, g) => `convidou você para participar do clube <b>${esc(g.clube_nome || "da Comunidade")}</b>`,
     boas_vindas: () => "deu as boas-vindas a você na Comunidade 🐾 Toque para ver",
+    mencao: (n, g) => g.comentario ? "marcou você em um comentário" : "marcou você em uma publicação",
     adocao_concluida: (n, g) => `concluiu a adoção de <b>${esc(g.pet_nome || "seu novo pet")}</b> 🎉 Que tal compartilhar essa alegria com a Comunidade?`
   };
   const ICONE_AVISO = {
@@ -1574,6 +1646,7 @@
     pedido_aceito: '<path d="M3.5 11 12 4l8.5 7v8.5a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/>',
     convite_clube: '<circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2a4.5 4.5 0 0 1 5 4.8"/>',
     adocao_concluida: '<path d="M12 20.5s-8-4.9-8-10.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.9c0 5.7-8 10.6-8 10.6z"/>',
+    mencao: '<circle cx="12" cy="12" r="3.6"/><path d="M15.6 12v1.4a2.6 2.6 0 0 0 5.2 0V12a8.8 8.8 0 1 0-3.5 7"/>',
     boas_vindas: '<circle cx="7.5" cy="9" r="1.8"/><circle cx="12" cy="6.8" r="1.8"/><circle cx="16.5" cy="9" r="1.8"/><path d="M12 12c-3 0-5.5 3.2-5.5 5.4 0 1.5 1.3 2.3 2.8 1.8l1.4-.5a4 4 0 0 1 2.6 0l1.4.5c1.5.5 2.8-.3 2.8-1.8C17.5 15.2 15 12 12 12z"/>'
   };
   function agruparAvisos(lista) {
@@ -1599,7 +1672,7 @@
       : g.tipo === "pedido_aceito" ? "adocao.html?v=pedidos"
       : g.tipo === "adocao_concluida" ? "adocao.html?v=pedidos&compartilhar=" + encodeURIComponent(g.pedido || "")
       : linkPost(g.post) + (g.comentario ? "#comentarios" : "");
-    const trecho = g.tipo === "boas_vindas" ? "" : g.tipo === "comentario" || g.tipo === "resposta" ? g.trecho_comentario : g.tipo === "curtida_comentario" ? g.trecho_comentario : g.tipo === "curtida" ? g.trecho_post : "";
+    const trecho = g.tipo === "boas_vindas" ? "" : g.tipo === "comentario" || g.tipo === "resposta" ? g.trecho_comentario : g.tipo === "curtida_comentario" ? g.trecho_comentario : g.tipo === "curtida" ? g.trecho_post : g.tipo === "mencao" ? (g.comentario ? g.trecho_comentario : g.trecho_post) : "";
     return `<li><a class="aviso${g.lida ? "" : " novo"}" href="${link}">
       <span class="aviso-av">${avatar({ nome: quem.de_nome, foto_url: quem.de_foto })}<span class="aviso-ico t-${g.tipo}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONE_AVISO[g.tipo] || ICONE_AVISO.curtida}</svg></span></span>
       <span class="aviso-txt">${nomes} ${(TEXTO_AVISO[g.tipo] || (() => "mandou um aviso"))(g.pessoas.length, g)}${trecho ? `: <span class="aviso-trecho">“${esc(trecho)}”</span>` : g.tipo === "adocao_concluida" ? "" : "."}<small>${tempo(g.criado_em)}</small></span>

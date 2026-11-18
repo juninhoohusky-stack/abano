@@ -727,3 +727,15 @@ html.sem-rolar{overflow:hidden}
 .c-editar:hover{color:var(--tinta)}
 .post .txt .c-mencao{color:var(--marca);font-weight:800;text-decoration:none}
 @media (prefers-reduced-motion:reduce){.btn-emoji{transition:none}}
+/* ---------- Marcar pessoas com @ ---------- */
+.painel-marca{position:fixed;inset:auto;margin:0;z-index:2000;list-style:none;padding:6px;border:0;border-radius:var(--raio);background:var(--superficie);color:var(--tinta);box-shadow:0 12px 40px rgba(43,22,34,.22),0 0 0 1px var(--linha);max-height:300px;overflow-y:auto;overscroll-behavior:contain}
+.painel-marca[hidden]{display:none}
+.painel-marca li{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 10px;border-radius:12px;cursor:pointer}
+.painel-marca li[aria-selected=true],.painel-marca li:hover{background:var(--marca-clara)}
+.painel-marca .av{width:34px;height:34px;font-size:15px}
+.painel-marca span:not(.av){display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.painel-marca b,.painel-marca small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.painel-marca b{font-size:var(--t-sm)}
+.painel-marca small{font-size:var(--t-xs);color:var(--suave)}
+.aviso-ico.t-mencao{background:var(--marca)}
+.aviso-ico.t-mencao svg{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
