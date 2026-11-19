@@ -11,6 +11,7 @@ Tem pet? Tem no Abanô. Tudo pra cães e gatos, num lugar só, perto de você. S
 | `anuncie.html` | Divulgue no Abanô (pedidos de anunciantes) |
 | `eventos.html`, `hospedagem.html`, `veterinarios.html`, `adocao.html`, `perdidos.html`, `perfil-qr.html`, `doador-de-sangue.html` | Serviços "Em breve" (estrutura inicial, para completar) |
 | `calculadora.html` | Calculadora de custos do pet |
+| `loja.html` | Loja pet: produtos de afiliado da Shopee e do Mercado Livre, por pet e por nicho (robô diário) |
 | `husky-solta-muito-pelo.html` | Artigo do Guia do Husky |
 | `obrigado.html` | Página exibida depois do cadastro |
 
@@ -73,6 +74,30 @@ Botão "Continuar com o Google" no formulário da lista (`google.js`). Usa o log
 2. Supabase: Authentication → Providers → Google (Client ID e Client Secret) e URL Configuration (Site URL `https://abano.com.br`, Redirect URL `https://abano.com.br/**`).
 3. Rode `supabase/google.sql`.
 4. Em `lista.js`, troque `LOGIN_GOOGLE_ATIVO` para `true`.
+
+## Loja pet (afiliados Shopee e Mercado Livre)
+
+A página `loja.html` mostra os produtos de `dados/loja-catalogo.json`, separados por pet e por nicho. O catálogo tem os 248 itens da aba "Sugestões fora dos guias" da planilha `marca/produtos-abano.xlsx`. Todo dia às 6h (horário de Brasília), o robô `scripts/robo-loja.mjs` (pela automação `.github/workflows/robo-loja.yml`) faz o seguinte:
+
+- procura cada produto na Shopee e no Mercado Livre e escolhe o melhor anúncio. Ele olha a nota, as vendas e a comissão, e nas rações só aceita marcas premium e super premium;
+- grava os anúncios escolhidos na tabela `ofertas`, já com o link de afiliado;
+- tira do site o anúncio que não reencontra há 2 dias.
+
+Na Shopee, o link vem pronto da API oficial de afiliados. No Mercado Livre, o robô coloca sua etiqueta no link (`matt_word` e `matt_tool`). Quem clica compra direto do vendedor, e a comissão fica registrada na sua conta de afiliado. A página `ofertas.html` mostra só os produtos com desconto.
+
+### Ativar (uma vez)
+
+1. Rode `supabase/loja_afiliados.sql` no SQL Editor.
+2. **Shopee:** em [affiliate.shopee.com.br/open_api](https://affiliate.shopee.com.br/open_api), peça acesso à API e copie o *AppID* e a *Secret*.
+3. **Mercado Livre:**
+   - no portal de afiliados, abra o Gerador de links, gere o link de um produto qualquer e copie os valores de `matt_word` (sua etiqueta) e de `matt_tool`;
+   - em [developers.mercadolivre.com.br](https://developers.mercadolivre.com.br/devcenter), crie um aplicativo e copie o *Client ID* e a *Client Secret*.
+4. No GitHub, em Settings → Secrets and variables → Actions, crie os segredos `SHOPEE_APP_ID`, `SHOPEE_SECRET`, `ML_CLIENT_ID`, `ML_CLIENT_SECRET`, `ML_ETIQUETA` e `ML_MATT_TOOL`. O `SUPABASE_SECRET_KEY` já existe.
+5. Na aba Actions, abra "Robô da Loja pet" e clique em *Run workflow*. O resumo da rodada mostra o que entrou e o que ficou sem anúncio. Se faltarem os segredos de uma loja, o robô pula só essa loja.
+
+### Mudar os produtos
+
+Edite a planilha e rode de novo o gerador do catálogo, ou edite `dados/loja-catalogo.json` direto. O campo `busca` é o que o robô procura. O campo `marcas` define as marcas que uma ração precisa ter no título.
 
 ## Publicar
 

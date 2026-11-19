@@ -1,0 +1,206 @@
+/* Abanô — Loja pet (loja.html)
+   Movimento: transições (interrompíveis) para tudo que é estado; só a abertura entra em sequência, uma vez.
+   Nada de mola com salto. Com "reduzir movimento" ligado, tudo aparece pronto. */
+.lj-pagina{--lj-ease:cubic-bezier(.2,0,0,1);--lj-rapido:180ms;--lj-medio:300ms;
+  --lj-rosa:var(--marca-sobre-branco);--lj-shopee:#C7361A;--lj-shopee-fundo:#FFE9E3;--lj-ml:#2D3277;--lj-ml-fundo:#FFF4A8;--lj-nota:#A86400;
+  max-width:1180px;margin:0 auto;padding:var(--e-10) var(--e-5) var(--e-16)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .lj-pagina{--lj-rosa:#FF7AAB;--lj-shopee:#FF9B85;--lj-shopee-fundo:rgba(238,77,45,.18);--lj-ml:#FFE866;--lj-ml-fundo:rgba(255,230,0,.14);--lj-nota:#FFC266}}
+:root[data-theme=dark] .lj-pagina{--lj-rosa:#FF7AAB;--lj-shopee:#FF9B85;--lj-shopee-fundo:rgba(238,77,45,.18);--lj-ml:#FFE866;--lj-ml-fundo:rgba(255,230,0,.14);--lj-nota:#FFC266}
+.lj-pagina .migalha{font-size:var(--t-sm);color:var(--suave);margin:0 0 var(--e-4)}
+.lj-pagina .migalha a{color:var(--suave);text-decoration:none}
+.lj-pagina .migalha a:hover{color:var(--tinta)}
+.lj-ico{width:22px;height:22px;flex:none}
+
+/* ---------- Abertura: texto + busca à esquerda, escolha do pet à direita ---------- */
+.lj-hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:var(--e-8);align-items:center;
+  margin:0 0 var(--e-4);padding:var(--e-8);border-radius:var(--raio-lg);background:var(--superficie);box-shadow:var(--sombra)}
+.lj-hero::before{content:"";position:absolute;left:-90px;bottom:-120px;width:280px;height:280px;border-radius:50%;background:var(--lima-clara);pointer-events:none}
+.lj-hero > *{position:relative}
+.lj-hero h1{font-size:clamp(40px,6vw,64px);line-height:.98;letter-spacing:-.04em;margin:var(--e-3) 0 var(--e-3);color:var(--tinta)}
+.lj-hero-txt > p:not(.lj-ao-vivo){max-width:46ch;margin:0;font-size:var(--t-lead);line-height:1.5;color:var(--suave)}
+.lj-ao-vivo{display:inline-flex;align-items:center;gap:8px;margin:0;padding:6px 14px;border-radius:var(--raio-pill);background:var(--lima-clara);color:var(--tinta);font-size:var(--t-sm);font-weight:800}
+.lj-busca{margin-top:var(--e-5);max-width:520px}
+.lj-busca label{display:block;margin:0 0 6px;font-size:var(--t-sm);font-weight:800;color:var(--tinta)}
+.lj-campo{position:relative;display:block}
+.lj-campo .lj-ico{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--suave);pointer-events:none}
+.lj-campo input{width:100%;min-height:54px;padding:0 var(--e-5) 0 50px;border:0;border-radius:var(--raio-pill);background:var(--fundo);
+  box-shadow:inset 0 0 0 1.5px var(--linha);font:inherit;font-size:var(--t-corpo);color:var(--tinta);transition:box-shadow var(--lj-rapido) var(--lj-ease)}
+.lj-campo input:focus{outline:none;box-shadow:inset 0 0 0 2px var(--marca),0 0 0 5px var(--marca-clara)}
+
+.lj-rotulo{margin:0 0 var(--e-3);font-weight:800;font-size:var(--t-sm);color:var(--tinta)}
+.lj-pets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--e-2)}
+.lj-pet{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;min-height:112px;padding:var(--e-3) var(--e-2);border:0;border-radius:var(--raio);
+  background:var(--fundo);box-shadow:inset 0 0 0 1.5px var(--linha);color:var(--tinta);font:inherit;cursor:pointer;text-align:center;
+  transition:background-color var(--lj-rapido) var(--lj-ease),box-shadow var(--lj-rapido) var(--lj-ease),color var(--lj-rapido) var(--lj-ease),scale 150ms var(--lj-ease)}
+.lj-pet:active{scale:.96}
+.lj-pet-ico{position:relative;display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:var(--superficie);color:var(--lj-rosa);
+  transition:background-color var(--lj-rapido) var(--lj-ease),color var(--lj-rapido) var(--lj-ease)}
+.lj-pet-ico .lj-ico{width:28px;height:28px}
+.lj-pet-nome{font-weight:800;font-size:var(--t-sm);line-height:1.15}
+.lj-pet-qtd{font-size:var(--t-xs);font-weight:700;color:var(--suave);font-variant-numeric:tabular-nums;transition:color var(--lj-rapido) var(--lj-ease)}
+.lj-pet[aria-pressed=true]{background:var(--marca);box-shadow:var(--sombra-marca);color:var(--sobre-marca)}
+.lj-pet[aria-pressed=true] .lj-pet-ico{background:#fff;color:var(--marca)}
+.lj-pet[aria-pressed=true] .lj-pet-qtd{color:var(--sobre-marca);opacity:.85}
+/* Marca de "escolhido": entra e sai com escala + desfoque, sem salto */
+.lj-check{position:absolute;right:-4px;top:-4px;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--lima);color:#2B1622;
+  opacity:0;scale:.25;filter:blur(4px);transition:opacity var(--lj-medio) var(--lj-ease),scale var(--lj-medio) var(--lj-ease),filter var(--lj-medio) var(--lj-ease)}
+.lj-check-ico{width:14px;height:14px;stroke-width:2.6}
+.lj-pet[aria-pressed=true] .lj-check{opacity:1;scale:1;filter:blur(0)}
+@media (hover:hover) and (pointer:fine){
+  .lj-pet:not([aria-pressed=true]):hover{box-shadow:inset 0 0 0 1.5px var(--marca)}
+  .lj-pet:not([aria-pressed=true]):hover .lj-pet-ico{background:var(--marca-clara)}
+}
+
+/* ---------- Como funciona (é uma sequência de verdade, por isso numerada) ---------- */
+.lj-passos{counter-reset:passo;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--e-3);margin:0 0 var(--e-6);padding:0}
+.lj-passos li{counter-increment:passo;display:grid;grid-template-columns:auto 1fr;column-gap:var(--e-3);align-items:start;padding:var(--e-3) var(--e-4);border-radius:var(--raio);background:var(--areia)}
+.lj-passos li::before{content:counter(passo);grid-row:span 2;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--superficie);color:var(--lj-rosa);font-weight:900;font-size:var(--t-sm)}
+.lj-passos b{font-size:var(--t-sm)}
+.lj-passos span{font-size:var(--t-xs);line-height:1.45;color:var(--suave)}
+
+/* ---------- Atalhos por nicho: quebram linha, nunca ficam cortados ---------- */
+.lj-nichos{display:flex;flex-wrap:wrap;gap:var(--e-2);margin:0 0 var(--e-5)}
+.lj-nicho{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 var(--e-4) 0 var(--e-3);border:0;border-radius:var(--raio-pill);background:var(--superficie);
+  box-shadow:inset 0 0 0 1.5px var(--linha);color:var(--tinta);font:inherit;font-weight:800;font-size:var(--t-sm);cursor:pointer;white-space:nowrap;
+  transition:background-color var(--lj-rapido) var(--lj-ease),box-shadow var(--lj-rapido) var(--lj-ease),color var(--lj-rapido) var(--lj-ease),scale 150ms var(--lj-ease)}
+.lj-nicho .lj-ico{width:20px;height:20px;color:var(--lj-rosa);transition:color var(--lj-rapido) var(--lj-ease)}
+.lj-nicho small{min-width:22px;padding:1px 7px;border-radius:var(--raio-pill);background:var(--areia);color:var(--suave);font-size:var(--t-xs);font-weight:800;text-align:center;font-variant-numeric:tabular-nums}
+.lj-nicho:active{scale:.96}
+.lj-nicho[aria-pressed=true]{background:var(--tinta);box-shadow:none;color:var(--superficie)}
+.lj-nicho[aria-pressed=true] .lj-ico{color:var(--lima)}
+.lj-nicho[aria-pressed=true] small{background:rgba(255,255,255,.16);color:inherit}
+.lj-mais{padding:0 var(--e-4);color:var(--lj-rosa);box-shadow:inset 0 0 0 1.5px var(--marca-clara);display:none}
+.lj-nicho[hidden]{display:none}
+@media (hover:hover) and (pointer:fine){.lj-nicho:not([aria-pressed=true]):hover{box-shadow:inset 0 0 0 1.5px var(--marca)}}
+
+/* ---------- Barra de resultado ---------- */
+.lj-barra{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--e-3);margin:0 0 var(--e-2);padding:var(--e-3) 0;border-top:1.5px solid var(--linha);scroll-margin-top:84px}
+.lj-resumo{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e-2)}
+.lj-num{margin:0;color:var(--suave);font-size:var(--t-sm)}
+.lj-num b{color:var(--tinta);font-variant-numeric:tabular-nums}
+.lj-ativos{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.lj-ativos button{display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 10px 0 12px;border:0;border-radius:var(--raio-pill);background:var(--marca-clara);
+  color:var(--lj-rosa);font:inherit;font-weight:800;font-size:var(--t-xs);cursor:pointer;transition:background-color var(--lj-rapido) var(--lj-ease)}
+.lj-x{width:16px;height:16px;stroke-width:2.4}
+.lj-ativos .lj-limpar{background:transparent;text-decoration:underline;text-underline-offset:3px}
+.lj-controles{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e-2)}
+.lj-seg{display:inline-flex;padding:3px;border-radius:var(--raio-pill);background:var(--areia)}
+.lj-seg button{min-height:38px;padding:0 var(--e-4);border:0;border-radius:var(--raio-pill);background:transparent;color:var(--suave);font:inherit;font-weight:800;font-size:var(--t-xs);cursor:pointer;
+  transition:background-color var(--lj-rapido) var(--lj-ease),color var(--lj-rapido) var(--lj-ease),box-shadow var(--lj-rapido) var(--lj-ease)}
+.lj-seg button[aria-pressed=true]{background:var(--superficie);color:var(--tinta);box-shadow:0 1px 3px rgba(43,22,34,.14)}
+.lj-ordem{display:inline-flex;align-items:center;gap:6px;font-size:var(--t-xs);font-weight:800;color:var(--suave)}
+.lj-ordem select{min-height:42px;padding:0 var(--e-3);border:0;border-radius:var(--raio-pill);background:var(--superficie);box-shadow:inset 0 0 0 1.5px var(--linha);font:inherit;font-weight:800;font-size:var(--t-sm);color:var(--tinta);cursor:pointer}
+
+/* ---------- Seções por nicho ---------- */
+#lj-lista.lj-trocou{animation:lj-troca 240ms var(--lj-ease)}
+@keyframes lj-troca{from{opacity:0;transform:translateY(8px)}}
+.lj-secao{margin:var(--e-8) 0 0}
+.lj-secao:first-child{margin-top:var(--e-4)}
+.lj-cab{display:flex;align-items:center;gap:var(--e-3);margin-bottom:var(--e-4)}
+.lj-cab-ico{display:grid;place-items:center;flex:none;width:46px;height:46px;border-radius:14px;background:var(--marca-clara);color:var(--lj-rosa)}
+.lj-cab-ico .lj-ico{width:24px;height:24px}
+.lj-cab-txt{flex:1;min-width:0}
+.lj-cab h2{margin:0;font-size:clamp(22px,2.6vw,30px);letter-spacing:-.02em;line-height:1.15;text-wrap:balance}
+.lj-qtd{display:inline-block;vertical-align:middle;margin-left:4px;padding:2px 10px;border-radius:var(--raio-pill);background:var(--areia);color:var(--suave);font-size:var(--t-xs);font-weight:800;letter-spacing:0;font-variant-numeric:tabular-nums}
+.lj-sub{margin:3px 0 0;color:var(--suave);font-size:var(--t-sm);max-width:70ch}
+.lj-alerta{display:flex;align-items:flex-start;gap:8px;margin:var(--e-2) 0 0;padding:var(--e-2) var(--e-3);border-radius:var(--raio-sm);background:var(--acento-claro);color:var(--tinta);font-size:var(--t-sm);font-weight:700;max-width:72ch}
+.lj-alerta .lj-ico{width:20px;height:20px;color:var(--acento)}
+.lj-ver{flex:none;min-height:44px;padding:0 var(--e-4);border:0;border-radius:var(--raio-pill);background:transparent;box-shadow:inset 0 0 0 1.5px var(--linha);
+  color:var(--lj-rosa);font:inherit;font-weight:800;font-size:var(--t-sm);cursor:pointer;white-space:nowrap;
+  transition:box-shadow var(--lj-rapido) var(--lj-ease),background-color var(--lj-rapido) var(--lj-ease),scale 150ms var(--lj-ease)}
+.lj-ver:active{scale:.96}
+@media (hover:hover) and (pointer:fine){.lj-ver:hover{box-shadow:inset 0 0 0 1.5px var(--marca);background:var(--marca-clara)}}
+
+/* ---------- Cartão de produto ---------- */
+.lj-grade{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr));gap:var(--e-4)}
+.lj-card{position:relative;display:flex;flex-direction:column;border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra);overflow:hidden;
+  transition:transform 220ms var(--lj-ease),box-shadow 220ms var(--lj-ease)}
+.lj-foto{position:relative;display:grid;place-items:center;aspect-ratio:1;margin:var(--e-2) var(--e-2) 0;border-radius:calc(var(--raio) - 6px);background:#fff;overflow:hidden}
+.lj-foto img{width:100%;height:100%;object-fit:contain;padding:var(--e-3);display:block;transition:transform 300ms var(--lj-ease)}
+.lj-sem-foto{display:grid;place-items:center;width:100%;height:100%;background:var(--areia);color:var(--lj-rosa)}
+.lj-sem-foto .lj-ico{width:56px;height:56px;opacity:.55}
+.lj-desc{position:absolute;left:var(--e-2);top:var(--e-2);padding:5px 10px;border-radius:var(--raio-pill);background:var(--laranja);color:#2B1622;font-weight:900;font-size:var(--t-sm);line-height:1;font-variant-numeric:tabular-nums}
+.lj-corpo{display:flex;flex-direction:column;gap:6px;flex:1;padding:var(--e-3) var(--e-4) var(--e-4)}
+.lj-selo{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;margin:0;padding:3px 10px;border-radius:var(--raio-pill);font-size:var(--t-xs);font-weight:800}
+.lj-ponto{width:7px;height:7px;border-radius:50%;background:currentColor}
+.lj-shopee{background:var(--lj-shopee-fundo);color:var(--lj-shopee)}
+.lj-mercadolivre{background:var(--lj-ml-fundo);color:var(--lj-ml)}
+.lj-card h3{margin:0;font-size:var(--t-base);line-height:1.35;font-weight:700}
+.lj-card h3 a{color:var(--tinta);text-decoration:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lj-card h3 a:hover{text-decoration:underline;text-underline-offset:3px}
+.lj-prova{display:flex;flex-wrap:wrap;gap:4px 10px;margin:0;font-size:var(--t-xs);font-weight:700;color:var(--suave)}
+.lj-nota{color:var(--lj-nota)}
+.lj-preco{display:flex;flex-direction:column;margin:auto 0 0;padding-top:var(--e-2)}
+.lj-preco s{font-size:var(--t-sm);color:var(--suave)}
+.lj-preco b{font-size:26px;line-height:1.1;font-weight:900;letter-spacing:-.02em;color:var(--lj-rosa);font-variant-numeric:tabular-nums}
+.lj-preco .lj-ver-preco{font-size:var(--t-base)}
+.lj-preco small{font-size:var(--t-xs);color:var(--suave);margin-top:2px}
+.lj-comprar{width:100%;margin-top:var(--e-3);min-height:46px;padding:8px var(--e-3);text-align:center;line-height:1.2;transition:scale 150ms var(--lj-ease),box-shadow var(--lj-rapido) var(--lj-ease)}
+.lj-comprar:active{scale:.96}
+@media (hover:hover) and (pointer:fine){
+  .lj-card:hover{transform:translateY(-4px);box-shadow:var(--sombra-alta)}
+  .lj-card:hover .lj-foto img{transform:scale(1.04)}
+}
+
+/* ---------- Estados: carregando e vazio ---------- */
+.lj-hero-fantasma{min-height:260px;display:block}
+.lj-fantasma{min-height:360px;padding:var(--e-2);gap:10px}
+.lj-fantasma span,.lj-fantasma i,.lj-hero-fantasma{background:linear-gradient(100deg,var(--areia) 30%,var(--superficie) 50%,var(--areia) 70%);background-size:300% 100%;animation:lj-brilho 1.4s linear infinite}
+.lj-fantasma span{display:block;aspect-ratio:1;border-radius:calc(var(--raio) - 6px)}
+.lj-fantasma i{display:block;height:14px;margin:0 var(--e-2);border-radius:8px}
+.lj-fantasma i:last-child{width:50%;height:24px}
+@keyframes lj-brilho{to{background-position:-100% 0}}
+.lj-vazio{display:flex;flex-direction:column;align-items:flex-start;gap:var(--e-2);margin-top:var(--e-4);padding:var(--e-8) var(--e-6);border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra)}
+.lj-vazio .lj-ico{width:36px;height:36px;color:var(--lj-rosa)}
+.lj-vazio span{color:var(--suave)}
+.lj-vazio .btn{width:auto;margin-top:var(--e-2)}
+.lj-aviso{margin:var(--e-10) 0 0;padding-top:var(--e-5);border-top:1.5px solid var(--linha);font-size:var(--t-xs);line-height:1.6;color:var(--suave);max-width:80ch}
+
+/* ---------- Entrada da abertura: em partes, ~100ms entre elas, só na primeira vez ---------- */
+.lj-entra{animation:lj-sobe 420ms var(--lj-ease) both}
+.lj-hero-txt > .lj-entra:nth-child(2){animation-delay:80ms}
+.lj-hero-txt > .lj-entra:nth-child(3){animation-delay:160ms}
+.lj-hero-txt > .lj-entra:nth-child(4){animation-delay:240ms}
+.lj-hero-pets.lj-entra{animation-delay:200ms}
+.lj-passos.lj-entra{animation-delay:320ms}
+@keyframes lj-sobe{from{opacity:0;transform:translateY(12px);filter:blur(4px)}}
+
+/* ---------- Celular ---------- */
+@media (max-width:860px){
+  .lj-hero{grid-template-columns:1fr;gap:var(--e-6)}
+  .lj-hero::before{display:none}
+  .lj-passos{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  .lj-pagina{padding:var(--e-6) var(--e-4) var(--e-14)}
+  .lj-hero{padding:var(--e-6) var(--e-4)}
+  .lj-pets{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .lj-pet{min-height:96px;padding:var(--e-2) 4px}
+  .lj-pet-ico{width:40px;height:40px}
+  .lj-pet-ico .lj-ico{width:24px;height:24px}
+  .lj-pet-nome{font-size:12px}
+  .lj-passos{gap:6px}
+  .lj-passos li{padding:var(--e-2) var(--e-3)}
+  .lj-nichos:not(.aberto) .lj-extra{display:none}
+  .lj-nichos:not(.aberto) .lj-mais{display:inline-flex}
+  .lj-nicho{padding:0 var(--e-3) 0 10px}
+  .lj-barra{flex-direction:column;align-items:stretch}
+  .lj-controles{justify-content:space-between}
+  .lj-cab{flex-wrap:wrap}
+  .lj-cab .lj-ver{width:100%}
+  .lj-trilho{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--e-4);gap:var(--e-3);margin:0 calc(var(--e-4) * -1);padding:2px var(--e-4) var(--e-4);scrollbar-width:none}
+  .lj-trilho::-webkit-scrollbar{display:none}
+  .lj-trilho > li{flex:0 0 46%;scroll-snap-align:start}
+  .lj-grade:not(.lj-trilho){grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--e-3)}
+  .lj-corpo{padding:var(--e-2) var(--e-3) var(--e-3)}
+  .lj-preco b{font-size:21px}
+  .lj-na{display:none}
+}
+
+/* ---------- Reduzir movimento: tudo aparece pronto ---------- */
+@media (prefers-reduced-motion:reduce){
+  .lj-entra,#lj-lista.lj-trocou,.lj-fantasma span,.lj-fantasma i,.lj-hero-fantasma{animation:none}
+  .lj-card,.lj-foto img,.lj-pet,.lj-nicho,.lj-check,.lj-ver,.lj-comprar,.lj-seg button,.lj-campo input{transition:none}
+  .lj-card:hover{transform:none}
+  .lj-card:hover .lj-foto img{transform:none}
+}

@@ -5,7 +5,7 @@
   "use strict";
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
   var LOJAS = { amazon: "Amazon", mercadolivre: "Mercado Livre", shopee: "Shopee", magalu: "Magalu", petz: "Petz", cobasi: "Cobasi", petlove: "Petlove", outra: "Loja parceira" };
-  var CATEGORIAS = { racao: "Ração", petiscos: "Petiscos", brinquedos: "Brinquedos", higiene: "Higiene", saude: "Saúde", acessorios: "Acessórios", camas: "Camas", passeio: "Passeio", outros: "Outros" };
+  var CATEGORIAS = { racao: "Ração", petiscos: "Petiscos", alimentacao: "Feno e sementes", potes: "Potes", brinquedos: "Brinquedos", arranhadores: "Arranhadores", higiene: "Higiene", escovacao: "Escovação", saude: "Saúde", acessorios: "Acessórios", camas: "Camas", passeio: "Passeio", casa: "Casa", gaiolas: "Gaiolas", aquario: "Aquário", terrario: "Terrário", outros: "Outros" };
   var PETS = [["todos", "Todos"], ["cao", "Cães"], ["gato", "Gatos"]];
   var real = function (v) { return Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); };
   var desconto = function (o) { return o.preco && o.preco_antigo && Number(o.preco_antigo) > Number(o.preco) ? Math.round((1 - o.preco / o.preco_antigo) * 100) : 0; };
@@ -39,7 +39,7 @@
         '<p class="of-precos">' + (o.preco_antigo && d >= 1 ? '<s aria-label="De ' + real(o.preco_antigo) + '">' + real(o.preco_antigo) + "</s>" : "") +
           (o.preco != null ? '<b>' + real(o.preco) + "</b>" : '<b class="of-ver">Ver preço na loja</b>') + "</p>" +
         (o.cupom ? '<p class="of-cupom">Cupom <button type="button" data-cupom="' + esc(o.cupom) + '" aria-label="Copiar o cupom ' + esc(o.cupom) + '">' + esc(o.cupom) + "</button></p>" : "") +
-        '<a class="btn of-btn" href="' + esc(o.link) + '" target="_blank" rel="sponsored nofollow noopener">Ver oferta<span class="of-na"> na ' + esc(loja) + "</span></a>" +
+        '<a class="btn of-btn" href="' + esc(o.link) + '" target="_blank" rel="sponsored nofollow noopener"><span>Ver oferta<span class="of-na"> na ' + esc(loja) + "</span></span></a>" +
       "</div></li>";
   }
 
@@ -70,6 +70,7 @@
         "<h1>Ofertas pet do dia</h1>" +
         "<p>Os melhores preços em ração, petiscos, brinquedos e cuidados para cães e gatos, garimpados nas maiores lojas do Brasil.</p>" +
         (maior >= 10 ? '<p class="of-maior">Descontos de até <b>' + maior + "%</b></p>" : "") +
+        '<p class="of-maior"><a class="of-link-loja" href="loja.html">Ver a Loja pet completa, separada por nicho</a></p>' +
       "</header>" +
       '<div class="of-filtros">' +
         '<div class="of-chips" role="group" aria-label="Pet">' + PETS.map(function (p) { return '<button type="button" data-pet="' + p[0] + '" aria-pressed="' + (estado.pet === p[0]) + '">' + p[1] + "</button>"; }).join("") + "</div>" +
@@ -114,7 +115,8 @@
     C.sb.from("ofertas").select("*").eq("ativo", true).order("atualizado_em", { ascending: false }).limit(300).then(function (r) {
       if (r.error) { vazio(); return; }
       var agora = Date.now();
-      todas = (r.data || []).filter(function (o) { return !o.valido_ate || new Date(o.valido_ate).getTime() > agora; });
+      // Do robô da loja, aqui só entra o que está com desconto (o resto fica na Loja pet)
+      todas = (r.data || []).filter(function (o) { return (!o.valido_ate || new Date(o.valido_ate).getTime() > agora) && (o.origem !== "robo" || o.destaque || desconto(o) >= 5); });
       if (!todas.length) { vazio(); return; }
       desenhar();
     });

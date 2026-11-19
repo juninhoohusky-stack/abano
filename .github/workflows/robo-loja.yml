@@ -1,0 +1,36 @@
+name: Robô da Loja pet
+
+# Todo dia às 6h (horário de Brasília) busca os produtos na Shopee e no Mercado Livre
+# e publica na Loja pet (loja.html). Também dá para rodar na hora pela aba Actions.
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: robo-loja
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Buscar e publicar os produtos
+        run: node scripts/robo-loja.mjs
+        env:
+          SUPABASE_URL: https://igpwzidpiypzukmnskdb.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          SHOPEE_APP_ID: ${{ secrets.SHOPEE_APP_ID }}
+          SHOPEE_SECRET: ${{ secrets.SHOPEE_SECRET }}
+          ML_CLIENT_ID: ${{ secrets.ML_CLIENT_ID }}
+          ML_CLIENT_SECRET: ${{ secrets.ML_CLIENT_SECRET }}
+          ML_ETIQUETA: ${{ secrets.ML_ETIQUETA }}
+          ML_MATT_TOOL: ${{ secrets.ML_MATT_TOOL }}
