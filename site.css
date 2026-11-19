@@ -240,12 +240,12 @@ img,svg{display:block}
   .grupo-menu:hover .submenu{display:block}
   .grupo-menu:hover .seta{transform:rotate(180deg)}
 }
-@media (min-width:901px) and (max-width:1120px){
+@media (min-width:901px) and (max-width:1320px){
   .topo-in{gap:14px}
   .aba{padding:0 12px;font-size:var(--t-sm)}
 }
-/* Telas estreitas de computador/tablet deitado: "Novidades" também vai para o "Mais" */
-@media (min-width:901px) and (max-width:1023px){
+/* Telas estreitas de computador/tablet deitado: "Calculadora" e "Novidades" também vão para o "Mais" */
+@media (min-width:901px) and (max-width:1160px){
   .abas > .aba.so-desktop:not(.aba-extra){display:none}
   .submenu .so-celular-item{display:flex}
 }

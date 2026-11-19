@@ -1,4 +1,4 @@
-/* Abanô — Loja pet (loja.html)
+/* Abanô — Pet Store (loja.html)
    Produtos de afiliado da Shopee e do Mercado Livre, separados por pet e por nicho.
    O robô (scripts/robo-loja.mjs) publica e atualiza tudo sozinho todo dia na tabela "ofertas".
    Quem clica vai direto para o anúncio na loja e compra do vendedor original. */
@@ -272,7 +272,7 @@
       '<header class="lj-hero">' +
         '<div class="lj-hero-txt">' +
           '<p class="lj-ao-vivo lj-entra"><span class="of-ponto" aria-hidden="true"></span>' + esc(horaAtualizacao()) + "</p>" +
-          '<h1 class="lj-entra">Loja pet</h1>' +
+          '<h1 class="lj-entra">Pet Store</h1>' +
           '<p class="lj-entra">Os produtos que a gente indica para cada pet, com o preço da Shopee e do Mercado Livre. Você escolhe aqui e compra direto na loja, do vendedor original.</p>' +
           '<form class="lj-busca lj-entra" role="search" id="lj-form"><label for="lj-q">Procurar na loja</label>' +
             '<span class="lj-campo">' + svg(ICO.lupa) + '<input type="search" id="lj-q" placeholder="Ração, arranhador, peitoral…" autocomplete="off" enterkeyhint="search" value="' + esc(estado.busca) + '"></span></form>' +
@@ -330,7 +330,7 @@
     centro.innerHTML = '<p class="sr" role="status">Carregando a loja…</p><div class="lj-hero lj-hero-fantasma" aria-hidden="true"></div><ul class="lj-grade">' + c + "</ul>";
   }
   function vazio() {
-    centro.innerHTML = '<header class="lj-hero"><div class="lj-hero-txt"><p class="lj-ao-vivo"><span class="of-ponto" aria-hidden="true"></span>Preços atualizados todo dia</p><h1>Loja pet</h1>' +
+    centro.innerHTML = '<header class="lj-hero"><div class="lj-hero-txt"><p class="lj-ao-vivo"><span class="of-ponto" aria-hidden="true"></span>Preços atualizados todo dia</p><h1>Pet Store</h1>' +
       "<p>Estamos montando a loja com os produtos que a gente indica para cada pet: rações premium, camas, arranhadores, brinquedos, higiene e muito mais.</p></div></header>" +
       '<div class="lj-vazio">' + svg(ICO.loja) + "<b>Os primeiros produtos chegam em breve.</b><span>Enquanto isso, veja os guias de cuidados de cada pet.</span><a class=\"btn\" href=\"guia/\">Ver o Guia pet</a></div>";
   }

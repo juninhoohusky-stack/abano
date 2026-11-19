@@ -11,7 +11,7 @@ Tem pet? Tem no Abanô. Tudo pra cães e gatos, num lugar só, perto de você. S
 | `anuncie.html` | Divulgue no Abanô (pedidos de anunciantes) |
 | `eventos.html`, `hospedagem.html`, `veterinarios.html`, `adocao.html`, `perdidos.html`, `perfil-qr.html`, `doador-de-sangue.html` | Serviços "Em breve" (estrutura inicial, para completar) |
 | `calculadora.html` | Calculadora de custos do pet |
-| `loja.html` | Loja pet: produtos de afiliado da Shopee e do Mercado Livre, por pet e por nicho (robô diário) |
+| `loja.html` | Pet Store (aba própria no menu): produtos de afiliado da Shopee e do Mercado Livre, por pet e por nicho (robô diário) |
 | `husky-solta-muito-pelo.html` | Artigo do Guia do Husky |
 | `obrigado.html` | Página exibida depois do cadastro |
 
@@ -75,7 +75,7 @@ Botão "Continuar com o Google" no formulário da lista (`google.js`). Usa o log
 3. Rode `supabase/google.sql`.
 4. Em `lista.js`, troque `LOGIN_GOOGLE_ATIVO` para `true`.
 
-## Loja pet (afiliados Shopee e Mercado Livre)
+## Pet Store (afiliados Shopee e Mercado Livre)
 
 A página `loja.html` mostra os produtos de `dados/loja-catalogo.json`, separados por pet e por nicho. O catálogo tem os 248 itens da aba "Sugestões fora dos guias" da planilha `marca/produtos-abano.xlsx`. Todo dia às 6h (horário de Brasília), o robô `scripts/robo-loja.mjs` (pela automação `.github/workflows/robo-loja.yml`) faz o seguinte:
 

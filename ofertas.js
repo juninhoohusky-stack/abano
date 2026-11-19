@@ -70,7 +70,7 @@
         "<h1>Ofertas pet do dia</h1>" +
         "<p>Os melhores preços em ração, petiscos, brinquedos e cuidados para cães e gatos, garimpados nas maiores lojas do Brasil.</p>" +
         (maior >= 10 ? '<p class="of-maior">Descontos de até <b>' + maior + "%</b></p>" : "") +
-        '<p class="of-maior"><a class="of-link-loja" href="loja.html">Ver a Loja pet completa, separada por nicho</a></p>' +
+        '<p class="of-maior"><a class="of-link-loja" href="loja.html">Ver a Pet Store completa, separada por nicho</a></p>' +
       "</header>" +
       '<div class="of-filtros">' +
         '<div class="of-chips" role="group" aria-label="Pet">' + PETS.map(function (p) { return '<button type="button" data-pet="' + p[0] + '" aria-pressed="' + (estado.pet === p[0]) + '">' + p[1] + "</button>"; }).join("") + "</div>" +
@@ -115,7 +115,7 @@
     C.sb.from("ofertas").select("*").eq("ativo", true).order("atualizado_em", { ascending: false }).limit(300).then(function (r) {
       if (r.error) { vazio(); return; }
       var agora = Date.now();
-      // Do robô da loja, aqui só entra o que está com desconto (o resto fica na Loja pet)
+      // Do robô da loja, aqui só entra o que está com desconto (o resto fica na Pet Store)
       todas = (r.data || []).filter(function (o) { return (!o.valido_ate || new Date(o.valido_ate).getTime() > agora) && (o.origem !== "robo" || o.destaque || desconto(o) >= 5); });
       if (!todas.length) { vazio(); return; }
       desenhar();
