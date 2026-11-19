@@ -11,7 +11,7 @@ Tem pet? Tem no Abanô. Tudo pra cães e gatos, num lugar só, perto de você. S
 | `anuncie.html` | Divulgue no Abanô (pedidos de anunciantes) |
 | `eventos.html`, `hospedagem.html`, `veterinarios.html`, `adocao.html`, `perdidos.html`, `perfil-qr.html`, `doador-de-sangue.html` | Serviços "Em breve" (estrutura inicial, para completar) |
 | `calculadora.html` | Calculadora de custos do pet |
-| `loja.html` | Pet Store (aba própria no menu): produtos de afiliado da Shopee e do Mercado Livre, por pet e por nicho (robô diário) |
+| `loja.html` | Achadinhos da Abanô (aba própria no menu): produtos de afiliado da Shopee e do Mercado Livre, em duas áreas, "Para os animais" e "Para quem ama pets" (robô diário) |
 | `husky-solta-muito-pelo.html` | Artigo do Guia do Husky |
 | `obrigado.html` | Página exibida depois do cadastro |
 
@@ -75,9 +75,9 @@ Botão "Continuar com o Google" no formulário da lista (`google.js`). Usa o log
 3. Rode `supabase/google.sql`.
 4. Em `lista.js`, troque `LOGIN_GOOGLE_ATIVO` para `true`.
 
-## Pet Store (afiliados Shopee e Mercado Livre)
+## Achadinhos da Abanô (afiliados Shopee e Mercado Livre)
 
-A página `loja.html` mostra os produtos de `dados/loja-catalogo.json`, separados por pet e por nicho. O catálogo tem os 248 itens da aba "Sugestões fora dos guias" da planilha `marca/produtos-abano.xlsx`. Todo dia às 6h (horário de Brasília), o robô `scripts/robo-loja.mjs` (pela automação `.github/workflows/robo-loja.yml`) faz o seguinte:
+A página `loja.html` mostra os produtos de `dados/loja-catalogo.json` em duas áreas: **Para os animais** (cães, gatos, aves, hamsters e pequenos animais, peixes, répteis e outros animais, cada um com suas subcategorias) e **Para quem ama pets** (casa sem pelos, casa organizada, limpeza e lavanderia, passeio e rotina, conforto do tutor, carro e viagens). Na abertura ficam as vitrines Ofertas do dia, Novidades, Mais procurados e Achadinhos para os tutores. Depois vem a lista completa, com busca, filtros (área, categoria, subcategoria, loja, faixa de preço, só com desconto, só novidades) e ordenação. Todo dia às 6h (horário de Brasília), o robô `scripts/robo-loja.mjs` (pela automação `.github/workflows/robo-loja.yml`) faz o seguinte:
 
 - procura cada produto na Shopee e no Mercado Livre e escolhe o melhor anúncio. Ele olha a nota, as vendas e a comissão, e nas rações só aceita marcas premium e super premium;
 - grava os anúncios escolhidos na tabela `ofertas`, já com o link de afiliado;
@@ -93,11 +93,16 @@ Na Shopee, o link vem pronto da API oficial de afiliados. No Mercado Livre, o ro
    - no portal de afiliados, abra o Gerador de links, gere o link de um produto qualquer e copie os valores de `matt_word` (sua etiqueta) e de `matt_tool`;
    - em [developers.mercadolivre.com.br](https://developers.mercadolivre.com.br/devcenter), crie um aplicativo e copie o *Client ID* e a *Client Secret*.
 4. No GitHub, em Settings → Secrets and variables → Actions, crie os segredos `SHOPEE_APP_ID`, `SHOPEE_SECRET`, `ML_CLIENT_ID`, `ML_CLIENT_SECRET`, `ML_ETIQUETA` e `ML_MATT_TOOL`. O `SUPABASE_SECRET_KEY` já existe.
-5. Na aba Actions, abra "Robô da Loja pet" e clique em *Run workflow*. O resumo da rodada mostra o que entrou e o que ficou sem anúncio. Se faltarem os segredos de uma loja, o robô pula só essa loja.
+5. Na aba Actions, abra "Robô dos Achadinhos" e clique em *Run workflow*. O resumo da rodada mostra o que entrou e o que ficou sem anúncio. Se faltarem os segredos de uma loja, o robô pula só essa loja.
 
 ### Mudar os produtos
 
-Edite a planilha e rode de novo o gerador do catálogo, ou edite `dados/loja-catalogo.json` direto. O campo `busca` é o que o robô procura. O campo `marcas` define as marcas que uma ração precisa ter no título.
+Edite `dados/loja-catalogo.json` direto. Em cada item:
+
+- `busca` é o que o robô procura nas lojas;
+- `marcas` define as marcas que uma ração precisa ter no título;
+- `area` (`animais` ou `tutor`), `cat` e `sub` dizem onde o produto aparece na página;
+- `pet` e `nicho` são o que o robô grava na tabela `ofertas` e precisam ser valores que o banco aceita (veja `supabase/loja_afiliados.sql`). Para os itens do tutor e de "outros animais", use `pet` = `todos`.
 
 ## Publicar
 

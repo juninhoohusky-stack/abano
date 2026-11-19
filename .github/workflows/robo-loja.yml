@@ -1,7 +1,7 @@
-name: Robô da Loja pet
+name: Robô dos Achadinhos
 
 # Todo dia às 6h (horário de Brasília) busca os produtos na Shopee e no Mercado Livre
-# e publica na Loja pet (loja.html). Também dá para rodar na hora pela aba Actions.
+# e publica nos Achadinhos da Abanô (loja.html). Também dá para rodar na hora pela aba Actions.
 on:
   schedule:
     - cron: "0 9 * * *"

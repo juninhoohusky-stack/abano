@@ -1,6 +1,6 @@
-// Robô da Loja pet do Abanô.
+// Robô dos Achadinhos da Abanô.
 // Todo dia, para cada produto de dados/loja-catalogo.json, procura o melhor anúncio na Shopee e no
-// Mercado Livre, monta o link de afiliado e publica na tabela "ofertas" do Supabase (página loja.html).
+// Mercado Livre, monta o link de afiliado e publica na tabela "ofertas" do Supabase (Achadinhos da Abanô, loja.html).
 // Roda no GitHub Actions (.github/workflows/robo-loja.yml). Para testar sem gravar nada:
 //   node scripts/robo-loja.mjs --teste
 //
