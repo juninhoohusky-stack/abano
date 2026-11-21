@@ -117,25 +117,42 @@ html.lj-travado{overflow:hidden}
 }
 
 /* ---------- Lista completa: filtros ao lado no computador ---------- */
-.lj-lista{display:grid;grid-template-columns:270px minmax(0,1fr);gap:var(--e-6);align-items:start;scroll-margin-top:84px}
+.lj-lista{display:grid;grid-template-columns:300px minmax(0,1fr);gap:var(--e-6);align-items:start;scroll-margin-top:84px}
 .lj-painel{position:sticky;top:84px;max-height:calc(100vh - 100px);overflow:auto;padding:var(--e-5);border-radius:var(--raio);background:var(--superficie);box-shadow:var(--sombra);overscroll-behavior:contain}
 .lj-painel-cab{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--e-2)}
 .lj-painel-cab h2{margin:0;font-size:var(--t-lg)}
 .lj-fechar{display:none;place-items:center;width:44px;height:44px;margin:-8px -8px -8px 0;border:0;border-radius:50%;background:transparent;color:var(--tinta);cursor:pointer}
 .lj-painel-pe{display:none}
-.lj-f{margin:0;padding:var(--e-4) 0 0;border:0;border-top:1.5px solid var(--linha);min-width:0}
-.lj-f + .lj-f{margin-top:var(--e-4)}
-.lj-f legend{float:left;width:100%;margin:0 0 var(--e-2);padding:0;font-size:var(--t-xs);font-weight:900;color:var(--suave);letter-spacing:.01em}
-.lj-chips{clear:both;display:flex;flex-wrap:wrap;gap:6px}
-.lj-chip{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 12px;border:0;border-radius:var(--raio-pill);background:var(--fundo);box-shadow:inset 0 0 0 1.5px var(--linha);
-  color:var(--tinta);font:inherit;font-weight:700;font-size:var(--t-sm);text-align:left;cursor:pointer;
+.lj-f{margin:0;padding:var(--e-5) 0 0;border:0;border-top:1.5px solid var(--linha);min-width:0}
+.lj-f + .lj-f{margin-top:var(--e-5)}
+.lj-painel-cab + .lj-painel-corpo .lj-f:first-child{border-top:0;padding-top:var(--e-2)}
+.lj-f legend{float:left;width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 var(--e-3);padding:0;font-size:var(--t-sm);font-weight:900;color:var(--tinta);letter-spacing:-.005em}
+.lj-f-limpar{min-height:32px;padding:0 10px;margin:-6px -10px -6px 0;border:0;border-radius:var(--raio-pill);background:transparent;color:var(--marca);font:inherit;font-size:var(--t-xs);font-weight:800;cursor:pointer}
+.lj-f-limpar:hover{background:var(--marca-clara)}
+.lj-chips{clear:both;display:flex;flex-wrap:wrap;gap:8px}
+.lj-chips-ico{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+/* Botão de filtro: fundo claro, contorno fino; escolhido = magenta com sinal de "ok" */
+.lj-chip{position:relative;display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:0 14px;border:0;border-radius:var(--raio-pill);background:var(--superficie);box-shadow:inset 0 0 0 1.5px var(--linha),0 1px 2px rgba(43,22,34,.05);
+  color:var(--tinta);font:inherit;font-weight:700;font-size:var(--t-sm);line-height:1.2;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;
   transition:background-color var(--lj-rapido) var(--lj-ease),box-shadow var(--lj-rapido) var(--lj-ease),color var(--lj-rapido) var(--lj-ease),scale 150ms var(--lj-ease)}
-.lj-chip small{font-size:var(--t-xs);font-weight:800;color:var(--suave);font-variant-numeric:tabular-nums}
+.lj-chip-nome{min-width:0}
+.lj-chip small{min-width:22px;padding:1px 7px;border-radius:var(--raio-pill);background:var(--areia);font-size:11px;font-weight:800;color:var(--suave);text-align:center;font-variant-numeric:tabular-nums}
+.lj-chip .lj-chip-ok{display:none;width:16px;height:16px;flex:none;stroke-width:2.6}
+.lj-chips-ico .lj-chip{border-radius:var(--raio-xs);padding:8px 10px;min-height:54px;align-items:center}
+.lj-chip-txt{display:grid;gap:1px;min-width:0}
+.lj-chips-ico .lj-chip small{min-width:0;padding:0;background:none;font-size:11px;font-weight:700;text-align:left}
+.lj-chip-ico > .lj-ico{width:22px;height:22px;flex:none;color:var(--marca)}
 .lj-chip:active{scale:.96}
-.lj-chip[aria-pressed=true]{background:var(--tinta);box-shadow:none;color:var(--superficie)}
-.lj-chip[aria-pressed=true] small{color:inherit;opacity:.75}
-.lj-chip:disabled{opacity:.4;cursor:default}
-@media (hover:hover) and (pointer:fine){.lj-chip:not([aria-pressed=true]):not(:disabled):hover{box-shadow:inset 0 0 0 1.5px var(--marca)}}
+.lj-chip[aria-pressed=true]{background:var(--marca);box-shadow:0 6px 14px -8px var(--marca);color:var(--sobre-marca)}
+.lj-chip[aria-pressed=true] > .lj-ico{color:inherit}
+.lj-chip[aria-pressed=true] small{background:rgba(255,255,255,.22);color:inherit}
+.lj-chip[aria-pressed=true] .lj-chip-ok{display:block}
+.lj-chips:not(.lj-chips-ico):not(.lj-chips-2) .lj-chip[aria-pressed=true] small{display:none}
+.lj-chips-ico .lj-chip[aria-pressed=true] small{background:none;opacity:.85}
+.lj-chips-ico .lj-chip .lj-chip-ok{position:absolute;top:6px;right:6px;width:14px;height:14px}
+.lj-chip:disabled{opacity:.38;cursor:default;box-shadow:inset 0 0 0 1.5px var(--linha)}
+.lj-chip:focus-visible{outline:none;box-shadow:0 0 0 2px var(--superficie),0 0 0 4px var(--marca)}
+@media (hover:hover) and (pointer:fine){.lj-chip:not([aria-pressed=true]):not(:disabled):hover{background:var(--hover);box-shadow:inset 0 0 0 1.5px var(--marca)}}
 /* Chaves liga/desliga (o checkbox de verdade fica por cima, invisível, para o leitor de tela e o teclado) */
 .lj-chaves{clear:both;display:grid;gap:var(--e-2)}
 .lj-chave{position:relative;display:flex;align-items:center;gap:var(--e-3);min-height:44px;font-weight:700;font-size:var(--t-sm);cursor:pointer}
@@ -262,7 +279,8 @@ html.lj-travado{overflow:hidden}
   .lj-limpar-tudo{min-height:50px;padding:0 var(--e-5);border:0;border-radius:var(--raio-pill);background:var(--areia);color:var(--tinta);font:inherit;font-weight:800;cursor:pointer}
   .lj-fundo-painel{position:fixed;inset:0;z-index:85;background:rgba(20,8,14,.45)}
   .lj-fundo-painel[hidden]{display:none}
-  .lj-chip{min-height:44px}
+  .lj-chip{min-height:46px}
+  .lj-chips-ico{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
   .lj-barra{grid-template-columns:1fr}
   .lj-controles{justify-content:space-between}
   .lj-trilho{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--e-5);gap:var(--e-3);margin:0 calc(var(--e-5) * -1);padding:2px var(--e-5) var(--e-4);scrollbar-width:none}

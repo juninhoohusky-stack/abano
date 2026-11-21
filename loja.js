@@ -95,7 +95,8 @@
   };
   if (!estado.cat && CAT[q.get("pet")]) estado.cat = q.get("pet");          // links antigos da Pet Store (?pet=cao)
   if (estado.cat) estado.area = CAT[estado.cat].area;
-  if (!estado.cat || estado.area !== "animais") estado.sub = null;
+  if (estado.area === "tutor") estado.sub = null;                          // tipo de produto só vale para os animais
+  if (estado.sub && !estado.area) estado.area = "animais";
   var todas = [], catalogo = {};
 
   // ---------- De onde vem a área, a categoria e a subcategoria de cada produto ----------
@@ -121,10 +122,10 @@
   // ignorar: o filtro que não entra na conta (para mostrar quantos produtos cada opção daria)
   function filtradas(ignorar) {
     var termos = semAcento(estado.busca).split(/\s+/).filter(Boolean), f = faixa(estado.preco);
-    var nivel = { area: 0, cat: 1, sub: 2 }[ignorar];
+    var nivel = { area: 0, cat: 1, sub: 2 }[ignorar], animal = ignorar === "animal";
     return todas.filter(function (o) {
-      if (!(nivel <= 0) && estado.area && o.area !== estado.area) return false;
-      if (!(nivel <= 1) && estado.cat && o.cats.indexOf(estado.cat) < 0) return false;
+      if (!animal && !(nivel <= 0) && estado.area && o.area !== estado.area) return false;
+      if (!animal && !(nivel <= 1) && estado.cat && o.cats.indexOf(estado.cat) < 0) return false;
       if (!(nivel <= 2) && estado.sub && o.sub !== estado.sub) return false;
       if (ignorar !== "loja" && estado.loja && o.loja !== estado.loja) return false;
       if (ignorar !== "preco" && f && !naFaixa(o, f)) return false;
@@ -254,35 +255,56 @@
   }
 
   // ---------- Painel de filtros (lateral no computador, gaveta no celular) ----------
-  function grupo(titulo, nome, opcoes, atual) {
-    return '<fieldset class="lj-f"><legend>' + titulo + '</legend><div class="lj-chips">' + opcoes.map(function (o) {
-      var ligado = atual === o[0];
-      return '<button type="button" class="lj-chip" data-f="' + nome + '" data-v="' + o[0] + '" aria-pressed="' + ligado + '"' + (o[2] === 0 && !ligado ? " disabled" : "") + ">" +
-        esc(o[1]) + (o[2] != null ? "<small>" + o[2] + "</small>" : "") + "</button>";
-    }).join("") + "</div></fieldset>";
-  }
   function quantos(ignorar, teste) { return filtradas(ignorar).filter(teste).length; }
   var tudo = function () { return true; };
+  var CURTO = { roedores: "Hamsters e cia", outros: "Outros" };
+  var TODOS_TIPOS = ["alimentacao", "brinquedos", "camas", "higiene", "saude", "coleiras", "transporte", "arranhadores", "gaiolas", "poleiros",
+    "tocas", "rodinhas", "aquarios", "filtros", "iluminacao", "terrarios", "luz", "acessorios"];
+  // Botão de filtro: nome, quantidade e um sinal de "escolhido"
+  function botao(nome, v, rotulo, n, ligado, ico) {
+    return '<button type="button" class="lj-chip' + (ico ? " lj-chip-ico" : "") + '" data-f="' + nome + '" data-v="' + v + '" aria-pressed="' + ligado + '"' + (n === 0 && !ligado ? " disabled" : "") + ">" +
+      (ico ? svg(ico) + '<span class="lj-chip-txt"><span class="lj-chip-nome">' + esc(rotulo) + "</span>" +
+        (n != null ? "<small>" + n + (n === 1 ? " produto" : " produtos") + "</small>" : "") + "</span>"
+      : '<span class="lj-chip-nome">' + esc(rotulo) + "</span>" +
+        (n != null ? '<small aria-label="' + n + (n === 1 ? ' produto">' : ' produtos">') + n + "</small>" : "")) +
+      svg(ICO.check, "lj-chip-ok") + "</button>";
+  }
+  function grupoF(titulo, classe, miolo, limpar) {
+    return '<fieldset class="lj-f"><legend><span>' + titulo + "</span>" +
+      (limpar ? '<button type="button" class="lj-f-limpar" data-tirar="' + limpar + '">Limpar</button>' : "") + "</legend>" +
+      '<div class="' + classe + '">' + miolo + "</div></fieldset>";
+  }
   function desenharPainel() {
     var corpo = document.getElementById("lj-painel-corpo"), h = "";
-    h += grupo("Área", "area", [["", "Tudo", quantos("area", tudo)]].concat(["animais", "tutor"].map(function (a) {
-      return [a, AREAS[a].nome, quantos("area", function (o) { return o.area === a; })];
-    })), estado.area || "");
-    if (estado.area) h += grupo(estado.area === "animais" ? "Animal" : "Categoria", "cat", [["", "Todos", quantos("cat", tudo)]].concat(CATS[estado.area].map(function (c) {
-      return [c[0], c[1], quantos("cat", function (o) { return o.cats.indexOf(c[0]) >= 0; })];
-    })), estado.cat || "");
-    if (estado.area === "animais" && estado.cat) h += grupo("Subcategoria", "sub", [["", "Todas", quantos("sub", tudo)]].concat(CAT[estado.cat].extra.map(function (s) {
-      return [s, NOME_SUB(estado.cat, s), quantos("sub", function (o) { return o.sub === s; })];
-    })), estado.sub || "");
+    var animal = estado.area === "animais" ? estado.cat : null;
+    // 1) Animal (sempre à vista)
+    h += grupoF("Para qual animal?", "lj-chips lj-chips-ico",
+      botao("animal", "", "Todos", quantos("animal", function (o) { return o.area === "animais"; }), estado.area === "animais" && !estado.cat, ICO.pata) +
+      CATS.animais.map(function (c) {
+        return botao("animal", c[0], CURTO[c[0]] || c[1], quantos("animal", function (o) { return o.cats.indexOf(c[0]) >= 0; }), animal === c[0], ICO[c[0]]);
+      }).join(""), animal ? "animal" : null);
+    // 2) Tipo de produto (do animal escolhido, ou de todos)
+    var tipos = animal ? CAT[animal].extra : TODOS_TIPOS;
+    var chipsTipo = tipos.map(function (s) {
+      return [s, quantos("sub", function (o) { return o.sub === s; })];
+    }).filter(function (x) { return x[1] > 0 || estado.sub === x[0]; });
+    if (estado.area !== "tutor" && chipsTipo.length) h += grupoF("Tipo de produto", "lj-chips",
+      chipsTipo.map(function (x) { return botao("sub", x[0], NOME_SUB(animal, x[0]), x[1], estado.sub === x[0]); }).join(""), estado.sub ? "sub" : null);
+    // 3) Para quem ama pets
+    h += grupoF("Para quem ama pets", "lj-chips lj-chips-ico",
+      CATS.tutor.map(function (c) {
+        return botao("tutor", c[0], c[1], quantos("area", function (o) { return o.cats.indexOf(c[0]) >= 0; }), estado.cat === c[0], ICO[c[0]]);
+      }).join(""), estado.area === "tutor" ? "area" : null);
+    // 4) Loja e preço
     var lojas = [["mercadolivre", "Mercado Livre"], ["shopee", "Shopee"]].filter(function (l) { return todas.some(function (o) { return o.loja === l[0]; }); });
-    if (lojas.length > 1 || estado.loja) h += grupo("Loja", "loja", [["", "As duas", quantos("loja", tudo)]].concat(lojas.map(function (l) {
-      return [l[0], l[1], quantos("loja", function (o) { return o.loja === l[0]; })];
-    })), estado.loja || "");
-    h += grupo("Faixa de preço", "preco", [["", "Qualquer preço"]].concat(FAIXAS.map(function (f) {
-      return [f[0], f[1], quantos("preco", function (o) { return naFaixa(o, f); })];
-    })), estado.preco || "");
+    if (lojas.length > 1 || estado.loja) h += grupoF("Loja", "lj-chips", lojas.map(function (l) {
+      return botao("loja", l[0], l[1], quantos("loja", function (o) { return o.loja === l[0]; }), estado.loja === l[0]);
+    }).join(""), estado.loja ? "loja" : null);
+    h += grupoF("Faixa de preço", "lj-chips", FAIXAS.map(function (f) {
+      return botao("preco", f[0], f[1], quantos("preco", function (o) { return naFaixa(o, f); }), estado.preco === f[0]);
+    }).join(""), estado.preco ? "preco" : null);
     var nDesc = quantos("desc", function (o) { return desconto(o) >= 1; }), nNovo = quantos("novo", ehNovo);
-    h += '<fieldset class="lj-f"><legend>Ofertas e novidades</legend><div class="lj-chaves">' +
+    h += '<fieldset class="lj-f"><legend><span>Ofertas e novidades</span></legend><div class="lj-chaves">' +
       '<label class="lj-chave"><input type="checkbox" role="switch" data-f="desc"' + (estado.desc ? " checked" : "") + (!nDesc && !estado.desc ? " disabled" : "") + '><span class="lj-trilha" aria-hidden="true"></span><span>Só com desconto</span><small>' + nDesc + "</small></label>" +
       '<label class="lj-chave"><input type="checkbox" role="switch" data-f="novo"' + (estado.novo ? " checked" : "") + (!nNovo && !estado.novo ? " disabled" : "") + '><span class="lj-trilha" aria-hidden="true"></span><span>Só novidades da semana</span><small>' + nNovo + "</small></label>" +
       "</div></fieldset>";
@@ -304,6 +326,7 @@
   }
   function tituloLista() {
     if (estado.cat) return estado.sub ? NOME_SUB(estado.cat, estado.sub) + ": " + CAT[estado.cat].nome.toLowerCase() : CAT[estado.cat].nome;
+    if (estado.sub) return NOME_SUB(null, estado.sub) + " para todos os animais";
     if (estado.area) return AREAS[estado.area].nome;
     if (estado.busca) return "Resultados para “" + estado.busca + "”";
     if (estado.desc) return "Ofertas do dia";
@@ -478,7 +501,13 @@
       var f = b.dataset.f, v = b.dataset.v || null;
       if (f === "area") { estado.area = v; estado.cat = null; estado.sub = null; }
       else if (f === "cat") { estado.cat = v; estado.sub = null; }
-      else estado[f] = v;
+      else if (f === "animal") {           // animal: mantém o tipo de produto se esse animal também tiver
+        var mesmo = v && estado.cat === v;
+        estado.area = "animais"; estado.cat = mesmo ? null : v;
+        if (estado.cat && estado.sub && CAT[estado.cat].extra.indexOf(estado.sub) < 0) estado.sub = null;
+      } else if (f === "tutor") { estado.area = "tutor"; estado.cat = estado.cat === v ? null : v; estado.sub = null; }
+      else if (f === "sub") { estado.sub = estado.sub === v ? null : v; if (estado.area !== "animais") { estado.area = "animais"; estado.cat = null; } }
+      else estado[f] = estado[f] === v ? null : v;   // loja e preço: clicar de novo desliga
     } else if (b.dataset.vitrine) {
       var vt = b.dataset.vitrine;
       if (vt === "ofertas") { estado.desc = true; estado.ordem = "desconto"; }
@@ -490,6 +519,7 @@
       var t = b.dataset.tirar, todos = t === "tudo";
       if (todos || t === "area") { estado.area = null; estado.cat = null; estado.sub = null; }
       if (todos || t === "cat") { estado.cat = null; estado.sub = null; }
+      if (t === "animal") estado.cat = null;
       if (todos || t === "sub") estado.sub = null;
       if (todos || t === "loja") estado.loja = null;
       if (todos || t === "preco") estado.preco = null;
