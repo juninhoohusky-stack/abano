@@ -116,7 +116,7 @@ async function melhor(item, candidatos, usados, lojaConfiavel) {
 // ---------- Shopee (API oficial de afiliados) ----------
 async function shopeeGraphQL(consulta) {
   const corpo = JSON.stringify({ query: consulta });
-  for (let tentativa = 1; tentativa <= 3; tentativa++) {
+  for (let tentativa = 1; tentativa <= 4; tentativa++) {
     const ts = Math.floor(Date.now() / 1000);
     const assinatura = createHash("sha256").update(env.SHOPEE_APP_ID + ts + corpo + env.SHOPEE_SECRET).digest("hex");
     const r = await fetch("https://open-api.affiliate.shopee.com.br/graphql", {
@@ -128,7 +128,8 @@ async function shopeeGraphQL(consulta) {
     const erro = j.errors && j.errors[0];
     if (erro) {
       const codigo = erro.extensions && erro.extensions.code;
-      if (codigo === 10030 && tentativa < 3) { await espera(15000 * tentativa); continue; }  // muitas consultas: espera e tenta de novo
+      // 10030 = muitas consultas; 10000 = falha passageira da Shopee: espera e tenta de novo
+      if ((codigo === 10030 || codigo === 10000) && tentativa < 4) { await espera(8000 * tentativa); continue; }
       throw new Error(`Shopee recusou (${codigo || r.status}): ${erro.message}`);
     }
     return j.data || {};
@@ -264,7 +265,7 @@ async function tirarAntigas(loja) {
 
 // ---------- Rodada ----------
 const LOJAS = [
-  { nome: "shopee", rotulo: "Shopee", pronta: env.SHOPEE_APP_ID && env.SHOPEE_SECRET, pausa: 700,
+  { nome: "shopee", rotulo: "Shopee", pronta: env.SHOPEE_APP_ID && env.SHOPEE_SECRET, pausa: 1500,
     buscar: async (item, usados) => melhor(item, await shopee(item), usados, lojaShopeeConfiavel) },
   { nome: "mercadolivre", rotulo: "Mercado Livre", pronta: env.ML_CLIENT_ID && env.ML_CLIENT_SECRET && env.ML_ETIQUETA && env.ML_MATT_TOOL, pausa: 300,
     preparar: entrarML, buscar: async (item, usados) => melhor(item, await mercadolivre(item, usados), usados, lojaMLConfiavel) },
@@ -281,10 +282,11 @@ for (const loja of LOJAS) {
   console.log(`\n=== ${loja.rotulo}: ${itens.length} produtos do catálogo ===`);
   try { if (loja.preparar) await loja.preparar(); } catch (e) { aviso(`${loja.rotulo}: ${e.message}`); falhou = true; continue; }
   const usados = new Set(), linhas = [], faltaram = [];
-  let erros = 0;
+  let erros = 0, seguidos = 0;
   for (const item of itens) {
     try {
       const o = await loja.buscar(item, usados);
+      seguidos = 0;
       if (o) {
         usados.add(o.codigo_externo);
         // Só vão para o banco as colunas da tabela ofertas
@@ -295,7 +297,7 @@ for (const loja of LOJAS) {
     } catch (e) {
       erros++;
       console.log(`erro ${item.nome}: ${e.message}`);
-      if (erros >= 15 && erros > linhas.length) { aviso(`${loja.rotulo}: erros demais, rodada interrompida.`); break; }
+      if (++seguidos >= 12) { aviso(`${loja.rotulo}: erros demais, rodada interrompida.`); break; }
     }
     await espera(loja.pausa);
   }
