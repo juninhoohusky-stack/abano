@@ -77,13 +77,19 @@ Botão "Continuar com o Google" no formulário da lista (`google.js`). Usa o log
 
 ## Achadinhos da Abanô (afiliados Shopee e Mercado Livre)
 
-A página `loja.html` mostra os produtos de `dados/loja-catalogo.json` em duas áreas: **Para os animais** (cães, gatos, aves, hamsters e pequenos animais, peixes, répteis e outros animais, cada um com suas subcategorias) e **Para quem ama pets** (casa sem pelos, casa organizada, limpeza e lavanderia, passeio e rotina, conforto do tutor, carro e viagens). Na abertura ficam as vitrines Ofertas do dia, Novidades, Mais procurados e Achadinhos para os tutores. Depois vem a lista completa, com busca, filtros (área, categoria, subcategoria, loja, faixa de preço, só com desconto, só novidades) e ordenação. Todo dia às 6h (horário de Brasília), o robô `scripts/robo-loja.mjs` (pela automação `.github/workflows/robo-loja.yml`) faz o seguinte:
+A página `loja.html` mostra os produtos de `dados/loja-catalogo.json` em duas áreas: **Para os animais** (cães, gatos, aves, hamsters e pequenos animais, peixes, répteis e outros animais, cada um com suas subcategorias) e **Para quem ama pets** (casa sem pelos, casa organizada, limpeza e lavanderia, passeio e rotina, conforto do tutor, carro e viagens). Na abertura ficam as vitrines Ofertas do dia, Novidades, Mais procurados e Achadinhos para os tutores. Depois vem a lista completa, com busca, filtros (área, categoria, subcategoria, loja, faixa de preço, só com desconto, só novidades) e ordenação. Duas vezes por dia, às 6h e às 18h (horário de Brasília), o robô `scripts/robo-loja.mjs` (pela automação `.github/workflows/robo-loja.yml`) faz o seguinte:
 
-- procura cada produto na Shopee e no Mercado Livre e escolhe o melhor anúncio. Ele olha a nota, as vendas e a comissão, e nas rações só aceita marcas premium e super premium;
+- procura cada produto na Shopee (entre os mais vendidos e os mais relevantes) e no Mercado Livre;
+- só aceita **produto de pet** (o título precisa falar de pet, cão, gato, ave, peixe etc.) e, nas rações, só marcas premium e super premium;
+- só aceita **loja confiável**. Na Shopee: Shopee Mall ou loja Indicada/Indicada+, nota do produto e da loja de pelo menos 4,7 e pelo menos 100 vendas. No Mercado Livre: termômetro verde, MercadoLíder Gold ou Platinum (ou loja oficial), pelo menos 500 vendas e 95% de avaliações positivas. Os números ficam em `REGRAS`, no começo do robô;
+- nunca aceita as lojas de `dados/lojas-bloqueadas.json` (coloque ali o nome ou o código de qualquer loja com reclamação);
+- entre os que passam, escolhe o que tem mais chance de vender: mais vendas, preço abaixo dos parecidos, desconto, nota e comissão;
 - grava os anúncios escolhidos na tabela `ofertas`, já com o link de afiliado;
 - tira do site o anúncio que não reencontra há 2 dias.
 
 Na Shopee, o link vem pronto da API oficial de afiliados. No Mercado Livre, o robô coloca sua etiqueta no link (`matt_word` e `matt_tool`). Quem clica compra direto do vendedor, e a comissão fica registrada na sua conta de afiliado. A página `ofertas.html` mostra só os produtos com desconto.
+
+**Aviso ao comprador.** A página dos Achadinhos tem um aviso fixo: a Abanô não vende os produtos, eles são vendidos por lojas da Shopee (e do Mercado Livre), a Abanô não responde por problemas na compra e só recebe comissão de afiliado. Em qualquer página do site, o clique num link de afiliado (`rel="sponsored"`) abre antes uma janela com esse aviso (feita em `site.js`). A pessoa só segue para a loja depois de marcar "Li e estou ciente".
 
 ### Ativar (uma vez)
 

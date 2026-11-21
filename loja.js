@@ -29,7 +29,8 @@
     alerta: '<path d="M12 3.5 2.8 19.5h18.4z"/><path d="M12 10v4.5M12 17.2v.1"/>',
     sacola: '<path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
     seta: '<path d="M5 12h14M13 6l6 6-6 6"/>',
-    check: '<path d="m6 12.5 4 4 8-9"/>'
+    check: '<path d="m6 12.5 4 4 8-9"/>',
+    info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.1"/>'
   };
   ICO.outros = ICO.pata;
 
@@ -380,6 +381,15 @@
           '<span class="lj-campo">' + svg(ICO.lupa) + '<input type="search" id="lj-q" placeholder="Ração, aspirador, aquário…" autocomplete="off" enterkeyhint="search" value="' + esc(estado.busca) + '">' +
           '<button type="submit" class="lj-buscar">Buscar</button></span></form>' +
       "</header>" +
+      '<aside class="lj-transparencia lj-entra" aria-labelledby="lj-t-transp">' +
+        '<h2 id="lj-t-transp">' + svg(ICO.info) + "Leia antes de comprar</h2>" +
+        "<ul>" +
+          "<li><strong>A Abanô não vende nenhum destes produtos.</strong> Eles são vendidos por lojas que vendem pela Shopee (e, em alguns casos, pelo Mercado Livre).</li>" +
+          "<li>A compra, o pagamento, a entrega, a troca e a garantia são feitos direto com a loja e com a plataforma. <strong>A Abanô não tem nenhuma responsabilidade sobre problemas ocorridos durante ou depois da compra.</strong></li>" +
+          "<li>A Abanô ganha apenas uma comissão de afiliado pela venda, de acordo com a legislação, sem nenhum custo extra para você.</li>" +
+          "<li>Só mostramos produtos de pet de lojas oficiais ou indicadas, com nota alta e muitas vendas. Mesmo assim, confira o anúncio e a reputação da loja antes de comprar.</li>" +
+        "</ul>" +
+      "</aside>" +
       '<div class="lj-areas lj-entra" id="lj-areas" role="group" aria-label="Áreas dos Achadinhos"></div>' +
       '<section class="lj-cats-box" id="lj-cats" aria-labelledby="lj-t-cats" hidden></section>' +
       '<div class="lj-vitrines" id="lj-vitrines"></div>' +
@@ -404,7 +414,7 @@
           '<button type="button" class="lj-ver lj-mostrar" id="lj-mais" hidden></button>' +
         "</div>" +
       "</section>" +
-      '<p class="lj-aviso">Os links desta página são de afiliado: quando você compra por eles, o Abanô ganha uma pequena comissão da loja, sem nenhum custo extra para você. É assim que mantemos o site gratuito. A compra, a entrega e a garantia são feitas pela loja e pelo vendedor. Preço, frete e estoque podem mudar a qualquer momento: confira sempre no anúncio antes de finalizar.</p>';
+      '<p class="lj-aviso">Aviso: os produtos dos Achadinhos não são vendidos pela Abanô. Eles são anunciados e vendidos por lojas que vendem pela Shopee (e pelo Mercado Livre), que respondem pela venda, pelo pagamento, pela entrega, pela troca e pela garantia. A Abanô não tem responsabilidade sobre qualquer problema ocorrido durante ou depois da compra. Os links são de afiliado: a Abanô recebe apenas uma comissão pela venda, de acordo com a legislação, sem nenhum custo extra para você. Preço, frete e estoque podem mudar a qualquer momento: confira sempre no anúncio antes de finalizar.</p>';
     atualizar();
   }
 
@@ -528,7 +538,7 @@
     var C = window.abanoConta;
     if (!C || !C.sb) { centro.innerHTML = '<p class="carregando">Não deu para carregar os achadinhos. Recarregue a página.</p>'; return; }
     carregando();
-    var cat = fetch("dados/loja-catalogo.json?v=20261119").then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; });
+    var cat = fetch("dados/loja-catalogo.json?v=20261121").then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; });
     var ofertas = C.sb.from("ofertas")
       .select("id,titulo,loja,link,imagem_url,preco,preco_antigo,pet,categoria,produto,destaque,valido_ate,criado_em,atualizado_em,avaliacao,vendas")
       .eq("ativo", true).limit(2000).then(function (r) {

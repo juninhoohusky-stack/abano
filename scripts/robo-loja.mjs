@@ -18,6 +18,22 @@ const LIMITE = Number(process.env.LIMITE || 0);          // processa só os N pr
 const DIAS_PARA_SAIR = 2;                                  // anúncio que o robô não reencontra há 2 dias sai do site
 const env = process.env;
 
+// ---------- Regras dos Achadinhos (valem para todas as lojas) ----------
+// Só entra no site produto de pet, de loja confiável, bem avaliado e que já vendeu bastante.
+const REGRAS = {
+  notaProdutoMinima: 4.7,       // nota do anúncio (0 a 5)
+  notaLojaMinima: 4.7,          // nota da loja na Shopee (0 a 5), quando a Shopee informa
+  vendasMinimas: 100,           // unidades já vendidas daquele anúncio
+  tiposShopee: [1, 2, 4],       // 1 = Shopee Mall (loja oficial), 2 = Indicado, 4 = Indicado+. Loja comum não entra.
+  nivelML: "5_green",           // Mercado Livre: termômetro verde (o melhor nível de reputação)
+  medalhasML: ["gold", "platinum"],   // MercadoLíder Gold ou Platinum (ou loja oficial)
+  positivasML: 0.95,            // pelo menos 95% de avaliações positivas do vendedor
+  vendasLojaML: 500,            // vendedor com pelo menos 500 vendas concluídas
+};
+const bloqueadas = JSON.parse(await readFile(new URL("../dados/lojas-bloqueadas.json", import.meta.url), "utf8"));
+const bloqueada = (loja, id, nome) => (bloqueadas[loja] || []).some((b) => String(b).trim().toLowerCase() === String(id).toLowerCase() ||
+  String(b).trim().toLowerCase() === String(nome || "").trim().toLowerCase());
+
 const catalogo = JSON.parse(await readFile(new URL("../dados/loja-catalogo.json", import.meta.url), "utf8")).itens;
 const itens = LIMITE ? catalogo.slice(0, LIMITE) : catalogo;
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -37,11 +53,13 @@ const GENERICAS = new Set(["pet", "cachorro", "cao", "gato", "felino", "passaro"
 const DE_CAO = /\b(cachorro|cachorros|cao|caes|canino|canina|dog|dogs)\b/;
 const DE_GATO = /\b(gato|gatos|felino|felina|cat|cats)\b/;
 const SO_NA_BUSCA = new Set(["premium", "super", "especial", "extrusada", "vario", "caixa", "grande", "pequeno", "pequena"]);
-const PROIBIDO =/\b(usado|usada|replica|revenda|atacado)\b/;
+const PROIBIDO = /\b(usado|usada|replica|revenda|atacado|humano|infantil|bebe|crianca)\b/;
+// O título precisa deixar claro que o produto é de pet (vale para todos, inclusive os itens para o tutor)
+const DE_PET = /\b(pet|pets|cachorr\w*|cao|caes|dog|dogs|canin\w*|gat[oa]s?|gatinh\w*|cat|cats|felin\w*|filhote\w*|animal|animais|patinha\w*|patas?|pelagem|tira pelos?|tirar pelos?|remove\w* (?:de )?pelos?|pelos? de (?:pet|cachorro|cao|gato)|racao|racoes|petisco\w*|coleira\w*|peitoral|guia|arranhador\w*|areia|sanitari\w*|adestramento|aves?|passar\w*|calopsita\w*|periquito\w*|canario\w*|gaiola\w*|poleiro\w*|hamster\w*|roedor\w*|coelho\w*|porquinho\w*|chinchila\w*|peixe\w*|betta|aquario\w*|terrario\w*|reptil\w*|repteis|tartaruga\w*|jabuti\w*|iguana\w*|galinha\w*|cavalo\w*|equin\w*)\b/;
 
 function combina(item, titulo) {
   const t = normal(titulo);
-  if (PROIBIDO.test(t)) return false;
+  if (PROIBIDO.test(t) || !DE_PET.test(t)) return false;
   const tp = new Set(t.split(" ").map(singular));
   // Nas rações, quem garante a qualidade é a marca: anúncio quase nunca escreve "super premium" no título
   const chave = palavras(item.busca).filter((p) => !GENERICAS.has(p) && !(item.nicho === "racao" && SO_NA_BUSCA.has(p)));
@@ -58,18 +76,45 @@ function combina(item, titulo) {
   return true;
 }
 
-const nota = (o) => Math.log10((o.vendas || 0) + 1) + (o.avaliacao || 4.5) * 0.8 + (o.comissao || 0) * 10;
+// Quem passa nas regras é ordenado por: chance de vender muito, preço bom, desconto, nota e comissão
+const descontoDe = (o) => (o.preco_antigo > o.preco ? (1 - o.preco / o.preco_antigo) * 100 : 0);
+function pontuar(lista) {
+  const precos = lista.map((o) => o.preco).sort((a, b) => a - b);
+  const mediana = precos[Math.floor(precos.length / 2)] || 1;
+  for (const o of lista) {
+    const barato = Math.max(-1, Math.min(1, (mediana - o.preco) / mediana));      // mais barato que os parecidos ganha ponto
+    o.pontos = Math.log10((o.vendas || 0) + 1) * 1.5 + (o.avaliacao || 4.7) + barato * 1.2 + descontoDe(o) * 0.04 + (o.comissao || 0) * 5;
+  }
+  return lista.sort((a, b) => b.pontos - a.pontos);
+}
 
-function melhor(item, candidatos, usados) {
-  return candidatos
-    .filter((o) => o.preco > 0 && !usados.has(o.codigo_externo) && combina(item, o.titulo) && !(o.avaliacao && o.avaliacao < 4.3))
-    .sort((a, b) => nota(b) - nota(a))[0];
+const motivos = {};   // por que anúncios ficaram de fora (vai para o resumo da rodada)
+const recusa = (m) => { motivos[m] = (motivos[m] || 0) + 1; return false; };
+
+// Regras do anúncio que valem antes de olhar a loja
+function anuncioBom(item, o, usados) {
+  if (!(o.preco > 0) || usados.has(o.codigo_externo)) return false;
+  if (!combina(item, o.titulo)) return recusa("não é o produto pet procurado");
+  if (o.loja === "shopee") {
+    if (!o.tipoLoja.some((t) => REGRAS.tiposShopee.includes(t))) return recusa("loja comum (não é Mall nem Indicada)");
+    if (!(o.avaliacao >= REGRAS.notaProdutoMinima)) return recusa("nota do produto baixa");
+  }
+  if ((o.vendas || 0) < REGRAS.vendasMinimas && o.loja === "shopee") return recusa("poucas vendas");
+  if (bloqueada(o.loja, o.loja_id, o.loja_nome)) return recusa("loja bloqueada");
+  return true;
+}
+
+// Escolhe o melhor anúncio que passa em todas as regras, inclusive a da loja (checada só para os primeiros da fila)
+async function melhor(item, candidatos, usados, lojaConfiavel) {
+  const fila = pontuar(candidatos.filter((o) => anuncioBom(item, o, usados)));
+  for (const o of fila.slice(0, 5)) {
+    if (await lojaConfiavel(o)) return o;
+  }
+  return null;
 }
 
 // ---------- Shopee (API oficial de afiliados) ----------
-async function shopee(item) {
-  const consulta = `{productOfferV2(keyword:${JSON.stringify(item.busca)},sortType:1,page:1,limit:30){nodes{` +
-    "itemId productName imageUrl priceMin priceDiscountRate sales ratingStar commissionRate offerLink shopName}}}";
+async function shopeeGraphQL(consulta) {
   const corpo = JSON.stringify({ query: consulta });
   for (let tentativa = 1; tentativa <= 3; tentativa++) {
     const ts = Math.floor(Date.now() / 1000);
@@ -86,19 +131,52 @@ async function shopee(item) {
       if (codigo === 10030 && tentativa < 3) { await espera(15000 * tentativa); continue; }  // muitas consultas: espera e tenta de novo
       throw new Error(`Shopee recusou (${codigo || r.status}): ${erro.message}`);
     }
-    const nos = (j.data && j.data.productOfferV2 && j.data.productOfferV2.nodes) || [];
-    return nos.map((n) => {
+    return j.data || {};
+  }
+  return {};
+}
+
+// Busca os mais vendidos e os mais relevantes (duas listas), já com o tipo e o código da loja
+async function shopee(item) {
+  const campos = "itemId productName imageUrl priceMin priceDiscountRate sales ratingStar commissionRate offerLink shopName shopId shopType";
+  const vistos = new Map();
+  for (const ordem of [2, 1]) {   // 2 = mais vendidos, 1 = relevância
+    const d = await shopeeGraphQL(`{productOfferV2(keyword:${JSON.stringify(item.busca)},sortType:${ordem},page:1,limit:50){nodes{${campos}}}}`);
+    for (const n of (d.productOfferV2 && d.productOfferV2.nodes) || []) {
+      if (vistos.has(n.itemId)) continue;
       const preco = Number(n.priceMin);
       const desc = Number(n.priceDiscountRate) || 0;
-      return {
+      vistos.set(n.itemId, {
         codigo_externo: `shopee:${n.itemId}`, loja: "shopee", titulo: String(n.productName || "").slice(0, 160),
         link: n.offerLink, imagem_url: n.imageUrl || null, preco,
         preco_antigo: desc >= 5 && desc < 90 ? Math.round((preco / (1 - desc / 100)) * 100) / 100 : null,
         avaliacao: Number(n.ratingStar) || null, vendas: Number(n.sales) || 0, comissao: Number(n.commissionRate) || 0,
-      };
-    }).filter((o) => /^https:\/\//.test(o.link || ""));
+        loja_id: String(n.shopId || ""), loja_nome: n.shopName || "",
+        tipoLoja: (Array.isArray(n.shopType) ? n.shopType : [n.shopType]).map(Number).filter(Boolean),
+      });
+    }
+    await espera(1200);
   }
-  return [];
+  return [...vistos.values()].filter((o) => /^https:\/\//.test(o.link || ""));
+}
+
+// Nota da loja na Shopee (consultada uma vez por loja em cada rodada)
+const notasLojaShopee = new Map();
+async function lojaShopeeConfiavel(o) {
+  if (!o.loja_id) return recusa("loja sem identificação");
+  if (!notasLojaShopee.has(o.loja_id)) {
+    let nota = null;
+    try {
+      const d = await shopeeGraphQL(`{shopOfferV2(shopId:${Number(o.loja_id)},page:1,limit:1){nodes{shopId shopName ratingStar shopType}}}`);
+      const n = ((d.shopOfferV2 && d.shopOfferV2.nodes) || [])[0];
+      nota = n && Number(n.ratingStar) ? Number(n.ratingStar) : null;
+    } catch (e) { console.log(`  (não consegui ler a nota da loja ${o.loja_nome}: ${e.message})`); }
+    notasLojaShopee.set(o.loja_id, nota);
+  }
+  const nota = notasLojaShopee.get(o.loja_id);
+  // Loja Mall ou Indicada já passou pelo crivo da própria Shopee; se a nota vier, ela também precisa ser alta
+  if (nota !== null && nota < REGRAS.notaLojaMinima) return recusa("nota da loja baixa");
+  return true;
 }
 
 // ---------- Mercado Livre (catálogo + etiqueta de afiliado no link) ----------
@@ -125,7 +203,7 @@ async function mercadolivre(item, usados) {
   const busca = await getML(`/products/search?status=active&site_id=MLB&limit=15&q=${encodeURIComponent(item.busca)}`);
   const candidatos = (busca.results || [])
     .filter((p) => !usados.has(`ml:${p.id}`) && combina(item, p.name))
-    .slice(0, 3);
+    .slice(0, 5);
   const lista = [];
   for (const p of candidatos) {
     await espera(250);
@@ -138,9 +216,28 @@ async function mercadolivre(item, usados) {
       imagem_url: foto ? foto.replace(/^http:/, "https:") : null, preco: Number(vencedor.price),
       preco_antigo: vencedor.original_price > vencedor.price ? Number(vencedor.original_price) : null,
       avaliacao: null, vendas: Number(vencedor.sold_quantity) || 0, comissao: 0,
+      loja_id: String(vencedor.seller_id || ""), loja_nome: "", oficial: Boolean(vencedor.official_store_id), tipoLoja: [],
     });
   }
   return lista;
+}
+
+// Vendedor do Mercado Livre: termômetro verde, MercadoLíder Gold/Platinum (ou loja oficial), muitas vendas e quase nenhuma reclamação
+const vendedoresML = new Map();
+async function lojaMLConfiavel(o) {
+  if (!o.loja_id) return recusa("vendedor sem identificação");
+  if (!vendedoresML.has(o.loja_id)) vendedoresML.set(o.loja_id, await getML(`/users/${o.loja_id}`).catch(() => null));
+  const v = vendedoresML.get(o.loja_id);
+  if (!v) return recusa("não consegui checar o vendedor");
+  o.loja_nome = v.nickname || "";
+  if (bloqueada("mercadolivre", o.loja_id, o.loja_nome)) return recusa("loja bloqueada");
+  const rep = v.seller_reputation || {};
+  const tr = rep.transactions || {};
+  if (rep.level_id !== REGRAS.nivelML) return recusa("vendedor sem termômetro verde");
+  if (!o.oficial && !REGRAS.medalhasML.includes(rep.power_seller_status)) return recusa("vendedor não é MercadoLíder Gold/Platinum");
+  if ((tr.completed || 0) < REGRAS.vendasLojaML) return recusa("vendedor com poucas vendas");
+  if (tr.ratings && tr.ratings.positive < REGRAS.positivasML) return recusa("vendedor com muitas avaliações negativas");
+  return true;
 }
 
 // ---------- Supabase ----------
@@ -168,9 +265,9 @@ async function tirarAntigas(loja) {
 // ---------- Rodada ----------
 const LOJAS = [
   { nome: "shopee", rotulo: "Shopee", pronta: env.SHOPEE_APP_ID && env.SHOPEE_SECRET, pausa: 700,
-    buscar: async (item, usados) => melhor(item, await shopee(item), usados) },
+    buscar: async (item, usados) => melhor(item, await shopee(item), usados, lojaShopeeConfiavel) },
   { nome: "mercadolivre", rotulo: "Mercado Livre", pronta: env.ML_CLIENT_ID && env.ML_CLIENT_SECRET && env.ML_ETIQUETA && env.ML_MATT_TOOL, pausa: 300,
-    preparar: entrarML, buscar: async (item, usados) => melhor(item, await mercadolivre(item, usados), usados) },
+    preparar: entrarML, buscar: async (item, usados) => melhor(item, await mercadolivre(item, usados), usados, lojaMLConfiavel) },
 ];
 
 if (!TESTE && !env.SUPABASE_SECRET_KEY) {
@@ -190,9 +287,10 @@ for (const loja of LOJAS) {
       const o = await loja.buscar(item, usados);
       if (o) {
         usados.add(o.codigo_externo);
-        const { comissao, ...publico } = o;
+        // Só vão para o banco as colunas da tabela ofertas
+        const { comissao, loja_id, loja_nome, tipoLoja, oficial, pontos, ...publico } = o;
         linhas.push({ ...publico, pet: item.pet, categoria: item.nicho, produto: item.id, origem: "robo", ativo: true });
-        console.log(`ok   ${item.nome} → ${o.titulo.slice(0, 70)} | R$ ${o.preco}${comissao ? ` | comissão ${(comissao * 100).toFixed(1)}%` : ""}`);
+        console.log(`ok   ${item.nome} → ${o.titulo.slice(0, 60)} | R$ ${o.preco} | ${o.vendas} vendas | nota ${o.avaliacao || "-"} | loja ${loja_nome || loja_id}${comissao ? ` | comissão ${(comissao * 100).toFixed(1)}%` : ""}`);
       } else faltaram.push(item.nome);
     } catch (e) {
       erros++;
@@ -202,7 +300,9 @@ for (const loja of LOJAS) {
     await espera(loja.pausa);
   }
   console.log(`${loja.rotulo}: ${linhas.length} anúncios escolhidos, ${faltaram.length} produtos sem anúncio bom hoje, ${erros} erros.`);
-  if (faltaram.length) console.log("Sem anúncio hoje: " + faltaram.join("; "));
+  if (faltaram.length) console.log("Sem anúncio bom hoje: " + faltaram.join("; "));
+  console.log("Anúncios recusados pelas regras: " + (Object.entries(motivos).map(([m, n]) => `${m} (${n})`).join("; ") || "nenhum"));
+  for (const m in motivos) delete motivos[m];
   if (TESTE) continue;
   try {
     if (linhas.length) await gravar(linhas);

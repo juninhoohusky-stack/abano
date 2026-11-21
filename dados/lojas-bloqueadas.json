@@ -1,0 +1,5 @@
+{
+  "_como_usar": "Lojas que nunca podem aparecer nos Achadinhos (reclamações, problemas de entrega, golpe). Coloque o nome exato da loja ou o código dela (shopId na Shopee, id do vendedor no Mercado Livre). O robô confere esta lista todos os dias.",
+  "shopee": [],
+  "mercadolivre": []
+}

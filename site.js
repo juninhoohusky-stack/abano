@@ -596,3 +596,70 @@ window.abanoMarca = (function () {
   }
   return { desenhar: desenhar };
 })();
+
+/* ---------- Aviso antes de ir para uma loja (links de afiliado) ----------
+   Todo link com rel="sponsored" abre primeiro esta janela: a pessoa só vai para a loja
+   depois de marcar que leu e está ciente de que a Abanô não vende o produto. */
+(function () {
+  var janela = null, marca, ir, nomeLoja;
+  function plataforma(url) {
+    var h = "";
+    try { h = new URL(url, location.href).hostname; } catch (e) {}
+    if (/shopee|shp\.ee/.test(h)) return "Shopee";
+    if (/mercadoli[vb]re|mlb|meli/.test(h)) return "Mercado Livre";
+    if (/amazon|amzn/.test(h)) return "Amazon";
+    return "";
+  }
+  function criar() {
+    janela = document.createElement("dialog");
+    janela.className = "ciente";
+    janela.setAttribute("aria-labelledby", "ciente-titulo");
+    janela.innerHTML =
+      '<form method="dialog" class="ciente-caixa">' +
+        '<h2 id="ciente-titulo">Antes de ir para a loja</h2>' +
+        '<ul class="ciente-lista">' +
+          '<li><strong>Este produto não é vendido pela Abanô.</strong> Ele é vendido por <span data-loja></span>.</li>' +
+          "<li>A compra, o pagamento, a entrega, a troca e a garantia são feitos direto com a loja. <strong>A Abanô não tem nenhuma responsabilidade sobre qualquer problema ocorrido durante ou depois da compra.</strong></li>" +
+          "<li>A Abanô ganha apenas uma comissão de afiliado pela venda, de acordo com a legislação, sem custo extra para você.</li>" +
+          "<li>Preço, frete e estoque podem mudar: confira tudo no anúncio antes de pagar.</li>" +
+        "</ul>" +
+        '<label class="ciente-marca"><input type="checkbox" id="ciente-ok"> <span>Li e estou ciente de que o produto é vendido por uma loja parceira, e não pela Abanô.</span></label>' +
+        '<div class="ciente-botoes">' +
+          '<a class="btn" id="ciente-ir" target="_blank" rel="sponsored nofollow noopener" aria-disabled="true" data-ciente>Ir para a loja</a>' +
+          '<button class="btn btn-sec" value="voltar">Voltar</button>' +
+        "</div>" +
+      "</form>";
+    document.body.appendChild(janela);
+    marca = janela.querySelector("#ciente-ok");
+    ir = janela.querySelector("#ciente-ir");
+    nomeLoja = janela.querySelector("[data-loja]");
+    marca.addEventListener("change", function () { ir.setAttribute("aria-disabled", marca.checked ? "false" : "true"); });
+    ir.addEventListener("click", function (e) {
+      if (!marca.checked) { e.preventDefault(); marca.focus(); janela.classList.add("ciente-falta"); return; }
+      setTimeout(function () { janela.close(); }, 0);   // deixa o link abrir e fecha a janela
+    });
+    janela.addEventListener("click", function (e) { if (e.target === janela) janela.close(); });  // clique fora fecha
+  }
+  function abrir(url) {
+    if (!janela) criar();
+    var p = plataforma(url);
+    var o = p === "Mercado Livre";   // "o" Mercado Livre, "a" Shopee e "a" Amazon
+    nomeLoja.textContent = p ? "uma loja que vende " + (o ? "pelo " : "pela ") + p : "uma loja parceira";
+    ir.textContent = p ? "Ir para " + (o ? "o " : "a ") + p : "Ir para a loja";
+    ir.href = url;
+    marca.checked = false;
+    ir.setAttribute("aria-disabled", "true");
+    janela.classList.remove("ciente-falta");
+    if (typeof janela.showModal === "function") janela.showModal(); else janela.setAttribute("open", "");
+    marca.focus();
+  }
+  function pegar(e) {
+    if (e.type === "auxclick" && e.button !== 1) return;
+    var a = e.target.closest && e.target.closest('a[rel~="sponsored"]');
+    if (!a || a.hasAttribute("data-ciente") || !a.href) return;
+    e.preventDefault();
+    abrir(a.href);
+  }
+  document.addEventListener("click", pegar, true);
+  document.addEventListener("auxclick", pegar, true);
+})();

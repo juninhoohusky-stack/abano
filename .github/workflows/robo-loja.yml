@@ -4,7 +4,7 @@ name: Robô dos Achadinhos
 # e publica nos Achadinhos da Abanô (loja.html). Também dá para rodar na hora pela aba Actions.
 on:
   schedule:
-    - cron: "0 9 * * *"
+    - cron: "0 9,21 * * *"   # 6h e 18h em Brasília
   workflow_dispatch:
 
 permissions:

@@ -600,3 +600,20 @@ html.sem-rolar{overflow:hidden}
   .wrap.conta-grade{padding-left:12px;padding-right:12px}
   .conta-grade .fc{padding-left:14px;padding-right:14px}
 }
+
+/* ---------- Janela "Antes de ir para a loja" (links de afiliado) ---------- */
+.ciente{position:fixed;inset:0;margin:auto;height:fit-content;width:min(520px,calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto;padding:0;border:0;border-radius:var(--raio-md,24px);background:var(--superficie);color:var(--tinta);box-shadow:0 30px 60px -20px rgba(43,22,34,.45)}
+.ciente::backdrop{background:rgba(43,22,34,.55)}
+.ciente[open]{animation:ciente-entra .2s cubic-bezier(.2,0,0,1)}
+@keyframes ciente-entra{from{opacity:0;transform:translateY(12px) scale(.98)}}
+.ciente-caixa{padding:var(--e-6,24px)}
+.ciente h2{margin:0 0 var(--e-3,12px);font-size:clamp(20px,3vw,24px);line-height:1.2;letter-spacing:-.02em}
+.ciente-lista{margin:0 0 var(--e-4,16px);padding-left:1.2em;display:grid;gap:8px;font-size:var(--t-sm,15px);line-height:1.55}
+.ciente-lista strong{font-weight:800}
+.ciente-marca{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--raio-xs,12px);background:var(--acento-claro);font-weight:700;font-size:var(--t-sm,15px);line-height:1.45;cursor:pointer}
+.ciente-marca input{width:22px;height:22px;margin:0;flex:none;accent-color:var(--marca)}
+.ciente-falta .ciente-marca{box-shadow:inset 0 0 0 2px var(--marca)}
+.ciente-botoes{display:flex;flex-wrap:wrap;gap:10px;margin-top:var(--e-5,20px)}
+.ciente-botoes .btn{flex:1 1 200px;white-space:nowrap;padding:0 var(--e-4)}
+.ciente-botoes a[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+@media (prefers-reduced-motion:reduce){.ciente[open]{animation:none}}

@@ -170,6 +170,12 @@ html.lj-travado{overflow:hidden}
 .lj-ativos .lj-limpar{background:transparent;text-decoration:underline;text-underline-offset:3px}
 .lj-alerta{display:flex;align-items:flex-start;gap:8px;margin:0 0 var(--e-4);padding:var(--e-2) var(--e-3);border-radius:var(--raio-sm);background:var(--acento-claro);color:var(--tinta);font-size:var(--t-sm);font-weight:700}
 .lj-alerta[hidden]{display:none}
+/* Aviso fixo: quem vende é a loja, não a Abanô */
+.lj-transparencia{margin:0 0 var(--e-6);padding:var(--e-4) var(--e-5);border-radius:var(--raio-sm);background:var(--superficie);box-shadow:inset 0 0 0 2px var(--acento-claro),inset 6px 0 0 var(--laranja)}
+.lj-transparencia h2{display:flex;align-items:center;gap:8px;margin:0 0 var(--e-2);font-size:var(--t-corpo);color:var(--tinta)}
+.lj-transparencia h2 .lj-ico{width:22px;height:22px;color:var(--acento);flex:none}
+.lj-transparencia ul{margin:0;padding-left:1.2em;display:grid;gap:6px;font-size:var(--t-sm);line-height:1.55;color:var(--tinta);max-width:90ch}
+.lj-transparencia strong{font-weight:800}
 .lj-alerta .lj-ico{width:20px;height:20px;color:var(--acento)}
 .lj-mostrar{display:flex;margin:var(--e-6) auto 0}
 .lj-mostrar[hidden]{display:none}
