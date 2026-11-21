@@ -24,11 +24,12 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261121">
+<link rel="stylesheet" href="site.css?v=20261122">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
 <script src="site.js?v=20261121" defer></script>
+<script src="guia-produtos.js?v=20261122" defer></script>
 <style>
   .leitura{max-width:720px;margin:0 auto;padding:var(--e-14) var(--e-6) 0}
   .migalha{font-size:var(--t-sm);color:var(--suave);margin-bottom:var(--e-5)}
@@ -212,7 +213,7 @@
       </ul>
       <p>Alergias, parasitas e outras condições podem causar esses sintomas, e só o veterinário consegue avaliar.</p>
 
-      <h2>Produtos que eu uso aqui em casa</h2>
+      <h2>Produtos que ajudam</h2>
       <div class="produtos" id="produtos"></div>
       <p class="aviso">Alguns links são de afiliado: se você comprar por eles, o Abanô pode receber uma pequena comissão, sem custo extra pra você. Só indico o que uso de verdade.</p>
     </article>
@@ -268,16 +269,19 @@
      1) VIDEO_ID: depois de publicar no YouTube, cole aqui só o
         código do vídeo. Ex.: no link youtube.com/watch?v=AbC123xyz
         o código é AbC123xyz
-     2) PRODUTOS: troque nome, descrição e link de cada produto.
-        Para tirar um produto, apague o bloco { ... } dele.
+     2) PRODUTOS: nome e descrição de cada produto. Em ids ficam os itens
+        dos Achadinhos (dados/loja-catalogo.json) que combinam com ele: o site
+        mostra sozinho o anúncio mais vendido de hoje, com foto e preço.
+        link é opcional (só se quiser um link fixo, usado quando não houver
+        anúncio). Para tirar um produto, apague o bloco { ... } dele.
      ========================================================= */
   const VIDEO_ID = "Vfm3dyHtbbM";
 
   const PRODUTOS = [
-    { nome: "Ancinho (rake) para subpelo", descricao: "Puxa o pelo morto lá de baixo. O primeiro passo da escovação.", link: "" },
-    { nome: "Rasqueadeira",                descricao: "Para finalizar a escovação e soltar os nós.",                   link: "" },
-    { nome: "Soprador pet",                descricao: "O que mais ajuda na troca de pelo. Use do lado de fora.",        link: "" },
-    { nome: "Rolinho tira-pelo",           descricao: "Salva a roupa antes de sair de casa.",                           link: "" }
+    { nome: "Ancinho (rake) para subpelo", descricao: "Puxa o pelo morto lá de baixo. O primeiro passo da escovação.", link: "", ids: ["cao-escova-tira-subpelo-tipo-furminator-para-caes"] },
+    { nome: "Rasqueadeira",                descricao: "Para finalizar a escovação e soltar os nós.",                   link: "", ids: ["cao-escova-slicker"] },
+    { nome: "Soprador pet",                descricao: "O que mais ajuda na troca de pelo. Use do lado de fora.",        link: "", ids: ["cao-secador-soprador-pet"] },
+    { nome: "Rolinho tira-pelo",           descricao: "Salva a roupa antes de sair de casa.",                           link: "", ids: ["sem-pelos-rolo-tira-pelos-adesivo-com-refil", "todos-removedor-de-pelos-reutilizavel-para-roupas-e-sofa"] }
   ];
   /* ======================= fim da área ===================== */
 
@@ -288,16 +292,7 @@
       'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>';
   }
 
-  const lista = document.getElementById("produtos");
-  PRODUTOS.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "produto";
-    const botao = p.link
-      ? '<a class="btn btn-sec" href="' + p.link + '" target="_blank" rel="noopener sponsored">Ver produto</a>'
-      : '<span class="em-breve">Link em breve</span>';
-    div.innerHTML = "<h3>" + p.nome + "</h3><p>" + p.descricao + "</p>" + botao;
-    lista.appendChild(div);
-  });
+  document.addEventListener("DOMContentLoaded", () => window.abanoProdutosGuia && window.abanoProdutosGuia(PRODUTOS));
 </script>
 </body>
 </html>

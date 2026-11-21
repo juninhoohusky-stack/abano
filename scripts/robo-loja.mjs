@@ -23,7 +23,7 @@ const env = process.env;
 const REGRAS = {
   notaProdutoMinima: 4.7,       // nota do anúncio (0 a 5)
   notaLojaMinima: 4.7,          // nota da loja na Shopee (0 a 5), quando a Shopee informa
-  vendasMinimas: 100,           // unidades já vendidas daquele anúncio
+  vendasMinimas: 6,             // a loja já vendeu pelo menos 6 unidades daquele mesmo anúncio
   tiposShopee: [1, 2, 4],       // 1 = Shopee Mall (loja oficial), 2 = Indicado, 4 = Indicado+. Loja comum não entra.
   nivelML: "5_green",           // Mercado Livre: termômetro verde (o melhor nível de reputação)
   medalhasML: ["gold", "platinum"],   // MercadoLíder Gold ou Platinum (ou loja oficial)
@@ -58,25 +58,35 @@ const DE_CAO = /\b(cachorro|cachorros|cao|caes|canino|canina|dog|dogs)\b/;
 const DE_GATO = /\b(gato|gatos|felino|felina|cat|cats)\b/;
 const SO_NA_BUSCA = new Set(["premium", "super", "especial", "extrusada", "vario", "caixa", "grande", "pequeno", "pequena"]);
 const PROIBIDO = /\b(usado|usada|replica|revenda|atacado|humano|infantil|bebe|crianca)\b/;
-// O título precisa deixar claro que o produto é de pet (vale para todos, inclusive os itens para o tutor)
+// Nos produtos para os animais, o título precisa deixar claro que é de pet.
+// Os itens "Para quem ama pets" (aspirador, ar-condicionado, capa de sofá...) não precisam: servem para a casa toda.
 const DE_PET = /\b(pet|pets|cachorr\w*|cao|caes|dog|dogs|canin\w*|gat[oa]s?|gatinh\w*|cat|cats|felin\w*|filhote\w*|animal|animais|patinha\w*|patas?|pelagem|tira pelos?|tirar pelos?|remove\w* (?:de )?pelos?|pelos? de (?:pet|cachorro|cao|gato)|racao|racoes|petisco\w*|coleira\w*|peitoral|guia|arranhador\w*|areia|sanitari\w*|adestramento|aves?|passar\w*|calopsita\w*|periquito\w*|canario\w*|gaiola\w*|poleiro\w*|hamster\w*|roedor\w*|coelho\w*|porquinho\w*|chinchila\w*|peixe\w*|betta|aquario\w*|terrario\w*|reptil\w*|repteis|tartaruga\w*|jabuti\w*|iguana\w*|galinha\w*|cavalo\w*|equin\w*)\b/;
+
+// Ração de marca: o anúncio tem de ser de comida (seca ou úmida) e não um acessório com o nome da marca
+const DE_COMIDA = /\b(racao|racoes|sache|saches|pate|pates|lata|latas|umida|umido|alimento|food|wet|dry)\b/;
+const NAO_E_COMIDA = /\b(comedouro|bebedouro|pote|porta racao|dosador|tapete|brinquedo|camiseta|caneca|adesivo|vasilha|organizador|container|medidor|colher|amostra)\b/;
+const temMarca = (item, tp) => (item.marcas || []).map((m) => palavras(m).filter((p) => p.length > 1 && !["gato", "formula"].includes(p)))
+  .some((m) => m.length && m.every((p) => tp.has(p)));
 
 function combina(item, titulo) {
   const t = normal(titulo);
-  if (PROIBIDO.test(t) || !DE_PET.test(t)) return false;
   const tp = new Set(t.split(" ").map(singular));
+  if (PROIBIDO.test(t)) return false;
+  if (item.pet === "cao" && DE_GATO.test(t) && !DE_CAO.test(t)) return false;  // produto de gato no lugar de cão
+  if (item.pet === "gato" && DE_CAO.test(t) && !DE_GATO.test(t)) return false;
+  if (item.porMarca) {                                                    // todas as rações (pesos e tipos) de uma marca
+    if (!temMarca(item, tp) || !DE_COMIDA.test(t) || NAO_E_COMIDA.test(t)) return false;
+    return !item.exige || new RegExp(item.exige).test(t);
+  }
+  if (item.area !== "tutor" && !DE_PET.test(t)) return false;
   // Nas rações, quem garante a qualidade é a marca: anúncio quase nunca escreve "super premium" no título
   const chave = palavras(item.busca).filter((p) => !GENERICAS.has(p) && !(item.nicho === "racao" && SO_NA_BUSCA.has(p)));
   if (!chave.length || !tp.has(chave[0])) return false;               // a palavra principal tem de estar no título
   const achou = chave.filter((p) => tp.has(p)).length;
   if (achou / chave.length < 0.6) return false;
-  if (item.pet === "cao" && DE_GATO.test(t) && !DE_CAO.test(t)) return false;  // produto de gato no lugar de cão
-  if (item.pet === "gato" && DE_CAO.test(t) && !DE_GATO.test(t)) return false;
-  if (item.nicho === "racao") {                                           // só ração premium ou super premium
-    // A marca vale quando todas as palavras dela aparecem no título ("Hill's" acha "Hills", "Purina Pro Plan" acha "Pro Plan Purina")
-    const marcas = (item.marcas || []).map((m) => palavras(m).filter((p) => p.length > 1 && !["gato", "formula"].includes(p)));
-    if (!marcas.some((m) => m.length && m.every((p) => tp.has(p)))) return false;
-  }
+  // Só ração premium ou super premium. A marca vale quando todas as palavras dela aparecem no título
+  // ("Hill's" acha "Hills", "Purina Pro Plan" acha "Pro Plan Purina")
+  if (item.nicho === "racao" && !temMarca(item, tp)) return false;
   return true;
 }
 
@@ -108,13 +118,16 @@ function anuncioBom(item, o, usados) {
   return true;
 }
 
-// Escolhe o melhor anúncio que passa em todas as regras, inclusive a da loja (checada só para os primeiros da fila)
-async function melhor(item, candidatos, usados, lojaConfiavel) {
+// Escolhe os melhores anúncios que passam em todas as regras, inclusive a da loja (checada só para os primeiros da fila).
+// A maioria dos itens do catálogo leva 1 anúncio; as rações por marca levam vários (item.quantos), um para cada peso e tipo.
+async function melhores(item, candidatos, usados, lojaConfiavel) {
+  const quantos = item.quantos || 1, escolhidos = [];
   const fila = pontuar(candidatos.filter((o) => anuncioBom(item, o, usados)));
-  for (const o of fila.slice(0, 5)) {
-    if (await lojaConfiavel(o)) return o;
+  for (const o of fila.slice(0, quantos * 2 + 3)) {
+    if (escolhidos.length >= quantos) break;
+    if (await lojaConfiavel(o)) escolhidos.push(o);
   }
-  return null;
+  return escolhidos;
 }
 
 // ---------- Shopee (API oficial de afiliados) ----------
@@ -204,10 +217,10 @@ async function getML(caminho) {
 const linkML = (id) => `https://www.mercadolivre.com.br/p/${id}?matt_word=${encodeURIComponent(env.ML_ETIQUETA)}&matt_tool=${encodeURIComponent(env.ML_MATT_TOOL)}`;
 
 async function mercadolivre(item, usados) {
-  const busca = await getML(`/products/search?status=active&site_id=MLB&limit=15&q=${encodeURIComponent(item.busca)}`);
+  const busca = await getML(`/products/search?status=active&site_id=MLB&limit=${item.quantos ? 50 : 15}&q=${encodeURIComponent(item.busca)}`);
   const candidatos = (busca.results || [])
     .filter((p) => !usados.has(`ml:${p.id}`) && combina(item, p.name))
-    .slice(0, 5);
+    .slice(0, Math.max(5, (item.quantos || 1) + 3));
   const lista = [];
   for (const p of candidatos) {
     await espera(250);
@@ -269,9 +282,9 @@ async function tirarAntigas(loja) {
 // ---------- Rodada ----------
 const LOJAS = [
   { nome: "shopee", rotulo: "Shopee", pronta: env.SHOPEE_APP_ID && env.SHOPEE_SECRET, pausa: 1500,
-    buscar: async (item, usados) => melhor(item, await shopee(item), usados, lojaShopeeConfiavel) },
+    buscar: async (item, usados) => melhores(item, await shopee(item), usados, lojaShopeeConfiavel) },
   { nome: "mercadolivre", rotulo: "Mercado Livre", pronta: env.ML_CLIENT_ID && env.ML_CLIENT_SECRET && env.ML_ETIQUETA && env.ML_MATT_TOOL, pausa: 300,
-    preparar: entrarML, buscar: async (item, usados) => melhor(item, await mercadolivre(item, usados), usados, lojaMLConfiavel) },
+    preparar: entrarML, buscar: async (item, usados) => melhores(item, await mercadolivre(item, usados), usados, lojaMLConfiavel) },
 ];
 
 if (!TESTE && !env.SUPABASE_SECRET_KEY) {
@@ -295,16 +308,17 @@ for (const loja of LOJAS) {
     if ((Date.now() - INICIO) / 60000 > MINUTOS) { console.log(`Tempo da rodada acabou: ${vistos} de ${itens.length} produtos vistos. A próxima rodada continua.`); break; }
     vistos++;
     try {
-      const o = await loja.buscar(item, usados);
+      const achados = await loja.buscar(item, usados);
       seguidos = 0;
-      if (o) {
+      for (const o of achados) {
         usados.add(o.codigo_externo);
         // Só vão para o banco as colunas da tabela ofertas
         const { comissao, loja_id, loja_nome, tipoLoja, oficial, pontos, ...publico } = o;
         linhas.push({ ...publico, pet: item.pet, categoria: item.nicho, produto: item.id, origem: "robo", ativo: true });
         console.log(`ok   ${item.nome} → ${o.titulo.slice(0, 60)} | R$ ${o.preco} | ${o.vendas} vendas | nota ${o.avaliacao || "-"} | loja ${loja_nome || loja_id}${comissao ? ` | comissão ${(comissao * 100).toFixed(1)}%` : ""}`);
-        if (linhas.length - gravadas >= 15) await gravarPendentes();
-      } else faltaram.push(item.nome);
+      }
+      if (!achados.length) faltaram.push(item.nome);
+      if (linhas.length - gravadas >= 15) await gravarPendentes();
     } catch (e) {
       erros++;
       console.log(`erro ${item.nome}: ${e.message}`);

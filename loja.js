@@ -22,6 +22,7 @@
     limpeza: '<path d="M14.5 3 10 13"/><path d="M6.5 13h7l1.5 8H5z"/><path d="M8 17v4M11 17v4"/>',
     passeio: '<circle cx="7" cy="17" r="3"/><path d="M9.2 14.8 19 5"/><path d="M15.5 4.5H19.5v4"/>',
     conforto: '<path d="M4 8.5h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3.5c-.6.8-.6 1.7 0 2.5M12 3.5c-.6.8-.6 1.7 0 2.5"/>',
+    clima: '<path d="M3 8.5h11a2.5 2.5 0 1 0-2.5-2.5"/><path d="M3 12.5h16a2.5 2.5 0 1 1-2.5 2.5"/><path d="M3 16.5h8a2.5 2.5 0 1 1-2.5 2.5"/>',
     carro: '<path d="M4.5 16.5V12l2-5h11l2 5v4.5"/><path d="M3.5 16.5h17v2h-17z"/><circle cx="7.5" cy="13.5" r="1" fill="currentColor"/><circle cx="16.5" cy="13.5" r="1" fill="currentColor"/>',
     lupa: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/>',
     fechar: '<path d="M7 7l10 10M17 7 7 17"/>',
@@ -37,7 +38,7 @@
   // ---------- Como a página é organizada ----------
   var AREAS = {
     animais: { nome: "Para os animais", frase: "Ração, brinquedos, camas, gaiolas, aquários e tudo o que o seu bicho usa.", ico: "pata" },
-    tutor: { nome: "Para quem ama pets", frase: "Casa sem pelos, organização, passeio e conforto para a rotina de quem convive com animais.", ico: "coracao" }
+    tutor: { nome: "Para quem ama pets", frase: "Tudo que deixa a casa limpa, organizada e fresca com animais, mais o passeio e o conforto de quem convive com eles.", ico: "coracao" }
   };
   var CATS = {
     animais: [
@@ -50,9 +51,10 @@
       ["outros", "Outros animais", ["alimentacao", "acessorios"]]
     ],
     tutor: [
-      ["sem-pelos", "Casa sem pelos", "Aspiradores, removedores, rolos tira-pelos e capas para o sofá."],
-      ["organizada", "Casa organizada", "Cestos, caixas e organizadores para as coisas do pet."],
-      ["limpeza", "Limpeza e lavanderia", "Mops, microfibra, escovas e pega-pelos para a máquina."],
+      ["sem-pelos", "Casa sem pelos", "Aspiradores, robôs, rolos tira-pelos e capas para sofá e colchão."],
+      ["limpeza", "Limpeza e lavanderia", "Limpador enzimático, eliminador de odores, mops, lixeiras e pega-pelos."],
+      ["organizada", "Casa organizada", "Cestos, caixas, ganchos e organizadores para as coisas do pet."],
+      ["clima", "Ar e clima", "Ar-condicionado, climatizador, ventilador, purificador e umidificador."],
       ["passeio", "Passeio e rotina", "Bolsas, mochilas, pochetes, garrafas e capas de chuva."],
       ["conforto", "Conforto do tutor", "Mantas, almofadas, canecas, copos térmicos e pantufas."],
       ["carro", "Carro e viagens", "Capas de banco, organizadores e aspiradores para o carro."]
@@ -410,7 +412,7 @@
           "<li><strong>A Abanô não vende nenhum destes produtos.</strong> Eles são vendidos por lojas que vendem pela Shopee (e, em alguns casos, pelo Mercado Livre).</li>" +
           "<li>A compra, o pagamento, a entrega, a troca e a garantia são feitos direto com a loja e com a plataforma. <strong>A Abanô não tem nenhuma responsabilidade sobre problemas ocorridos durante ou depois da compra.</strong></li>" +
           "<li>A Abanô ganha apenas uma comissão de afiliado pela venda, de acordo com a legislação, sem nenhum custo extra para você.</li>" +
-          "<li>Só mostramos produtos de pet de lojas oficiais ou indicadas, com nota alta e muitas vendas. Mesmo assim, confira o anúncio e a reputação da loja antes de comprar.</li>" +
+          "<li>Só mostramos produtos de lojas oficiais ou indicadas, com nota alta e que já venderam aquele mesmo produto várias vezes. Mesmo assim, confira o anúncio e a reputação da loja antes de comprar.</li>" +
         "</ul>" +
       "</aside>" +
       '<div class="lj-areas lj-entra" id="lj-areas" role="group" aria-label="Áreas dos Achadinhos"></div>' +
@@ -568,7 +570,7 @@
     var C = window.abanoConta;
     if (!C || !C.sb) { centro.innerHTML = '<p class="carregando">Não deu para carregar os achadinhos. Recarregue a página.</p>'; return; }
     carregando();
-    var cat = fetch("dados/loja-catalogo.json?v=20261121").then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; });
+    var cat = fetch("dados/loja-catalogo.json?v=20261122").then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; });
     var ofertas = C.sb.from("ofertas")
       .select("id,titulo,loja,link,imagem_url,preco,preco_antigo,pet,categoria,produto,destaque,valido_ate,criado_em,atualizado_em,avaliacao,vendas")
       .eq("ativo", true).limit(2000).then(function (r) {

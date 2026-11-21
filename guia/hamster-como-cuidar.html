@@ -25,11 +25,12 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261121">
+<link rel="stylesheet" href="site.css?v=20261122">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
 <script src="site.js?v=20261121" defer></script>
+<script src="guia-produtos.js?v=20261122" defer></script>
 <link rel="stylesheet" href="guia.css?v=20261121">
 <script type="application/ld+json" id="abano-guia-ld">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Hamster: como cuidar","description":"Guia de cuidados com hamster: tamanho e tipo de gaiola, roda certa, substrato, alimentação, temperatura e por que ele deve viver sozinho.","url":"https://abano.com.br/guia/hamster-como-cuidar.html","mainEntityOfPage":"https://abano.com.br/guia/hamster-como-cuidar.html","inLanguage":"pt-BR","image":"https://images.pexels.com/photos/4520482/pexels-photo-4520482.jpeg?auto=compress&cs=tinysrgb&w=1200","author":{"@type":"Organization","name":"Equipe Abanô","url":"https://abano.com.br/sobre.html"},"publisher":{"@type":"Organization","name":"Abanô","alternateName":"Abano Pet","logo":{"@type":"ImageObject","url":"https://abano.com.br/icone-512.png"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Início","item":"https://abano.com.br/"},{"@type":"ListItem","position":2,"name":"Guia pet","item":"https://abano.com.br/guia/"},{"@type":"ListItem","position":3,"name":"Hamster: como cuidar","item":"https://abano.com.br/guia/hamster-como-cuidar.html"}]}]}</script>
 </head>
@@ -212,16 +213,19 @@
      1) VIDEO_ID: se gravar um vídeo sobre este tema, cole aqui só o
         código do YouTube. Ex.: em youtube.com/watch?v=AbC123xyz
         o código é AbC123xyz. Sem vídeo, deixe "" que o espaço some.
-     2) PRODUTOS: troque nome, descrição e link de cada produto.
-        Para tirar um produto, apague o bloco { ... } dele.
+     2) PRODUTOS: nome e descrição de cada produto. Em ids ficam os itens
+        dos Achadinhos (dados/loja-catalogo.json) que combinam com ele: o site
+        mostra sozinho o anúncio mais vendido de hoje, com foto e preço.
+        link é opcional (só se quiser um link fixo, usado quando não houver
+        anúncio). Para tirar um produto, apague o bloco { ... } dele.
      ========================================================= */
   const VIDEO_ID = "";
 
   const PRODUTOS = [
-    { nome: "Gaiola grande com base alta", descricao: "Espaço para correr e cavar, sem fuga.", link: "" },
-    { nome: "Roda de superfície fechada", descricao: "Exercício sem risco para as patas.", link: "" },
-    { nome: "Substrato de papel", descricao: "Absorvente, com pouca poeira e seguro.", link: "" },
-    { nome: "Ração premium para hamster", descricao: "A base da alimentação diária.", link: "" }
+    { nome: "Gaiola grande com base alta", descricao: "Espaço para correr e cavar, sem fuga.", link: "", ids: ["roedores-gaiola-para-hamster"] },
+    { nome: "Roda de superfície fechada", descricao: "Exercício sem risco para as patas.", link: "", ids: ["roedores-rodinha-silenciosa-para-hamster"] },
+    { nome: "Substrato de papel", descricao: "Absorvente, com pouca poeira e seguro.", link: "", ids: ["roedores-substrato-de-papel-para-roedores"] },
+    { nome: "Ração premium para hamster", descricao: "A base da alimentação diária.", link: "", ids: ["roedores-racao-para-hamster"] }
   ];
   /* ======================= fim da área ===================== */
 
@@ -233,23 +237,7 @@
       'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>';
   }
 
-  const lista = document.getElementById("produtos");
-  const comLink = PRODUTOS.filter(p => p.link);
-  if (!comLink.length && lista) {
-    const titulo = lista.previousElementSibling, aviso = lista.nextElementSibling;
-    if (titulo && titulo.tagName === "H2") titulo.remove();
-    if (aviso && aviso.classList.contains("aviso")) aviso.remove();
-    lista.remove();
-  }
-  comLink.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "produto";
-    const botao = p.link
-      ? '<a class="btn" href="' + p.link + '" target="_blank" rel="noopener sponsored">Ver produto</a>'
-      : '<span class="aviso" style="text-align:center">Link em breve</span>';
-    div.innerHTML = "<h3>" + p.nome + "</h3><p>" + p.descricao + "</p>" + botao;
-    lista.appendChild(div);
-  });
+  document.addEventListener("DOMContentLoaded", () => window.abanoProdutosGuia && window.abanoProdutosGuia(PRODUTOS));
 </script>
 </body>
 </html>

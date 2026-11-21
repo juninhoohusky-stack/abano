@@ -25,11 +25,12 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="fontes/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261121">
+<link rel="stylesheet" href="site.css?v=20261122">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
 <script src="site.js?v=20261121" defer></script>
+<script src="guia-produtos.js?v=20261122" defer></script>
 <link rel="stylesheet" href="guia.css?v=20261121">
 <script type="application/ld+json" id="abano-guia-ld">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Bola de pelo em gato: é normal vomitar?","description":"Por que o gato vomita bola de pelo, quando é normal, quando é sinal de problema e como prevenir com escovação, alimentação e água.","url":"https://abano.com.br/guia/bola-de-pelo-em-gato.html","mainEntityOfPage":"https://abano.com.br/guia/bola-de-pelo-em-gato.html","inLanguage":"pt-BR","image":"https://images.pexels.com/photos/1643471/pexels-photo-1643471.jpeg?auto=compress&cs=tinysrgb&w=1200","author":{"@type":"Organization","name":"Equipe Abanô","url":"https://abano.com.br/sobre.html"},"publisher":{"@type":"Organization","name":"Abanô","alternateName":"Abano Pet","logo":{"@type":"ImageObject","url":"https://abano.com.br/icone-512.png"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Início","item":"https://abano.com.br/"},{"@type":"ListItem","position":2,"name":"Guia pet","item":"https://abano.com.br/guia/"},{"@type":"ListItem","position":3,"name":"Bola de pelo em gato: é normal vomitar?","item":"https://abano.com.br/guia/bola-de-pelo-em-gato.html"}]}]}</script>
 </head>
@@ -201,16 +202,19 @@
      1) VIDEO_ID: se gravar um vídeo sobre este tema, cole aqui só o
         código do YouTube. Ex.: em youtube.com/watch?v=AbC123xyz
         o código é AbC123xyz. Sem vídeo, deixe "" que o espaço some.
-     2) PRODUTOS: troque nome, descrição e link de cada produto.
-        Para tirar um produto, apague o bloco { ... } dele.
+     2) PRODUTOS: nome e descrição de cada produto. Em ids ficam os itens
+        dos Achadinhos (dados/loja-catalogo.json) que combinam com ele: o site
+        mostra sozinho o anúncio mais vendido de hoje, com foto e preço.
+        link é opcional (só se quiser um link fixo, usado quando não houver
+        anúncio). Para tirar um produto, apague o bloco { ... } dele.
      ========================================================= */
   const VIDEO_ID = "";
 
   const PRODUTOS = [
-    { nome: "Escova ou luva removedora de pelos", descricao: "Tira o pelo solto antes que o gato engula.", link: "" },
-    { nome: "Ração super premium para controle de bolas de pelo", descricao: "Com fibras que ajudam o pelo a passar pelo intestino.", link: "" },
-    { nome: "Grama para gatos (kit para plantar)", descricao: "Uma opção segura para o gato mastigar.", link: "" },
-    { nome: "Fonte de água", descricao: "Gato hidratado tem intestino que funciona melhor.", link: "" }
+    { nome: "Escova ou luva removedora de pelos", descricao: "Tira o pelo solto antes que o gato engula.", link: "", ids: ["gato-escova-tira-pelo-autolimpante", "gato-luva-de-banho-e-escovacao"] },
+    { nome: "Ração super premium para controle de bolas de pelo", descricao: "Com fibras que ajudam o pelo a passar pelo intestino.", link: "", ids: ["gato-racao-super-premium-para-gatos-de-pelo-longo", "gato-racao-royal-canin", "gato-racao-pro-plan", "gato-racao-hill-s"] },
+    { nome: "Grama para gatos (kit para plantar)", descricao: "Uma opção segura para o gato mastigar.", link: "", ids: ["gato-grama-para-gatos-kit-para-plantar"] },
+    { nome: "Fonte de água", descricao: "Gato hidratado tem intestino que funciona melhor.", link: "", ids: ["gato-fonte-de-agua-de-ceramica-ou-inox"] }
   ];
   /* ======================= fim da área ===================== */
 
@@ -222,23 +226,7 @@
       'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>';
   }
 
-  const lista = document.getElementById("produtos");
-  const comLink = PRODUTOS.filter(p => p.link);
-  if (!comLink.length && lista) {
-    const titulo = lista.previousElementSibling, aviso = lista.nextElementSibling;
-    if (titulo && titulo.tagName === "H2") titulo.remove();
-    if (aviso && aviso.classList.contains("aviso")) aviso.remove();
-    lista.remove();
-  }
-  comLink.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "produto";
-    const botao = p.link
-      ? '<a class="btn" href="' + p.link + '" target="_blank" rel="noopener sponsored">Ver produto</a>'
-      : '<span class="aviso" style="text-align:center">Link em breve</span>';
-    div.innerHTML = "<h3>" + p.nome + "</h3><p>" + p.descricao + "</p>" + botao;
-    lista.appendChild(div);
-  });
+  document.addEventListener("DOMContentLoaded", () => window.abanoProdutosGuia && window.abanoProdutosGuia(PRODUTOS));
 </script>
 </body>
 </html>
