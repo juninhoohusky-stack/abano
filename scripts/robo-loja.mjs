@@ -35,7 +35,11 @@ const bloqueada = (loja, id, nome) => (bloqueadas[loja] || []).some((b) => Strin
   String(b).trim().toLowerCase() === String(nome || "").trim().toLowerCase());
 
 const catalogo = JSON.parse(await readFile(new URL("../dados/loja-catalogo.json", import.meta.url), "utf8")).itens;
-const itens = LIMITE ? catalogo.slice(0, LIMITE) : catalogo;
+// Cada rodada começa num ponto diferente do catálogo: se o tempo acabar, a próxima continua de onde esta parou
+const giro = Math.floor(Date.now() / (6 * 3600e3)) * 97 % catalogo.length;
+const itens = LIMITE ? catalogo.slice(0, LIMITE) : [...catalogo.slice(giro), ...catalogo.slice(0, giro)];
+const INICIO = Date.now();
+const MINUTOS = Number(process.env.MINUTOS || 75);         // tempo máximo de busca por rodada (o GitHub corta em 90)
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 const aviso = (m) => console.log(`::warning::${m}`);
 
@@ -129,7 +133,7 @@ async function shopeeGraphQL(consulta) {
     if (erro) {
       const codigo = erro.extensions && erro.extensions.code;
       // 10030 = muitas consultas; 10000 = falha passageira da Shopee: espera e tenta de novo
-      if ((codigo === 10030 || codigo === 10000) && tentativa < 4) { await espera(8000 * tentativa); continue; }
+      if ((codigo === 10030 || codigo === 10000) && tentativa < 4) { await espera((codigo === 10030 ? 12000 : 3000) * tentativa); continue; }
       throw new Error(`Shopee recusou (${codigo || r.status}): ${erro.message}`);
     }
     return j.data || {};
@@ -141,7 +145,7 @@ async function shopeeGraphQL(consulta) {
 async function shopee(item) {
   const campos = "itemId productName imageUrl priceMin priceDiscountRate sales ratingStar commissionRate offerLink shopName shopId shopType";
   const vistos = new Map();
-  for (const ordem of [2, 1]) {   // 2 = mais vendidos, 1 = relevância
+  for (const ordem of [2]) {   // 2 = mais vendidos
     const d = await shopeeGraphQL(`{productOfferV2(keyword:${JSON.stringify(item.busca)},sortType:${ordem},page:1,limit:50){nodes{${campos}}}}`);
     for (const n of (d.productOfferV2 && d.productOfferV2.nodes) || []) {
       if (vistos.has(n.itemId)) continue;
@@ -156,7 +160,6 @@ async function shopee(item) {
         tipoLoja: (Array.isArray(n.shopType) ? n.shopType : [n.shopType]).map(Number).filter(Boolean),
       });
     }
-    await espera(1200);
   }
   return [...vistos.values()].filter((o) => /^https:\/\//.test(o.link || ""));
 }
@@ -282,8 +285,15 @@ for (const loja of LOJAS) {
   console.log(`\n=== ${loja.rotulo}: ${itens.length} produtos do catálogo ===`);
   try { if (loja.preparar) await loja.preparar(); } catch (e) { aviso(`${loja.rotulo}: ${e.message}`); falhou = true; continue; }
   const usados = new Set(), linhas = [], faltaram = [];
-  let erros = 0, seguidos = 0;
+  let erros = 0, seguidos = 0, gravadas = 0, vistos = 0;
+  // Grava aos poucos: se a rodada for interrompida, o que já foi achado não se perde
+  const gravarPendentes = async () => {
+    if (TESTE || gravadas >= linhas.length) return;
+    try { await gravar(linhas.slice(gravadas)); gravadas = linhas.length; } catch (e) { aviso(`${loja.rotulo}: ${e.message}`); falhou = true; }
+  };
   for (const item of itens) {
+    if ((Date.now() - INICIO) / 60000 > MINUTOS) { console.log(`Tempo da rodada acabou: ${vistos} de ${itens.length} produtos vistos. A próxima rodada continua.`); break; }
+    vistos++;
     try {
       const o = await loja.buscar(item, usados);
       seguidos = 0;
@@ -293,6 +303,7 @@ for (const loja of LOJAS) {
         const { comissao, loja_id, loja_nome, tipoLoja, oficial, pontos, ...publico } = o;
         linhas.push({ ...publico, pet: item.pet, categoria: item.nicho, produto: item.id, origem: "robo", ativo: true });
         console.log(`ok   ${item.nome} → ${o.titulo.slice(0, 60)} | R$ ${o.preco} | ${o.vendas} vendas | nota ${o.avaliacao || "-"} | loja ${loja_nome || loja_id}${comissao ? ` | comissão ${(comissao * 100).toFixed(1)}%` : ""}`);
+        if (linhas.length - gravadas >= 15) await gravarPendentes();
       } else faltaram.push(item.nome);
     } catch (e) {
       erros++;
@@ -307,9 +318,9 @@ for (const loja of LOJAS) {
   for (const m in motivos) delete motivos[m];
   if (TESTE) continue;
   try {
-    if (linhas.length) await gravar(linhas);
+    await gravarPendentes();
     // Só limpa as antigas se a rodada foi boa (assim um dia com a loja fora do ar não esvazia a vitrine)
-    const saiu = linhas.length >= itens.length * 0.3 ? await tirarAntigas(loja.nome) : 0;
+    const saiu = linhas.length >= 40 ? await tirarAntigas(loja.nome) : 0;
     console.log(`${loja.rotulo}: publicado no site. ${saiu} anúncio(s) antigo(s) saíram da vitrine.`);
   } catch (e) { aviso(`${loja.rotulo}: ${e.message}`); falhou = true; }
   if (erros > linhas.length) falhou = true;
