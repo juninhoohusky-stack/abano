@@ -28,7 +28,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-super-premium-para-filhotes-de-racas-medias-e-grandes",
@@ -57,7 +60,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-super-premium-para-adultos-de-racas-pequenas",
@@ -86,7 +92,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-super-premium-para-adultos-de-racas-medias",
@@ -115,7 +124,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-super-premium-para-adultos-de-racas-grandes-e-gigantes",
@@ -144,7 +156,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-super-premium-para-caes-castrados",
@@ -173,7 +188,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-super-premium-para-caes-seniores-7-anos-ou-mais",
@@ -202,7 +220,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-super-premium-para-controle-de-peso-light",
@@ -231,7 +252,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-super-premium-para-pele-e-pelo-sensiveis",
@@ -260,7 +284,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-super-premium-para-racas-especificas-husky-shih-tzu-golden-b",
@@ -289,7 +316,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-premium-especial-para-filhotes",
@@ -317,7 +347,10 @@
    "obs": "Mais em conta que a super premium; confira a classificação na embalagem.",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-premium-especial-para-adultos-de-racas-pequenas",
@@ -345,7 +378,10 @@
    "obs": "Mais em conta que a super premium; confira a classificação na embalagem.",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-premium-especial-para-adultos-de-racas-medias-e-grandes",
@@ -373,7 +409,10 @@
    "obs": "Mais em conta que a super premium; confira a classificação na embalagem.",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-premium-especial-para-caes-seniores",
@@ -401,7 +440,10 @@
    "obs": "Mais em conta que a super premium; confira a classificação na embalagem.",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-umida-sache-ou-lata-super-premium-para-caes",
@@ -426,7 +468,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-racao-natural-congelada-para-caes",
@@ -452,7 +497,10 @@
    "obs": "Só com orientação do veterinário.",
    "area": "animais",
    "cat": "cao",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "cao-petisco-natural-desidratado-orelha-traqueia-pulmao",
@@ -973,7 +1021,11 @@
    "nicho": "escovacao",
    "area": "animais",
    "cat": "cao",
-   "sub": "higiene"
+   "sub": "higiene",
+   "essencial": true,
+   "quantos": 4,
+   "precoMin": 100,
+   "evitar": "\\b(refil|refis|reposicao|escova lateral|escovas laterais|peca|pecas|acessorio|acessorios|bocal|compativel)\\b"
   },
   {
    "id": "cao-escova-tira-subpelo-tipo-furminator-para-caes",
@@ -1308,7 +1360,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "gato",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "gato-racao-super-premium-para-gatos-adultos",
@@ -1336,7 +1391,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "gato",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "gato-racao-super-premium-para-gatos-seniores-7-anos-ou-mais",
@@ -1364,7 +1422,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "gato",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "gato-racao-super-premium-para-saude-urinaria",
@@ -1392,7 +1453,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "gato",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "gato-racao-super-premium-para-gatos-de-pelo-longo",
@@ -1420,7 +1484,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "gato",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "gato-racao-super-premium-para-gatos-sensiveis-digestao",
@@ -1448,7 +1515,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "gato",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "gato-racao-super-premium-para-controle-de-peso-light",
@@ -1476,7 +1546,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "gato",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "gato-racao-premium-especial-para-filhotes",
@@ -1503,7 +1576,10 @@
    "obs": "Mais em conta que a super premium; confira a classificação na embalagem.",
    "area": "animais",
    "cat": "gato",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "gato-racao-premium-especial-para-gatos-adultos",
@@ -1530,7 +1606,10 @@
    "obs": "Mais em conta que a super premium; confira a classificação na embalagem.",
    "area": "animais",
    "cat": "gato",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "gato-racao-premium-especial-para-gatos-castrados",
@@ -1557,7 +1636,10 @@
    "obs": "Mais em conta que a super premium; confira a classificação na embalagem.",
    "area": "animais",
    "cat": "gato",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "gato-sache-super-premium-caixa-com-varios",
@@ -1582,7 +1664,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "gato",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "gato-pate-super-premium-para-gatos",
@@ -1606,7 +1691,10 @@
    "tipo": "Super premium",
    "area": "animais",
    "cat": "gato",
-   "sub": "alimentacao"
+   "sub": "alimentacao",
+   "essencial": true,
+   "menorPreco": true,
+   "quantos": 6
   },
   {
    "id": "gato-petisco-cremoso-em-bisnaga-tipo-churu",
@@ -3010,7 +3098,11 @@
    "nicho": "casa",
    "area": "tutor",
    "cat": "sem-pelos",
-   "sub": null
+   "sub": null,
+   "essencial": true,
+   "quantos": 6,
+   "precoMin": 60,
+   "evitar": "\\b(refil|refis|reposicao|escova lateral|escovas laterais|peca|pecas|acessorio|acessorios|bocal|compativel)\\b"
   },
   {
    "id": "todos-bolsa-maternidade-pet-viagem",
@@ -3030,7 +3122,11 @@
    "nicho": "casa",
    "area": "tutor",
    "cat": "sem-pelos",
-   "sub": null
+   "sub": null,
+   "essencial": true,
+   "quantos": 6,
+   "precoMin": 150,
+   "evitar": "\\b(refil|refis|reposicao|escova lateral|escovas laterais|peca|pecas|acessorio|acessorios|bocal|compativel)\\b"
   },
   {
    "id": "todos-aspirador-de-po-robo-para-pelos-de-pet",
@@ -3040,7 +3136,11 @@
    "nicho": "casa",
    "area": "tutor",
    "cat": "sem-pelos",
-   "sub": null
+   "sub": null,
+   "essencial": true,
+   "quantos": 6,
+   "precoMin": 300,
+   "evitar": "\\b(refil|refis|reposicao|escova lateral|escovas laterais|peca|pecas|acessorio|acessorios|bocal|compativel)\\b"
   },
   {
    "id": "todos-removedor-de-pelos-reutilizavel-para-roupas-e-sofa",
@@ -3488,7 +3588,11 @@
    "area": "tutor",
    "cat": "passeio",
    "sub": null,
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "quantos": 4,
+   "precoMin": 50,
+   "evitar": "\\b(refil|refis|reposicao|escova lateral|escovas laterais|peca|pecas|acessorio|acessorios|bocal|compativel)\\b"
   },
   {
    "id": "carro-protetor-de-porta-do-carro",
@@ -3522,12 +3626,23 @@
     "Royal Canin"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Royal Canin cachorro filhote",
+    "ração Royal Canin cachorro adulto porte pequeno",
+    "ração Royal Canin cachorro adulto porte médio",
+    "ração Royal Canin cachorro adulto porte grande",
+    "ração Royal Canin cachorro sênior",
+    "ração Royal Canin cachorro castrado",
+    "ração Royal Canin cachorro light"
+   ]
   },
   {
    "id": "cao-umida-royal-canin",
@@ -3540,12 +3655,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Royal Canin cachorro filhote",
+    "sachê Royal Canin cachorro adulto"
+   ]
   },
   {
    "id": "gato-racao-royal-canin",
@@ -3557,12 +3678,21 @@
     "Royal Canin"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Royal Canin gato filhote",
+    "ração Royal Canin gato adulto",
+    "ração Royal Canin gato castrado",
+    "ração Royal Canin gato sênior",
+    "ração Royal Canin gato sensível"
+   ]
   },
   {
    "id": "gato-umida-royal-canin",
@@ -3575,12 +3705,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Royal Canin gato filhote",
+    "sachê Royal Canin gato adulto"
+   ]
   },
   {
    "id": "cao-racao-hill-s",
@@ -3592,12 +3728,23 @@
     "Hill's"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Hill's cachorro filhote",
+    "ração Hill's cachorro adulto porte pequeno",
+    "ração Hill's cachorro adulto porte médio",
+    "ração Hill's cachorro adulto porte grande",
+    "ração Hill's cachorro sênior",
+    "ração Hill's cachorro castrado",
+    "ração Hill's cachorro light"
+   ]
   },
   {
    "id": "cao-umida-hill-s",
@@ -3610,12 +3757,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Hill's cachorro filhote",
+    "sachê Hill's cachorro adulto"
+   ]
   },
   {
    "id": "gato-racao-hill-s",
@@ -3627,12 +3780,21 @@
     "Hill's"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Hill's gato filhote",
+    "ração Hill's gato adulto",
+    "ração Hill's gato castrado",
+    "ração Hill's gato sênior",
+    "ração Hill's gato sensível"
+   ]
   },
   {
    "id": "gato-umida-hill-s",
@@ -3645,12 +3807,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Hill's gato filhote",
+    "sachê Hill's gato adulto"
+   ]
   },
   {
    "id": "cao-racao-premier",
@@ -3662,12 +3830,23 @@
     "Premier"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração PremieR cachorro filhote",
+    "ração PremieR cachorro adulto porte pequeno",
+    "ração PremieR cachorro adulto porte médio",
+    "ração PremieR cachorro adulto porte grande",
+    "ração PremieR cachorro sênior",
+    "ração PremieR cachorro castrado",
+    "ração PremieR cachorro light"
+   ]
   },
   {
    "id": "cao-umida-premier",
@@ -3680,12 +3859,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê PremieR cachorro filhote",
+    "sachê PremieR cachorro adulto"
+   ]
   },
   {
    "id": "gato-racao-premier",
@@ -3697,12 +3882,21 @@
     "Premier"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração PremieR gato filhote",
+    "ração PremieR gato adulto",
+    "ração PremieR gato castrado",
+    "ração PremieR gato sênior",
+    "ração PremieR gato sensível"
+   ]
   },
   {
    "id": "gato-umida-premier",
@@ -3715,12 +3909,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê PremieR gato filhote",
+    "sachê PremieR gato adulto"
+   ]
   },
   {
    "id": "cao-racao-pro-plan",
@@ -3733,12 +3933,23 @@
     "Proplan"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Pro Plan cachorro filhote",
+    "ração Pro Plan cachorro adulto porte pequeno",
+    "ração Pro Plan cachorro adulto porte médio",
+    "ração Pro Plan cachorro adulto porte grande",
+    "ração Pro Plan cachorro sênior",
+    "ração Pro Plan cachorro castrado",
+    "ração Pro Plan cachorro light"
+   ]
   },
   {
    "id": "cao-umida-pro-plan",
@@ -3752,12 +3963,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Pro Plan cachorro filhote",
+    "sachê Pro Plan cachorro adulto"
+   ]
   },
   {
    "id": "gato-racao-pro-plan",
@@ -3770,12 +3987,21 @@
     "Proplan"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Pro Plan gato filhote",
+    "ração Pro Plan gato adulto",
+    "ração Pro Plan gato castrado",
+    "ração Pro Plan gato sênior",
+    "ração Pro Plan gato sensível"
+   ]
   },
   {
    "id": "gato-umida-pro-plan",
@@ -3789,12 +4015,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Pro Plan gato filhote",
+    "sachê Pro Plan gato adulto"
+   ]
   },
   {
    "id": "cao-racao-farmina-n-d",
@@ -3807,12 +4039,23 @@
    ],
    "exige": "\\bn ?d\\b",
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Farmina N D cachorro filhote",
+    "ração Farmina N D cachorro adulto porte pequeno",
+    "ração Farmina N D cachorro adulto porte médio",
+    "ração Farmina N D cachorro adulto porte grande",
+    "ração Farmina N D cachorro sênior",
+    "ração Farmina N D cachorro castrado",
+    "ração Farmina N D cachorro light"
+   ]
   },
   {
    "id": "cao-umida-farmina-n-d",
@@ -3825,12 +4068,18 @@
    ],
    "exige": "^(?=.*\\bn ?d\\b)(?=.*\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b)",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Farmina N D cachorro filhote",
+    "sachê Farmina N D cachorro adulto"
+   ]
   },
   {
    "id": "gato-racao-farmina-n-d",
@@ -3843,12 +4092,21 @@
    ],
    "exige": "\\bn ?d\\b",
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Farmina N D gato filhote",
+    "ração Farmina N D gato adulto",
+    "ração Farmina N D gato castrado",
+    "ração Farmina N D gato sênior",
+    "ração Farmina N D gato sensível"
+   ]
   },
   {
    "id": "gato-umida-farmina-n-d",
@@ -3861,12 +4119,18 @@
    ],
    "exige": "^(?=.*\\bn ?d\\b)(?=.*\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b)",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Farmina N D gato filhote",
+    "sachê Farmina N D gato adulto"
+   ]
   },
   {
    "id": "cao-racao-guabi-natural",
@@ -3878,12 +4142,23 @@
     "Guabi Natural"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Guabi Natural cachorro filhote",
+    "ração Guabi Natural cachorro adulto porte pequeno",
+    "ração Guabi Natural cachorro adulto porte médio",
+    "ração Guabi Natural cachorro adulto porte grande",
+    "ração Guabi Natural cachorro sênior",
+    "ração Guabi Natural cachorro castrado",
+    "ração Guabi Natural cachorro light"
+   ]
   },
   {
    "id": "cao-umida-guabi-natural",
@@ -3896,12 +4171,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Guabi Natural cachorro filhote",
+    "sachê Guabi Natural cachorro adulto"
+   ]
   },
   {
    "id": "gato-racao-guabi-natural",
@@ -3913,12 +4194,21 @@
     "Guabi Natural"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Guabi Natural gato filhote",
+    "ração Guabi Natural gato adulto",
+    "ração Guabi Natural gato castrado",
+    "ração Guabi Natural gato sênior",
+    "ração Guabi Natural gato sensível"
+   ]
   },
   {
    "id": "gato-umida-guabi-natural",
@@ -3931,82 +4221,122 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Guabi Natural gato filhote",
+    "sachê Guabi Natural gato adulto"
+   ]
   },
   {
    "id": "cao-racao-formula-natural-fresh-meat",
-   "nome": "Ração Fórmula Natural Fresh Meat para cães (todos os pesos e tipos)",
-   "busca": "ração Fórmula Natural Fresh Meat cachorro",
+   "nome": "Ração Fórmula Natural para cães (todas as linhas, pesos e tipos)",
+   "busca": "ração fórmula natural cachorro",
    "pet": "cao",
    "nicho": "racao",
    "marcas": [
-    "Fresh Meat"
+    "Natural"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "exige": "\\bformula natural\\b",
+   "buscas": [
+    "ração fórmula natural cachorro filhote",
+    "ração fórmula natural cachorro adulto porte pequeno",
+    "ração fórmula natural cachorro adulto porte médio",
+    "ração fórmula natural cachorro adulto porte grande",
+    "ração fórmula natural cachorro sênior",
+    "ração fórmula natural cachorro castrado",
+    "ração fórmula natural cachorro light"
+   ]
   },
   {
    "id": "cao-umida-formula-natural-fresh-meat",
-   "nome": "Ração úmida Fórmula Natural Fresh Meat para cães (sachê, patê e lata)",
-   "busca": "sachê Fórmula Natural Fresh Meat cachorro",
+   "nome": "Ração úmida Fórmula Natural para cães (sachê, patê e lata)",
+   "busca": "sachê fórmula natural cachorro",
    "pet": "cao",
    "nicho": "racao",
    "marcas": [
-    "Fresh Meat"
+    "Natural"
    ],
-   "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
+   "exige": "^(?=.*\\bformula natural\\b)(?=.*\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b)",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê fórmula natural cachorro filhote",
+    "sachê fórmula natural cachorro adulto"
+   ]
   },
   {
    "id": "gato-racao-formula-natural-fresh-meat",
-   "nome": "Ração Fórmula Natural Fresh Meat para gatos (todos os pesos e tipos)",
-   "busca": "ração Fórmula Natural Fresh Meat gato",
+   "nome": "Ração Fórmula Natural para gatos (todas as linhas, pesos e tipos)",
+   "busca": "ração fórmula natural gato",
    "pet": "gato",
    "nicho": "racao",
    "marcas": [
-    "Fresh Meat"
+    "Natural"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "exige": "\\bformula natural\\b",
+   "buscas": [
+    "ração fórmula natural gato filhote",
+    "ração fórmula natural gato adulto",
+    "ração fórmula natural gato castrado",
+    "ração fórmula natural gato sênior",
+    "ração fórmula natural gato sensível"
+   ]
   },
   {
    "id": "gato-umida-formula-natural-fresh-meat",
-   "nome": "Ração úmida Fórmula Natural Fresh Meat para gatos (sachê, patê e lata)",
-   "busca": "sachê Fórmula Natural Fresh Meat gato",
+   "nome": "Ração úmida Fórmula Natural para gatos (sachê, patê e lata)",
+   "busca": "sachê fórmula natural gato",
    "pet": "gato",
    "nicho": "racao",
    "marcas": [
-    "Fresh Meat"
+    "Natural"
    ],
-   "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
+   "exige": "^(?=.*\\bformula natural\\b)(?=.*\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b)",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê fórmula natural gato filhote",
+    "sachê fórmula natural gato adulto"
+   ]
   },
   {
    "id": "cao-racao-biofresh",
@@ -4019,12 +4349,23 @@
     "Bio Fresh"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Biofresh cachorro filhote",
+    "ração Biofresh cachorro adulto porte pequeno",
+    "ração Biofresh cachorro adulto porte médio",
+    "ração Biofresh cachorro adulto porte grande",
+    "ração Biofresh cachorro sênior",
+    "ração Biofresh cachorro castrado",
+    "ração Biofresh cachorro light"
+   ]
   },
   {
    "id": "cao-umida-biofresh",
@@ -4038,12 +4379,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Biofresh cachorro filhote",
+    "sachê Biofresh cachorro adulto"
+   ]
   },
   {
    "id": "gato-racao-biofresh",
@@ -4056,12 +4403,21 @@
     "Bio Fresh"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Biofresh gato filhote",
+    "ração Biofresh gato adulto",
+    "ração Biofresh gato castrado",
+    "ração Biofresh gato sênior",
+    "ração Biofresh gato sensível"
+   ]
   },
   {
    "id": "gato-umida-biofresh",
@@ -4075,12 +4431,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Biofresh gato filhote",
+    "sachê Biofresh gato adulto"
+   ]
   },
   {
    "id": "cao-racao-bionatural",
@@ -4093,12 +4455,23 @@
     "Bio Natural"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração BioNatural cachorro filhote",
+    "ração BioNatural cachorro adulto porte pequeno",
+    "ração BioNatural cachorro adulto porte médio",
+    "ração BioNatural cachorro adulto porte grande",
+    "ração BioNatural cachorro sênior",
+    "ração BioNatural cachorro castrado",
+    "ração BioNatural cachorro light"
+   ]
   },
   {
    "id": "cao-umida-bionatural",
@@ -4112,12 +4485,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê BioNatural cachorro filhote",
+    "sachê BioNatural cachorro adulto"
+   ]
   },
   {
    "id": "gato-racao-bionatural",
@@ -4130,12 +4509,21 @@
     "Bio Natural"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração BioNatural gato filhote",
+    "ração BioNatural gato adulto",
+    "ração BioNatural gato castrado",
+    "ração BioNatural gato sênior",
+    "ração BioNatural gato sensível"
+   ]
   },
   {
    "id": "gato-umida-bionatural",
@@ -4149,12 +4537,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê BioNatural gato filhote",
+    "sachê BioNatural gato adulto"
+   ]
   },
   {
    "id": "cao-racao-quatree",
@@ -4166,12 +4560,23 @@
     "Quatree"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Quatree cachorro filhote",
+    "ração Quatree cachorro adulto porte pequeno",
+    "ração Quatree cachorro adulto porte médio",
+    "ração Quatree cachorro adulto porte grande",
+    "ração Quatree cachorro sênior",
+    "ração Quatree cachorro castrado",
+    "ração Quatree cachorro light"
+   ]
   },
   {
    "id": "cao-umida-quatree",
@@ -4184,12 +4589,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Quatree cachorro filhote",
+    "sachê Quatree cachorro adulto"
+   ]
   },
   {
    "id": "gato-racao-quatree",
@@ -4201,12 +4612,21 @@
     "Quatree"
    ],
    "porMarca": true,
-   "quantos": 12,
+   "quantos": 40,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "ração Quatree gato filhote",
+    "ração Quatree gato adulto",
+    "ração Quatree gato castrado",
+    "ração Quatree gato sênior",
+    "ração Quatree gato sensível"
+   ]
   },
   {
    "id": "gato-umida-quatree",
@@ -4219,12 +4639,18 @@
    ],
    "exige": "\\b(sache|saches|pate|pates|lata|latas|umida|umido|wet)\\b",
    "porMarca": true,
-   "quantos": 6,
+   "quantos": 20,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
    "sub": "alimentacao",
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "menorPreco": true,
+   "buscas": [
+    "sachê Quatree gato filhote",
+    "sachê Quatree gato adulto"
+   ]
   },
   {
    "id": "limpeza-limpador-enzimatico-tira-xixi-e-cheiro",
@@ -4306,13 +4732,21 @@
   {
    "id": "sem-pelos-robo-aspirador-com-mop",
    "nome": "Robô aspirador com mop",
-   "busca": "robô aspirador mop",
+   "busca": "robô aspirador",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
    "cat": "sem-pelos",
    "sub": null,
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "quantos": 8,
+   "precoMin": 300,
+   "evitar": "\\b(refil|refis|reposicao|escova lateral|escovas laterais|peca|pecas|acessorio|acessorios|bocal|compativel)\\b",
+   "buscas": [
+    "robô aspirador mop",
+    "robô aspirador inteligente"
+   ]
   },
   {
    "id": "sem-pelos-aspirador-de-po-vertical-2-em-1",
@@ -4323,7 +4757,11 @@
    "area": "tutor",
    "cat": "sem-pelos",
    "sub": null,
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "quantos": 6,
+   "precoMin": 100,
+   "evitar": "\\b(refil|refis|reposicao|escova lateral|escovas laterais|peca|pecas|acessorio|acessorios|bocal|compativel)\\b"
   },
   {
    "id": "sem-pelos-aspirador-de-mao-sem-fio",
@@ -4334,7 +4772,11 @@
    "area": "tutor",
    "cat": "sem-pelos",
    "sub": null,
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "quantos": 6,
+   "precoMin": 60,
+   "evitar": "\\b(refil|refis|reposicao|escova lateral|escovas laterais|peca|pecas|acessorio|acessorios|bocal|compativel)\\b"
   },
   {
    "id": "sem-pelos-capa-de-sofa-elastica",
@@ -4378,7 +4820,16 @@
    "area": "tutor",
    "cat": "clima",
    "sub": null,
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "buscas": [
+    "ar condicionado portátil 12000 btus",
+    "ar condicionado portátil 9000 btus"
+   ],
+   "essencial": true,
+   "quantos": 8,
+   "precoMin": 900,
+   "evitar": "\\b(mini|usb|umidificador|climatizador|suporte|capa|tubulacao|peca|limpeza|limpador|gas|dreno|bomba)\\b",
+   "exige": "\\bportatil\\b"
   },
   {
    "id": "clima-climatizador-de-ar",
@@ -5269,7 +5720,11 @@
    "area": "tutor",
    "cat": "sem-pelos",
    "sub": null,
-   "novo_achadinho": true
+   "novo_achadinho": true,
+   "essencial": true,
+   "quantos": 4,
+   "precoMin": 100,
+   "evitar": "\\b(refil|refis|reposicao|escova lateral|escovas laterais|peca|pecas|acessorio|acessorios|bocal|compativel)\\b"
   },
   {
    "id": "sem-pelos-lavadora-de-piso",
@@ -6238,6 +6693,48 @@
    "cat": "conforto",
    "sub": null,
    "novo_achadinho": true
+  },
+  {
+   "pet": "todos",
+   "nicho": "casa",
+   "area": "tutor",
+   "cat": "clima",
+   "sub": null,
+   "novo_achadinho": true,
+   "id": "clima-ar-condicionado-split-de-parede",
+   "nome": "Ar-condicionado split de parede",
+   "busca": "ar condicionado split",
+   "buscas": [
+    "ar condicionado split inverter 9000 btus",
+    "ar condicionado split inverter 12000 btus",
+    "ar condicionado split 18000 btus",
+    "ar condicionado split 24000 btus"
+   ],
+   "essencial": true,
+   "quantos": 12,
+   "precoMin": 1200,
+   "evitar": "\\b(mini|usb|umidificador|climatizador|suporte|capa|tubulacao|peca|limpeza|limpador|gas|dreno|bomba)\\b",
+   "exige": "\\b(split|hi wall|parede)\\b"
+  },
+  {
+   "pet": "todos",
+   "nicho": "casa",
+   "area": "tutor",
+   "cat": "clima",
+   "sub": null,
+   "novo_achadinho": true,
+   "id": "clima-ar-condicionado-de-janela",
+   "nome": "Ar-condicionado de janela",
+   "busca": "ar condicionado janela",
+   "buscas": [
+    "ar condicionado janela 7500 btus",
+    "ar condicionado janela 10000 btus"
+   ],
+   "essencial": true,
+   "quantos": 6,
+   "precoMin": 900,
+   "evitar": "\\b(mini|usb|umidificador|climatizador|suporte|capa|tubulacao|peca|limpeza|limpador|gas|dreno|bomba)\\b",
+   "exige": "\\bjanela\\b"
   }
  ],
  "organizacao": "area (animais ou tutor), cat (o pet ou o grupo do tutor) e sub (subcategoria) organizam os Achadinhos; pet e nicho são o que o robô grava na tabela ofertas"

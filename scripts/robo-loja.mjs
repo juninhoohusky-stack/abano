@@ -29,6 +29,10 @@ const REGRAS = {
   medalhasML: ["gold", "platinum"],   // MercadoLíder Gold ou Platinum (ou loja oficial)
   positivasML: 0.95,            // pelo menos 95% de avaliações positivas do vendedor
   vendasLojaML: 500,            // vendedor com pelo menos 500 vendas concluídas
+  // Itens essenciais (rações, ar-condicionado, aspiradores: campo "essencial" no catálogo) precisam estar sempre no site.
+  // Para eles vale qualquer loja da Shopee com nota a partir de 4, e o produto também com nota a partir de 4.
+  essencialNotaLoja: 4,
+  essencialNotaProduto: 4,
 };
 const bloqueadas = JSON.parse(await readFile(new URL("../dados/lojas-bloqueadas.json", import.meta.url), "utf8"));
 const bloqueada = (loja, id, nome) => (bloqueadas[loja] || []).some((b) => String(b).trim().toLowerCase() === String(id).toLowerCase() ||
@@ -89,6 +93,7 @@ function combina(item, titulo) {
   if (!chave.length || !tem(chave[0])) return false;                  // a palavra principal tem de estar no título
   const achou = chave.filter(tem).length;
   if (achou / chave.length < 0.6) return false;
+  if (item.exige && !new RegExp(item.exige).test(t)) return false;   // palavra obrigatória (ex.: "portatil", "split")
   // Só ração premium ou super premium. A marca vale quando todas as palavras dela aparecem no título
   // ("Hill's" acha "Hills", "Purina Pro Plan" acha "Pro Plan Purina")
   if (item.nicho === "racao" && !temMarca(item, tp)) return false;
@@ -114,7 +119,12 @@ const recusa = (m) => { motivos[m] = (motivos[m] || 0) + 1; return false; };
 function anuncioBom(item, o, usados) {
   if (!(o.preco > 0) || usados.has(o.codigo_externo)) return false;
   if (!combina(item, o.titulo)) return recusa("não é o produto pet procurado");
-  if (o.loja === "shopee") {
+  // Acessório ou peça no lugar do aparelho (ex.: "mini ar-condicionado USB", panos de reposição do robô)
+  if (item.evitar && new RegExp(item.evitar).test(normal(o.titulo))) return recusa("não é o produto procurado (peça, refil ou miniatura)");
+  if (item.precoMin && o.preco < item.precoMin) return recusa("não é o produto procurado (preço de peça ou miniatura)");
+  if (item.essencial && o.loja === "shopee") {
+    if (!(o.avaliacao >= REGRAS.essencialNotaProduto)) return recusa("nota do produto baixa");
+  } else if (o.loja === "shopee") {
     if (!o.tipoLoja.some((t) => REGRAS.tiposShopee.includes(t))) return recusa("loja comum (não é Mall nem Indicada)");
     if (!(o.avaliacao >= REGRAS.notaProdutoMinima)) return recusa("nota do produto baixa");
   }
@@ -128,9 +138,22 @@ function anuncioBom(item, o, usados) {
 async function melhores(item, candidatos, usados, lojaConfiavel) {
   const quantos = item.quantos || 1, escolhidos = [];
   const fila = pontuar(candidatos.filter((o) => anuncioBom(item, o, usados)));
-  for (const o of fila.slice(0, quantos * 2 + 3)) {
+  if (item.menorPreco) {
+    // Rações: uma opção para cada variação (idade, porte, linha, sabor, peso), sempre a mais barata entre as lojas aceitas
+    const grupos = new Map();
+    for (const o of fila) {
+      const k = variacao(o.titulo);
+      if (!grupos.has(k)) grupos.set(k, []);
+      grupos.get(k).push(o);
+    }
+    for (const lista of grupos.values()) {
+      if (escolhidos.length >= quantos) break;
+      lista.sort((a, b) => a.preco - b.preco);
+      for (const o of lista.slice(0, 4)) if (await lojaConfiavel(o, item)) { escolhidos.push(o); break; }
+    }
+  } else for (const o of fila.slice(0, quantos * 2 + 3)) {
     if (escolhidos.length >= quantos) break;
-    if (await lojaConfiavel(o)) escolhidos.push(o);
+    if (await lojaConfiavel(o, item)) escolhidos.push(o);
   }
   // Para ajustar a busca depois: mostra o que a loja devolveu quando nada passou
   if (!escolhidos.length) console.log(`sem  ${item.nome} [busca: ${item.busca}]: ` + (candidatos.length
@@ -164,11 +187,28 @@ async function shopeeGraphQL(consulta) {
 }
 
 // Busca os mais vendidos e os mais relevantes (duas listas), já com o tipo e o código da loja
+// O que diferencia uma ração da outra da mesma marca: idade, porte, linha, sabor, tipo e peso.
+// Anúncios com a mesma combinação são o mesmo produto em lojas diferentes: fica só o mais barato.
+const TRACOS = new Set(["filhote", "junior", "adulto", "senior", "idoso", "mini", "pequeno", "medio", "grande", "gigante", "toy",
+  "castrado", "light", "obeso", "sensitive", "sensivel", "urinary", "urinario", "renal", "hipoalergenico", "dermato", "digestive",
+  "hairball", "indoor", "persian", "gourmet", "prime", "ancestral", "grain", "quinoa", "pumpkin", "abobora", "roma",
+  "cordeiro", "frango", "carne", "salmao", "peixe", "atum", "peru", "pato", "javali", "cervo", "mandioca", "arroz", "vegetal",
+  "sache", "pate", "lata", "umida", "kit", "combo", "caixa", "cookie", "snack", "biscoito"]);
+function variacao(titulo) {
+  const m = String(titulo).toLowerCase().match(/(\d+(?:[.,]\d+)?)\s*(kg|kilos?|quilos?|g|gr|gramas)\b/);
+  const gramas = m ? Math.round(parseFloat(m[1].replace(",", ".")) * (/^k|^q/.test(m[2]) ? 1000 : 1)) : 0;
+  const t = palavras(titulo).filter((p) => TRACOS.has(p));
+  return [...new Set(t)].sort().join(" ") + " | " + gramas;
+}
+
 async function shopee(item) {
   const campos = "itemId productName imageUrl priceMin priceDiscountRate sales ratingStar commissionRate offerLink shopName shopId shopType";
   const vistos = new Map();
-  for (const ordem of [2]) {   // 2 = mais vendidos
-    const d = await shopeeGraphQL(`{productOfferV2(keyword:${JSON.stringify(item.busca)},sortType:${ordem},page:1,limit:50){nodes{${campos}}}}`);
+  // Além da busca principal, os itens podem ter buscas extras (ex.: cada porte e idade da ração)
+  const buscas = [item.busca, ...(item.buscas || [])];
+  for (const [i, busca] of buscas.entries()) {   // sortType 2 = mais vendidos
+    if (i) await espera(800);
+    const d = await shopeeGraphQL(`{productOfferV2(keyword:${JSON.stringify(busca)},sortType:2,page:1,limit:50){nodes{${campos}}}}`);
     for (const n of (d.productOfferV2 && d.productOfferV2.nodes) || []) {
       if (vistos.has(n.itemId)) continue;
       const preco = Number(n.priceMin);
@@ -188,8 +228,11 @@ async function shopee(item) {
 
 // Nota da loja na Shopee (consultada uma vez por loja em cada rodada)
 const notasLojaShopee = new Map();
-async function lojaShopeeConfiavel(o) {
+async function lojaShopeeConfiavel(o, item = {}) {
   if (!o.loja_id) return recusa("loja sem identificação");
+  const indicada = o.tipoLoja.some((t) => REGRAS.tiposShopee.includes(t));
+  // Item essencial em loja Mall/Indicada: a própria Shopee já avaliou a loja, não precisa consultar
+  if (item.essencial && indicada) return true;
   if (!notasLojaShopee.has(o.loja_id)) {
     let nota = null;
     try {
@@ -201,6 +244,10 @@ async function lojaShopeeConfiavel(o) {
   }
   const nota = notasLojaShopee.get(o.loja_id);
   // Loja Mall ou Indicada já passou pelo crivo da própria Shopee; se a nota vier, ela também precisa ser alta
+  if (item.essencial) {   // loja comum: só entra se a Shopee informar a nota e ela for de pelo menos 4
+    if (nota === null) return recusa("loja comum sem nota informada");
+    return nota >= REGRAS.essencialNotaLoja ? true : recusa("nota da loja baixa");
+  }
   if (nota !== null && nota < REGRAS.notaLojaMinima) return recusa("nota da loja baixa");
   return true;
 }
