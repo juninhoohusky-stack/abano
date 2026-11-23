@@ -3140,7 +3140,7 @@
    "essencial": true,
    "quantos": 6,
    "precoMin": 300,
-   "evitar": "\\b(refil|refis|reposicao|escova lateral|escovas laterais|peca|pecas|acessorio|acessorios|bocal|compativel)\\b"
+   "evitar": "\\b(refil|refis|reposicao|escova lateral|escovas laterais|peca|pecas|acessorio|acessorios|bocal|compativel|piscina)\\b"
   },
   {
    "id": "todos-removedor-de-pelos-reutilizavel-para-roupas-e-sofa",
@@ -3626,7 +3626,7 @@
     "Royal Canin"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
@@ -3678,7 +3678,7 @@
     "Royal Canin"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
@@ -3728,7 +3728,7 @@
     "Hill's"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
@@ -3780,7 +3780,7 @@
     "Hill's"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
@@ -3830,7 +3830,7 @@
     "Premier"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
@@ -3882,7 +3882,7 @@
     "Premier"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
@@ -3933,7 +3933,7 @@
     "Proplan"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
@@ -3987,7 +3987,7 @@
     "Proplan"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
@@ -4039,7 +4039,7 @@
    ],
    "exige": "\\bn ?d\\b",
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
@@ -4092,7 +4092,7 @@
    ],
    "exige": "\\bn ?d\\b",
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
@@ -4142,7 +4142,7 @@
     "Guabi Natural"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
@@ -4194,7 +4194,7 @@
     "Guabi Natural"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
@@ -4244,7 +4244,7 @@
     "Natural"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
@@ -4254,13 +4254,21 @@
    "menorPreco": true,
    "exige": "\\bformula natural\\b",
    "buscas": [
-    "ração fórmula natural cachorro filhote",
-    "ração fórmula natural cachorro adulto porte pequeno",
-    "ração fórmula natural cachorro adulto porte médio",
-    "ração fórmula natural cachorro adulto porte grande",
-    "ração fórmula natural cachorro sênior",
-    "ração fórmula natural cachorro castrado",
-    "ração fórmula natural cachorro light"
+    "ração fórmula natural fresh meat cães filhote",
+    "ração fórmula natural fresh meat cães adulto porte pequeno",
+    "ração fórmula natural fresh meat cães adulto porte médio e grande",
+    "ração fórmula natural fresh meat cães adulto porte grande",
+    "ração fórmula natural fresh meat cães sênior",
+    "ração fórmula natural life cães filhote",
+    "ração fórmula natural life cães adulto porte pequeno",
+    "ração fórmula natural life cães adulto porte médio e grande",
+    "ração fórmula natural life cães adulto porte grande",
+    "ração fórmula natural life cães sênior",
+    "ração fórmula natural pro cães filhote",
+    "ração fórmula natural pro cães adulto porte pequeno",
+    "ração fórmula natural pro cães adulto porte médio e grande",
+    "ração fórmula natural pro cães adulto porte grande",
+    "ração fórmula natural pro cães sênior"
    ]
   },
   {
@@ -4307,11 +4315,18 @@
    "menorPreco": true,
    "exige": "\\bformula natural\\b",
    "buscas": [
-    "ração fórmula natural gato filhote",
-    "ração fórmula natural gato adulto",
-    "ração fórmula natural gato castrado",
-    "ração fórmula natural gato sênior",
-    "ração fórmula natural gato sensível"
+    "ração fórmula natural fresh meat gatos filhote",
+    "ração fórmula natural fresh meat gatos adulto",
+    "ração fórmula natural fresh meat gatos castrado",
+    "ração fórmula natural fresh meat gatos sênior",
+    "ração fórmula natural life gatos filhote",
+    "ração fórmula natural life gatos adulto",
+    "ração fórmula natural life gatos castrado",
+    "ração fórmula natural life gatos sênior",
+    "ração fórmula natural pro gatos filhote",
+    "ração fórmula natural pro gatos adulto",
+    "ração fórmula natural pro gatos castrado",
+    "ração fórmula natural pro gatos sênior"
    ]
   },
   {
@@ -4349,7 +4364,7 @@
     "Bio Fresh"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
@@ -4403,7 +4418,7 @@
     "Bio Fresh"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
@@ -4455,7 +4470,7 @@
     "Bio Natural"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
@@ -4509,7 +4524,7 @@
     "Bio Natural"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
@@ -4560,7 +4575,7 @@
     "Quatree"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "cao",
@@ -4612,7 +4627,7 @@
     "Quatree"
    ],
    "porMarca": true,
-   "quantos": 40,
+   "quantos": 80,
    "tipo": "Marca",
    "area": "animais",
    "cat": "gato",
@@ -4742,7 +4757,7 @@
    "essencial": true,
    "quantos": 8,
    "precoMin": 300,
-   "evitar": "\\b(refil|refis|reposicao|escova lateral|escovas laterais|peca|pecas|acessorio|acessorios|bocal|compativel)\\b",
+   "evitar": "\\b(refil|refis|reposicao|escova lateral|escovas laterais|peca|pecas|acessorio|acessorios|bocal|compativel|piscina)\\b",
    "buscas": [
     "robô aspirador mop",
     "robô aspirador inteligente"
