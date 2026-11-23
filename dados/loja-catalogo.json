@@ -33,7 +33,7 @@
   {
    "id": "cao-racao-super-premium-para-filhotes-de-racas-medias-e-grandes",
    "nome": "Ração super premium para filhotes de raças médias e grandes",
-   "busca": "ração super premium filhotes raças médias grandes cachorro",
+   "busca": "ração filhote raças grandes cachorro",
    "pet": "cao",
    "nicho": "racao",
    "marcas": [
@@ -120,7 +120,7 @@
   {
    "id": "cao-racao-super-premium-para-adultos-de-racas-grandes-e-gigantes",
    "nome": "Ração super premium para adultos de raças grandes e gigantes",
-   "busca": "ração super premium adultos raças grandes gigantes cachorro",
+   "busca": "ração adulto raças grandes cachorro",
    "pet": "cao",
    "nicho": "racao",
    "marcas": [
@@ -149,7 +149,7 @@
   {
    "id": "cao-racao-super-premium-para-caes-castrados",
    "nome": "Ração super premium para cães castrados",
-   "busca": "ração super premium cães castrados",
+   "busca": "ração cães castrados",
    "pet": "cao",
    "nicho": "racao",
    "marcas": [
@@ -207,7 +207,7 @@
   {
    "id": "cao-racao-super-premium-para-controle-de-peso-light",
    "nome": "Ração super premium para controle de peso (light)",
-   "busca": "ração super premium controle peso cachorro",
+   "busca": "ração light cachorro",
    "pet": "cao",
    "nicho": "racao",
    "marcas": [
@@ -236,7 +236,7 @@
   {
    "id": "cao-racao-super-premium-para-pele-e-pelo-sensiveis",
    "nome": "Ração super premium para pele e pelo sensíveis",
-   "busca": "ração super premium pele pelo sensíveis cachorro",
+   "busca": "ração pele sensível cachorro",
    "pet": "cao",
    "nicho": "racao",
    "marcas": [
@@ -322,7 +322,7 @@
   {
    "id": "cao-racao-premium-especial-para-adultos-de-racas-pequenas",
    "nome": "Ração premium especial para adultos de raças pequenas",
-   "busca": "ração premium especial adultos raças pequenas cachorro",
+   "busca": "ração adulto raças pequenas cachorro",
    "pet": "cao",
    "nicho": "racao",
    "marcas": [
@@ -350,7 +350,7 @@
   {
    "id": "cao-racao-premium-especial-para-adultos-de-racas-medias-e-grandes",
    "nome": "Ração premium especial para adultos de raças médias e grandes",
-   "busca": "ração premium especial adultos raças médias grandes cachorro",
+   "busca": "ração adulto raças médias cachorro",
    "pet": "cao",
    "nicho": "racao",
    "marcas": [
@@ -406,7 +406,7 @@
   {
    "id": "cao-racao-umida-sache-ou-lata-super-premium-para-caes",
    "nome": "Ração úmida (sachê ou lata) super premium para cães",
-   "busca": "ração úmida super premium cães",
+   "busca": "sachê cachorro",
    "pet": "cao",
    "nicho": "racao",
    "marcas": [
@@ -431,7 +431,7 @@
   {
    "id": "cao-racao-natural-congelada-para-caes",
    "nome": "Ração natural congelada para cães",
-   "busca": "ração natural congelada cães",
+   "busca": "alimentação natural cachorro",
    "pet": "cao",
    "nicho": "racao",
    "marcas": [
@@ -497,7 +497,7 @@
   {
    "id": "cao-petisco-de-treino-pequeno-e-macio",
    "nome": "Petisco de treino pequeno e macio",
-   "busca": "petisco treino macio cachorro",
+   "busca": "petisco adestramento cachorro",
    "pet": "cao",
    "nicho": "petiscos",
    "area": "animais",
@@ -547,7 +547,7 @@
   {
    "id": "cao-comedouro-e-bebedouro-automatico-por-gravidade",
    "nome": "Comedouro e bebedouro automático por gravidade",
-   "busca": "comedouro bebedouro automático por gravidade cachorro",
+   "busca": "alimentador gravidade pet",
    "pet": "cao",
    "nicho": "potes",
    "area": "animais",
@@ -597,7 +597,7 @@
   {
    "id": "cao-cama-elevada-suspensa-para-dias-quentes",
    "nome": "Cama elevada (suspensa) para dias quentes",
-   "busca": "cama elevada dias quentes cachorro",
+   "busca": "cama elevada cachorro",
    "pet": "cao",
    "nicho": "camas",
    "area": "animais",
@@ -748,7 +748,7 @@
   {
    "id": "cao-mochila-para-passeio-do-tutor",
    "nome": "Mochila para passeio do tutor",
-   "busca": "mochila passeio tutor cachorro",
+   "busca": "mochila passeio pet",
    "pet": "cao",
    "nicho": "passeio",
    "area": "tutor",
@@ -768,7 +768,7 @@
   {
    "id": "cao-bolsa-de-passeio-do-tutor-petiscos-e-saquinhos",
    "nome": "Bolsa de passeio do tutor (petiscos e saquinhos)",
-   "busca": "bolsa passeio tutor cachorro",
+   "busca": "bolsa passeio cachorro",
    "pet": "cao",
    "nicho": "passeio",
    "area": "tutor",
@@ -848,7 +848,7 @@
   {
    "id": "cao-removedor-de-odores-e-manchas",
    "nome": "Removedor de odores e manchas",
-   "busca": "removedor odores manchas cachorro",
+   "busca": "removedor de manchas pet",
    "pet": "cao",
    "nicho": "higiene",
    "area": "animais",
@@ -888,7 +888,7 @@
   {
    "id": "cao-shampoo-para-pelagem-clara-ou-escura",
    "nome": "Shampoo para pelagem clara ou escura",
-   "busca": "shampoo pelagem clara escura cachorro",
+   "busca": "shampoo pelos claros cachorro",
    "pet": "cao",
    "nicho": "higiene",
    "area": "animais",
@@ -908,7 +908,7 @@
   {
    "id": "cao-escova-slicker",
    "nome": "Escova slicker",
-   "busca": "escova slicker cachorro",
+   "busca": "rasqueadeira cachorro",
    "pet": "cao",
    "nicho": "escovacao",
    "area": "animais",
@@ -918,7 +918,7 @@
   {
    "id": "cao-pente-de-metal",
    "nome": "Pente de metal",
-   "busca": "pente metal cachorro",
+   "busca": "pente cachorro",
    "pet": "cao",
    "nicho": "escovacao",
    "area": "animais",
@@ -978,7 +978,7 @@
   {
    "id": "cao-escova-tira-subpelo-tipo-furminator-para-caes",
    "nome": "Escova tira-subpelo (tipo FURminator) para cães",
-   "busca": "escova tira-subpelo furminator cães",
+   "busca": "escova tira subpelo cachorro",
    "pet": "cao",
    "nicho": "escovacao",
    "area": "animais",
@@ -988,7 +988,7 @@
   {
    "id": "cao-escova-de-cerdas-duplas-para-caes",
    "nome": "Escova de cerdas duplas para cães",
-   "busca": "escova cerdas duplas cães",
+   "busca": "escova dupla cachorro",
    "pet": "cao",
    "nicho": "escovacao",
    "area": "animais",
@@ -1063,7 +1063,7 @@
   {
    "id": "cao-kit-de-primeiros-socorros-pet",
    "nome": "Kit de primeiros socorros pet",
-   "busca": "kit primeiros socorros pet cachorro",
+   "busca": "kit primeiros socorros pet",
    "pet": "cao",
    "nicho": "saude",
    "area": "animais",
@@ -1145,7 +1145,7 @@
   {
    "id": "cao-bola-que-solta-petisco",
    "nome": "Bola que solta petisco",
-   "busca": "bola que solta petisco cachorro",
+   "busca": "bola petisco cachorro",
    "pet": "cao",
    "nicho": "brinquedos",
    "area": "animais",
@@ -1215,7 +1215,7 @@
   {
    "id": "cao-ursinho-de-pelucia-com-apito",
    "nome": "Ursinho de pelúcia com apito",
-   "busca": "ursinho pelúcia apito cachorro",
+   "busca": "pelúcia apito cachorro",
    "pet": "cao",
    "nicho": "brinquedos",
    "area": "animais",
@@ -1245,7 +1245,7 @@
   {
    "id": "cao-bolsinha-de-petiscos-para-treino",
    "nome": "Bolsinha de petiscos para treino",
-   "busca": "bolsinha petiscos treino cachorro",
+   "busca": "bolsa petisco adestramento",
    "pet": "cao",
    "nicho": "casa",
    "area": "animais",
@@ -1255,7 +1255,7 @@
   {
    "id": "cao-camera-pet-com-petisco",
    "nome": "Câmera pet com petisco",
-   "busca": "câmera pet petisco cachorro",
+   "busca": "câmera petisco pet",
    "pet": "cao",
    "nicho": "casa",
    "area": "animais",
@@ -1275,7 +1275,7 @@
   {
    "id": "cao-playground-cercadinho-portatil-para-caes",
    "nome": "Playground (cercadinho) portátil para cães",
-   "busca": "playground portátil cães",
+   "busca": "cercado portátil cachorro",
    "pet": "cao",
    "nicho": "casa",
    "area": "animais",
@@ -1397,7 +1397,7 @@
   {
    "id": "gato-racao-super-premium-para-gatos-de-pelo-longo",
    "nome": "Ração super premium para gatos de pelo longo",
-   "busca": "ração super premium gatos pelo longo",
+   "busca": "ração gato pelo longo",
    "pet": "gato",
    "nicho": "racao",
    "marcas": [
@@ -1425,7 +1425,7 @@
   {
    "id": "gato-racao-super-premium-para-gatos-sensiveis-digestao",
    "nome": "Ração super premium para gatos sensíveis (digestão)",
-   "busca": "ração super premium gatos sensíveis",
+   "busca": "ração gato sensível",
    "pet": "gato",
    "nicho": "racao",
    "marcas": [
@@ -1562,7 +1562,7 @@
   {
    "id": "gato-sache-super-premium-caixa-com-varios",
    "nome": "Sachê super premium (caixa com vários)",
-   "busca": "sachê super premium gato",
+   "busca": "sachê gato",
    "pet": "gato",
    "nicho": "racao",
    "marcas": [
@@ -1587,7 +1587,7 @@
   {
    "id": "gato-pate-super-premium-para-gatos",
    "nome": "Patê super premium para gatos",
-   "busca": "patê super premium gatos",
+   "busca": "patê gato",
    "pet": "gato",
    "nicho": "racao",
    "marcas": [
@@ -1611,7 +1611,7 @@
   {
    "id": "gato-petisco-cremoso-em-bisnaga-tipo-churu",
    "nome": "Petisco cremoso em bisnaga (tipo churu)",
-   "busca": "petisco cremoso bisnaga churu gato",
+   "busca": "petisco cremoso gato",
    "pet": "gato",
    "nicho": "petiscos",
    "area": "animais",
@@ -1621,7 +1621,7 @@
   {
    "id": "gato-petisco-desidratado-de-carne-ou-peixe",
    "nome": "Petisco desidratado de carne ou peixe",
-   "busca": "petisco desidratado carne peixe gato",
+   "busca": "petisco desidratado gato",
    "pet": "gato",
    "nicho": "petiscos",
    "area": "animais",
@@ -1661,7 +1661,7 @@
   {
    "id": "gato-comedouro-de-ceramica-raso",
    "nome": "Comedouro de cerâmica raso",
-   "busca": "comedouro cerâmica raso gato",
+   "busca": "comedouro cerâmica gato",
    "pet": "gato",
    "nicho": "potes",
    "area": "animais",
@@ -1691,7 +1691,7 @@
   {
    "id": "gato-fonte-de-agua-de-ceramica-ou-inox",
    "nome": "Fonte de água de cerâmica ou inox",
-   "busca": "fonte água cerâmica inox gato",
+   "busca": "fonte de água gato",
    "pet": "gato",
    "nicho": "potes",
    "area": "animais",
@@ -1711,7 +1711,7 @@
   {
    "id": "gato-comedouro-automatico-programavel-com-camera",
    "nome": "Comedouro automático programável com câmera",
-   "busca": "comedouro automático programável câmera gato",
+   "busca": "alimentador automático câmera pet",
    "pet": "gato",
    "nicho": "potes",
    "area": "animais",
@@ -1721,7 +1721,7 @@
   {
    "id": "gato-arranhador-poste-baixo-de-sisal",
    "nome": "Arranhador poste baixo de sisal",
-   "busca": "arranhador poste baixo sisal gato",
+   "busca": "arranhador sisal gato",
    "pet": "gato",
    "nicho": "arranhadores",
    "area": "animais",
@@ -1801,7 +1801,7 @@
   {
    "id": "gato-nicho-de-madeira-com-almofada",
    "nome": "Nicho de madeira com almofada",
-   "busca": "nicho madeira almofada gato",
+   "busca": "nicho gato",
    "pet": "gato",
    "nicho": "arranhadores",
    "area": "animais",
@@ -1841,7 +1841,7 @@
   {
    "id": "gato-cama-aquecida-para-o-inverno",
    "nome": "Cama aquecida (para o inverno)",
-   "busca": "cama aquecida gato",
+   "busca": "cama térmica gato",
    "pet": "gato",
    "nicho": "camas",
    "area": "animais",
@@ -1851,7 +1851,7 @@
   {
    "id": "gato-rede-para-radiador-ou-cadeira",
    "nome": "Rede para radiador ou cadeira",
-   "busca": "rede radiador cadeira gato",
+   "busca": "rede cadeira gato",
    "pet": "gato",
    "nicho": "camas",
    "area": "animais",
@@ -1911,7 +1911,7 @@
   {
    "id": "gato-areia-de-graos-finos-aglomerante",
    "nome": "Areia de grãos finos aglomerante",
-   "busca": "areia grãos finos aglomerante gato",
+   "busca": "areia aglomerante gato",
    "pet": "gato",
    "nicho": "higiene",
    "area": "animais",
@@ -1921,7 +1921,7 @@
   {
    "id": "gato-pa-de-areia-com-furos",
    "nome": "Pá de areia com furos",
-   "busca": "pá areia furos gato",
+   "busca": "pá higiênica gato",
    "pet": "gato",
    "nicho": "higiene",
    "area": "animais",
@@ -1931,7 +1931,7 @@
   {
    "id": "gato-lixeira-para-areia-com-saco",
    "nome": "Lixeira para areia com saco",
-   "busca": "lixeira areia saco gato",
+   "busca": "lixeira areia gato",
    "pet": "gato",
    "nicho": "higiene",
    "area": "animais",
@@ -2021,7 +2021,7 @@
   {
    "id": "gato-escova-tira-subpelo-tipo-furminator-para-gatos",
    "nome": "Escova tira-subpelo (tipo FURminator) para gatos",
-   "busca": "escova tira-subpelo furminator gatos",
+   "busca": "escova tira subpelo gato",
    "pet": "gato",
    "nicho": "escovacao",
    "area": "animais",
@@ -2074,7 +2074,7 @@
   {
    "id": "gato-suplemento-para-trato-urinario",
    "nome": "Suplemento para trato urinário",
-   "busca": "suplemento trato urinário gato",
+   "busca": "suplemento urinário gato",
    "pet": "gato",
    "nicho": "saude",
    "obs": "Sempre com orientação do veterinário, pela espécie e pelo peso.",
@@ -2136,7 +2136,7 @@
   {
    "id": "gato-circuito-de-bolinha-torre",
    "nome": "Circuito de bolinha (torre)",
-   "busca": "circuito bolinha gato",
+   "busca": "torre bolinha gato",
    "pet": "gato",
    "nicho": "brinquedos",
    "area": "animais",
@@ -2146,7 +2146,7 @@
   {
    "id": "gato-brinquedo-eletronico-que-se-mexe-sozinho",
    "nome": "Brinquedo eletrônico que se mexe sozinho",
-   "busca": "brinquedo eletrônico que se mexe sozinho gato",
+   "busca": "brinquedo automático gato",
    "pet": "gato",
    "nicho": "brinquedos",
    "area": "animais",
@@ -2156,7 +2156,7 @@
   {
    "id": "gato-spray-de-catnip",
    "nome": "Spray de catnip",
-   "busca": "spray catnip gato",
+   "busca": "catnip spray",
    "pet": "gato",
    "nicho": "brinquedos",
    "area": "animais",
@@ -2186,7 +2186,7 @@
   {
    "id": "gato-ursinho-de-pelucia-com-catnip",
    "nome": "Ursinho de pelúcia com catnip",
-   "busca": "ursinho pelúcia catnip gato",
+   "busca": "pelúcia catnip",
    "pet": "gato",
    "nicho": "brinquedos",
    "area": "animais",
@@ -2237,7 +2237,7 @@
   {
    "id": "gato-camera-pet",
    "nome": "Câmera pet",
-   "busca": "câmera pet gato",
+   "busca": "câmera pet",
    "pet": "gato",
    "nicho": "casa",
    "area": "animais",
@@ -2273,7 +2273,7 @@
   {
    "id": "aves-racao-extrusada-premium-para-papagaio-e-grandes-psitacideos",
    "nome": "Ração extrusada premium para papagaio e grandes psitacídeos",
-   "busca": "ração extrusada premium papagaio grandes psitacídeos",
+   "busca": "ração papagaio",
    "pet": "aves",
    "nicho": "racao",
    "marcas": [
@@ -2289,7 +2289,7 @@
   {
    "id": "aves-racao-extrusada-premium-para-canario-e-passaros-pequenos",
    "nome": "Ração extrusada premium para canário e pássaros pequenos",
-   "busca": "ração extrusada premium canário pássaros pequenos",
+   "busca": "ração canário",
    "pet": "aves",
    "nicho": "racao",
    "marcas": [
@@ -2326,7 +2326,7 @@
   {
    "id": "aves-painco-em-espiga",
    "nome": "Painço em espiga",
-   "busca": "painço espiga pássaro",
+   "busca": "painço espiga",
    "pet": "aves",
    "nicho": "alimentacao",
    "obs": "Petiscos com moderação: a base é a ração.",
@@ -2417,7 +2417,7 @@
   {
    "id": "aves-playground-de-mesa-para-aves",
    "nome": "Playground de mesa para aves",
-   "busca": "playground mesa aves",
+   "busca": "playground calopsita",
    "pet": "aves",
    "nicho": "gaiolas",
    "area": "animais",
@@ -2427,7 +2427,7 @@
   {
    "id": "aves-bandeja-e-forro-para-fundo-de-gaiola",
    "nome": "Bandeja e forro para fundo de gaiola",
-   "busca": "bandeja forro fundo gaiola pássaro",
+   "busca": "bandeja gaiola pássaro",
    "pet": "aves",
    "nicho": "gaiolas",
    "area": "animais",
@@ -2437,7 +2437,7 @@
   {
    "id": "aves-capa-noturna-para-gaiola",
    "nome": "Capa noturna para gaiola",
-   "busca": "capa noturna gaiola pássaro",
+   "busca": "capa gaiola pássaro",
    "pet": "aves",
    "nicho": "gaiolas",
    "area": "animais",
@@ -2457,7 +2457,7 @@
   {
    "id": "roedores-racao-extrusada-premium-para-chinchila",
    "nome": "Ração extrusada premium para chinchila",
-   "busca": "ração extrusada premium chinchila",
+   "busca": "ração chinchila",
    "pet": "roedores",
    "nicho": "racao",
    "marcas": [
@@ -2474,7 +2474,7 @@
   {
    "id": "roedores-racao-premium-para-gerbil-e-camundongo",
    "nome": "Ração premium para gerbil e camundongo",
-   "busca": "ração premium gerbil camundongo",
+   "busca": "ração hamster gerbil",
    "pet": "roedores",
    "nicho": "racao",
    "marcas": [
@@ -2491,7 +2491,7 @@
   {
    "id": "roedores-feno-de-alfafa-para-filhotes",
    "nome": "Feno de alfafa (para filhotes)",
-   "busca": "feno alfafa roedor",
+   "busca": "feno alfafa",
    "pet": "roedores",
    "nicho": "alimentacao",
    "area": "animais",
@@ -2501,7 +2501,7 @@
   {
    "id": "roedores-petiscos-naturais-para-roedores",
    "nome": "Petiscos naturais para roedores",
-   "busca": "petiscos naturais roedores",
+   "busca": "petisco hamster",
    "pet": "roedores",
    "nicho": "alimentacao",
    "area": "animais",
@@ -2511,7 +2511,7 @@
   {
    "id": "roedores-galho-para-roer-maca-salgueiro",
    "nome": "Galho para roer (maçã, salgueiro)",
-   "busca": "galho roer roedor",
+   "busca": "galho roer coelho",
    "pet": "roedores",
    "nicho": "alimentacao",
    "area": "animais",
@@ -2521,7 +2521,7 @@
   {
    "id": "roedores-pedra-mineral-para-roedores",
    "nome": "Pedra mineral para roedores",
-   "busca": "pedra mineral roedores",
+   "busca": "pedra mineral hamster",
    "pet": "roedores",
    "nicho": "alimentacao",
    "area": "animais",
@@ -2541,7 +2541,7 @@
   {
    "id": "roedores-comedouro-de-ceramica-pesado",
    "nome": "Comedouro de cerâmica pesado",
-   "busca": "comedouro cerâmica pesado roedor",
+   "busca": "comedouro cerâmica hamster",
    "pet": "roedores",
    "nicho": "gaiolas",
    "area": "animais",
@@ -2551,7 +2551,7 @@
   {
    "id": "roedores-casinha-esconderijo-de-madeira",
    "nome": "Casinha esconderijo de madeira",
-   "busca": "casinha esconderijo madeira roedor",
+   "busca": "casinha hamster",
    "pet": "roedores",
    "nicho": "gaiolas",
    "area": "animais",
@@ -2581,7 +2581,7 @@
   {
    "id": "roedores-ponte-e-escadas-de-madeira",
    "nome": "Ponte e escadas de madeira",
-   "busca": "ponte escadas madeira roedor",
+   "busca": "ponte hamster",
    "pet": "roedores",
    "nicho": "gaiolas",
    "area": "animais",
@@ -2591,7 +2591,7 @@
   {
    "id": "roedores-tapete-de-feno-para-coelho",
    "nome": "Tapete de feno para coelho",
-   "busca": "tapete feno coelho",
+   "busca": "tapete coelho",
    "pet": "roedores",
    "nicho": "gaiolas",
    "area": "animais",
@@ -2601,7 +2601,7 @@
   {
    "id": "roedores-caixa-sanitaria-para-coelho",
    "nome": "Caixa sanitária para coelho",
-   "busca": "caixa sanitária coelho",
+   "busca": "banheiro coelho",
    "pet": "roedores",
    "nicho": "gaiolas",
    "area": "animais",
@@ -2611,7 +2611,7 @@
   {
    "id": "roedores-serragem-maravalha-sem-po-pinus",
    "nome": "Serragem/maravalha sem pó (pinus)",
-   "busca": "serragem maravalha sem pó roedor",
+   "busca": "maravalha hamster",
    "pet": "roedores",
    "nicho": "gaiolas",
    "area": "animais",
@@ -2621,7 +2621,7 @@
   {
    "id": "roedores-areia-para-banho-de-hamster-anao",
    "nome": "Areia para banho de hamster anão",
-   "busca": "areia banho hamster anão",
+   "busca": "areia banho hamster",
    "pet": "roedores",
    "nicho": "gaiolas",
    "area": "animais",
@@ -2641,7 +2641,7 @@
   {
    "id": "roedores-escova-macia-para-coelho",
    "nome": "Escova macia para coelho",
-   "busca": "escova macia coelho",
+   "busca": "escova coelho",
    "pet": "roedores",
    "nicho": "gaiolas",
    "area": "animais",
@@ -2651,7 +2651,7 @@
   {
    "id": "roedores-playground-cercadinho-para-coelhos-e-porquinhos",
    "nome": "Playground (cercadinho) para coelhos e porquinhos",
-   "busca": "playground coelhos porquinhos",
+   "busca": "cercadinho coelho",
    "pet": "roedores",
    "nicho": "gaiolas",
    "area": "animais",
@@ -2661,7 +2661,7 @@
   {
    "id": "peixes-racao-premium-em-flocos-para-peixes-tropicais",
    "nome": "Ração premium em flocos para peixes tropicais",
-   "busca": "ração premium flocos peixes tropicais",
+   "busca": "ração flocos peixe",
    "pet": "peixes",
    "nicho": "racao",
    "marcas": [
@@ -2678,7 +2678,7 @@
   {
    "id": "peixes-racao-premium-em-granulos-para-peixes-de-fundo",
    "nome": "Ração premium em grânulos para peixes de fundo",
-   "busca": "ração premium grânulos peixes fundo",
+   "busca": "ração peixe fundo",
    "pet": "peixes",
    "nicho": "racao",
    "marcas": [
@@ -2729,15 +2729,9 @@
   {
    "id": "peixes-alimento-vivo-ou-congelado-artemia",
    "nome": "Alimento vivo ou congelado (artêmia)",
-   "busca": "alimento vivo congelado aquário",
+   "busca": "artêmia aquário",
    "pet": "peixes",
-   "nicho": "racao",
-   "marcas": [
-    "Alcon",
-    "Tetra",
-    "Sera",
-    "Tropical"
-   ],
+   "nicho": "alimentacao",
    "tipo": "Premium",
    "area": "animais",
    "cat": "peixes",
@@ -2746,7 +2740,7 @@
   {
    "id": "peixes-aquario-de-60-litros-completo-kit",
    "nome": "Aquário de 60 litros completo (kit)",
-   "busca": "aquário 60 litros completo",
+   "busca": "aquário 60 litros",
    "pet": "peixes",
    "nicho": "aquario",
    "area": "animais",
@@ -2766,7 +2760,7 @@
   {
    "id": "peixes-substrato-fertil-para-plantas",
    "nome": "Substrato fértil para plantas",
-   "busca": "substrato fértil plantas aquário",
+   "busca": "substrato fértil aquário",
    "pet": "peixes",
    "nicho": "aquario",
    "area": "animais",
@@ -2786,7 +2780,7 @@
   {
    "id": "peixes-plantas-naturais-faceis-anubias-musgo",
    "nome": "Plantas naturais fáceis (anúbias, musgo)",
-   "busca": "plantas naturais fáceis aquário",
+   "busca": "planta natural aquário",
    "pet": "peixes",
    "nicho": "aquario",
    "area": "animais",
@@ -2796,7 +2790,7 @@
   {
    "id": "peixes-troncos-e-rochas-decorativas",
    "nome": "Troncos e rochas decorativas",
-   "busca": "troncos rochas decorativas aquário",
+   "busca": "tronco aquário",
    "pet": "peixes",
    "nicho": "aquario",
    "area": "animais",
@@ -2846,7 +2840,7 @@
   {
    "id": "peixes-tratamento-contra-doencas-comuns-ictio",
    "nome": "Tratamento contra doenças comuns (ictio)",
-   "busca": "tratamento contra doenças comuns aquário",
+   "busca": "ictio aquário",
    "pet": "peixes",
    "nicho": "aquario",
    "area": "animais",
@@ -2856,13 +2850,14 @@
   {
    "id": "repteis-racao-premium-para-tartaruga-e-cagado",
    "nome": "Ração premium para tartaruga e cágado",
-   "busca": "ração premium tartaruga cágado",
+   "busca": "ração tartaruga",
    "pet": "repteis",
    "nicho": "racao",
    "marcas": [
-    "Alcon Reptolife",
+    "Reptolife",
     "Megazoo",
-    "Nutrópica"
+    "Nutrópica",
+    "Alcon"
    ],
    "tipo": "Premium",
    "area": "animais",
@@ -2876,9 +2871,10 @@
    "pet": "repteis",
    "nicho": "racao",
    "marcas": [
-    "Alcon Reptolife",
+    "Reptolife",
     "Megazoo",
-    "Nutrópica"
+    "Nutrópica",
+    "Alcon"
    ],
    "tipo": "Premium",
    "area": "animais",
@@ -2888,14 +2884,9 @@
   {
    "id": "repteis-alimento-para-repteis-insetivoros-grilo-tenebrio",
    "nome": "Alimento para répteis insetívoros (grilo, tenébrio)",
-   "busca": "alimento répteis insetívoros",
+   "busca": "tenébrio desidratado",
    "pet": "repteis",
-   "nicho": "racao",
-   "marcas": [
-    "Alcon Reptolife",
-    "Megazoo",
-    "Nutrópica"
-   ],
+   "nicho": "alimentacao",
    "tipo": "Premium",
    "area": "animais",
    "cat": "repteis",
@@ -2904,7 +2895,7 @@
   {
    "id": "repteis-terrario-de-vidro-com-ventilacao",
    "nome": "Terrário de vidro com ventilação",
-   "busca": "terrário vidro ventilação",
+   "busca": "terrário vidro",
    "pet": "repteis",
    "nicho": "terrario",
    "area": "animais",
@@ -2934,7 +2925,7 @@
   {
    "id": "repteis-termometro-e-higrometro-digital",
    "nome": "Termômetro e higrômetro digital",
-   "busca": "termômetro higrômetro digital réptil",
+   "busca": "termômetro terrário",
    "pet": "repteis",
    "nicho": "terrario",
    "area": "animais",
@@ -2954,7 +2945,7 @@
   {
    "id": "repteis-pedra-de-aquecimento-com-termostato",
    "nome": "Pedra de aquecimento com termostato",
-   "busca": "pedra aquecimento termostato réptil",
+   "busca": "pedra aquecida réptil",
    "pet": "repteis",
    "nicho": "terrario",
    "area": "animais",
@@ -2964,7 +2955,7 @@
   {
    "id": "repteis-ilha-flutuante-para-tartaruga",
    "nome": "Ilha flutuante para tartaruga",
-   "busca": "ilha flutuante tartaruga",
+   "busca": "ilha tartaruga",
    "pet": "repteis",
    "nicho": "terrario",
    "area": "animais",
@@ -2974,7 +2965,7 @@
   {
    "id": "repteis-pote-raso-para-agua-de-jabuti",
    "nome": "Pote raso para água de jabuti",
-   "busca": "pote raso água jabuti",
+   "busca": "bebedouro jabuti",
    "pet": "repteis",
    "nicho": "terrario",
    "area": "animais",
@@ -2984,7 +2975,7 @@
   {
    "id": "repteis-timer-de-tomada-para-iluminacao",
    "nome": "Timer de tomada para iluminação",
-   "busca": "timer tomada iluminação réptil",
+   "busca": "timer aquário",
    "pet": "repteis",
    "nicho": "terrario",
    "area": "animais",
@@ -3014,7 +3005,7 @@
   {
    "id": "todos-aspirador-de-po-portatil-para-pelos",
    "nome": "Aspirador de pó portátil para pelos",
-   "busca": "aspirador pó portátil pelos pet",
+   "busca": "aspirador portátil pelos pet",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -3024,7 +3015,7 @@
   {
    "id": "todos-bolsa-maternidade-pet-viagem",
    "nome": "Bolsa maternidade pet (viagem)",
-   "busca": "bolsa maternidade pet",
+   "busca": "bolsa viagem pet",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -3044,7 +3035,7 @@
   {
    "id": "todos-aspirador-de-po-robo-para-pelos-de-pet",
    "nome": "Aspirador de pó robô para pelos de pet",
-   "busca": "aspirador pó robô pelos pet",
+   "busca": "aspirador robô pelos",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -3074,7 +3065,7 @@
   {
    "id": "todos-escova-de-borracha-para-tirar-pelo-de-tapete-e-sofa",
    "nome": "Escova de borracha para tirar pelo de tapete e sofá",
-   "busca": "escova borracha tirar pelo tapete sofá pet",
+   "busca": "escova tira pelos sofá",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -3117,7 +3108,7 @@
   {
    "id": "roedores-toca-de-feno-para-coelho",
    "nome": "Toca de feno para coelho",
-   "busca": "toca feno coelho",
+   "busca": "casinha feno coelho",
    "pet": "roedores",
    "nicho": "gaiolas",
    "area": "animais",
@@ -3183,7 +3174,7 @@
   {
    "id": "repteis-grilos-e-larvas-desidratados",
    "nome": "Grilos e larvas desidratados",
-   "busca": "grilo desidratado répteis",
+   "busca": "grilo desidratado",
    "pet": "repteis",
    "nicho": "alimentacao",
    "area": "animais",
@@ -3216,7 +3207,7 @@
   {
    "id": "outros-ninho-para-galinha-poedeira",
    "nome": "Ninho para galinha poedeira",
-   "busca": "ninho galinha poedeira",
+   "busca": "ninho galinha",
    "pet": "todos",
    "nicho": "outros",
    "area": "animais",
@@ -3260,7 +3251,7 @@
   {
    "id": "sem-pelos-extratora-de-estofados-portatil",
    "nome": "Extratora de estofados portátil",
-   "busca": "extratora estofados portátil pelos pet",
+   "busca": "extratora portátil",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -3348,7 +3339,7 @@
   {
    "id": "limpeza-panos-de-microfibra-kit",
    "nome": "Panos de microfibra para pets (kit)",
-   "busca": "pano microfibra pet",
+   "busca": "pano microfibra",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -3381,7 +3372,7 @@
   {
    "id": "limpeza-limpador-e-desinfetante-para-ambientes-com-pets",
    "nome": "Limpador e desinfetante para ambientes com pets",
-   "busca": "desinfetante ambiente pet",
+   "busca": "desinfetante pet",
    "pet": "todos",
    "nicho": "higiene",
    "area": "tutor",
@@ -3425,7 +3416,7 @@
   {
    "id": "conforto-manta-para-sofa-com-estampa-de-patinhas",
    "nome": "Manta para sofá com estampa de patinhas",
-   "busca": "manta sofá patinhas",
+   "busca": "manta para sofá",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -3458,7 +3449,7 @@
   {
    "id": "conforto-copo-termico-com-tampa",
    "nome": "Copo térmico com estampa de patinhas",
-   "busca": "copo térmico patinha",
+   "busca": "copo térmico cachorro",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -3480,7 +3471,7 @@
   {
    "id": "carro-organizador-de-porta-malas",
    "nome": "Organizador de porta-malas para pets",
-   "busca": "organizador porta malas pet",
+   "busca": "organizador porta malas",
    "pet": "todos",
    "nicho": "passeio",
    "area": "tutor",
@@ -3491,7 +3482,7 @@
   {
    "id": "carro-aspirador-automotivo-portatil",
    "nome": "Aspirador automotivo para pelos de pet",
-   "busca": "aspirador automotivo pelos pet",
+   "busca": "aspirador automotivo",
    "pet": "todos",
    "nicho": "passeio",
    "area": "tutor",
@@ -3502,7 +3493,7 @@
   {
    "id": "carro-protetor-de-porta-do-carro",
    "nome": "Protetor de porta do carro",
-   "busca": "protetor porta carro pet",
+   "busca": "protetor porta carro",
    "pet": "todos",
    "nicho": "passeio",
    "area": "tutor",
@@ -4271,7 +4262,7 @@
   {
    "id": "limpeza-vassoura-de-borracha-tira-pelos",
    "nome": "Vassoura de borracha tira-pelos",
-   "busca": "vassoura de borracha tira pelos",
+   "busca": "vassoura de borracha",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -4337,7 +4328,7 @@
   {
    "id": "sem-pelos-aspirador-de-mao-sem-fio",
    "nome": "Aspirador de mão sem fio",
-   "busca": "aspirador de mão sem fio",
+   "busca": "aspirador de mão",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -4359,7 +4350,7 @@
   {
    "id": "sem-pelos-protetor-de-sofa-impermeavel-tipo-manta",
    "nome": "Protetor de sofá impermeável (tipo manta)",
-   "busca": "protetor de sofá impermeável manta",
+   "busca": "protetor de sofá",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -4469,7 +4460,7 @@
   {
    "id": "passeio-bolsa-de-passeio-para-petiscos-e-saquinhos",
    "nome": "Bolsa de passeio para petiscos e saquinhos",
-   "busca": "bolsa passeio pet petisco saquinho",
+   "busca": "bolsa petisco pet",
    "pet": "todos",
    "nicho": "passeio",
    "area": "tutor",
@@ -4546,7 +4537,7 @@
   {
    "id": "gato-caixa-de-areia-com-entrada-por-cima",
    "nome": "Caixa de areia com entrada por cima",
-   "busca": "caixa de areia entrada superior gato",
+   "busca": "caixa areia top entry gato",
    "pet": "gato",
    "nicho": "higiene",
    "area": "animais",
@@ -4634,7 +4625,7 @@
   {
    "id": "gato-comedouro-com-microchip",
    "nome": "Comedouro com microchip",
-   "busca": "comedouro microchip gato",
+   "busca": "comedouro inteligente gato",
    "pet": "gato",
    "nicho": "potes",
    "area": "animais",
@@ -4645,7 +4636,7 @@
   {
    "id": "gato-portao-com-passagem-para-gato",
    "nome": "Portão com passagem para gato",
-   "busca": "portão pet passagem gato",
+   "busca": "portão pet portinhola",
    "pet": "gato",
    "nicho": "acessorios",
    "area": "animais",
@@ -4799,7 +4790,7 @@
   {
    "id": "roedores-substrato-de-papel-para-roedores",
    "nome": "Substrato de papel para roedores",
-   "busca": "substrato papel hamster",
+   "busca": "substrato hamster",
    "pet": "roedores",
    "nicho": "acessorios",
    "area": "animais",
@@ -4832,7 +4823,7 @@
   {
    "id": "roedores-protetor-de-fios-para-coelhos",
    "nome": "Protetor de fios para coelhos",
-   "busca": "protetor espiral fios coelho",
+   "busca": "protetor cabo pet",
    "pet": "roedores",
    "nicho": "acessorios",
    "area": "animais",
@@ -4876,7 +4867,7 @@
   {
    "id": "peixes-filtro-de-esponja-baixa-vazao",
    "nome": "Filtro de esponja (baixa vazão)",
-   "busca": "filtro esponja aquário betta",
+   "busca": "filtro esponja aquário",
    "pet": "peixes",
    "nicho": "aquario",
    "area": "animais",
@@ -4920,7 +4911,7 @@
   {
    "id": "repteis-filtro-para-aquaterrario",
    "nome": "Filtro para aquaterrário",
-   "busca": "filtro tartaruga aquaterrário",
+   "busca": "filtro tartaruga",
    "pet": "repteis",
    "nicho": "terrario",
    "area": "animais",
@@ -5063,7 +5054,7 @@
   {
    "id": "aves-brinquedo-de-forrageamento-para-aves",
    "nome": "Brinquedo de forrageamento para aves",
-   "busca": "brinquedo forrageamento pássaros",
+   "busca": "brinquedo calopsita",
    "pet": "aves",
    "nicho": "brinquedos",
    "area": "animais",
@@ -5074,7 +5065,7 @@
   {
    "id": "aves-rede-de-corda-para-aves",
    "nome": "Rede de corda para aves",
-   "busca": "rede corda calopsita",
+   "busca": "corda calopsita",
    "pet": "aves",
    "nicho": "acessorios",
    "area": "animais",
@@ -5118,7 +5109,7 @@
   {
    "id": "aves-escova-e-kit-de-limpeza-para-gaiola",
    "nome": "Escova e kit de limpeza para gaiola",
-   "busca": "escova limpeza gaiola pássaros",
+   "busca": "escova gaiola",
    "pet": "aves",
    "nicho": "higiene",
    "area": "animais",
@@ -5129,7 +5120,7 @@
   {
    "id": "roedores-caminha-rede-para-hamster",
    "nome": "Caminha rede para hamster",
-   "busca": "rede hamster caminha",
+   "busca": "rede hamster",
    "pet": "roedores",
    "nicho": "camas",
    "area": "animais",
@@ -5140,7 +5131,7 @@
   {
    "id": "roedores-brinquedos-de-madeira-para-roer",
    "nome": "Brinquedos de madeira para roer",
-   "busca": "brinquedo madeira roer hamster",
+   "busca": "brinquedo roer hamster",
    "pet": "roedores",
    "nicho": "brinquedos",
    "area": "animais",
@@ -5184,7 +5175,7 @@
   {
    "id": "repteis-termostato-digital-para-terrario",
    "nome": "Termostato digital para terrário",
-   "busca": "termostato terrário réptil",
+   "busca": "termostato réptil",
    "pet": "repteis",
    "nicho": "terrario",
    "area": "animais",
@@ -5195,7 +5186,7 @@
   {
    "id": "repteis-esconderijo-para-repteis",
    "nome": "Esconderijo para répteis",
-   "busca": "esconderijo réptil terrário",
+   "busca": "toca réptil",
    "pet": "repteis",
    "nicho": "terrario",
    "area": "animais",
@@ -5206,7 +5197,7 @@
   {
    "id": "repteis-plataforma-e-rocha-para-tartaruga",
    "nome": "Plataforma e rocha para tartaruga",
-   "busca": "plataforma tartaruga aquaterrário",
+   "busca": "plataforma tartaruga",
    "pet": "repteis",
    "nicho": "terrario",
    "area": "animais",
@@ -5217,7 +5208,7 @@
   {
    "id": "repteis-bebedouro-e-comedouro-para-repteis",
    "nome": "Bebedouro e comedouro para répteis",
-   "busca": "comedouro réptil terrário",
+   "busca": "comedouro réptil",
    "pet": "repteis",
    "nicho": "alimentacao",
    "area": "animais",
@@ -5228,7 +5219,7 @@
   {
    "id": "repteis-pinca-de-alimentacao-para-repteis",
    "nome": "Pinça de alimentação para répteis",
-   "busca": "pinça alimentação réptil",
+   "busca": "pinça aquário",
    "pet": "repteis",
    "nicho": "acessorios",
    "area": "animais",
@@ -5239,7 +5230,7 @@
   {
    "id": "repteis-decoracao-para-terrario",
    "nome": "Decoração para terrário",
-   "busca": "decoração terrário réptil",
+   "busca": "decoração terrário",
    "pet": "repteis",
    "nicho": "terrario",
    "area": "animais",
@@ -5371,7 +5362,7 @@
   {
    "id": "limpeza-eliminador-de-cheiro-de-fezes-e-xixi",
    "nome": "Eliminador de cheiro de fezes e xixi",
-   "busca": "eliminador de odor fezes urina pet",
+   "busca": "eliminador de odores pet",
    "pet": "todos",
    "nicho": "higiene",
    "area": "tutor",
@@ -5437,7 +5428,7 @@
   {
    "id": "limpeza-higienizador-de-caixa-de-areia",
    "nome": "Higienizador de caixa de areia",
-   "busca": "higienizador caixa de areia gato",
+   "busca": "limpador caixa de areia",
    "pet": "todos",
    "nicho": "higiene",
    "area": "tutor",
@@ -5448,7 +5439,7 @@
   {
    "id": "limpeza-limpador-para-gaiolas-e-viveiros",
    "nome": "Limpador para gaiolas e viveiros",
-   "busca": "limpador gaiola pássaros",
+   "busca": "limpa gaiola",
    "pet": "todos",
    "nicho": "higiene",
    "area": "tutor",
@@ -5459,7 +5450,7 @@
   {
    "id": "limpeza-limpador-para-terrarios",
    "nome": "Limpador para terrários",
-   "busca": "limpador terrário",
+   "busca": "limpa terrário",
    "pet": "todos",
    "nicho": "higiene",
    "area": "tutor",
@@ -5558,7 +5549,7 @@
   {
    "id": "protecao-protetor-de-porta-contra-arranhoes",
    "nome": "Protetor de porta contra arranhões",
-   "busca": "protetor porta arranhão cachorro",
+   "busca": "protetor de porta arranhão",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -5767,7 +5758,7 @@
   {
    "id": "passeio-capa-tipo-rede-para-o-carro",
    "nome": "Capa tipo rede para o carro",
-   "busca": "capa rede pet carro",
+   "busca": "capa banco traseiro pet",
    "pet": "todos",
    "nicho": "passeio",
    "area": "tutor",
@@ -5778,7 +5769,7 @@
   {
    "id": "passeio-barreira-divisoria-para-porta-malas",
    "nome": "Barreira divisória para porta-malas",
-   "busca": "grade divisória carro pet",
+   "busca": "grade divisória carro",
    "pet": "todos",
    "nicho": "passeio",
    "area": "tutor",
@@ -5855,7 +5846,7 @@
   {
    "id": "quintal-canil-desmontavel",
    "nome": "Canil desmontável",
-   "busca": "canil desmontável",
+   "busca": "canil cachorro",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -6053,7 +6044,7 @@
   {
    "id": "tecnologia-portinhola-para-pets",
    "nome": "Portinhola para pets",
-   "busca": "portinhola pet porta",
+   "busca": "portinhola pet",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -6229,7 +6220,7 @@
   {
    "id": "conforto-porta-documentos-do-pet",
    "nome": "Porta-documentos do pet",
-   "busca": "porta documentos pet",
+   "busca": "capa carteira vacinação pet",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",
@@ -6240,7 +6231,7 @@
   {
    "id": "conforto-kit-de-primeiros-socorros-para-passeio",
    "nome": "Kit de primeiros socorros para passeio",
-   "busca": "kit primeiros socorros pet",
+   "busca": "kit primeiros socorros",
    "pet": "todos",
    "nicho": "casa",
    "area": "tutor",

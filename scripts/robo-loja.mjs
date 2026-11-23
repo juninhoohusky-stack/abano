@@ -56,7 +56,9 @@ const palavras = (s) => normal(s).split(" ").filter(Boolean).map(singular);
 const GENERICAS = new Set(["pet", "cachorro", "cao", "gato", "felino", "passaro", "roedor", "aquario", "reptil"]);
 const DE_CAO = /\b(cachorro|cachorros|cao|caes|canino|canina|dog|dogs)\b/;
 const DE_GATO = /\b(gato|gatos|felino|felina|cat|cats)\b/;
-const SO_NA_BUSCA = new Set(["premium", "super", "especial", "extrusada", "vario", "caixa", "grande", "pequeno", "pequena"]);
+const LIGACAO = new Set(["de", "da", "do", "das", "dos", "para", "pra", "com", "sem", "e", "em", "no", "na", "o", "a", "ou", "que", "por", "tipo"]);
+const raiz = (p) => (p.length > 5 ? p.slice(0, p.length - 2) : p);
+const SO_NA_BUSCA =new Set(["premium", "super", "especial", "extrusada", "vario", "caixa", "grande", "pequeno", "pequena"]);
 const PROIBIDO = /\b(usado|usada|replica|revenda|atacado|humano|infantil|bebe|crianca)\b/;
 // Nos produtos para os animais, o título precisa deixar claro que é de pet.
 // Os itens "Para quem ama pets" (aspirador, ar-condicionado, capa de sofá...) não precisam: servem para a casa toda.
@@ -80,9 +82,12 @@ function combina(item, titulo) {
   }
   if (item.area !== "tutor" && !DE_PET.test(t)) return false;
   // Nas rações, quem garante a qualidade é a marca: anúncio quase nunca escreve "super premium" no título
-  const chave = palavras(item.busca).filter((p) => !GENERICAS.has(p) && !(item.nicho === "racao" && SO_NA_BUSCA.has(p)));
-  if (!chave.length || !tp.has(chave[0])) return false;               // a palavra principal tem de estar no título
-  const achou = chave.filter((p) => tp.has(p)).length;
+  const chave = palavras(item.busca).filter((p) => !GENERICAS.has(p) && !LIGACAO.has(p) && !(item.nicho === "racao" && SO_NA_BUSCA.has(p)));
+  // Aceita variações da mesma palavra: automático/automática, aquecida/aquecido, natural/naturais
+  const raizes = new Set([...tp].map(raiz));
+  const tem = (p) => tp.has(p) || raizes.has(raiz(p));
+  if (!chave.length || !tem(chave[0])) return false;                  // a palavra principal tem de estar no título
+  const achou = chave.filter(tem).length;
   if (achou / chave.length < 0.6) return false;
   // Só ração premium ou super premium. A marca vale quando todas as palavras dela aparecem no título
   // ("Hill's" acha "Hills", "Purina Pro Plan" acha "Pro Plan Purina")
@@ -127,6 +132,10 @@ async function melhores(item, candidatos, usados, lojaConfiavel) {
     if (escolhidos.length >= quantos) break;
     if (await lojaConfiavel(o)) escolhidos.push(o);
   }
+  // Para ajustar a busca depois: mostra o que a loja devolveu quando nada passou
+  if (!escolhidos.length) console.log(`sem  ${item.nome} [busca: ${item.busca}]: ` + (candidatos.length
+    ? `${candidatos.length} anúncios, ${fila.length} passaram no título/nota/vendas. Ex.: ${candidatos.slice(0, 2).map((o) => `"${o.titulo.slice(0, 60)}"`).join(" | ")}`
+    : "a busca não trouxe nada"));
   return escolhidos;
 }
 
