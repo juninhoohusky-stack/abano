@@ -187,7 +187,7 @@
     var d = new Date(max), fuso = { timeZone: "America/Sao_Paulo" };
     var h = d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" });
     var hoje = d.toLocaleDateString("pt-BR", fuso) === new Date().toLocaleDateString("pt-BR", fuso);
-    return hoje ? "Atualizado hoje às " + h : "Atualizado em " + d.toLocaleDateString("pt-BR", { day: "numeric", month: "short", timeZone: "America/Sao_Paulo" });
+    return hoje ? "hoje às " + h : "em " + d.toLocaleDateString("pt-BR", { day: "numeric", month: "short", timeZone: "America/Sao_Paulo" }).replace(".", "") + " às " + h;
   }
 
   // ---------- Cartão de produto ----------
@@ -221,12 +221,8 @@
     if (!box.children.length) {
       box.innerHTML = ["animais", "tutor"].map(function (a) {
         var A = AREAS[a];
-        // Fotos de verdade: os dois produtos mais procurados da área
-        var fotos = ordenar(todas.filter(function (o) { return o.area === a && o.imagem_url; }), "procurados").slice(0, 2).map(function (o) {
-          return '<img src="' + esc(o.imagem_url) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" width="160" height="160">';
-        }).join("");
         return '<button type="button" class="lj-area lj-area-' + a + '" data-area="' + a + '" aria-pressed="false">' +
-          '<span class="lj-area-fotos" aria-hidden="true">' + fotos + "</span>" +
+          '<span class="lj-area-foto" aria-hidden="true"><img src="imagens/achadinhos/area-' + a + '.webp" alt="" width="560" height="570" loading="lazy" decoding="async"></span>' +
           '<span class="lj-area-txt"><span class="lj-area-nome">' + svg(ICO[A.ico]) + A.nome + '</span><span class="lj-area-frase">' + A.frase + "</span>" +
           '<span class="lj-area-qtd"></span></span>' +
           '<span class="lj-area-seta" aria-hidden="true">' + svg(ICO.direita, "lj-ico lj-area-ir") + svg(ICO.check, "lj-ico lj-area-ok") + "</span></button>";
@@ -250,7 +246,8 @@
       box.innerHTML = '<h2 class="lj-titulo" id="lj-t-cats">' + (area === "animais" ? "Escolha o seu animal" : "O que facilita a sua rotina") + "</h2>" +
         '<div class="lj-cats lj-cats-' + area + '" role="group" aria-labelledby="lj-t-cats">' + CATS[area].map(function (c) {
           return '<button type="button" class="lj-cat" data-cat="' + c[0] + '" aria-pressed="false">' +
-            '<span class="lj-cat-ico">' + svg(ICO[c[0]]) + "</span>" +
+            (area === "animais" ? '<span class="lj-cat-foto"><img src="imagens/achadinhos/animal-' + c[0] + '.webp" alt="" width="275" height="182" loading="lazy" decoding="async"></span>'
+              : '<span class="lj-cat-ico">' + svg(ICO[c[0]]) + "</span>") +
             '<span class="lj-cat-txt"><span class="lj-cat-nome">' + esc(c[1]) + "</span>" +
             (area === "tutor" ? '<span class="lj-cat-frase">' + esc(c[2]) + "</span>" : "") +
             '<span class="lj-cat-qtd"></span></span></button>';
@@ -382,7 +379,8 @@
     var a = ativos(), nFiltros = a.filter(function (x) { return x[0] !== "busca"; }).length;
     var temDesc = todas.some(function (o) { return desconto(o) >= 1; });
     document.getElementById("lj-lista-titulo").textContent = tituloLista();
-    document.getElementById("lj-num").innerHTML = "<b>" + total + "</b> " + (total === 1 ? "produto" : "produtos");
+    document.getElementById("lj-num").innerHTML = "<b>" + total + "</b> " + (total === 1 ? "produto" : "produtos") +
+      (horaPrecos ? '<span class="lj-num-hora">Preços atualizados ' + esc(horaPrecos) + "</span>" : "");
     document.getElementById("lj-ativos").innerHTML = a.length ? a.map(function (x) {
       return '<li><button type="button" data-tirar="' + x[0] + '" aria-label="Tirar o filtro ' + esc(x[1]) + '">' + esc(x[1]) + svg(ICO.fechar, "lj-x") + "</button></li>";
     }).join("") + (a.length > 1 ? '<li><button type="button" class="lj-limpar" data-tirar="tudo">Limpar tudo</button></li>' : "") : "";
@@ -395,7 +393,7 @@
     document.getElementById("lj-ver-n").textContent = "Ver " + total + (total === 1 ? " produto" : " produtos");
   }
 
-  var jaDesenhou = false;
+  var jaDesenhou = false, horaPrecos = "";
   function desenharLista() {
     var l = ordenar(filtradas()), alvo = document.getElementById("lj-grade"), mais = document.getElementById("lj-mais");
     desenharBarra(l.length);
@@ -448,26 +446,29 @@
     '<path class="lj-forma-lima" d="M430 40c60-14 128 18 146 78 16 52-12 104-60 120-52 18-116-4-138-58-22-56-6-126 52-140z"/>' +
     '<path class="lj-forma-lima2" d="M34 330c34-30 92-34 132-8 30 20 28 62-6 78-42 20-104 16-130-14-16-18-14-40 4-56z"/>' +
     '</svg>' + RISCOS;
-  function cabecalho() {
+  var selohora = function (hora) {
+    return hora ? '<p class="lj-atualizado lj-entra"><span class="of-ponto" aria-hidden="true"></span>Preços atualizados ' + esc(hora) + "</p>" : "";
+  };
+  function cabecalho(hora) {
     return '<header class="lj-hero">' +
       '<div class="lj-hero-txt">' +
         '<p class="lj-etiqueta lj-entra">Achadinhos da Abanô</p>' +
         '<h1 class="lj-entra">Descobertas, ofertas e produtos para o seu pet e para a sua rotina.</h1>' +
-        '<p class="lj-lead lj-entra">Seleções atualizadas para cuidar, brincar, organizar e viver melhor com os seus animais.</p>' +
+        '<p class="lj-lead lj-entra">Seleções atualizadas para cuidar, brincar, organizar e viver melhor com os seus animais.</p>' + selohora(hora) +
       "</div>" +
       '<div class="lj-hero-arte" aria-hidden="true">' + FORMAS + MASCOTES("lj-mascotes") + "</div>" +
     "</header>";
   }
   var TRANSPARENCIA = "A Abanô reúne produtos anunciados em lojas e marketplaces, selecionando opções com base em informações disponíveis nos anúncios, como avaliações e quantidade de vendas. Alguns links são de afiliados. Isso significa que podemos receber uma comissão quando você realiza uma compra por meio deles, sem nenhum custo adicional para você. A compra é realizada diretamente na plataforma de venda. Preços, estoque, entrega, pagamento, trocas e atendimento são de responsabilidade dos respectivos vendedores e marketplaces.";
   function desenhar() {
-    var hora = horaAtualizacao();
-    centro.innerHTML = cabecalho() +
+    var hora = horaPrecos = horaAtualizacao();
+    centro.innerHTML = cabecalho(hora) +
       '<form class="lj-busca lj-entra" role="search" id="lj-form">' + svg(ICO.lupa, "lj-ico lj-busca-ico") +
         '<label for="lj-q">O que você está procurando hoje?</label>' +
         '<span class="lj-campo"><input type="search" id="lj-q" placeholder="Ração, caminha, brinquedo, aspirador…" autocomplete="off" enterkeyhint="search" value="' + esc(estado.busca) + '">' +
         '<button type="submit" class="lj-buscar">Buscar</button></span></form>' +
       '<ul class="lj-confianca lj-entra" aria-label="Como funcionam os Achadinhos">' +
-        "<li>" + svg(ICO.calendario) + "<span>Ofertas atualizadas diariamente" + (hora ? "<small>" + esc(hora) + "</small>" : "") + "</span></li>" +
+        "<li>" + svg(ICO.calendario) + "<span>Ofertas atualizadas diariamente</span></li>" +
         "<li>" + svg(ICO.loja) + "<span>Produtos de lojas e vendedores anunciantes</span></li>" +
         "<li>" + svg(ICO.etiqueta) + "<span>Sem custo extra para você</span></li>" +
       "</ul>" +
