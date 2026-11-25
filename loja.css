@@ -158,6 +158,12 @@ html.lj-travado{overflow:hidden}
 .lj-atalho[aria-pressed=true] .lj-ico{color:inherit}
 .lj-atalho:focus-visible{outline:none;box-shadow:0 0 0 2px var(--superficie),0 0 0 4px var(--marca)}
 @media (hover:hover) and (pointer:fine){.lj-atalho:not([aria-pressed=true]):hover{box-shadow:inset 0 0 0 1.5px var(--marca)}}
+/* Meus favoritos: coração cheio e a quantidade salva */
+.lj-atalho-favoritos{position:relative}
+.lj-atalho-favoritos .lj-ico{color:var(--marca);fill:currentColor}
+.lj-atalho-n{position:absolute;top:6px;right:8px;min-width:20px;height:20px;padding:0 6px;border-radius:var(--raio-pill);background:var(--lima);color:var(--sobre-lima);
+  font-size:11px;font-weight:900;line-height:20px;font-variant-numeric:tabular-nums}
+.lj-atalho-n[hidden]{display:none}
 
 /* ---------- Lista completa: filtros compactos ao lado no computador ---------- */
 .lj-lista{display:grid;grid-template-columns:264px minmax(0,1fr);gap:var(--e-6);align-items:start;scroll-margin-top:84px}
@@ -268,6 +274,18 @@ html.lj-travado{overflow:hidden}
   box-shadow:0 0 0 1px rgba(120,30,70,.10);color:#2B1622;font-size:11px;font-weight:800;line-height:1.3}
 .lj-tag .lj-ico{width:13px;height:13px;color:var(--laranja);stroke-width:2}
 .lj-tag-novo{padding-left:9px;background:var(--lima);box-shadow:none;color:var(--sobre-lima)}
+/* Favoritar: coração no canto da foto (vazio = não salvo, cheio = salvo) */
+.lj-fav{position:absolute;z-index:1;top:calc(var(--e-2) + 6px);right:calc(var(--e-2) + 6px);display:grid;place-items:center;width:40px;height:40px;padding:0;border:0;border-radius:50%;
+  background:rgba(255,255,255,.94);box-shadow:0 0 0 1px rgba(120,30,70,.12),0 4px 10px -6px rgba(43,22,34,.4);color:#B0125E;cursor:pointer;
+  transition:scale 150ms var(--lj-ease),background-color var(--lj-rapido) var(--lj-ease)}
+.lj-fav .lj-ico{width:22px;height:22px;stroke-width:2;fill:transparent;transition:fill var(--lj-rapido) var(--lj-ease)}
+.lj-fav[aria-pressed=true] .lj-ico{fill:currentColor}
+.lj-fav:active{scale:.92}
+.lj-fav:focus-visible{outline:none;box-shadow:0 0 0 2px #fff,0 0 0 4px var(--marca)}
+.lj-fav-pulo .lj-ico{animation:lj-pulo 360ms var(--lj-ease)}
+@keyframes lj-pulo{40%{transform:scale(1.25)}}
+@media (hover:hover) and (pointer:fine){.lj-fav:hover{background:#fff}.lj-fav:not([aria-pressed=true]):hover .lj-ico{fill:rgba(176,18,94,.18)}}
+.lj-vazio-fav .lj-ico{fill:currentColor;opacity:.85}
 .lj-corpo{display:flex;flex-direction:column;gap:6px;flex:1;padding:var(--e-3) var(--e-4) var(--e-4)}
 .lj-card h3{margin:0;font-size:var(--t-sm);line-height:1.35;font-weight:800;min-height:2.7em}
 .lj-card h3 a{color:var(--tinta);text-decoration:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -418,6 +436,8 @@ html.lj-travado{overflow:hidden}
   .lj-atalho{flex:0 0 auto;min-width:92px;scroll-snap-align:start}
   .lj-grade{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--e-3)}
   .lj-foto{margin:6px 6px 0}
+  .lj-fav{top:12px;right:12px;width:36px;height:36px}
+  .lj-fav .lj-ico{width:20px;height:20px}
   .lj-corpo{padding:var(--e-2) var(--e-3) var(--e-3)}
   .lj-card h3{font-size:13px}
   .lj-preco b{font-size:20px}
@@ -433,7 +453,8 @@ html.lj-travado{overflow:hidden}
 
 /* ---------- Reduzir movimento: tudo aparece pronto ---------- */
 @media (prefers-reduced-motion:reduce){
-  .lj-entra,.lj-hero-arte .lj-mascotes,#lj-grade.lj-trocou,.lj-cats-box.lj-surge,.lj-fantasma span,.lj-fantasma i,.lj-hero-fantasma{animation:none}
+  .lj-entra,.lj-hero-arte .lj-mascotes,#lj-grade.lj-trocou,.lj-cats-box.lj-surge,.lj-fantasma span,.lj-fantasma i,.lj-hero-fantasma,.lj-fav-pulo .lj-ico{animation:none}
+  .lj-fav,.lj-fav .lj-ico{transition:none}
   .lj-card,.lj-foto img,.lj-cat-foto img,.lj-area,.lj-area-seta .lj-ico,.lj-cat,.lj-chip,.lj-atalho,.lj-comprar,.lj-buscar,.lj-trilha,.lj-trilha::after,.lj-campo input,.lj-abrir-filtros,
   .lj-painel,.lj-painel.aberto,.lj-transp-btn,.lj-transp-seta,.lj-f-seta,.lj-mostrar{transition:none}
   .lj-card:hover{transform:none}

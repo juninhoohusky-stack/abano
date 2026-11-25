@@ -92,8 +92,22 @@
   var CB_NOTA = 4.8, CB_VENDAS = 500;   // custo-benefício: nota alta e muitas vendas, do mais barato para o mais caro
   // Descobertas da Abanô: atalhos que ligam filtros que já existem
   var ATALHOS = [["procurados", "Mais procurados", "fogo"], ["ofertas", "Ofertas da semana", "porcento"], ["novidades", "Novidades", "estrela"],
-    ["custo", "Custo-benefício", "coracao"], ["casa", "Rotina da casa", "casa"], ["ate50", "Até R$ 50", "raio"]];
+    ["custo", "Custo-benefício", "etiqueta"], ["casa", "Rotina da casa", "casa"], ["ate50", "Até R$ 50", "raio"], ["favoritos", "Meus favoritos", "coracao"]];
   var ATALHO = {}; ATALHOS.forEach(function (a) { ATALHO[a[0]] = a[1]; });
+
+  // ---------- Favoritos: guardados só neste navegador, sem precisar de conta ----------
+  var CHAVE_FAV = "abano-achadinhos-favoritos";
+  var favs = (function () {
+    try { var l = JSON.parse(localStorage.getItem(CHAVE_FAV) || "[]"); return Array.isArray(l) ? l.map(String) : []; } catch (e) { return []; }
+  })();
+  var ehFav = function (o) { return favs.indexOf(String(o.id)) >= 0; };
+  function trocarFav(id) {
+    id = String(id);
+    var i = favs.indexOf(id);
+    if (i >= 0) favs.splice(i, 1); else favs.unshift(id);
+    try { localStorage.setItem(CHAVE_FAV, JSON.stringify(favs.slice(0, 500))); } catch (e) {}
+    return i < 0;
+  }
 
   var real = function (v) { return Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); };
   var desconto = function (o) {
@@ -119,6 +133,7 @@
     desc: q.get("desc") === "1",
     novo: q.get("novo") === "1",
     cb: q.get("cb") === "1",
+    fav: q.get("fav") === "1" || q.get("ver") === "favoritos",
     ver: ATALHO[q.get("ver")] ? q.get("ver") : null,
     ordem: ORDENS.some(function (o) { return o[0] === q.get("ordem"); }) ? q.get("ordem") : "procurados",
     busca: q.get("q") || "",
@@ -163,6 +178,7 @@
       if (ignorar !== "desc" && estado.desc && desconto(o) < 1) return false;
       if (ignorar !== "novo" && estado.novo && !ehNovo(o)) return false;
       if (ignorar !== "cb" && estado.cb && !custoBeneficio(o)) return false;
+      if (ignorar !== "fav" && estado.fav && !ehFav(o)) return false;
       if (termos.length) {
         var t = semAcento(o.titulo + " " + o.nomeCat + " " + o.cats.map(function (c) { return CAT[c].nome; }).join(" ") + " " + (o.sub ? SUBS[o.sub] : "") + " " + AREAS[o.area].nome);
         if (!termos.every(function (p) { return t.indexOf(p) >= 0; })) return false;
@@ -201,7 +217,10 @@
     if (o.vendas >= 10) prova.push("<span>" + vendidos(o.vendas) + "</span>");
     // Uma etiqueta discreta só quando o dado sustenta: já passou de mil vendas ou entrou nesta semana
     var tag = o.vendas >= 1000 ? '<span class="lj-tag">' + svg(ICO.fogo) + "Muito vendido</span>" : ehNovo(o) ? '<span class="lj-tag lj-tag-novo">Novidade</span>' : "";
+    var fav = ehFav(o);
     return '<li class="lj-card">' +
+      '<button type="button" class="lj-fav" data-fav="' + esc(o.id) + '" aria-pressed="' + fav + '" aria-label="Favoritar: ' + esc(o.titulo) + '" title="' + (fav ? "Tirar dos favoritos" : "Salvar nos favoritos") + '">' +
+        svg(ICO.coracao) + "</button>" +
       '<a class="lj-foto" href="' + link + '" target="_blank" rel="sponsored nofollow noopener" tabindex="-1" aria-hidden="true">' + foto + tag + "</a>" +
       '<div class="lj-corpo">' +
         '<h3><a href="' + link + '" target="_blank" rel="sponsored nofollow noopener">' + esc(o.titulo) + "</a></h3>" +
@@ -265,25 +284,41 @@
   // ---------- Descobertas da Abanô: atalhos para filtros que já existem ----------
   function limparFiltros() {
     estado.area = estado.cat = estado.sub = estado.loja = estado.preco = null;
-    estado.desc = estado.novo = estado.cb = false;
+    estado.desc = estado.novo = estado.cb = estado.fav = false;
     estado.ordem = "procurados";
   }
   function aplicarAtalho(id) {
+    var desliga = estado.ver === id || (id === "favoritos" && estado.fav);
     limparFiltros();
-    if (estado.ver === id) { estado.ver = null; return; }   // clicar de novo desliga
+    if (desliga) { estado.ver = null; return; }   // clicar de novo desliga
     estado.ver = id;
     if (id === "ofertas") { estado.desc = true; estado.ordem = "desconto"; }
     if (id === "novidades") { estado.novo = true; estado.ordem = "recentes"; }
     if (id === "custo") { estado.cb = true; estado.ordem = "menor"; }
     if (id === "casa") estado.area = "tutor";
     if (id === "ate50") estado.preco = "ate50";
+    if (id === "favoritos") estado.fav = true;
   }
+  // Quantos favoritos ainda estão no ar (os que saíram dos Achadinhos não contam)
+  var nFavs = function () { return todas.filter(ehFav).length; };
   function desenharAtalhos() {
     var box = document.getElementById("lj-atalhos");
     if (!box.children.length) box.innerHTML = ATALHOS.map(function (a) {
-      return '<button type="button" class="lj-atalho lj-atalho-' + a[0] + '" data-atalho="' + a[0] + '" aria-pressed="false">' + svg(ICO[a[2]]) + "<span>" + a[1] + "</span></button>";
+      return '<button type="button" class="lj-atalho lj-atalho-' + a[0] + '" data-atalho="' + a[0] + '" aria-pressed="false">' + svg(ICO[a[2]]) + "<span>" + a[1] + "</span>" +
+        (a[0] === "favoritos" ? '<small class="lj-atalho-n" hidden></small>' : "") + "</button>";
     }).join("");
-    box.querySelectorAll(".lj-atalho").forEach(function (b) { b.setAttribute("aria-pressed", String(estado.ver === b.dataset.atalho)); });
+    box.querySelectorAll(".lj-atalho").forEach(function (b) {
+      var id = b.dataset.atalho;
+      b.setAttribute("aria-pressed", String(id === "favoritos" ? estado.fav : estado.ver === id));
+    });
+    contarFavs();
+  }
+  function contarFavs() {
+    var n = nFavs(), s = document.querySelector(".lj-atalho-favoritos .lj-atalho-n");
+    if (!s) return;
+    s.hidden = !n;
+    s.textContent = n;
+    s.setAttribute("aria-label", n + (n === 1 ? " produto salvo" : " produtos salvos"));
   }
 
   // ---------- Painel de filtros (lateral no computador, gaveta no celular) ----------
@@ -362,11 +397,13 @@
     if (estado.desc) l.push(["desc", "Com desconto"]);
     if (estado.novo) l.push(["novo", "Novidades"]);
     if (estado.cb) l.push(["cb", "Custo-benefício"]);
+    if (estado.fav) l.push(["fav", "Meus favoritos"]);
     if (estado.busca) l.push(["busca", "“" + estado.busca + "”"]);
     return l;
   }
   function tituloLista() {
     if (estado.ver && !estado.cat && !estado.sub && !estado.busca) return ATALHO[estado.ver];
+    if (estado.fav && !estado.cat && !estado.sub && !estado.busca) return "Meus favoritos";
     if (estado.cat) return estado.sub ? NOME_SUB(estado.cat, estado.sub) + ": " + CAT[estado.cat].nome.toLowerCase() : CAT[estado.cat].nome;
     if (estado.sub) return NOME_SUB(null, estado.sub) + " para todos os animais";
     if (estado.area) return AREAS[estado.area].nome;
@@ -399,6 +436,13 @@
     desenharBarra(l.length);
     if (jaDesenhou) { alvo.classList.remove("lj-trocou"); void alvo.offsetWidth; alvo.classList.add("lj-trocou"); }
     document.getElementById("lj-aviso-saude").hidden = !(estado.sub === "saude" || /antipulga|vermifug|suplement|bravecto|simparic/.test(semAcento(estado.busca)));
+    if (!l.length && estado.fav && !nFavs()) {
+      alvo.innerHTML = '<li class="lj-vazio lj-vazio-fav">' + svg(ICO.coracao) + "<b>Você ainda não salvou nenhum achadinho.</b>" +
+        "<span>Toque no coração de um produto para guardar e comprar depois. Os favoritos ficam salvos neste navegador.</span>" +
+        '<button type="button" class="btn" data-tirar="tudo">Ver todos os achadinhos</button></li>';
+      mais.hidden = true;
+      return;
+    }
     if (!l.length) {
       alvo.innerHTML = '<li class="lj-vazio">' + svg(ICO.lupa) + "<b>Nenhum achadinho com esses filtros agora.</b><span>Tente outra categoria, outra faixa de preço ou outra palavra. Os produtos mudam todo dia.</span>" +
         '<button type="button" class="btn" data-tirar="tudo">Limpar os filtros</button></li>';
@@ -420,6 +464,7 @@
     if (estado.desc) p.set("desc", "1");
     if (estado.novo) p.set("novo", "1");
     if (estado.cb) p.set("cb", "1");
+    if (estado.fav && estado.ver !== "favoritos") p.set("fav", "1");
     if (estado.ver) p.set("ver", estado.ver);
     if (estado.ordem !== "procurados") p.set("ordem", estado.ordem);
     if (estado.busca) p.set("q", estado.busca);
@@ -506,6 +551,7 @@
           "</div>" +
           '<p class="lj-alerta" id="lj-aviso-saude" hidden>' + svg(ICO.alerta) + "<span>Antipulgas, vermífugos e suplementos: use sempre com orientação do veterinário, de acordo com a espécie e o peso do seu pet.</span></p>" +
           '<ul class="lj-grade" id="lj-grade"></ul>' +
+          '<p class="sr" id="lj-avisa" role="status" aria-live="polite"></p>' +
           '<button type="button" class="lj-ver lj-mostrar" id="lj-mais" hidden></button>' +
         "</div>" +
       "</section>" +
@@ -554,6 +600,13 @@
     }
   });
 
+  var avisoT;
+  function avisar(txt) {
+    var a = document.getElementById("lj-avisa");
+    if (!a) return;
+    a.textContent = txt;
+    clearTimeout(avisoT); avisoT = setTimeout(function () { a.textContent = ""; }, 3000);
+  }
   function irParaLista() {
     var b = document.getElementById("lj-lista"), topo = b.getBoundingClientRect().top;
     if (topo < 0 || topo > innerHeight * 0.6) b.scrollIntoView({ behavior: suave(), block: "start" });
@@ -574,6 +627,22 @@
       var campo = document.getElementById("lj-q");
       document.getElementById("lj-form").scrollIntoView({ behavior: suave(), block: "center" });
       campo.focus({ preventScroll: true });
+      return;
+    }
+    if (b.dataset.fav) {
+      var salvou = trocarFav(b.dataset.fav);
+      b.setAttribute("aria-pressed", String(salvou));
+      b.title = salvou ? "Tirar dos favoritos" : "Salvar nos favoritos";
+      b.classList.remove("lj-fav-pulo"); void b.offsetWidth; if (salvou) b.classList.add("lj-fav-pulo");
+      avisar(salvou ? "Salvo nos seus favoritos." : "Tirado dos seus favoritos.");
+      if (estado.fav) {                       // na lista de favoritos, o produto tirado sai da lista
+        var cards = Array.prototype.slice.call(document.querySelectorAll("#lj-grade > .lj-card")), pos = cards.indexOf(b.closest(".lj-card"));
+        desenharLista();
+        var resto = document.querySelectorAll("#lj-grade > .lj-card .lj-fav");
+        var alvoFoco = resto[Math.min(pos, resto.length - 1)] || document.querySelector("#lj-grade .btn");
+        if (alvoFoco) alvoFoco.focus({ preventScroll: true });
+      }
+      contarFavs();
       return;
     }
     if (b.hasAttribute("data-fechar-filtros")) { fecharFiltros(); return; }
@@ -615,6 +684,7 @@
       if (todos || t === "novo" || t === "ofertas") estado.novo = false;
       if (todos || t === "cb" || t === "ofertas") estado.cb = false;
       if (t === "ofertas") estado.desc = false;
+      if (todos || t === "fav") estado.fav = false;
       if (todos || t === "busca") { estado.busca = ""; document.getElementById("lj-q").value = ""; }
     } else return;
     if (!b.dataset.atalho) estado.ver = null;   // mexer em outro filtro desfaz o atalho (os filtros que ele ligou continuam)
