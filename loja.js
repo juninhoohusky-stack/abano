@@ -34,14 +34,25 @@
     sacola: '<path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
     seta: '<path d="M5 12h14M13 6l6 6-6 6"/>',
     check: '<path d="m6 12.5 4 4 8-9"/>',
-    info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.1"/>'
+    info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.1"/>',
+    calendario: '<rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="m9 14.5 2 2 4-4"/>',
+    loja: '<path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0"/><path d="M5 12v8.5h14V12"/><path d="M10 20.5v-5h4v5"/>',
+    etiqueta: '<path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l8.3 8.3a1.4 1.4 0 0 1 0 2l-6.7 6.7a1.4 1.4 0 0 1-2 0z"/><circle cx="8" cy="8" r="1.4"/>',
+    fogo: '<path d="M12 21c-3.6 0-6.5-2.6-6.5-6.2 0-3.4 2.4-5.4 3.8-8.3.4 1.7 1.4 2.8 2.4 3.4.2-2.6 1.3-5.3 3.4-6.9-.2 2.7 3.4 5.6 3.4 9.8 0 4.6-2.9 8.2-6.5 8.2z"/><path d="M12 21c-1.6 0-2.8-1.2-2.8-2.9 0-1.6 1.3-2.6 2.1-3.9.8 1.4 3.5 2.2 3.5 4 0 1.6-1.2 2.8-2.8 2.8z"/>',
+    porcento: '<path d="M18.5 5.5 5.5 18.5"/><circle cx="7.3" cy="7.3" r="2.3"/><circle cx="16.7" cy="16.7" r="2.3"/>',
+    estrela: '<path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z"/>',
+    casa: '<path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.5v11h13v-11"/><path d="M10 20.5v-5.5h4v5.5"/>',
+    raio: '<path d="M13.5 2.5 5 13.5h6.5l-1 8 8.5-11h-6.5z"/>',
+    externo: '<path d="M9 5H5v14h14v-4"/><path d="M13 4h7v7M20 4l-9 9"/>',
+    abaixo: '<path d="m6 9 6 6 6-6"/>',
+    direita: '<path d="m9 6 6 6-6 6"/>'
   };
   ICO.outros = ICO.pata;
 
   // ---------- Como a página é organizada ----------
   var AREAS = {
-    animais: { nome: "Para os animais", frase: "Ração, brinquedos, camas, gaiolas, aquários e tudo o que o seu bicho usa.", ico: "pata" },
-    tutor: { nome: "Para quem ama pets", frase: "Para qualquer casa com animais: limpeza e pelos, móveis protegidos, organização, passeio, quintal, tecnologia e o próprio tutor.", ico: "coracao" }
+    animais: { nome: "Para os animais", frase: "Rações, brinquedos, camas, gaiolas, aquários e acessórios.", ico: "pata" },
+    tutor: { nome: "Para quem ama pets", frase: "Limpeza, organização, móveis, tecnologia e a rotina da casa.", ico: "casa" }
   };
   var CATS = {
     animais: [
@@ -71,15 +82,26 @@
   var NOME_SUB = function (cat, s) { return cat === "gato" && s === "higiene" ? "Areia e higiene" : SUBS[s] || s; };
   var CAT = {}; ["animais", "tutor"].forEach(function (a) { CATS[a].forEach(function (c) { CAT[c[0]] = { area: a, nome: c[1], extra: c[2] }; }); });
 
-  var LOJAS = { shopee: "Shopee", mercadolivre: "Mercado Livre", amazon: "Amazon", magalu: "Magalu", petz: "Petz", cobasi: "Cobasi", petlove: "Petlove", outra: "Loja parceira" };
+  var LOJAS = { shopee: "Shopee", mercadolivre: "Mercado Livre", amazon: "Amazon", magalu: "Magalu", petz: "Petz", cobasi: "Cobasi", petlove: "Petlove", outra: "Outra loja" };
   var NA_LOJA = { shopee: "na Shopee", mercadolivre: "no Mercado Livre", amazon: "na Amazon", magalu: "na Magalu", petz: "na Petz", cobasi: "na Cobasi", petlove: "na Petlove", outra: "na loja" };
   var FAIXAS = [["ate50", "Até R$ 50", 0, 50], ["50a100", "R$ 50 a 100", 50, 100], ["100a200", "R$ 100 a 200", 100, 200], ["200mais", "Acima de R$ 200", 200, Infinity]];
   var ORDENS = [["procurados", "Mais procurados"], ["recentes", "Mais recentes"], ["menor", "Menor preço"], ["maior", "Maior preço"], ["desconto", "Maiores descontos"]];
   var DIAS_NOVO = 7;     // produto que entrou há até 7 dias é "novidade"
   var POR_PAGINA = 24;
+  var DESC_MAX = 80;     // "de/por" com 80% ou mais costuma ser preço antigo inflado: não mostramos esse desconto
+  var CB_NOTA = 4.8, CB_VENDAS = 500;   // custo-benefício: nota alta e muitas vendas, do mais barato para o mais caro
+  // Descobertas da Abanô: atalhos que ligam filtros que já existem
+  var ATALHOS = [["procurados", "Mais procurados", "fogo"], ["ofertas", "Ofertas da semana", "porcento"], ["novidades", "Novidades", "estrela"],
+    ["custo", "Custo-benefício", "coracao"], ["casa", "Rotina da casa", "casa"], ["ate50", "Até R$ 50", "raio"]];
+  var ATALHO = {}; ATALHOS.forEach(function (a) { ATALHO[a[0]] = a[1]; });
 
   var real = function (v) { return Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); };
-  var desconto = function (o) { return o.preco && o.preco_antigo && Number(o.preco_antigo) > Number(o.preco) ? Math.round((1 - o.preco / o.preco_antigo) * 100) : 0; };
+  var desconto = function (o) {
+    if (!o.preco || !o.preco_antigo || Number(o.preco_antigo) <= Number(o.preco)) return 0;
+    var d = Math.round((1 - o.preco / o.preco_antigo) * 100);
+    return d < DESC_MAX ? d : 0;
+  };
+  var custoBeneficio = function (o) { return o.preco != null && +o.avaliacao >= CB_NOTA && +o.vendas >= CB_VENDAS; };
   var vendidos = function (n) { return n >= 10000 ? Math.floor(n / 1000) + " mil vendidos" : n >= 1000 ? (n / 1000).toFixed(1).replace(".", ",").replace(",0", "") + " mil vendidos" : n + " vendidos"; };
   var semAcento = function (s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); };
   var suave = function () { return matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"; };
@@ -96,6 +118,8 @@
     preco: FAIXAS.some(function (f) { return f[0] === q.get("preco"); }) ? q.get("preco") : null,
     desc: q.get("desc") === "1",
     novo: q.get("novo") === "1",
+    cb: q.get("cb") === "1",
+    ver: ATALHO[q.get("ver")] ? q.get("ver") : null,
     ordem: ORDENS.some(function (o) { return o[0] === q.get("ordem"); }) ? q.get("ordem") : "procurados",
     busca: q.get("q") || "",
     pagina: 1
@@ -138,6 +162,7 @@
       if (ignorar !== "preco" && f && !naFaixa(o, f)) return false;
       if (ignorar !== "desc" && estado.desc && desconto(o) < 1) return false;
       if (ignorar !== "novo" && estado.novo && !ehNovo(o)) return false;
+      if (ignorar !== "cb" && estado.cb && !custoBeneficio(o)) return false;
       if (termos.length) {
         var t = semAcento(o.titulo + " " + o.nomeCat + " " + o.cats.map(function (c) { return CAT[c].nome; }).join(" ") + " " + (o.sub ? SUBS[o.sub] : "") + " " + AREAS[o.area].nome);
         if (!termos.every(function (p) { return t.indexOf(p) >= 0; })) return false;
@@ -174,91 +199,94 @@
     var prova = [];
     if (o.avaliacao) prova.push('<span class="lj-nota"><span aria-hidden="true">★</span> ' + Number(o.avaliacao).toFixed(1).replace(".", ",") + '<span class="sr"> de 5</span></span>');
     if (o.vendas >= 10) prova.push("<span>" + vendidos(o.vendas) + "</span>");
+    // Uma etiqueta discreta só quando o dado sustenta: já passou de mil vendas ou entrou nesta semana
+    var tag = o.vendas >= 1000 ? '<span class="lj-tag">' + svg(ICO.fogo) + "Muito vendido</span>" : ehNovo(o) ? '<span class="lj-tag lj-tag-novo">Novidade</span>' : "";
     return '<li class="lj-card">' +
-      '<a class="lj-foto" href="' + link + '" target="_blank" rel="sponsored nofollow noopener" tabindex="-1" aria-hidden="true">' + foto +
-        (d >= 1 ? '<span class="lj-desc">-' + d + "%</span>" : ehNovo(o) ? '<span class="lj-novo">Novo</span>' : "") + "</a>" +
+      '<a class="lj-foto" href="' + link + '" target="_blank" rel="sponsored nofollow noopener" tabindex="-1" aria-hidden="true">' + foto + tag + "</a>" +
       '<div class="lj-corpo">' +
-        '<p class="lj-selo lj-' + esc(o.loja) + '"><span class="lj-ponto" aria-hidden="true"></span>' + esc(loja) + "</p>" +
         '<h3><a href="' + link + '" target="_blank" rel="sponsored nofollow noopener">' + esc(o.titulo) + "</a></h3>" +
         (prova.length ? '<p class="lj-prova">' + prova.join("") + "</p>" : "") +
         '<div class="lj-preco">' +
-          (o.preco_antigo && d >= 1 ? '<s><span class="sr">De </span>' + real(o.preco_antigo) + "</s>" : "") +
+          (d >= 1 ? '<span class="lj-de"><s><span class="sr">De </span>' + real(o.preco_antigo) + '</s><span class="lj-off">-' + d + '%<span class="sr"> de desconto</span></span></span>' : "") +
           (o.preco != null ? "<b>" + (d >= 1 ? '<span class="sr">por </span>' : "") + real(o.preco) + "</b>" : '<b class="lj-ver-preco">Preço na loja</b>') +
-          (d >= 1 ? '<span class="lj-off">' + d + "% de desconto</span>" : "") +
         "</div>" +
-        '<a class="btn lj-comprar" href="' + link + '" target="_blank" rel="sponsored nofollow noopener">Ver oferta<span class="sr"> ' + esc(NA_LOJA[o.loja] || NA_LOJA.outra) + " (abre em outra aba)</span></a>" +
+        '<p class="lj-selo lj-' + esc(o.loja) + '"><span class="lj-ponto" aria-hidden="true"></span>' + esc(loja) + "</p>" +
+        '<a class="btn lj-comprar" href="' + link + '" target="_blank" rel="sponsored nofollow noopener">Ver oferta' + svg(ICO.externo) + '<span class="sr"> ' + esc(NA_LOJA[o.loja] || NA_LOJA.outra) + " (abre em outra aba)</span></a>" +
       "</div></li>";
   }
 
-  // ---------- Áreas: as duas portas de entrada ----------
-  var CHECK = '<span class="lj-check" aria-hidden="true">' + svg(ICO.check, "lj-check-ico") + "</span>";
+  // ---------- Explore por aqui: as duas áreas ----------
   function desenharAreas() {
     var box = document.getElementById("lj-areas"), base = filtradas("area");
     if (!box.children.length) {
       box.innerHTML = ["animais", "tutor"].map(function (a) {
-        var A = AREAS[a], icones = CATS[a].slice(0, 6).map(function (c) { return '<span class="lj-mini">' + svg(ICO[c[0]]) + "</span>"; }).join("");
-        return '<button type="button" class="lj-area lj-area-' + a + '" data-area="' + a + '" aria-pressed="false">' + CHECK +
-          '<span class="lj-area-nome">' + A.nome + '</span><span class="lj-area-frase">' + A.frase + "</span>" +
-          '<span class="lj-area-pe"><span class="lj-minis" aria-hidden="true">' + icones + '</span><span class="lj-area-qtd"></span></span></button>';
+        var A = AREAS[a];
+        // Fotos de verdade: os dois produtos mais procurados da área
+        var fotos = ordenar(todas.filter(function (o) { return o.area === a && o.imagem_url; }), "procurados").slice(0, 2).map(function (o) {
+          return '<img src="' + esc(o.imagem_url) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" width="160" height="160">';
+        }).join("");
+        return '<button type="button" class="lj-area lj-area-' + a + '" data-area="' + a + '" aria-pressed="false">' +
+          '<span class="lj-area-fotos" aria-hidden="true">' + fotos + "</span>" +
+          '<span class="lj-area-txt"><span class="lj-area-nome">' + svg(ICO[A.ico]) + A.nome + '</span><span class="lj-area-frase">' + A.frase + "</span>" +
+          '<span class="lj-area-qtd"></span></span>' +
+          '<span class="lj-area-seta" aria-hidden="true">' + svg(ICO.direita, "lj-ico lj-area-ir") + svg(ICO.check, "lj-ico lj-area-ok") + "</span></button>";
       }).join("");
     }
     box.querySelectorAll(".lj-area").forEach(function (b) {
       var a = b.dataset.area, n = base.filter(function (o) { return o.area === a; }).length;
       b.setAttribute("aria-pressed", String(estado.area === a));
-      b.querySelector(".lj-area-qtd").textContent = n + (n === 1 ? " achadinho" : " achadinhos");
+      b.querySelector(".lj-area-qtd").textContent = n + (n === 1 ? " produto" : " produtos");
     });
     box.classList.toggle("lj-escolhida", !!estado.area);
   }
 
-  // ---------- Categorias da área escolhida ----------
+  // ---------- Escolha o seu animal (ou, na área dos tutores, os grupos da casa) ----------
   function desenharCats() {
-    var box = document.getElementById("lj-cats");
-    if (!estado.area) { box.hidden = true; box.innerHTML = ""; box.dataset.area = ""; return; }
-    var base = filtradas("cat");
-    if (box.dataset.area !== estado.area) {
-      box.dataset.area = estado.area;
-      box.innerHTML = '<h2 class="lj-titulo-cats" id="lj-t-cats">' + (estado.area === "animais" ? "Escolha o animal" : "O que facilita a sua rotina") + "</h2>" +
-        '<div class="lj-cats lj-cats-' + estado.area + '" role="group" aria-labelledby="lj-t-cats">' + CATS[estado.area].map(function (c) {
+    var box = document.getElementById("lj-cats"), area = estado.area === "tutor" ? "tutor" : "animais";
+    var base = area === "tutor" ? filtradas("cat") : filtradas("animal");
+    if (box.dataset.area !== area) {
+      var primeira = !box.dataset.area;
+      box.dataset.area = area;
+      box.innerHTML = '<h2 class="lj-titulo" id="lj-t-cats">' + (area === "animais" ? "Escolha o seu animal" : "O que facilita a sua rotina") + "</h2>" +
+        '<div class="lj-cats lj-cats-' + area + '" role="group" aria-labelledby="lj-t-cats">' + CATS[area].map(function (c) {
           return '<button type="button" class="lj-cat" data-cat="' + c[0] + '" aria-pressed="false">' +
             '<span class="lj-cat-ico">' + svg(ICO[c[0]]) + "</span>" +
             '<span class="lj-cat-txt"><span class="lj-cat-nome">' + esc(c[1]) + "</span>" +
-            (estado.area === "tutor" ? '<span class="lj-cat-frase">' + esc(c[2]) + "</span>" : "") + "</span>" +
-            '<span class="lj-cat-qtd"></span></button>';
+            (area === "tutor" ? '<span class="lj-cat-frase">' + esc(c[2]) + "</span>" : "") +
+            '<span class="lj-cat-qtd"></span></span></button>';
         }).join("") + "</div>";
-      box.classList.remove("lj-surge"); void box.offsetWidth; box.classList.add("lj-surge");
+      if (!primeira) { box.classList.remove("lj-surge"); void box.offsetWidth; box.classList.add("lj-surge"); }
     }
-    box.hidden = false;
     box.querySelectorAll(".lj-cat").forEach(function (b) {
       var c = b.dataset.cat, n = base.filter(function (o) { return o.cats.indexOf(c) >= 0; }).length;
       b.setAttribute("aria-pressed", String(estado.cat === c));
-      b.querySelector(".lj-cat-qtd").textContent = n;
+      b.querySelector(".lj-cat-qtd").textContent = n + (n === 1 ? " produto" : " produtos");
       b.classList.toggle("lj-zerada", !n && estado.cat !== c);
     });
   }
 
-  // ---------- Vitrines de destaque (só na abertura, sem nenhum filtro) ----------
-  function semFiltro() { return !estado.area && !estado.busca && !estado.loja && !estado.preco && !estado.desc && !estado.novo; }
-  function desenharVitrines() {
-    var box = document.getElementById("lj-vitrines");
-    if (!semFiltro()) { box.hidden = true; return; }
-    var usados = {};   // o mesmo produto não aparece em duas vitrines
-    var pega = function (l, ordem) { var r = ordenar(l.filter(function (o) { return !usados[o.id]; }), ordem).slice(0, 8); r.forEach(function (o) { usados[o.id] = 1; }); return r; };
-    var V = [
-      ["ofertas", "Ofertas do dia", "Os maiores descontos de hoje.", function () { return pega(todas.filter(function (o) { return desconto(o) >= 5; }), "desconto"); }, "Ver todas as ofertas"],
-      ["novidades", "Novidades", "O que acabou de chegar.", function () { return pega(todas.filter(ehNovo), "recentes"); }, "Ver as novidades"],
-      ["procurados", "Mais procurados", "Os mais vendidos nas lojas.", function () { return pega(todas.filter(function (o) { return o.area === "animais"; }), "procurados"); }, "Ver os mais procurados"],
-      ["tutores", "Achadinhos para os tutores", "Para a casa, o passeio, o quintal e para você.", function () { return pega(todas.filter(function (o) { return o.area === "tutor"; }), "procurados"); }, "Ver tudo para tutores"]
-    ];
-    var html = V.map(function (v) {
-      var l = v[3]();
-      if (l.length < 3) return "";
-      return '<section class="lj-vitrine lj-v-' + v[0] + '" aria-labelledby="lj-v-' + v[0] + '">' +
-        '<div class="lj-v-cab"><div><h2 id="lj-v-' + v[0] + '">' + v[1] + "</h2><p>" + v[2] + "</p></div>" +
-        '<button type="button" class="lj-ver" data-vitrine="' + v[0] + '">' + v[4] + svg(ICO.seta, "lj-ico lj-seta") + "</button></div>" +
-        '<ul class="lj-trilho">' + l.map(cartao).join("") + "</ul></section>";
+  // ---------- Descobertas da Abanô: atalhos para filtros que já existem ----------
+  function limparFiltros() {
+    estado.area = estado.cat = estado.sub = estado.loja = estado.preco = null;
+    estado.desc = estado.novo = estado.cb = false;
+    estado.ordem = "procurados";
+  }
+  function aplicarAtalho(id) {
+    limparFiltros();
+    if (estado.ver === id) { estado.ver = null; return; }   // clicar de novo desliga
+    estado.ver = id;
+    if (id === "ofertas") { estado.desc = true; estado.ordem = "desconto"; }
+    if (id === "novidades") { estado.novo = true; estado.ordem = "recentes"; }
+    if (id === "custo") { estado.cb = true; estado.ordem = "menor"; }
+    if (id === "casa") estado.area = "tutor";
+    if (id === "ate50") estado.preco = "ate50";
+  }
+  function desenharAtalhos() {
+    var box = document.getElementById("lj-atalhos");
+    if (!box.children.length) box.innerHTML = ATALHOS.map(function (a) {
+      return '<button type="button" class="lj-atalho lj-atalho-' + a[0] + '" data-atalho="' + a[0] + '" aria-pressed="false">' + svg(ICO[a[2]]) + "<span>" + a[1] + "</span></button>";
     }).join("");
-    box.innerHTML = html;
-    box.hidden = !html;
+    box.querySelectorAll(".lj-atalho").forEach(function (b) { b.setAttribute("aria-pressed", String(estado.ver === b.dataset.atalho)); });
   }
 
   // ---------- Painel de filtros (lateral no computador, gaveta no celular) ----------
@@ -276,16 +304,20 @@
         (n != null ? '<small aria-label="' + n + (n === 1 ? ' produto">' : ' produtos">') + n + "</small>" : "")) +
       svg(ICO.check, "lj-chip-ok") + "</button>";
   }
-  function grupoF(titulo, classe, miolo, limpar) {
-    return '<fieldset class="lj-f"><legend><span>' + titulo + "</span>" +
-      (limpar ? '<button type="button" class="lj-f-limpar" data-tirar="' + limpar + '">Limpar</button>' : "") + "</legend>" +
-      '<div class="' + classe + '">' + miolo + "</div></fieldset>";
+  // Grupos recolhíveis: o que a pessoa abriu ou fechou continua assim; grupo com filtro ligado abre sozinho
+  var abertos = { animal: true, sub: true, preco: true };
+  function grupoF(id, titulo, classe, miolo, limpar) {
+    var aberto = id in abertos ? abertos[id] : !!limpar;
+    return '<details class="lj-f" data-g="' + id + '"' + (aberto ? " open" : "") + "><summary><span>" + titulo + "</span>" +
+      (limpar ? '<span class="lj-f-ligado">ligado</span>' : "") + svg(ICO.abaixo, "lj-ico lj-f-seta") + "</summary>" +
+      '<div class="' + classe + '" role="group" aria-label="' + titulo + '">' + miolo + "</div>" +
+      (limpar ? '<button type="button" class="lj-f-limpar" data-tirar="' + limpar + '">Limpar ' + titulo.toLowerCase() + "</button>" : "") + "</details>";
   }
   function desenharPainel() {
     var corpo = document.getElementById("lj-painel-corpo"), h = "";
     var animal = estado.area === "animais" ? estado.cat : null;
-    // 1) Animal (sempre à vista)
-    h += grupoF("Para qual animal?", "lj-chips lj-chips-ico",
+    // 1) Animal
+    h += grupoF("animal", "Animal", "lj-chips lj-chips-ico",
       botao("animal", "", "Todos", quantos("animal", function (o) { return o.area === "animais"; }), estado.area === "animais" && !estado.cat, ICO.pata) +
       CATS.animais.map(function (c) {
         return botao("animal", c[0], CURTO[c[0]] || c[1], quantos("animal", function (o) { return o.cats.indexOf(c[0]) >= 0; }), animal === c[0], ICO[c[0]]);
@@ -295,26 +327,30 @@
     var chipsTipo = tipos.map(function (s) {
       return [s, quantos("sub", function (o) { return o.sub === s; })];
     }).filter(function (x) { return x[1] > 0 || estado.sub === x[0]; });
-    if (estado.area !== "tutor" && chipsTipo.length) h += grupoF("Tipo de produto", "lj-chips",
+    if (estado.area !== "tutor" && chipsTipo.length) h += grupoF("sub", "Tipo de produto", "lj-chips",
       chipsTipo.map(function (x) { return botao("sub", x[0], NOME_SUB(animal, x[0]), x[1], estado.sub === x[0]); }).join(""), estado.sub ? "sub" : null);
     // 3) Para quem ama pets
-    h += grupoF("Para quem ama pets", "lj-chips lj-chips-ico",
+    h += grupoF("tutor", "Para quem ama pets", "lj-chips lj-chips-ico",
       CATS.tutor.map(function (c) {
         return botao("tutor", c[0], c[1], quantos("area", function (o) { return o.cats.indexOf(c[0]) >= 0; }), estado.cat === c[0], ICO[c[0]]);
       }).join(""), estado.area === "tutor" ? "area" : null);
-    // 4) Loja e preço
-    var lojas = [["mercadolivre", "Mercado Livre"], ["shopee", "Shopee"]].filter(function (l) { return todas.some(function (o) { return o.loja === l[0]; }); });
-    if (lojas.length > 1 || estado.loja) h += grupoF("Loja", "lj-chips", lojas.map(function (l) {
-      return botao("loja", l[0], l[1], quantos("loja", function (o) { return o.loja === l[0]; }), estado.loja === l[0]);
-    }).join(""), estado.loja ? "loja" : null);
-    h += grupoF("Faixa de preço", "lj-chips", FAIXAS.map(function (f) {
+    // 4) Preço, desconto e loja
+    h += grupoF("preco", "Faixa de preço", "lj-chips", FAIXAS.map(function (f) {
       return botao("preco", f[0], f[1], quantos("preco", function (o) { return naFaixa(o, f); }), estado.preco === f[0]);
     }).join(""), estado.preco ? "preco" : null);
-    var nDesc = quantos("desc", function (o) { return desconto(o) >= 1; }), nNovo = quantos("novo", ehNovo);
-    h += '<fieldset class="lj-f"><legend><span>Ofertas e novidades</span></legend><div class="lj-chaves">' +
-      '<label class="lj-chave"><input type="checkbox" role="switch" data-f="desc"' + (estado.desc ? " checked" : "") + (!nDesc && !estado.desc ? " disabled" : "") + '><span class="lj-trilha" aria-hidden="true"></span><span>Só com desconto</span><small>' + nDesc + "</small></label>" +
-      '<label class="lj-chave"><input type="checkbox" role="switch" data-f="novo"' + (estado.novo ? " checked" : "") + (!nNovo && !estado.novo ? " disabled" : "") + '><span class="lj-trilha" aria-hidden="true"></span><span>Só novidades da semana</span><small>' + nNovo + "</small></label>" +
-      "</div></fieldset>";
+    var nDesc = quantos("desc", function (o) { return desconto(o) >= 1; }), nNovo = quantos("novo", ehNovo), nCb = quantos("cb", custoBeneficio);
+    var chave = function (f, rotulo, n, ligado) {
+      return '<label class="lj-chave"><input type="checkbox" role="switch" data-f="' + f + '"' + (ligado ? " checked" : "") + (!n && !ligado ? " disabled" : "") +
+        '><span class="lj-trilha" aria-hidden="true"></span><span>' + rotulo + "</span><small>" + n + "</small></label>";
+    };
+    var ligados = estado.desc || estado.novo || estado.cb;
+    h += grupoF("desc", "Desconto", "lj-chaves",
+      chave("desc", "Só com desconto", nDesc, estado.desc) + chave("novo", "Só novidades da semana", nNovo, estado.novo) +
+      chave("cb", "Só custo-benefício", nCb, estado.cb), ligados ? "ofertas" : null);
+    var lojas = [["mercadolivre", "Mercado Livre"], ["shopee", "Shopee"]].filter(function (l) { return todas.some(function (o) { return o.loja === l[0]; }); });
+    if (lojas.length || estado.loja) h += grupoF("loja", "Loja", "lj-chips", lojas.map(function (l) {
+      return botao("loja", l[0], l[1], quantos("loja", function (o) { return o.loja === l[0]; }), estado.loja === l[0]);
+    }).join(""), estado.loja ? "loja" : null);
     corpo.innerHTML = h;
   }
 
@@ -328,10 +364,12 @@
     if (estado.preco) l.push(["preco", faixa(estado.preco)[1]]);
     if (estado.desc) l.push(["desc", "Com desconto"]);
     if (estado.novo) l.push(["novo", "Novidades"]);
+    if (estado.cb) l.push(["cb", "Custo-benefício"]);
     if (estado.busca) l.push(["busca", "“" + estado.busca + "”"]);
     return l;
   }
   function tituloLista() {
+    if (estado.ver && !estado.cat && !estado.sub && !estado.busca) return ATALHO[estado.ver];
     if (estado.cat) return estado.sub ? NOME_SUB(estado.cat, estado.sub) + ": " + CAT[estado.cat].nome.toLowerCase() : CAT[estado.cat].nome;
     if (estado.sub) return NOME_SUB(null, estado.sub) + " para todos os animais";
     if (estado.area) return AREAS[estado.area].nome;
@@ -383,6 +421,8 @@
     if (estado.preco) p.set("preco", estado.preco);
     if (estado.desc) p.set("desc", "1");
     if (estado.novo) p.set("novo", "1");
+    if (estado.cb) p.set("cb", "1");
+    if (estado.ver) p.set("ver", estado.ver);
     if (estado.ordem !== "procurados") p.set("ordem", estado.ordem);
     if (estado.busca) p.set("q", estado.busca);
     var s = p.toString();
@@ -391,38 +431,62 @@
 
   function atualizar() {
     estado.pagina = 1;
-    desenharAreas(); desenharCats(); desenharVitrines(); desenharPainel(); desenharLista(); guardarNaUrl();
+    desenharAreas(); desenharCats(); desenharAtalhos(); desenharPainel(); desenharLista(); guardarNaUrl();
     jaDesenhou = true;
   }
 
   // ---------- Estrutura da página ----------
-  function cabecalho(hora) {
+  // Os mascotes da Abanô (PNG/WebP com fundo transparente)
+  var MASCOTES = function (cls) {
+    return '<picture class="' + cls + '"><source srcset="imagens/abano-mascotes.webp" type="image/webp">' +
+      '<img src="imagens/abano-mascotes.png" alt="" width="900" height="529" decoding="async"></picture>';
+  };
+  var RISCOS = '<svg class="lj-riscos" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M30 34 46 8M36 40 60 24M26 30 28 4"/></svg>';
+  // Formas orgânicas atrás dos mascotes (rosa-claro e verde-limão)
+  var FORMAS = '<svg class="lj-formas" viewBox="0 0 600 420" aria-hidden="true" focusable="false">' +
+    '<path class="lj-forma-rosa" d="M118 92c54-70 178-96 282-58 98 36 176 116 168 214-8 96-104 160-214 168-120 8-246-18-300-98C2 238 64 162 118 92z"/>' +
+    '<path class="lj-forma-lima" d="M430 40c60-14 128 18 146 78 16 52-12 104-60 120-52 18-116-4-138-58-22-56-6-126 52-140z"/>' +
+    '<path class="lj-forma-lima2" d="M34 330c34-30 92-34 132-8 30 20 28 62-6 78-42 20-104 16-130-14-16-18-14-40 4-56z"/>' +
+    '</svg>' + RISCOS;
+  function cabecalho() {
     return '<header class="lj-hero">' +
       '<div class="lj-hero-txt">' +
-        '<p class="lj-selos-hero lj-entra"><span class="lj-ao-vivo"><span class="of-ponto" aria-hidden="true"></span>Ofertas atualizadas todos os dias!</span>' +
-          (hora ? '<span class="lj-hora">' + esc(hora) + "</span>" : "") + "</p>" +
-        '<h1 class="lj-entra">Achadinhos da Abanô</h1>' +
-        '<p class="lj-lead lj-entra">Descobertas, produtos e ofertas para cuidar dos seus pets e facilitar a vida de quem ama animais.</p>' +
-      "</div>";
+        '<p class="lj-etiqueta lj-entra">Achadinhos da Abanô</p>' +
+        '<h1 class="lj-entra">Descobertas, ofertas e produtos para o seu pet e para a sua rotina.</h1>' +
+        '<p class="lj-lead lj-entra">Seleções atualizadas para cuidar, brincar, organizar e viver melhor com os seus animais.</p>' +
+      "</div>" +
+      '<div class="lj-hero-arte" aria-hidden="true">' + FORMAS + MASCOTES("lj-mascotes") + "</div>" +
+    "</header>";
   }
+  var TRANSPARENCIA = "A Abanô reúne produtos anunciados em lojas e marketplaces, selecionando opções com base em informações disponíveis nos anúncios, como avaliações e quantidade de vendas. Alguns links são de afiliados. Isso significa que podemos receber uma comissão quando você realiza uma compra por meio deles, sem nenhum custo adicional para você. A compra é realizada diretamente na plataforma de venda. Preços, estoque, entrega, pagamento, trocas e atendimento são de responsabilidade dos respectivos vendedores e marketplaces.";
   function desenhar() {
-    centro.innerHTML = cabecalho(horaAtualizacao()) +
-        '<form class="lj-busca lj-entra" role="search" id="lj-form"><label for="lj-q">Procurar um produto</label>' +
-          '<span class="lj-campo">' + svg(ICO.lupa) + '<input type="search" id="lj-q" placeholder="Ração, aspirador, aquário…" autocomplete="off" enterkeyhint="search" value="' + esc(estado.busca) + '">' +
-          '<button type="submit" class="lj-buscar">Buscar</button></span></form>' +
-      "</header>" +
+    var hora = horaAtualizacao();
+    centro.innerHTML = cabecalho() +
+      '<form class="lj-busca lj-entra" role="search" id="lj-form">' + svg(ICO.lupa, "lj-ico lj-busca-ico") +
+        '<label for="lj-q">O que você está procurando hoje?</label>' +
+        '<span class="lj-campo"><input type="search" id="lj-q" placeholder="Ração, caminha, brinquedo, aspirador…" autocomplete="off" enterkeyhint="search" value="' + esc(estado.busca) + '">' +
+        '<button type="submit" class="lj-buscar">Buscar</button></span></form>' +
+      '<ul class="lj-confianca lj-entra" aria-label="Como funcionam os Achadinhos">' +
+        "<li>" + svg(ICO.calendario) + "<span>Ofertas atualizadas diariamente" + (hora ? "<small>" + esc(hora) + "</small>" : "") + "</span></li>" +
+        "<li>" + svg(ICO.loja) + "<span>Produtos de lojas e vendedores anunciantes</span></li>" +
+        "<li>" + svg(ICO.etiqueta) + "<span>Sem custo extra para você</span></li>" +
+      "</ul>" +
       '<aside class="lj-transparencia lj-entra" aria-labelledby="lj-t-transp">' +
-        '<h2 id="lj-t-transp">' + svg(ICO.info) + "Leia antes de comprar</h2>" +
-        "<ul>" +
-          "<li><strong>A Abanô não vende nenhum destes produtos.</strong> Eles são vendidos por lojas que vendem pela Shopee (e, em alguns casos, pelo Mercado Livre).</li>" +
-          "<li>A compra, o pagamento, a entrega, a troca e a garantia são feitos direto com a loja e com a plataforma. <strong>A Abanô não tem nenhuma responsabilidade sobre problemas ocorridos durante ou depois da compra.</strong></li>" +
-          "<li>A Abanô ganha apenas uma comissão de afiliado pela venda, de acordo com a legislação, sem nenhum custo extra para você.</li>" +
-          "<li>Só mostramos produtos de lojas oficiais ou indicadas, com nota alta e que já venderam aquele mesmo produto várias vezes. Mesmo assim, confira o anúncio e a reputação da loja antes de comprar.</li>" +
-        "</ul>" +
+        '<div class="lj-transp-linha">' +
+          '<h2 id="lj-t-transp">' + svg(ICO.info) + "Transparência Abanô</h2>" +
+          '<p class="lj-transp-resumo">Alguns links são de afiliados. Podemos receber uma comissão quando você realiza uma compra, sem custo adicional para você.</p>' +
+          '<button type="button" class="lj-transp-btn" id="lj-transp-btn" aria-expanded="false" aria-controls="lj-transp-texto">Entenda como funciona' + svg(ICO.abaixo, "lj-ico lj-transp-seta") + "</button>" +
+        "</div>" +
+        '<div class="lj-transp-texto" id="lj-transp-texto" hidden><p>' + TRANSPARENCIA + "</p></div>" +
       "</aside>" +
-      '<div class="lj-areas lj-entra" id="lj-areas" role="group" aria-label="Áreas dos Achadinhos"></div>' +
-      '<section class="lj-cats-box" id="lj-cats" aria-labelledby="lj-t-cats" hidden></section>' +
-      '<div class="lj-vitrines" id="lj-vitrines"></div>' +
+      '<section class="lj-explore" aria-labelledby="lj-t-explore"><h2 class="lj-titulo" id="lj-t-explore">Explore por aqui</h2>' +
+        '<div class="lj-areas" id="lj-areas" role="group" aria-labelledby="lj-t-explore"></div></section>' +
+      '<section class="lj-cats-box" id="lj-cats" aria-labelledby="lj-t-cats"></section>' +
+      '<section class="lj-descobertas" aria-labelledby="lj-t-desc">' +
+        '<div class="lj-desc-cab"><span class="lj-desc-ico" aria-hidden="true">' + svg(ICO.sacola) + "</span>" +
+          '<div><h2 id="lj-t-desc">Descobertas da Abanô</h2><p>Seleções especiais para você e o seu pet.</p></div></div>' +
+        '<div class="lj-atalhos" id="lj-atalhos" role="group" aria-labelledby="lj-t-desc"></div>' +
+      "</section>" +
       '<section class="lj-lista" id="lj-lista" aria-labelledby="lj-lista-titulo">' +
         '<aside class="lj-painel" id="lj-painel" aria-labelledby="lj-painel-titulo">' +
           '<div class="lj-painel-cab"><h2 id="lj-painel-titulo">Filtros</h2><button type="button" class="lj-fechar" data-fechar-filtros aria-label="Fechar os filtros">' + svg(ICO.fechar) + "</button></div>" +
@@ -443,6 +507,14 @@
           '<ul class="lj-grade" id="lj-grade"></ul>' +
           '<button type="button" class="lj-ver lj-mostrar" id="lj-mais" hidden></button>' +
         "</div>" +
+      "</section>" +
+      '<section class="lj-compara" aria-labelledby="lj-t-compara">' +
+        '<span class="lj-compara-ico" aria-hidden="true">' + svg(ICO.etiqueta) + "</span>" +
+        '<div class="lj-compara-txt"><h2 id="lj-t-compara">Compare preços e encontre a melhor oferta!</h2>' +
+          '<button type="button" class="btn lj-compara-btn" data-buscar>Pesquisar um produto</button></div>' +
+        '<ul class="lj-compara-passos">' + ["Pesquise o produto", "Veja as ofertas disponíveis", "Escolha o melhor preço para você"].map(function (p) {
+          return "<li>" + svg(ICO.check) + p + "</li>"; }).join("") + "</ul>" +
+        '<div class="lj-compara-arte" aria-hidden="true">' + RISCOS + MASCOTES("lj-compara-cao") + "</div>" +
       "</section>" +
       '<p class="lj-aviso">Aviso: os produtos dos Achadinhos não são vendidos pela Abanô. Eles são anunciados e vendidos por lojas que vendem pela Shopee (e pelo Mercado Livre), que respondem pela venda, pelo pagamento, pela entrega, pela troca e pela garantia. A Abanô não tem responsabilidade sobre qualquer problema ocorrido durante ou depois da compra. Os links são de afiliado: a Abanô recebe apenas uma comissão pela venda, de acordo com a legislação, sem nenhum custo extra para você. Preço, frete e estoque podem mudar a qualquer momento: confira sempre no anúncio antes de finalizar.</p>';
     atualizar();
@@ -475,7 +547,7 @@
     if (!painelAberto()) return;
     if (e.key === "Escape") { fecharFiltros(); return; }
     if (e.key === "Tab") {                    // o foco não sai da gaveta enquanto ela está aberta
-      var f = document.querySelectorAll("#lj-painel button:not([disabled]), #lj-painel input:not([disabled])"), um = f[0], ultimo = f[f.length - 1];
+      var f = document.querySelectorAll("#lj-painel summary, #lj-painel button:not([disabled]), #lj-painel input:not([disabled])"), um = f[0], ultimo = f[f.length - 1];
       if (e.shiftKey && document.activeElement === um) { e.preventDefault(); ultimo.focus(); }
       else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); um.focus(); }
     }
@@ -491,6 +563,18 @@
     var b = e.target.closest("button,[data-fechar-filtros]");
     if (!b || b.disabled) return;
     if (b.id === "lj-abrir-filtros") { abrirFiltros(); return; }
+    if (b.id === "lj-transp-btn") {
+      var abre = b.getAttribute("aria-expanded") !== "true";
+      b.setAttribute("aria-expanded", String(abre));
+      document.getElementById("lj-transp-texto").hidden = !abre;
+      return;
+    }
+    if (b.hasAttribute("data-buscar")) {
+      var campo = document.getElementById("lj-q");
+      document.getElementById("lj-form").scrollIntoView({ behavior: suave(), block: "center" });
+      campo.focus({ preventScroll: true });
+      return;
+    }
     if (b.hasAttribute("data-fechar-filtros")) { fecharFiltros(); return; }
     if (b.id === "lj-mais") {
       var antes = document.querySelectorAll("#lj-grade > .lj-card").length;
@@ -500,10 +584,13 @@
       return;
     }
     var noPainel = !!b.closest(".lj-painel"), rolar = false;
-    if (b.dataset.area) {
+    if (b.dataset.atalho) {
+      aplicarAtalho(b.dataset.atalho); rolar = !!estado.ver;
+    } else if (b.dataset.area) {
       estado.area = estado.area === b.dataset.area ? null : b.dataset.area; estado.cat = null; estado.sub = null;
     } else if (b.dataset.cat) {
       estado.cat = estado.cat === b.dataset.cat ? null : b.dataset.cat; estado.sub = null; rolar = !!estado.cat;
+      if (estado.cat) estado.area = CAT[estado.cat].area;
     } else if (b.dataset.f) {
       var f = b.dataset.f, v = b.dataset.v || null;
       if (f === "area") { estado.area = v; estado.cat = null; estado.sub = null; }
@@ -515,13 +602,6 @@
       } else if (f === "tutor") { estado.area = "tutor"; estado.cat = estado.cat === v ? null : v; estado.sub = null; }
       else if (f === "sub") { estado.sub = estado.sub === v ? null : v; if (estado.area !== "animais") { estado.area = "animais"; estado.cat = null; } }
       else estado[f] = estado[f] === v ? null : v;   // loja e preço: clicar de novo desliga
-    } else if (b.dataset.vitrine) {
-      var vt = b.dataset.vitrine;
-      if (vt === "ofertas") { estado.desc = true; estado.ordem = "desconto"; }
-      if (vt === "novidades") { estado.novo = true; estado.ordem = "recentes"; }
-      if (vt === "procurados") { estado.area = "animais"; estado.ordem = "procurados"; }
-      if (vt === "tutores") estado.area = "tutor";
-      rolar = true;
     } else if (b.dataset.tirar) {
       var t = b.dataset.tirar, todos = t === "tudo";
       if (todos || t === "area") { estado.area = null; estado.cat = null; estado.sub = null; }
@@ -531,9 +611,12 @@
       if (todos || t === "loja") estado.loja = null;
       if (todos || t === "preco") estado.preco = null;
       if (todos || t === "desc") estado.desc = false;
-      if (todos || t === "novo") estado.novo = false;
+      if (todos || t === "novo" || t === "ofertas") estado.novo = false;
+      if (todos || t === "cb" || t === "ofertas") estado.cb = false;
+      if (t === "ofertas") estado.desc = false;
       if (todos || t === "busca") { estado.busca = ""; document.getElementById("lj-q").value = ""; }
     } else return;
+    if (!b.dataset.atalho) estado.ver = null;   // mexer em outro filtro desfaz o atalho (os filtros que ele ligou continuam)
     var foco = noPainel && b.dataset.f ? '#lj-painel [data-f="' + b.dataset.f + '"][data-v="' + (b.dataset.v || "") + '"]' : null;
     atualizar();
     if (foco) { var x = document.querySelector(foco); if (x) x.focus(); }
@@ -542,12 +625,16 @@
   centro.addEventListener("change", function (e) {
     var el = e.target;
     if (el.id === "lj-ordem") { estado.ordem = el.value; estado.pagina = 1; desenharLista(); guardarNaUrl(); return; }
-    if (el.dataset && (el.dataset.f === "desc" || el.dataset.f === "novo")) {
-      estado[el.dataset.f] = el.checked;
+    if (el.dataset && (el.dataset.f === "desc" || el.dataset.f === "novo" || el.dataset.f === "cb")) {
+      estado[el.dataset.f] = el.checked; estado.ver = null;
       atualizar();
       var y = document.querySelector('#lj-painel input[data-f="' + el.dataset.f + '"]'); if (y) y.focus();
     }
   });
+  centro.addEventListener("toggle", function (e) {
+    var d = e.target;
+    if (d.dataset && d.dataset.g) abertos[d.dataset.g] = d.open;
+  }, true);
   var pausa;
   centro.addEventListener("input", function (e) {
     if (e.target.id !== "lj-q") return;
@@ -567,7 +654,7 @@
     centro.innerHTML = '<p class="sr" role="status">Carregando os achadinhos…</p><div class="lj-hero lj-hero-fantasma" aria-hidden="true"></div><ul class="lj-grade">' + c + "</ul>";
   }
   function vazio() {
-    centro.innerHTML = cabecalho("") + "</header>" +
+    centro.innerHTML = cabecalho() +
       '<div class="lj-vazio">' + svg(ICO.sacola) + "<b>Os primeiros achadinhos chegam em breve.</b><span>Estamos separando produtos para cães, gatos, aves, hamsters, peixes e répteis, e também para a casa, o passeio e o conforto de quem convive com eles.</span><a class=\"btn\" href=\"guia/\">Ver o Guia pet</a></div>";
   }
 
