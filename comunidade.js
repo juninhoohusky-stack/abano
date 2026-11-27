@@ -307,8 +307,25 @@
       painelMarca.className = "painel-marca"; painelMarca.hidden = true; painelMarca.id = "painel-marca";
       painelMarca.setAttribute("role", "listbox"); painelMarca.setAttribute("aria-label", "Marcar uma pessoa");
       if ("popover" in painelMarca) painelMarca.setAttribute("popover", "manual");   // fica por cima até das janelas abertas
+      // No celular o toque na lista tirava o foco do campo e a lista fechava antes de
+      // escolher. Agora o toque (ou clique) escolhe a pessoa na hora em que o dedo sai,
+      // e só não escolhe se a pessoa estava arrastando a lista
+      let toque = null;
       painelMarca.addEventListener("mousedown", (e) => e.preventDefault());
-      painelMarca.addEventListener("click", (e) => { const li = e.target.closest("[data-marca]"); if (li) escolherMarca(li.dataset.marca); });
+      painelMarca.addEventListener("pointerdown", (e) => {
+        const li = e.target.closest("[data-marca]");
+        toque = li ? { li: li, y: e.clientY, campo: campoMarca, ini: marcaIni } : null;
+        if (li && e.pointerType === "mouse") e.preventDefault();
+      });
+      painelMarca.addEventListener("pointerup", (e) => {
+        const t = toque; toque = null;
+        if (!t || Math.abs(e.clientY - t.y) > 12) return;
+        const li = e.target.closest("[data-marca]") || t.li;
+        e.preventDefault();
+        escolherMarca(li.dataset.marca, t.campo, t.ini);
+      });
+      painelMarca.addEventListener("pointercancel", () => { toque = null; });
+      painelMarca.addEventListener("click", (e) => { const li = e.target.closest("[data-marca]"); if (li && campoMarca) escolherMarca(li.dataset.marca); });
       document.body.appendChild(painelMarca);
     }
     campoMarca = ta; marcaOpcoes = lista; marcaSel = 0;
@@ -324,8 +341,9 @@
     painelMarca.style.left = Math.round(Math.min(Math.max(8, r.left), innerWidth - w - 8)) + "px";
     painelMarca.style.top = Math.round(top) + "px";
   }
-  function escolherMarca(usuario) {
-    const ta = campoMarca; if (!ta) return;
+  function escolherMarca(usuario, campo, ini) {
+    const ta = campoMarca || campo; if (!ta) return;
+    if (ini != null) marcaIni = ini;
     const fim = ta.selectionStart, ins = "@" + usuario + " ";
     if (ta.maxLength > 0 && ta.value.length - (fim - marcaIni) + ins.length > ta.maxLength) { fecharMarca(); return; }
     ta.setRangeText(ins, marcaIni, fim, "end");
@@ -367,8 +385,10 @@
     else return;
     e.preventDefault(); e.stopImmediatePropagation();
   }, true);
-  document.addEventListener("focusout", (e) => { if (e.target === campoMarca) setTimeout(() => { if (campoMarca && document.activeElement !== campoMarca) fecharMarca(); }, 120); });
-  window.addEventListener("resize", fecharMarca);
+  document.addEventListener("focusout", (e) => { if (e.target === campoMarca) setTimeout(() => { if (campoMarca && document.activeElement !== campoMarca && !(painelMarca && painelMarca.matches(":hover, :active"))) fecharMarca(); }, 300); });
+  // No celular o teclado e a barra do navegador mudam a altura da tela: só fecha se a largura mudar
+  let larguraMarca = innerWidth;
+  window.addEventListener("resize", () => { if (innerWidth !== larguraMarca) { larguraMarca = innerWidth; fecharMarca(); } });
 
   // Clube onde o texto vai aparecer: o escolhido na caixa de publicar ou o da publicação comentada
   function clubeDoCampo(ta) {
@@ -1537,7 +1557,7 @@
       sb.from("seguidores").select("seguidor", { count: "exact", head: true }).eq("seguido", u.id),
       sb.from("seguidores").select("seguido", { count: "exact", head: true }).eq("seguidor", u.id),
       sb.from("organizacoes").select("id,nome,tipo,status").eq("dono", u.id).eq("status", "aprovada").maybeSingle(),
-      sb.rpc("membros_destaque", { p_dias: 30, p_clube: null, p_limite: 24 })
+      sb.rpc("membros_destaque", { p_dias: 30, p_clube: null, p_limite: 5 })
     ]);
     const posDestaque = dest && !dest.error && dest.data ? dest.data.findIndex((m) => m.id === u.id) : -1;
     const seloDestaque = posDestaque >= 0 ? `<a class="selo-destaque" href="comunidade/?v=destaques">${ICONE.estrela}<span>Membro destaque · ${posDestaque + 1}º do mês</span></a>` : "";
@@ -1898,7 +1918,7 @@
     centro.innerHTML = `${voltar("comunidade/")}<header class="tela-topo destaque-topo"><span class="destaque-ico" aria-hidden="true">${ICONE.estrela}</span><h1>Membros destaque</h1><p>Os tutores que mais participaram da Comunidade nos últimos 30 dias: publicando, respondendo, comentando e ajudando outros tutores.</p></header>
       <ol class="mural-destaques" id="mural"><li class="carregando">Carregando…</li></ol>
       <section class="caixa-destaque"><h2>Como virar destaque</h2>${COMO_DESTAQUE}</section>`;
-    const r = await sb.rpc("membros_destaque", { p_dias: 30, p_clube: null, p_limite: 24 });
+    const r = await sb.rpc("membros_destaque", { p_dias: 30, p_clube: null, p_limite: 5 });
     const ol = document.getElementById("mural");
     if (r.error) { ol.outerHTML = vazio("Mural quase pronto", /membros_destaque/.test(r.error.message || "") ? "Falta ativar os destaques no banco de dados do Abanô." : erroMsg(r.error)); return; }
     const lista = (r.data || []).filter((m) => !est.bloqueados.has(m.id));
