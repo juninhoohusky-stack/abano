@@ -132,7 +132,7 @@
       else if (a.tipo === "votar") acoes.votar(a.id, a.opcao);
       else if (a.tipo === "participar" && !est.clubes.has(a.id)) acoes.participar(a.id);
       else if (a.tipo === "seguir" && !est.seguindo.has(a.id)) acoes.seguir(a.id);
-      else if (a.tipo === "comentar") { const c = document.getElementById("comentario-texto"); if (c) c.focus(); }
+      else if (a.tipo === "comentar") { const c = document.getElementById("comentario-texto") || document.getElementById("cr-" + a.id); if (c) c.focus(); }
       else if (a.tipo === "publicar") { const c = document.getElementById("compor-texto"); if (c) c.focus(); }
       const el = alvo(); if (el) el.scrollIntoView({ block: "center" });
     }, 400);
@@ -298,7 +298,7 @@
     return m ? { ini: ate.length - m[2].length - 1, termo: m[2].toLowerCase() } : null;
   }
   function desenharMarca() {
-    painelMarca.innerHTML = marcaOpcoes.map((p, i) => `<li role="option" id="marca-${i}" data-marca="${esc(p.usuario)}" aria-selected="${i === marcaSel}">${avatar(p)}<span><b>${esc(p.nome || p.usuario)}</b><small>@${esc(p.usuario)}</small></span></li>`).join("");
+    painelMarca.innerHTML = marcaOpcoes.map((p, i) => `<li role="option" id="marca-${i}" data-marca="${esc(p.usuario)}" aria-selected="${i === marcaSel}">${avatar(p)}<span><b>${esc(p.nome || p.usuario)}</b><small>@${esc(p.usuario)}${p.foraClube ? " · ainda não está no clube" : ""}</small></span></li>`).join("");
     campoMarca.setAttribute("aria-activedescendant", "marca-" + marcaSel);
   }
   function mostrarMarca(ta, lista) {
@@ -334,7 +334,8 @@
   }
   document.addEventListener("input", (e) => {
     const ta = e.target;
-    if (!(ta instanceof HTMLTextAreaElement) || ta.dataset.semMarca != null) return;
+    const campoTexto = ta instanceof HTMLTextAreaElement || (ta instanceof HTMLInputElement && ta.closest(".coment-rapido, .form-resposta"));
+    if (!campoTexto || ta.dataset.semMarca != null) return;
     const t = termoMarca(ta);
     if (!t) { if (campoMarca === ta || (painelMarca && !painelMarca.hidden)) fecharMarca(); return; }
     clearTimeout(marcaTimer);
@@ -342,8 +343,19 @@
     marcaTimer = setTimeout(async () => {
       const r = await sb.from("perfis").select("id,usuario,nome,foto_url").or(`usuario.ilike.${t.termo}*,nome.ilike.*${t.termo}*`).order("usuario").limit(8);
       if (seq !== marcaSeq || document.activeElement !== ta) return;
-      const lista = (r.data || []).filter((p) => !(est.eu && p.id === est.eu.id) && !est.bloqueados.has(p.id)).slice(0, 6);
+      let lista = (r.data || []).filter((p) => !(est.eu && p.id === est.eu.id) && !est.bloqueados.has(p.id)).slice(0, 6);
       if (!lista.length) { fecharMarca(); return; }
+      // Num clube, dá para marcar qualquer pessoa: quem participa vem primeiro e
+      // quem ainda não participa aparece avisado (para ver, vai precisar entrar no clube)
+      const clube = clubeDoCampo(ta);
+      if (clube) {
+        const m = await sb.from("clube_membros").select("usuario").eq("clube", clube).in("usuario", lista.map((p) => p.id));
+        if (seq !== marcaSeq || document.activeElement !== ta) return;
+        if (!m.error) {
+          const dentro = new Set((m.data || []).map((x) => x.usuario));
+          lista = lista.map((p) => ({ ...p, foraClube: !dentro.has(p.id) })).sort((a, b) => a.foraClube - b.foraClube);
+        }
+      }
       marcaIni = t.ini; mostrarMarca(ta, lista);
     }, 180);
   });
@@ -357,6 +369,14 @@
   }, true);
   document.addEventListener("focusout", (e) => { if (e.target === campoMarca) setTimeout(() => { if (campoMarca && document.activeElement !== campoMarca) fecharMarca(); }, 120); });
   window.addEventListener("resize", fecharMarca);
+
+  // Clube onde o texto vai aparecer: o escolhido na caixa de publicar ou o da publicação comentada
+  function clubeDoCampo(ta) {
+    if (ta.form && ta.form.clube) return ta.form.clube.value || null;
+    const caixa = ta.closest("[data-coment]");
+    const p = est.posts.get(caixa ? caixa.dataset.coment : q.get("p"));
+    return p ? p.clube || null : null;
+  }
 
   // "@usuario" em qualquer parte do texto vira link para o perfil
   const comMencoes = (h) => h.replace(/(^|[\s(>,.!?])@([a-z0-9_]{3,30})\b/g, (m, antes, u) => `${antes}<a class="c-mencao" href="${linkPerfil(u)}">@${u}</a>`);
@@ -397,27 +417,32 @@
       ${completo ? "" : blocoComentarios(p)}
     </article>`;
   }
-  // Prévia dos comentários no feed: "Ver todos", os 2 mais recentes e o campo para comentar
+  // Comentários no próprio feed, como no Facebook: os 2 mais recentes já com Curtir,
+  // Responder, Editar e Excluir; "Ver todos" abre o resto ali mesmo, sem trocar de tela
+  function textoVerTodos(p) {
+    const n = p.total_comentarios || 0, pergunta = p.tipo === "pergunta";
+    return n === 1 ? (pergunta ? "Ver 1 resposta" : "Ver 1 comentário") : `Ver ${n > 2 ? "todos os " : "os "}${num(n)} ${pergunta ? "respostas" : "comentários"}`;
+  }
   function blocoComentarios(p) {
     const n = p.total_comentarios || 0, pergunta = p.tipo === "pergunta";
     const previa = (est.previas.get(p.id) || []).filter((c) => !est.bloqueados.has(c.autor));
-    const verTodos = n > previa.length
-      ? `<a class="ver-coment" href="${linkPost(p.id)}#comentarios" data-abrir-coment="${esc(p.id)}">${n === 1 ? (pergunta ? "Ver 1 resposta" : "Ver 1 comentário") : `Ver ${n > 2 ? "todos os " : "os "}${num(n)} ${pergunta ? "respostas" : "comentários"}`}</a>` : "";
-    const itens = previa.map((c) => `<li><a href="${linkPerfil((c.perfil || {}).usuario)}"><b>${esc((c.perfil || {}).nome || "Tutor")}</b></a> ${fmt(c.texto)}</li>`).join("");
+    const verTodos = n > previa.length ? `<button type="button" class="ver-coment" data-ver-coment="${esc(p.id)}">${textoVerTodos(p)}</button>` : "";
+    const itens = previa.map((c) => conversa(c, new Map(), p)).join("");
     const campo = est.eu && est.eu.aceitou
       ? `<form class="coment-rapido" data-post="${esc(p.id)}">${avatar(est.eu)}<label class="sr" for="cr-${esc(p.id)}">${pergunta ? "Sua resposta" : "Seu comentário"}</label><input id="cr-${esc(p.id)}" maxlength="2000" autocomplete="off" enterkeyhint="send" placeholder="${pergunta ? "Responda com a sua experiência…" : "Adicione um comentário…"}">${botaoEmoji("cr-" + esc(p.id))}<button type="submit" disabled>Publicar</button></form>`
       : `<button type="button" class="coment-rapido coment-login" data-acao="comentar-login" data-id="${esc(p.id)}">${avatar(null)}<span>${pergunta ? "Entre para responder…" : "Entre para comentar…"}</span></button>`;
-    return `<div class="post-coment" data-coment="${esc(p.id)}">${verTodos}${itens ? `<ul class="previa-coment">${itens}</ul>` : ""}${campo}</div>`;
+    return `<div class="post-coment" data-coment="${esc(p.id)}">${verTodos}<ol class="lista-comentarios lista-feed" data-lista-c="${esc(p.id)}">${itens}</ol>${campo}</div>`;
   }
   // Busca os comentários mais recentes dos posts que acabaram de aparecer no feed
   async function previasComentarios(posts) {
     const ids = posts.filter((p) => p.total_comentarios > 0).map((p) => p.id);
     if (!ids.length) return;
-    const r = await sb.from("comentarios").select("*, perfil:perfis!comentarios_autor_fkey(usuario,nome)")
+    const r = await sb.from("comentarios").select("*, perfil:perfis!comentarios_autor_fkey(id,usuario,nome,foto_url)")
       .in("post", ids).order("criado_em", { ascending: false }).limit(Math.min(200, ids.length * 6));
     if (r.error || !r.data) return;
     const por = new Map();
     r.data.filter((c) => !c.resposta_a).forEach((c) => { const l = por.get(c.post) || []; if (l.length < 2) { l.push(c); por.set(c.post, l); } });
+    await lerMinhasCurtidasC([...por.values()].flat());
     por.forEach((l, id) => {
       est.previas.set(id, l.reverse());
       const p = est.posts.get(id);
@@ -430,7 +455,11 @@
       const completo = el.closest(".ver-post") != null;
       const novo = document.createElement("div");
       novo.innerHTML = cartao(p, completo);
-      el.replaceWith(novo.firstElementChild);
+      const card = novo.firstElementChild;
+      // Os comentários abertos (e o que a pessoa está digitando) continuam como estavam
+      const velhos = el.querySelector(":scope > .post-coment"), novos = card.querySelector(":scope > .post-coment");
+      if (velhos && novos) novos.replaceWith(velhos);
+      el.replaceWith(card);
     });
   }
 
@@ -727,7 +756,7 @@
         const m = el.querySelector(".membros");
         if (m && cont.data) m.textContent = textoMembros(cont.data.total_membros);
       });
-      if (q.get("c") === clube) rota();
+      if (q.get("c") === clube || (q.get("p") && q.get("marcado") && !dentro)) rota();
     },
     async membros(clube) {
       const j = janelaSimples("Membros de " + (nomesClubes[clube] || "clube"));
@@ -1007,17 +1036,18 @@
     if (!texto || !exigir({ tipo: "comentar", id: id })) return;
     if (pareceVenda(texto)) { toast("Venda de animais não é permitida na Comunidade Abanô."); return; }
     botao.disabled = true; campo.disabled = true;
-    const r = await sb.from("comentarios").insert({ post: id, autor: est.eu.id, texto: texto }).select("id,post,autor,texto,criado_em, perfil:perfis!comentarios_autor_fkey(usuario,nome)").single();
+    const r = await sb.from("comentarios").insert({ post: id, autor: est.eu.id, texto: texto }).select("*, perfil:perfis!comentarios_autor_fkey(id,usuario,nome,foto_url)").single();
     campo.disabled = false;
     if (r.error) { botao.disabled = false; toast(erroMsg(r.error)); return; }
+    campo.value = "";
     const p = est.posts.get(id);
     if (p) {
       p.total_comentarios = (p.total_comentarios || 0) + 1;
-      const l = (est.previas.get(id) || []).concat([r.data]).slice(-2);
-      est.previas.set(id, l);
-      atualizarCartao(id);
+      est.previas.set(id, (est.previas.get(id) || []).concat([r.data]).slice(-2));
+      const ol = f.parentElement.querySelector(":scope > [data-lista-c]");
+      if (ol) { ol.insertAdjacentHTML("beforeend", conversa(r.data, new Map(), p)); ol.lastElementChild.scrollIntoView({ block: "nearest" }); }
+      atualizarNumComentarios(p);
     }
-    toast("Comentário publicado!");
   });
 
 
@@ -1081,6 +1111,7 @@
       return;
     }
     const p = r.data;
+    if (q.get("marcado") && p.clube && est.eu && !est.clubes.has(p.clube) && p.autor !== est.eu.id) { portaDoClube(p); return; }
     await carregarMeusEstados([p]);
     const resumo = (p.texto || (p.tipo === "foto" ? "Foto" : "Vídeo") + " de " + p.perfil.nome).replace(/\s+/g, " ");
     definirMeta(resumo.slice(0, 60) + (resumo.length > 60 ? "…" : "") + " | Comunidade Abanô", resumo.slice(0, 155), linkPost(p.id));
@@ -1097,12 +1128,23 @@
     ligarComentarios(p);
     if (location.hash === "#comentarios") setTimeout(() => document.getElementById("comentarios").scrollIntoView(), 50);
   }
-  // Seção de comentários (lista + campo de comentar), usada na página do post e na janela do feed
+  function portaDoClube(p) {
+    const nome = (p.clube_info && p.clube_info.nome) || nomeClube(p.clube), quem = p.perfil || {};
+    definirMeta("Você foi marcado no clube " + nome + " | Comunidade Abanô", null, linkPost(p.id));
+    centro.innerHTML = `${voltar("comunidade/")}
+      <section class="porta-clube" data-clube="${esc(p.clube)}">
+        <span class="vazio-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.6"/><path d="M15.6 12v1.4a2.6 2.6 0 0 0 5.2 0V12a8.8 8.8 0 1 0-3.5 7"/></svg></span>
+        <h1>Você foi marcado no clube ${esc(nome)}</h1>
+        <p><b>${esc(quem.nome || "Um tutor")}</b> marcou você numa conversa do clube. Participe do clube para ver a publicação e responder.</p>
+        <div class="porta-botoes"><button type="button" class="btn" data-acao="participar" data-id="${esc(p.clube)}" aria-pressed="false">Participar do clube</button><a class="btn btn-sec" href="${linkClube(p.clube)}">Conhecer o clube</a></div>
+      </section>`;
+  }
+  // Seção de comentários (lista + campo de comentar), usada na página do post
   function secaoComentarios(p) {
     const pergunta = p.tipo === "pergunta";
     return `<section class="comentarios" id="comentarios" aria-label="${pergunta ? "Respostas" : "Comentários"}">
         <h2>${pergunta ? "Respostas" : "Comentários"} <small id="num-coment">${p.total_comentarios ? num(p.total_comentarios) : ""}</small></h2>
-        <ol class="lista-comentarios" id="lista-comentarios"><li class="carregando">Carregando…</li></ol>
+        <ol class="lista-comentarios" id="lista-comentarios" data-lista-c="${esc(p.id)}"><li class="carregando">Carregando…</li></ol>
         ${est.eu && est.eu.aceitou
           ? `<form class="comentar" id="form-comentar" novalidate>${avatar(est.eu)}<label class="sr" for="comentario-texto">${pergunta ? "Sua resposta" : "Seu comentário"}</label><textarea id="comentario-texto" maxlength="2000" rows="1" placeholder="${pergunta ? "Escreva uma resposta…" : "Escreva um comentário…"}"></textarea>${barraFmt("comentario-texto")}<button type="submit" class="btn">${pergunta ? "Responder" : "Publicar"}</button><p class="aviso-conta" id="comentar-aviso" role="alert" hidden></p></form>`
           : `<button type="button" class="compor-fake" id="comentar-login">${avatar(null)}<span>${pergunta ? "Entre para responder" : "Entre para comentar"}</span></button>`}
@@ -1111,7 +1153,7 @@
   function ligarComentarios(p) {
     const lb = document.getElementById("comentar-login");
     if (lb) lb.addEventListener("click", () => exigir({ tipo: "comentar", id: p.id }));
-    carregarComentarios(p);
+    carregarComentarios(p, document.getElementById("lista-comentarios"));
     const f = document.getElementById("form-comentar");
     if (!f) return;
     const ta = f.querySelector("textarea"), av = document.getElementById("comentar-aviso");
@@ -1165,44 +1207,29 @@
     });
   }
 
-  // ---------- Janela de comentários por cima do feed (sem trocar de página) ----------
-  const janelaComentarios = (() => {
-    let d = null, postAtual = null, comHistorico = false;
-    function fechar(peloVoltar) {
-      if (!d || !d.open) return;
-      d.close(); d.remove(); d = null;
-      document.documentElement.classList.remove("sem-rolar");
-      if (comHistorico && !peloVoltar) { comHistorico = false; history.back(); }
-      comHistorico = false;
-      // Atualiza o cartão no feed com o novo número e os comentários mais recentes
-      if (postAtual) { const p = postAtual; postAtual = null; est.previas.delete(p.id); atualizarCartao(p.id); previasComentarios([p]); }
+  // ---------- Comentários abertos no próprio feed ----------
+  async function abrirTodosComentarios(caixa, focar) {
+    const p = est.posts.get(caixa.dataset.coment); if (!p) return;
+    const ver = caixa.querySelector(":scope > .ver-coment"), ol = caixa.querySelector(":scope > [data-lista-c]");
+    if (ver && !ver.disabled) {
+      ver.disabled = true; ver.textContent = "Carregando…";
+      const ok = await carregarComentarios(p, ol);
+      if (ok) ver.remove(); else { ver.disabled = false; ver.textContent = textoVerTodos(p); }
     }
-    window.addEventListener("popstate", () => { if (d && d.open) fechar(true); });
-    function abrir(id) {
-      const p = est.posts.get(id); if (!p) return false;
-      postAtual = p;
-      d = document.createElement("dialog");
-      d.className = "janela-coment";
-      d.setAttribute("aria-label", p.tipo === "pergunta" ? "Respostas" : "Comentários");
-      d.innerHTML = `<div class="jc-caixa"><div class="jc-topo"><span class="jc-pega" aria-hidden="true"></span><a class="jc-abrir" href="${linkPost(p.id)}">Ver publicação</a><button type="button" class="jc-fechar" aria-label="Fechar">&times;</button></div><div class="jc-corpo">${secaoComentarios(p)}</div></div>`;
-      document.body.appendChild(d);
-      d.querySelector(".jc-fechar").addEventListener("click", () => fechar());
-      d.addEventListener("cancel", (e) => { e.preventDefault(); fechar(); });
-      d.addEventListener("click", (e) => { if (e.target === d) fechar(); });
-      d.showModal();
-      document.documentElement.classList.add("sem-rolar");
-      try { history.pushState({ comentarios: 1 }, ""); comHistorico = true; } catch (e) { comHistorico = false; }
-      ligarComentarios(p);
-      const ta = d.querySelector("#comentario-texto");
-      if (ta && window.matchMedia("(hover: hover)").matches) ta.focus();
-      return true;
+    if (focar) {
+      const campo = caixa.querySelector(".coment-rapido input") || caixa.querySelector(".coment-login");
+      if (campo) { campo.focus({ preventScroll: true }); campo.scrollIntoView({ block: "center", behavior: "smooth" }); }
     }
-    return { abrir };
-  })();
+  }
   document.addEventListener("click", (e) => {
+    const v = e.target.closest("[data-ver-coment]");
+    if (v) { abrirTodosComentarios(v.closest("[data-coment]"), false); return; }
     const a = e.target.closest("[data-abrir-coment]");
     if (!a || e.metaKey || e.ctrlKey || a.closest(".ver-post")) return;
-    if (janelaComentarios.abrir(a.dataset.abrirComent)) e.preventDefault();
+    const caixa = a.closest("[data-post]") && a.closest("[data-post]").querySelector(":scope > [data-coment]");
+    if (!caixa) return;
+    e.preventDefault();
+    abrirTodosComentarios(caixa, true);
   });
 
   // ---------- Comentários: curtir, responder e conversas (respostas num nível só) ----------
@@ -1223,7 +1250,7 @@
         <p class="c-meta"><time datetime="${esc(c.criado_em)}">${tempo(c.criado_em)}</time>${c.editado_em ? '<span class="c-editado">editado</span>' : ""}
           <button type="button" class="c-curtir${curti ? " ativa" : ""}" data-c="${esc(c.id)}" aria-pressed="${curti}">${curti ? "Curtido" : "Curtir"}</button>
           <button type="button" class="c-responder" data-c="${esc(c.id)}" data-pai="${esc(c.resposta_a || c.id)}">Responder</button>
-          ${meu ? `<button type="button" class="c-editar" data-c="${esc(c.id)}">Editar</button>` : ""}${posso ? `<button type="button" class="c-apagar" data-c="${esc(c.id)}">Apagar</button>` : ""}${meu ? "" : `<button type="button" class="c-denunciar" data-c="${esc(c.id)}">Denunciar</button>`}</p>
+          ${meu ? `<button type="button" class="c-editar" data-c="${esc(c.id)}">Editar</button>` : ""}${posso ? `<button type="button" class="c-apagar" data-c="${esc(c.id)}">Excluir</button>` : ""}${meu ? "" : `<button type="button" class="c-denunciar" data-c="${esc(c.id)}">Denunciar</button>`}</p>
         ${extra || ""}
       </div>
     </li>`;
@@ -1234,52 +1261,59 @@
     const filhas = respostas.get(c.id) || [];
     return itemComentario(c, p, false, `<ol class="c-respostas" data-respostas="${esc(c.id)}">${filhas.map((r) => itemComentario(r, p, true)).join("")}</ol>`);
   }
-  async function carregarComentarios(p) {
-    const ol = document.getElementById("lista-comentarios");
+  // Quais destes comentários eu já curti
+  async function lerMinhasCurtidasC(lista) {
+    if (!est.eu || !lista.length) return;
+    const k = await sb.from("curtidas_comentarios").select("comentario").eq("usuario", est.eu.id).in("comentario", lista.map((c) => c.id));
+    if (!k.error) (k.data || []).forEach((x) => comCurtidos.add(x.comentario));
+  }
+  async function carregarComentarios(p, ol) {
     const r = await sb.from("comentarios").select("*, perfil:perfis!comentarios_autor_fkey(id,usuario,nome,foto_url)").eq("post", p.id).order("criado_em").limit(500);
-    if (r.error) { ol.innerHTML = `<li class="vazio-c">Não deu para carregar. ${esc(erroMsg(r.error))}</li>`; return; }
-    const todos = (r.data || []).filter((c) => !est.bloqueados.has(c.autor));
-    if (est.eu && todos.length) {
-      const k = await sb.from("curtidas_comentarios").select("comentario").eq("usuario", est.eu.id).in("comentario", todos.map((c) => c.id));
-      if (!k.error) (k.data || []).forEach((x) => comCurtidos.add(x.comentario));
+    if (r.error) {
+      if (ol.id === "lista-comentarios") ol.innerHTML = `<li class="vazio-c">Não deu para carregar. ${esc(erroMsg(r.error))}</li>`;
+      else toast(erroMsg(r.error));
+      return false;
     }
+    const todos = (r.data || []).filter((c) => !est.bloqueados.has(c.autor));
+    await lerMinhasCurtidasC(todos);
     const ids = new Set(todos.map((c) => c.id));
     const respostas = new Map();
     const raiz = todos.filter((c) => {
       if (c.resposta_a && ids.has(c.resposta_a)) { const l = respostas.get(c.resposta_a) || []; l.push(c); respostas.set(c.resposta_a, l); return false; }
       return true;
     });
-    ol.innerHTML = raiz.length ? raiz.map((c) => conversa(c, respostas, p)).join("") : `<li class="vazio-c">${p.tipo === "pergunta" ? "Ninguém respondeu ainda. Compartilhe sua experiência!" : "Ainda sem comentários. Comece a conversa!"}</li>`;
-    ol.addEventListener("click", async (e) => {
-      const d = e.target.closest(".c-denunciar");
-      if (d) { abrirDenuncia({ tipo: "comentario", id: d.dataset.c }); return; }
-      const cu = e.target.closest(".c-curtir");
-      if (cu) { curtirComentario(cu); return; }
-      const re = e.target.closest(".c-responder");
-      if (re) { abrirResposta(re, p); return; }
-      const ed = e.target.closest(".c-editar");
-      if (ed) { editarComentario(ed); return; }
-      const ca = e.target.closest("[data-cancelar-c]");
-      if (ca) { fecharEdicaoComentario(ca.closest(".comentario")); return; }
-      const b = e.target.closest(".c-apagar"); if (!b) return;
-      if (!confirm("Apagar este comentário? As respostas a ele também somem.")) return;
-      const r2 = await sb.from("comentarios").delete().eq("id", b.dataset.c);
-      if (r2.error) { toast(erroMsg(r2.error)); return; }
-      const li = b.closest(".comentario");
-      const quantos = 1 + li.querySelectorAll(".c-respostas .comentario").length;
-      p.total_comentarios = Math.max(0, (p.total_comentarios || 0) - quantos);
-      li.remove();
-      atualizarNumComentarios(p);
-      toast("Comentário apagado.");
-    });
-    ol.addEventListener("submit", (e) => {
-      const fe = e.target.closest(".form-editar-c");
-      if (fe) { e.preventDefault(); salvarComentario(fe); return; }
-      const f = e.target.closest(".form-resposta"); if (!f) return;
-      e.preventDefault();
-      enviarResposta(f, p);
-    });
+    ol.innerHTML = raiz.length ? raiz.map((c) => conversa(c, respostas, p)).join("") : (ol.id === "lista-comentarios" ? `<li class="vazio-c">${p.tipo === "pergunta" ? "Ninguém respondeu ainda. Compartilhe sua experiência!" : "Ainda sem comentários. Comece a conversa!"}</li>` : "");
+    return true;
   }
+  const postDaLista = (el) => { const l = el.closest("[data-lista-c]"); return l ? est.posts.get(l.dataset.listaC) : null; };
+  document.addEventListener("click", async (e) => {
+    const alvo = e.target.closest(".c-denunciar, .c-curtir, .c-responder, .c-editar, [data-cancelar-c], .c-apagar");
+    if (!alvo) return;
+    const p = postDaLista(alvo); if (!p) return;
+    if (alvo.matches(".c-denunciar")) { abrirDenuncia({ tipo: "comentario", id: alvo.dataset.c }); return; }
+    if (alvo.matches(".c-curtir")) { curtirComentario(alvo); return; }
+    if (alvo.matches(".c-responder")) { abrirResposta(alvo, p); return; }
+    if (alvo.matches(".c-editar")) { editarComentario(alvo); return; }
+    if (alvo.matches("[data-cancelar-c]")) { fecharEdicaoComentario(alvo.closest(".comentario")); return; }
+    if (!confirm("Excluir este comentário? As respostas a ele também somem.")) return;
+    const r2 = await sb.from("comentarios").delete().eq("id", alvo.dataset.c);
+    if (r2.error) { toast(erroMsg(r2.error)); return; }
+    const li = alvo.closest(".comentario");
+    const apagados = [li.dataset.comentario].concat([...li.querySelectorAll(".c-respostas .comentario")].map((x) => x.dataset.comentario));
+    p.total_comentarios = Math.max(0, (p.total_comentarios || 0) - apagados.length);
+    if (est.previas.has(p.id)) est.previas.set(p.id, est.previas.get(p.id).filter((c) => !apagados.includes(c.id)));
+    li.remove();
+    atualizarNumComentarios(p);
+    toast("Comentário excluído.");
+  });
+  document.addEventListener("submit", (e) => {
+    const fe = e.target.closest(".form-editar-c");
+    if (fe) { e.preventDefault(); salvarComentario(fe); return; }
+    const f = e.target.closest(".form-resposta"); if (!f) return;
+    const p = postDaLista(f); if (!p) return;
+    e.preventDefault();
+    enviarResposta(f, p);
+  });
   // ---------- Editar o próprio comentário ----------
   function editarComentario(b) {
     const li = b.closest(".comentario"), id = b.dataset.c;
@@ -1321,8 +1355,7 @@
     const n = document.getElementById("num-coment");
     if (n) n.textContent = num(p.total_comentarios || 0);
     est.posts.set(p.id, p);
-    const acao = document.querySelector(`.ver-post [data-post="${p.id}"] .post-acoes a.acao span`);
-    if (acao) acao.textContent = p.total_comentarios ? num(p.total_comentarios) : "";
+    document.querySelectorAll(`[data-post="${p.id}"] > .post-acoes > a.acao > span:first-of-type`).forEach((acao) => { acao.textContent = p.total_comentarios ? num(p.total_comentarios) : ""; });
   }
   async function curtirComentario(b) {
     if (!exigir({ tipo: "comentar" })) return;
@@ -1347,7 +1380,7 @@
   function abrirResposta(b, p) {
     if (!exigir({ tipo: "comentar" })) return;
     const pai = b.dataset.pai, alvo = b.closest(".comentario");
-    const lista = document.querySelector(`[data-respostas="${pai}"]`);
+    const lista = b.closest("[data-lista-c]").querySelector(`[data-respostas="${pai}"]`);
     if (!lista) return;
     let f = lista.parentElement.querySelector(":scope > .form-resposta");
     if (!f) {
@@ -1370,7 +1403,7 @@
     botao.disabled = false;
     if (r.error) { toast(/resposta_a/.test(r.error.message || "") ? "Responder comentários fica disponível em instantes." : erroMsg(r.error)); return; }
     campo.value = "";
-    const lista = document.querySelector(`[data-respostas="${r.data.resposta_a || f.dataset.pai}"]`);
+    const lista = f.closest("[data-lista-c]").querySelector(`[data-respostas="${r.data.resposta_a || f.dataset.pai}"]`);
     lista.insertAdjacentHTML("beforeend", itemComentario(r.data, p, true));
     lista.lastElementChild.scrollIntoView({ block: "nearest" });
     f.remove();
@@ -1671,7 +1704,7 @@
       : g.tipo === "pedido_adocao" ? "ong.html#pedidos"
       : g.tipo === "pedido_aceito" ? "adocao.html?v=pedidos"
       : g.tipo === "adocao_concluida" ? "adocao.html?v=pedidos&compartilhar=" + encodeURIComponent(g.pedido || "")
-      : linkPost(g.post) + (g.comentario ? "#comentarios" : "");
+      : linkPost(g.post) + (g.tipo === "mencao" ? "&marcado=1" : "") + (g.comentario ? "#comentarios" : "");
     const trecho = g.tipo === "boas_vindas" ? "" : g.tipo === "comentario" || g.tipo === "resposta" ? g.trecho_comentario : g.tipo === "curtida_comentario" ? g.trecho_comentario : g.tipo === "curtida" ? g.trecho_post : g.tipo === "mencao" ? (g.comentario ? g.trecho_comentario : g.trecho_post) : "";
     return `<li><a class="aviso${g.lida ? "" : " novo"}" href="${link}">
       <span class="aviso-av">${avatar({ nome: quem.de_nome, foto_url: quem.de_foto })}<span class="aviso-ico t-${g.tipo}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONE_AVISO[g.tipo] || ICONE_AVISO.curtida}</svg></span></span>
