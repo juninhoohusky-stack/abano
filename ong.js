@@ -133,6 +133,7 @@
     if (dados.cnpj && !/^[0-9./-]{14,18}$/.test(dados.cnpj)) erros.push([fo.cnpj, "Confira o CNPJ: 14 números, com ou sem pontos."]);
     if (A.temValorEmReais(dados.descricao)) erros.push([fo.descricao, "A descrição não pode ter valores em reais."]);
     if (erros.length) { aviso(av, erros[0][1]); erros[0][0].focus(); return; }
+    if (!org && !(await C.garantirEmail(eu))) { aviso(av, "Confirme seu e-mail para continuar."); return; }   // só na primeira vez
     const b = $("org-enviar"), txt = b.textContent; b.disabled = true; b.textContent = "Salvando…";
     const r = org
       ? await sb.from("organizacoes").update(dados).eq("id", org.id)

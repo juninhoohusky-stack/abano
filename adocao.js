@@ -189,12 +189,13 @@
       centro.querySelectorAll("[data-foto]").forEach((x) => x.setAttribute("aria-current", x === b ? "true" : "false"));
     }));
     const ba = $("btn-adotar");
-    if (ba) ba.addEventListener("click", () => {
+    if (ba) ba.addEventListener("click", async () => {
       if (!exigirConta()) return;
       if (!eu.foto_url) {
         if (confirm("Para pedir para adotar, coloque uma foto sua no perfil. Ela traz mais segurança para a ONG e para você.\n\nIr para Minha conta agora?")) location.href = "conta.html?volta=" + encodeURIComponent(location.pathname + location.search);
         return;
       }
+      if (!(await C.garantirEmail(eu))) return;   // confirma o e-mail só agora, na hora de adotar
       abrirQuestionario(p);
     });
     $("btn-compartilhar-ado").addEventListener("click", async () => {

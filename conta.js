@@ -901,5 +901,107 @@
     });
   }
 
-  window.abanoConta = { sb: sb, completarEstado: completarEstado, destino: destino, enviarFoto: enviarFoto, apagarFoto: apagarFoto, traduzir: traduzir, enquadrar: enquadrar };
+  // ---------- Confirmar o e-mail só na hora de adotar ou anunciar ----------
+  // O cadastro entra direto. Para adotar ou colocar um animal para adoção, a pessoa
+  // recebe um código no e-mail e digita aqui. Quem abrir o link do e-mail neste
+  // navegador também fica confirmado (a sessão nova vem marcada como "otp").
+  function veioPorEmail(sessao) {
+    try {
+      var p = JSON.parse(atob(sessao.access_token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+      return (p.amr || []).some(function (a) { return /^(otp|magiclink|recovery|invite|email_change)$/.test(a.method); });
+    } catch (e) { return false; }
+  }
+  sb.auth.getSession().then(function (r) {
+    var s = r.data.session;
+    if (s && veioPorEmail(s)) sb.rpc("marcar_email_verificado").then(function () {}, function () {});
+  });
+
+  var dEmail = null;
+  function montarDialogoEmail() {
+    if (dEmail) return dEmail;
+    dEmail = document.createElement("dialog");
+    dEmail.className = "dialogo-ado";
+    dEmail.id = "dialogo-email";
+    dEmail.setAttribute("aria-labelledby", "email-cod-titulo");
+    dEmail.innerHTML =
+      '<form class="form-ado" id="form-email-cod" novalidate>' +
+        '<div class="cab"><h2 id="email-cod-titulo">Confirme seu e-mail</h2><button type="button" class="fechar" id="fechar-email-cod" aria-label="Fechar">&times;</button></div>' +
+        '<p class="sub" id="email-cod-sub"></p>' +
+        '<div id="email-cod-passo1">' +
+          '<div class="captcha" id="captcha-email-cod" hidden></div>' +
+          '<button type="button" class="btn" id="email-cod-enviar">Enviar o código</button>' +
+        "</div>" +
+        '<div id="email-cod-passo2" hidden>' +
+          '<label class="rot" for="email-cod">Código que chegou no e-mail</label>' +
+          '<input id="email-cod" name="codigo" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Só os números">' +
+          '<button type="submit" class="btn" id="email-cod-confirmar" style="margin-top:var(--e-3)">Confirmar</button>' +
+          '<button type="button" class="link-botao" id="email-cod-de-novo" style="margin-top:var(--e-2);min-height:44px">Não chegou? Enviar de novo</button>' +
+        "</div>" +
+        '<p class="aviso-conta" id="email-cod-aviso" role="alert" hidden></p>' +
+      "</form>";
+    document.body.appendChild(dEmail);
+    $("fechar-email-cod").addEventListener("click", function () { dEmail.close(); });
+    return dEmail;
+  }
+
+  // Devolve uma promessa: true quando o e-mail está confirmado, false se a pessoa desistiu
+  function garantirEmail(conta) {
+    if (!conta || conta.email_verificado !== false) return Promise.resolve(true);   // sem o campo (SQL antigo) não bloqueia
+    return sb.rpc("marcar_email_verificado").then(function (r) {
+      if (!r.error && r.data) { conta.email_verificado = true; return true; }
+      return pedirCodigo(conta);
+    });
+  }
+  function pedirCodigo(conta) {
+    var d = montarDialogoEmail(), form = $("form-email-cod"), av = $("email-cod-aviso");
+    var enviar = $("email-cod-enviar"), deNovo = $("email-cod-de-novo"), campo = $("email-cod");
+    $("email-cod-sub").innerHTML = "Para adotar ou colocar um animal para adoção, precisamos confirmar que o e-mail <b></b> é seu. É só uma vez.";
+    $("email-cod-sub").querySelector("b").textContent = conta.email;
+    $("email-cod-passo1").hidden = false; $("email-cod-passo2").hidden = true;
+    aviso(av, ""); campo.value = "";
+    if (widgets["captcha-email-cod"] == null) prepararCaptcha("captcha-email-cod"); else renovarCaptcha("captcha-email-cod");
+
+    return new Promise(function (resolver) {
+      var feito = false;
+      function mandar(botao) {
+        var tk = tokenCaptcha("captcha-email-cod");
+        if (tk === "") { $("email-cod-passo1").hidden = false; aviso(av, "Conclua a verificação “Não sou um robô” e toque em Enviar o código."); return; }
+        ocupado(botao, true, "Enviando…");
+        sb.auth.signInWithOtp({ email: conta.email, options: { shouldCreateUser: false, captchaToken: tk, emailRedirectTo: location.href } }).then(function (r) {
+          ocupado(botao, false); renovarCaptcha("captcha-email-cod");
+          if (r.error) { aviso(av, erroCaptcha(r.error)); return; }
+          $("email-cod-passo1").hidden = true; $("email-cod-passo2").hidden = false;
+          aviso(av, "Enviamos um código para " + conta.email + ". Pode levar alguns minutos: confira também o Spam e a aba Promoções.", true);
+          campo.focus();
+        });
+      }
+      enviar.onclick = function () { mandar(enviar); };
+      deNovo.onclick = function () { $("email-cod-passo1").hidden = false; $("email-cod-passo2").hidden = true; aviso(av, "Conclua a verificação e toque em Enviar o código."); };
+      form.onsubmit = function (e) {
+        e.preventDefault();
+        var cod = campo.value.replace(/\D/g, "");
+        if (cod.length < 6) { aviso(av, "Digite o código com todos os números que chegaram no e-mail."); campo.focus(); return; }
+        var b = $("email-cod-confirmar");
+        ocupado(b, true, "Confirmando…");
+        sb.auth.verifyOtp({ email: conta.email, token: cod, type: "email" }).then(function (r) {
+          if (r.error) {
+            ocupado(b, false);
+            aviso(av, /expired|invalid/i.test(r.error.message || "") ? "Código errado ou vencido. Confira os números ou peça um novo." : traduzir(r.error));
+            return;
+          }
+          return sb.rpc("marcar_email_verificado").then(function (m) {
+            ocupado(b, false);
+            if (m.error || !m.data) { aviso(av, "O código foi aceito, mas não deu para salvar agora. Tente de novo em instantes."); return; }
+            conta.email_verificado = true; feito = true;
+            d.close();
+          });
+        });
+      };
+      d.addEventListener("close", function fim() { d.removeEventListener("close", fim); resolver(feito); });
+      d.showModal();
+      enviar.focus();
+    });
+  }
+
+  window.abanoConta = { sb: sb, completarEstado: completarEstado, destino: destino, enviarFoto: enviarFoto, apagarFoto: apagarFoto, traduzir: traduzir, enquadrar: enquadrar, garantirEmail: garantirEmail };
 })();
