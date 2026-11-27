@@ -408,7 +408,7 @@
     if (estado.sub) return NOME_SUB(null, estado.sub) + " para todos os animais";
     if (estado.area) return AREAS[estado.area].nome;
     if (estado.busca) return "Resultados para “" + estado.busca + "”";
-    if (estado.desc) return "Ofertas do dia";
+    if (estado.desc) return "Achadinhos com desconto";
     if (estado.novo) return "Novidades";
     return "Todos os achadinhos";
   }

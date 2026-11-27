@@ -196,7 +196,7 @@
 .grade-tutores small{color:var(--suave);font-size:var(--t-xs)}
 
 /* Coluna lateral */
-.com-lado{display:grid;gap:var(--e-4);position:sticky;top:84px}
+.com-lado{display:grid;grid-auto-rows:max-content;gap:var(--e-4);position:sticky;top:84px}
 .lado-caixa{background:var(--superficie);border-radius:var(--raio);padding:var(--e-4);box-shadow:var(--sombra)}
 .lado-caixa h2{font-size:var(--t-corpo);margin-bottom:var(--e-2)}
 .lado-lista{list-style:none;padding:0;margin:0;display:grid;gap:var(--e-2)}

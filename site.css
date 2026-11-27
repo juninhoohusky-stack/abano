@@ -583,15 +583,39 @@ html.sem-rolar{overflow:hidden}
   .topo-entrar,.topo-cta{padding:0 12px}
 }
 
-/* Chamadas para as ofertas em outras páginas (início e Comunidade) */
-.chamada-ofertas{display:flex;align-items:center;gap:var(--e-3);padding:var(--e-4);border-radius:var(--raio);background:linear-gradient(115deg,#D10F5E,#FF7A1A);color:#fff;text-decoration:none;box-shadow:var(--sombra-marca)}
-.chamada-ofertas .ico{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2)}
-.chamada-ofertas .ico svg{width:24px;height:24px}
-.chamada-ofertas span{display:block}
-.chamada-ofertas b{display:block;font-size:var(--t-corpo)}
-.chamada-ofertas span{font-size:var(--t-sm);opacity:.95}
-.convite-ofertas{background:linear-gradient(115deg,#D10F5E 0%,#E8326B 40%,#FF7A1A 100%);margin-bottom:var(--e-4)}
-.convite-ofertas::after{background:#B7E12F}
+/* Achadinhos do dia (início e Comunidade): alguns achadinhos passando, um de cada vez */
+.vitrine-ach{position:relative;overflow:hidden;overflow:clip;flex:none;display:grid;gap:var(--e-3);padding:var(--e-4);border-radius:var(--raio);background:var(--degrade-forte);color:#fff;text-decoration:none;box-shadow:var(--sombra-marca)}
+.vitrine-ach::after{content:"";position:absolute;right:-46px;bottom:-56px;width:130px;height:130px;border-radius:50%;background:var(--lima);opacity:.85;pointer-events:none}
+.vitrine-ach > *{position:relative;z-index:1}
+.va-topo{display:flex;align-items:center;gap:var(--e-3)}
+.va-ico{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2)}
+.va-ico svg{width:24px;height:24px}
+.va-tit{display:flex;flex-direction:column;min-width:0}
+.va-tit b{font-size:var(--t-corpo);line-height:1.2}
+.va-tit small{font-size:var(--t-sm);opacity:.95;line-height:1.35}
+.va-palco{position:relative;height:84px;border-radius:14px;background:rgba(255,255,255,.14)}
+.vitrine-ach:not(.com-produtos) .va-palco{display:none}
+.va-item{position:absolute;inset:0;display:flex;align-items:center;gap:var(--e-3);padding:10px;opacity:0;transform:translateY(10px);transition:opacity .45s cubic-bezier(.2,0,0,1),transform .45s cubic-bezier(.2,0,0,1)}
+.va-item.ativo{opacity:1;transform:none}
+.va-foto{flex:none;width:64px;height:64px;border-radius:10px;background:#fff;overflow:hidden}
+.va-foto img{width:100%;height:100%;object-fit:contain;display:block}
+.va-info{display:flex;flex-direction:column;gap:4px;min-width:0}
+.va-nome{font-size:var(--t-sm);font-weight:700;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.va-linha{display:flex;align-items:center;gap:var(--e-2);flex-wrap:wrap}
+.va-preco{padding:1px 10px;border-radius:var(--raio-pill);background:#fff;color:#B0125E;font-size:var(--t-sm);font-weight:900}
+.va-linha small{font-size:var(--t-xs);opacity:.92}
+.va-cta{justify-self:start;padding:8px 16px;border-radius:var(--raio-pill);background:#fff;color:#B0125E;font-weight:800;font-size:var(--t-sm)}
+.vitrine-ach:hover .va-cta{background:var(--lima);color:#2B1622}
+.vitrine-ach.va-grande{margin-bottom:var(--e-4);padding:var(--e-5) var(--e-6);border-radius:var(--raio-lg)}
+.vitrine-ach.va-grande::after{width:170px;height:170px;right:-50px;bottom:-70px}
+.va-grande .va-tit b{font-size:var(--t-h4);line-height:1.15;margin-bottom:var(--e-1)}
+.va-grande .va-tit small{font-size:var(--t-base);line-height:1.5}
+.va-grande .va-ico{width:52px;height:52px}
+@media (min-width:900px){
+  .vitrine-ach.va-grande{grid-template-columns:minmax(0,1fr) minmax(0,380px) auto;align-items:center;gap:var(--e-5)}
+  .vitrine-ach.va-grande:not(.com-produtos){grid-template-columns:minmax(0,1fr) auto}
+}
+@media (prefers-reduced-motion:reduce){.va-item{transition:none}}
 /* Celulares pequenos (360px): a barra de baixo com 6 itens e o formulário com a verificação contra robôs (300px) cabem sem rolar para o lado */
 @media (max-width:380px){
   .abas > .grupo-menu{min-width:0}
