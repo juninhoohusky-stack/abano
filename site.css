@@ -620,6 +620,8 @@ html.sem-rolar{overflow:hidden}
 @media (max-width:380px){
   .abas > .grupo-menu{min-width:0}
   .abas > .grupo-menu > .aba{width:100%;min-width:0}
+  .abas > .aba,.abas > .grupo-menu{flex:1 1 0;min-width:0}
+  .abas > .aba{padding-left:1px;padding-right:1px}
   .aba span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .wrap.conta-grade{padding-left:12px;padding-right:12px}
   .conta-grade .fc{padding-left:14px;padding-right:14px}

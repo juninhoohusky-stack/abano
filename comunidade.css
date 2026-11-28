@@ -745,3 +745,21 @@ html.sem-rolar{overflow:hidden}
 .porta-clube h1{margin:0 0 var(--e-2);font-size:var(--t-xl);line-height:1.2;text-wrap:balance}
 .porta-clube p{max-width:42ch;margin:0 auto var(--e-5);color:var(--suave)}
 .porta-botoes{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--e-2)}
+
+/* Comentários no feed: nada passa da largura do cartão no celular */
+.post{min-width:0;max-width:100%}
+.post-coment{grid-template-columns:minmax(0,1fr);min-width:0}
+.post-coment > *{min-width:0}
+.coment-rapido input,.form-resposta input{width:0;min-width:0}
+.c-balao{overflow-wrap:anywhere}
+.c-txt{overflow-wrap:anywhere}
+@media (max-width:480px){
+  .coment-rapido{gap:6px}
+  .coment-rapido .btn-emoji{display:none}
+  .coment-rapido button[type=submit]{padding:0 4px}
+}
+.post-autor > span:not(.av){min-width:0}
+.post-clube{flex:0 1 auto;min-width:0;max-width:45%;display:inline-block;line-height:30px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lado-lista{grid-template-columns:minmax(0,1fr)}
+.lado-lista li,.lado-pessoa{min-width:0}
+.lado-pessoa small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
